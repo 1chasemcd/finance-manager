@@ -1,11 +1,13 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using FinanceManager.Application.Common.Errors;
 
 namespace FinanceManager.Application.Common.Results;
 
 public record Result
 {
-    public bool IsSuccess => Error is null;
+    [MemberNotNullWhen(false, nameof(Error))]
+    public virtual bool IsSuccess => Error is null;
     public Error? Error { get; protected set; }
     protected Result(Error error)
     {
@@ -26,10 +28,11 @@ public record Result
 
 public record Result<T> : Result
 {
+    [MemberNotNullWhen(true, nameof(Value))]
+    public override bool IsSuccess => base.IsSuccess;
     public T? Value { get; }
     private Result(T value)
     {
-        Error = new NoError();
         Value = value;
     }
     public static implicit operator Result<T>(T value) => new(value);

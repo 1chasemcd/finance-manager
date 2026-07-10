@@ -10,7 +10,7 @@ namespace FinanceManager.Application.Features.SpendingCategories;
 
 public sealed record UpdateSpendingCategoryRequest : IRequest<Result>
 {
-    public int id { get; init; }
+    public int Id { get; init; }
     [MaxLength(500)]
     public string? Description { get; init; }
 }
@@ -19,7 +19,7 @@ public sealed class UpdateSpendingCategoryRequestHandler(IApplicationDbContext d
 {
     public async Task<Result> Handle(UpdateSpendingCategoryRequest request, CancellationToken cancellationToken)
     {
-        SpendingCategory? cat = await db.SpendingCategories.FindAsync([request.id], cancellationToken);
+        SpendingCategory? cat = await db.SpendingCategories.FindAsync([request.Id], cancellationToken);
         if (cat is null) return SpendingCategoryError.NotFound;
         cat.UpdateDescription(request.Description);
         return Result.Success;

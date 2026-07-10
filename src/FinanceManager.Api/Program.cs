@@ -1,41 +1,50 @@
-var builder = WebApplication.CreateBuilder(args);
+using FinanceManager.Application.Common.Results;
+using FinanceManager.Application.Features.SpendingCategories;
+using MediatR;
+using Microsoft.AspNetCore.Http.Json;
+using System.Text.Json.Serialization;
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+namespace FinanceManager.Api;
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+public class Program
 {
-    app.MapOpenApi();
-}
+    public static async Task Main(string[] args)
+    {
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-app.UseHttpsRedirection();
+        builder.Services.AddOpenApi();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+        builder
+            .AddApplicationServices()
+            .AddInfrastructureServices();
+        builder.Services.Configure<JsonOptions>(options =>
+        {
+            options.SerializerOptions.NumberHandling = JsonNumberHandling.Strict;
+        });
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+        WebApplication app = builder.Build();
 
-app.Run();
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapOpenApi();
+            await app.Services.SeedDataAsync();
+        }
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        app.UseHttpsRedirection();
+
+        RouteGroupBuilder api = app.MapGroup("/api");
+
+        api.MapGet("/spendingcategories/{id}", async (int id, ISender sender) =>
+        {
+            Result<SpendingCategoryResponse> result = await sender.Send(new GetSpendingCategoryRequest(id));
+            return result.ToHttpResult();
+        })
+        .WithName("GetSpendingCategories");
+
+        api.MapPost("/spendingcategories", async (CreateSpendingCategoryRequest request, ISender sender) =>
+            (await sender.Send(request)).ToCreatedHttpResult("/spendingcategories")
+            )
+        .WithName("CreateSpendingCategory");
+        app.Run();
+    }
 }
