@@ -12,19 +12,12 @@ indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
 
-[/Web/**]
-indent_size = 2
-
-# Generated code
-[*.g.ts]
-generated_code = true
-
 # Specify UTF-8 without byte-order mark
 [*.{csproj,locproj,nativeproj,proj,resx,slnx,vbproj}]
 charset = utf-8
 
 # Generated code
-[*{_AssemblyInfo.cs,.notsupported.cs,AsmOffsets.cs,.g.ts}]
+[*{_AssemblyInfo.cs,.notsupported.cs,AsmOffsets.cs}]
 generated_code = true
 
 # C# files
@@ -169,12 +162,6 @@ dotnet_diagnostic.IDE0005.severity = suggestion
 # Match namespace to folder structure
 dotnet_diagnostic.IDE0130.severity = error
 
-
-# C++ Files
-[*.{cpp,h,in}]
-curly_bracket_next_line = true
-indent_brace_style = Allman
-
 # Xml project files
 [*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,nativeproj,locproj}]
 indent_size = 2
@@ -206,7 +193,3 @@ indent_size = 2
 end_of_line = lf
 [*.{cmd,bat}]
 end_of_line = crlf
-
-[*.md]
-max_line_length = off
-trim_trailing_whitespace = false
