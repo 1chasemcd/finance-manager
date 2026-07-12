@@ -16,7 +16,7 @@ public record Result
     }
 
     protected Result() { }
-    public static Result Success => new();
+    public static Result Success() => new();
     public static implicit operator Result(Error error) => new(error);
 
     public Result<TNext> Then<TNext>(Func<Result<TNext>> func)

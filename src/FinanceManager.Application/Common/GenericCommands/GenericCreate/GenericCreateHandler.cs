@@ -1,0 +1,25 @@
+using FinanceManager.Application.Abstractions.Persistence;
+using FinanceManager.Application.Abstractions.Requests;
+using FinanceManager.Application.Common.Mapping;
+using FinanceManager.Application.Common.Results;
+using FinanceManager.Domain.Common;
+using MediatR;
+
+namespace FinanceManager.Application.Common.GenericCommands.GenericCreate;
+
+public class GenericCreateHandler<TRequest, TEntity>(
+    IApplicationDbContext db,
+    IMapper<TRequest, TEntity> mapper)
+    : IRequestHandler<GenericCreateCommand<TRequest, TEntity>, Result<int>>
+    where TRequest : ICreateRequest<TEntity>
+    where TEntity : Entity
+
+{
+    public async Task<Result<int>> Handle(GenericCreateCommand<TRequest, TEntity> command, CancellationToken cancellationToken)
+    {
+        TEntity entity = mapper.Map(command.Request);
+        db.Set<TEntity>().Add(entity);
+        await db.SaveChangesAsync(cancellationToken);
+        return entity.Id;
+    }
+}

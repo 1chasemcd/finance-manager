@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using FinanceManager.Application.Common.Persistence;
+using FinanceManager.Application.Abstractions.Persistence;
 using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.SpendingCategories;
 using MediatR;
@@ -20,7 +20,7 @@ public class CreateSpendingCategoryRequestHandler(IApplicationDbContext db) : IR
     public async Task<Result<int>> Handle(CreateSpendingCategoryRequest request, CancellationToken cancellationToken)
     {
         SpendingCategory cat = new(request.Name, request.Description);
-        db.SpendingCategories.Add(cat);
+        db.Set<SpendingCategory>().Add(cat);
         await db.SaveChangesAsync(cancellationToken);
         return cat.Id;
     }

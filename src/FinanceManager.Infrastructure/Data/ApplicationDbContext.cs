@@ -1,5 +1,5 @@
 using System.Reflection;
-using FinanceManager.Application.Common.Persistence;
+using FinanceManager.Application.Abstractions.Persistence;
 using FinanceManager.Domain.FinancialAccounts;
 using FinanceManager.Domain.FinancialTransactions;
 using FinanceManager.Domain.PersonalInfos;
@@ -13,8 +13,7 @@ namespace FinanceManager.Infrastructure.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>(options),
-    IApplicationDbContext,
-    IUnitOfWork
+    IApplicationDbContext, IUnitOfWork
 {
     public DbSet<SpendingCategory> SpendingCategories => Set<SpendingCategory>();
     public DbSet<PersonalInfo> PersonalInfos => Set<PersonalInfo>();

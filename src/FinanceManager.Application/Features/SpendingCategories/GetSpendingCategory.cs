@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using FinanceManager.Application.Abstractions.Persistence;
 using FinanceManager.Application.Common.Mapping;
-using FinanceManager.Application.Common.Persistence;
 using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.SpendingCategories;
+
 using MediatR;
 
 namespace FinanceManager.Application.Features.SpendingCategories;
@@ -24,7 +25,7 @@ public class GetSpendingCategoryRequestHandler(
 {
     public async Task<Result<SpendingCategoryResponse>> Handle(GetSpendingCategoryRequest request, CancellationToken cancellationToken)
     {
-        SpendingCategory? cat = await db.SpendingCategories.FindAsync([request.Id], cancellationToken);
+        SpendingCategory? cat = await db.Set<SpendingCategory>().FindAsync([request.Id], cancellationToken);
         if (cat is null) return SpendingCategoryError.NotFound;
         return mapper.Map(cat);
     }

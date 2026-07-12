@@ -1,4 +1,4 @@
-namespace FinanceManager.Application.Common.Persistence;
+namespace FinanceManager.Application.Abstractions.Persistence;
 
 public interface IUnitOfWork
 {

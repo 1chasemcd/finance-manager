@@ -17,6 +17,7 @@ public class Program
         builder
             .AddApplicationServices()
             .AddInfrastructureServices();
+
         builder.Services.Configure<JsonOptions>(options =>
         {
             options.SerializerOptions.NumberHandling = JsonNumberHandling.Strict;

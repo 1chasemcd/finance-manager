@@ -1,10 +1,10 @@
-using FinanceManager.Application.Common.Persistence;
 using FinanceManager.Infrastructure.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using FinanceManager.Infrastructure.Data;
+using FinanceManager.Application.Abstractions.Persistence;
 
 #pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection;
