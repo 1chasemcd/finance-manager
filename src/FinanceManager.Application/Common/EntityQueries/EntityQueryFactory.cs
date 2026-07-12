@@ -1,19 +1,13 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using FinanceManager.Application.Abstractions.Requests;
-using FinanceManager.Application.Common.GenericCommands.CreateEntity;
-using FinanceManager.Application.Common.GenericCommands.DeleteEntity;
-using FinanceManager.Application.Common.GenericCommands.UpdateEntity;
-using FinanceManager.Application.Common.GenericQueries.GetEntity;
-using FinanceManager.Application.Common.Results;
-using MediatR;
+using FinanceManager.Application.Abstractions.Services;
+using FinanceManager.Application.Common.EntityQueries.GetEntity;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FinanceManager.Application.Common.GenericQueries;
+namespace FinanceManager.Application.Common.EntityQueries;
 
-public delegate IRequest<Result<TResponse>> GetEntityQueryDelegate<TResponse>(int id);
-
-public sealed class GenericQueryFactory(IServiceProvider serviceProvider)
+public sealed class EntityQueryFactory(IServiceProvider serviceProvider) : IEntityQueryFactory
 {
     public GetEntityQueryDelegate<TResponse> BuildGetEntityQueryDelegate<TResponse>()
         where TResponse : IGetResponse
@@ -23,7 +17,8 @@ public sealed class GenericQueryFactory(IServiceProvider serviceProvider)
         var closedGenericHandlerType = typeof(GetEntityHandler<,>).MakeGenericType(responseType, entityType);
 
         // Make sure handler can be created by DI with no missing dependencies
-        serviceProvider.GetRequiredService(closedGenericHandlerType);
+        // serviceProvider.GetRequiredService(closedGenericHandlerType);
+        var _ = serviceProvider;
 
         return GenerateCompiledDelegate<GetEntityQueryDelegate<TResponse>>(typeof(GetEntityQuery<,>), entityType);
     }

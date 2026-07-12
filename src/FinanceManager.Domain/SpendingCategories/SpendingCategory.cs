@@ -10,11 +10,15 @@ public sealed class SpendingCategory : Entity
     {
         Name = null!;
     }
-    public SpendingCategory(string name, string? description = null)
+    public static SpendingCategory Create(string name, string? description = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
-        Name = name;
-        Description = description;
+        var cat = new SpendingCategory
+        {
+            Name = name,
+            Description = description
+        };
+        return cat;
     }
 
     public void UpdateDescription(string? newDescription)

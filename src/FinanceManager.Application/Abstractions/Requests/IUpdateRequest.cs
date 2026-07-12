@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using FinanceManager.Domain.Common;
 
 namespace FinanceManager.Application.Abstractions.Requests;

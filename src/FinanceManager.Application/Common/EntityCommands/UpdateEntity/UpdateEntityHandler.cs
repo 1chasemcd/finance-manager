@@ -6,7 +6,7 @@ using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;
 using MediatR;
 
-namespace FinanceManager.Application.Common.GenericCommands.UpdateEntity;
+namespace FinanceManager.Application.Common.EntityCommands.UpdateEntity;
 
 public class UpdateEntityHandler<TRequest, TEntity>(
     IApplicationDbContext db,

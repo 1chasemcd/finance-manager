@@ -1,4 +1,8 @@
 using System.Reflection;
+using FinanceManager.Application.Abstractions.Services;
+using FinanceManager.Application.Common.EntityCommands;
+using FinanceManager.Application.Common.EntityCommands.CreateEntity;
+using FinanceManager.Application.Common.EntityQueries;
 using FinanceManager.Application.Common.Mapping;
 using Microsoft.Extensions.Hosting;
 
@@ -10,22 +14,30 @@ public static class DependencyInjection
 {
     public static IHostApplicationBuilder AddApplicationServices(this IHostApplicationBuilder builder)
     {
+        var assembly = Assembly.GetExecutingAssembly();
+
         builder.Services.AddMediatR(cfg =>
         {
-            cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+            cfg.RegisterServicesFromAssembly(assembly);
         });
 
-        builder.Services.AddMappers(Assembly.GetExecutingAssembly());
+
+        builder.Services.AddMappers(assembly, typeof(IMapper<,>));
+        builder.Services.AddMappers(assembly, typeof(IUpdateMapper<,>));
+
+        builder.Services.AddGenericHandler(assembly, typeof(CreateEntityHandler<,>));
+
+        builder.Services
+            .AddTransient<IEntityCommandFactory, EntityCommandFactory>()
+            .AddTransient<IEntityQueryFactory, EntityQueryFactory>();
 
         return builder;
     }
 
-    public static IServiceCollection AddMappers(
+    private static IServiceCollection AddMappers(
     this IServiceCollection services,
-    Assembly assembly)
+    Assembly assembly, Type mapperType)
     {
-        Type mapperType = typeof(IMapper<,>);
-
         IEnumerable<Type> mapperImplementations = assembly
             .GetTypes()
             .Where(t =>
@@ -48,6 +60,31 @@ public static class DependencyInjection
                 services.AddTransient(
                     mapperInterface,
                     implementation);
+            }
+        }
+
+        return services;
+    }
+
+    public static IServiceCollection AddGenericHandler(
+    this IServiceCollection services,
+    Assembly assembly, Type handlerType)
+    {
+        var requestInterface = handlerType.GetInterface()
+        var requests = assembly
+            .GetTypes()
+            .Where(t => t.GetGenericTypeDefinition() == typeof())
+            .ToList();
+
+        foreach (var handler in handlers)
+        {
+            var interfaces = handler.GetInterfaces()
+                .Where(i => i.IsGenericType &&
+                            i.GetGenericTypeDefinition() == typeof(IRequestHandler<,>));
+
+            foreach (var @interface in interfaces)
+            {
+                services.AddTransient(@interface, handler);
             }
         }
 

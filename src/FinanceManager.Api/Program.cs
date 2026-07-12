@@ -1,3 +1,4 @@
+using FinanceManager.Api.Endpoints;
 using FinanceManager.Application.Common.Results;
 using FinanceManager.Application.Features.SpendingCategories;
 using MediatR;
@@ -34,18 +35,8 @@ public class Program
         app.UseHttpsRedirection();
 
         RouteGroupBuilder api = app.MapGroup("/api");
+        api.RegisterSpendingCategoryEndpoints();
 
-        api.MapGet("/spendingcategories/{id}", async (int id, ISender sender) =>
-        {
-            Result<SpendingCategoryResponse> result = await sender.Send(new GetSpendingCategoryRequest(id));
-            return result.ToHttpResult();
-        })
-        .WithName("GetSpendingCategories");
-
-        api.MapPost("/spendingcategories", async (CreateSpendingCategoryRequest request, ISender sender) =>
-            (await sender.Send(request)).ToCreatedHttpResult("/spendingcategories")
-            )
-        .WithName("CreateSpendingCategory");
         app.Run();
     }
 }

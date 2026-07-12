@@ -1,5 +1,3 @@
-using FinanceManager.Domain.FinancialAccounts;
-using FinanceManager.Domain.PersonalInfos;
 using FinanceManager.Domain.SpendingCategories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
