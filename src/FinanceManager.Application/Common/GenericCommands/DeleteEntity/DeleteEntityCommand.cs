@@ -3,9 +3,9 @@ using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;
 using MediatR;
 
-namespace FinanceManager.Application.Common.GenericCommands.GenericDelete;
+namespace FinanceManager.Application.Common.GenericCommands.DeleteEntity;
 
-public sealed record GenericDeleteCommand<TRequest, TEntity> : IRequest<Result>, IGenericCommand<TRequest>
+public sealed record DeleteEntityCommand<TRequest, TEntity> : IRequest<Result>, IGenericCommand<TRequest>
     where TRequest : IDeleteRequest<TEntity>
     where TEntity : Entity
 {

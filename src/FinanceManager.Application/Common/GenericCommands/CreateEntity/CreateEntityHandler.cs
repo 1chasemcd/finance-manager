@@ -5,17 +5,17 @@ using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;
 using MediatR;
 
-namespace FinanceManager.Application.Common.GenericCommands.GenericCreate;
+namespace FinanceManager.Application.Common.GenericCommands.CreateEntity;
 
-public class GenericCreateHandler<TRequest, TEntity>(
+public class CreateEntityHandler<TRequest, TEntity>(
     IApplicationDbContext db,
     IMapper<TRequest, TEntity> mapper)
-    : IRequestHandler<GenericCreateCommand<TRequest, TEntity>, Result<int>>
+    : IRequestHandler<CreateEntityCommand<TRequest, TEntity>, Result<int>>
     where TRequest : ICreateRequest<TEntity>
     where TEntity : Entity
 
 {
-    public async Task<Result<int>> Handle(GenericCreateCommand<TRequest, TEntity> command, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(CreateEntityCommand<TRequest, TEntity> command, CancellationToken cancellationToken)
     {
         TEntity entity = mapper.Map(command.Request);
         db.Set<TEntity>().Add(entity);

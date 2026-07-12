@@ -1,14 +1,14 @@
 ﻿using FinanceManager.Application.Abstractions.Requests;
 using FinanceManager.Application.Common.GenericCommands;
-using FinanceManager.Application.Common.GenericCommands.GenericCreate;
-using FinanceManager.Application.Common.GenericCommands.GenericDelete;
-using FinanceManager.Application.Common.GenericCommands.GenericUpdate;
+using FinanceManager.Application.Common.GenericCommands.CreateEntity;
+using FinanceManager.Application.Common.GenericCommands.DeleteEntity;
+using FinanceManager.Application.Common.GenericCommands.UpdateEntity;
 using FinanceManager.Domain.Common;
 using Moq;
 
 namespace FinanceManager.Application.Tests;
 
-public class CommandFactoryTests
+public class GenericCommandFactoryTests
 {
     private class TestEntity : Entity;
     private record TestCreateRequest(int Parameter) : ICreateRequest<TestEntity>;
@@ -24,7 +24,7 @@ public class CommandFactoryTests
     private readonly Mock<IServiceProvider> _serviceProvider;
     private readonly GenericCommandFactory _commandFactory;
 
-    public CommandFactoryTests()
+    public GenericCommandFactoryTests()
     {
         _serviceProvider = new Mock<IServiceProvider>();
         _serviceProvider.Setup(x => x.GetService(It.IsAny<Type>())).Returns(new object());
@@ -34,11 +34,11 @@ public class CommandFactoryTests
     [Fact]
     public void BuildCreateCommandDelegate_WithValidRequest_BuildsDelegate()
     {
-        var expectedHandlerService = typeof(GenericCreateHandler<TestCreateRequest, TestEntity>);
+        var expectedHandlerService = typeof(CreateEntityHandler<TestCreateRequest, TestEntity>);
         var func = _commandFactory.BuildCreateCommandDelegate<TestCreateRequest>();
         var request = new TestCreateRequest(5);
         var res = func(request);
-        var resAsCommand = Assert.IsType<GenericCreateCommand<TestCreateRequest, TestEntity>>(res);
+        var resAsCommand = Assert.IsType<CreateEntityCommand<TestCreateRequest, TestEntity>>(res);
         Assert.Equal(request, resAsCommand.Request);
         _serviceProvider.Verify(x => x.GetService(expectedHandlerService));
     }
@@ -46,11 +46,11 @@ public class CommandFactoryTests
     [Fact]
     public void BuildUpdateCommandDelegate_WithValidRequest_BuildsDelegate()
     {
-        var expectedHandlerService = typeof(GenericUpdateHandler<TestUpdateRequest, TestEntity>);
+        var expectedHandlerService = typeof(UpdateEntityHandler<TestUpdateRequest, TestEntity>);
         var func = _commandFactory.BuildUpdateCommandDelegate<TestUpdateRequest>();
         var request = new TestUpdateRequest(5);
         var res = func(request);
-        var resAsCommand = Assert.IsType<GenericUpdateCommand<TestUpdateRequest, TestEntity>>(res);
+        var resAsCommand = Assert.IsType<UpdateEntityCommand<TestUpdateRequest, TestEntity>>(res);
         Assert.Equal(request, resAsCommand.Request);
         _serviceProvider.Verify(x => x.GetService(expectedHandlerService));
     }
@@ -58,11 +58,11 @@ public class CommandFactoryTests
     [Fact]
     public void BuildDeleteCommandDelegate_WithValidRequest_BuildsDelegate()
     {
-        var expectedHandlerService = typeof(GenericDeleteHandler<TestDeleteRequest, TestEntity>);
+        var expectedHandlerService = typeof(DeleteEntityHandler<TestDeleteRequest, TestEntity>);
         var func = _commandFactory.BuildDeleteCommandDelegate<TestDeleteRequest>();
         var request = new TestDeleteRequest(5);
         var res = func(request);
-        var resAsCommand = Assert.IsType<GenericDeleteCommand<TestDeleteRequest, TestEntity>>(res);
+        var resAsCommand = Assert.IsType<DeleteEntityCommand<TestDeleteRequest, TestEntity>>(res);
         Assert.Equal(request, resAsCommand.Request);
         _serviceProvider.Verify(x => x.GetService(expectedHandlerService));
     }

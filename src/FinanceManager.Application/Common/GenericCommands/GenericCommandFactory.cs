@@ -1,9 +1,9 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using FinanceManager.Application.Abstractions.Requests;
-using FinanceManager.Application.Common.GenericCommands.GenericCreate;
-using FinanceManager.Application.Common.GenericCommands.GenericDelete;
-using FinanceManager.Application.Common.GenericCommands.GenericUpdate;
+using FinanceManager.Application.Common.GenericCommands.CreateEntity;
+using FinanceManager.Application.Common.GenericCommands.DeleteEntity;
+using FinanceManager.Application.Common.GenericCommands.UpdateEntity;
 using FinanceManager.Application.Common.Results;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,40 +19,43 @@ public sealed class GenericCommandFactory(IServiceProvider serviceProvider)
     public CreateCommandDelegate<TRequest> BuildCreateCommandDelegate<TRequest>()
         where TRequest : ICreateRequest
     {
-        var requestType = typeof(TRequest);
-        var entityType = GetEntityType(requestType, typeof(ICreateRequest<>));
-        var handlerType = typeof(GenericCreateHandler<,>).MakeGenericType(typeof(TRequest), entityType);
-
-        // Make sure handler can be created by DI with no missing dependencies
-        serviceProvider.GetRequiredService(handlerType);
-
-        return BuildDelegateImpl<CreateCommandDelegate<TRequest>>(typeof(GenericCreateCommand<,>), entityType);
+        return BuildCommandDelegateImpl<CreateCommandDelegate<TRequest>>(
+            typeof(ICreateRequest<>),
+            typeof(CreateEntityHandler<,>),
+            typeof(CreateEntityCommand<,>)
+        );
     }
 
     public UpdateCommandDelegate<TRequest> BuildUpdateCommandDelegate<TRequest>()
     where TRequest : IUpdateRequest
     {
-        var requestType = typeof(TRequest);
-        var entityType = GetEntityType(requestType, typeof(IUpdateRequest<>));
-        var handlerType = typeof(GenericUpdateHandler<,>).MakeGenericType(typeof(TRequest), entityType);
-
-        // Make sure handler can be created by DI with no missing dependencies
-        serviceProvider.GetRequiredService(handlerType);
-
-        return BuildDelegateImpl<UpdateCommandDelegate<TRequest>>(typeof(GenericUpdateCommand<,>), entityType);
+        return BuildCommandDelegateImpl<UpdateCommandDelegate<TRequest>>(
+            typeof(IUpdateRequest<>),
+            typeof(UpdateEntityHandler<,>),
+            typeof(UpdateEntityCommand<,>)
+        );
     }
 
     public DeleteCommandDelegate<TRequest> BuildDeleteCommandDelegate<TRequest>()
         where TRequest : IDeleteRequest
     {
-        var requestType = typeof(TRequest);
-        var entityType = GetEntityType(requestType, typeof(IDeleteRequest<>));
-        var handlerType = typeof(GenericDeleteHandler<,>).MakeGenericType(typeof(TRequest), entityType);
+        return BuildCommandDelegateImpl<DeleteCommandDelegate<TRequest>>(
+            typeof(IDeleteRequest<>),
+            typeof(DeleteEntityHandler<,>),
+            typeof(DeleteEntityCommand<,>)
+        );
+    }
+
+    private TDelegate BuildCommandDelegateImpl<TDelegate>(Type requestInterfaceType, Type handlerType, Type commandType)
+    {
+        Type requestType = typeof(TDelegate).GetGenericArguments()[0];
+        var entityType = GetEntityType(requestType, requestInterfaceType);
+        var closedGenericHandlerType = handlerType.MakeGenericType(requestType, entityType);
 
         // Make sure handler can be created by DI with no missing dependencies
-        serviceProvider.GetRequiredService(handlerType);
+        serviceProvider.GetRequiredService(closedGenericHandlerType);
 
-        return BuildDelegateImpl<DeleteCommandDelegate<TRequest>>(typeof(GenericDeleteCommand<,>), entityType);
+        return GenerateCompiledDelegate<TDelegate>(commandType, entityType);
     }
 
     private static Type GetEntityType(Type requestType, Type openGenericInterfaceType)
@@ -70,7 +73,7 @@ public sealed class GenericCommandFactory(IServiceProvider serviceProvider)
         throw new InvalidOperationException($"Request must implement {openGenericInterfaceType}");
     }
 
-    private static TDelegate BuildDelegateImpl<TDelegate>(Type commandType, Type entityType)
+    private static TDelegate GenerateCompiledDelegate<TDelegate>(Type commandType, Type entityType)
     {
         Type requestType = typeof(TDelegate).GetGenericArguments()[0];
         Type resultType = typeof(TDelegate).GetMethod("Invoke")?.ReturnType

@@ -3,8 +3,5 @@ using FinanceManager.Domain.Common;
 
 namespace FinanceManager.Application.Abstractions.Requests;
 
-public interface IGetRequest
-{
-    int Id { get; init; }
-}
-public interface IGetRequest<TEntity> : IGetRequest where TEntity : Entity;
+public interface IGetResponse;
+public interface IGetResponse<TEntity> : IGetResponse where TEntity : Entity;

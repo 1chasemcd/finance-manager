@@ -3,10 +3,10 @@ using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;
 using MediatR;
 
-namespace FinanceManager.Application.Common.GenericCommands.GenericCreate;
+namespace FinanceManager.Application.Common.GenericCommands.UpdateEntity;
 
-public sealed record GenericCreateCommand<TRequest, TEntity> : IRequest<Result<int>>, IGenericCommand<TRequest>
-    where TRequest : ICreateRequest<TEntity>
+public sealed record UpdateEntityCommand<TRequest, TEntity> : IRequest<Result>, IGenericCommand<TRequest>
+    where TRequest : IUpdateRequest<TEntity>
     where TEntity : Entity
 {
     public required TRequest Request { get; init; }
