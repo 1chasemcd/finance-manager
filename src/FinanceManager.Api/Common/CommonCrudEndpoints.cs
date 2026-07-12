@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using FinanceManager.Application.Abstractions.Requests;
 using FinanceManager.Application.Abstractions.Services;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FinanceManager.Api.Common;
 
@@ -15,7 +16,7 @@ public static class CommonCrudEndpoints
         var factory = endpoints.ServiceProvider.GetRequiredService<IEntityCommandFactory>();
         var command = factory.BuildCreateDelegate<TRequest>();
 
-        return endpoints.MapPost(pattern, async (TRequest request, ISender sender) =>
+        return endpoints.MapPost(pattern, async ([FromBody] TRequest request, ISender sender) =>
             (await sender.Send(command(request)))
                 .ToHttpResult(result => getRouteName == null
                     ? TypedResults.Created()
@@ -34,13 +35,13 @@ public static class CommonCrudEndpoints
         var factory = endpoints.ServiceProvider.GetRequiredService<IEntityCommandFactory>();
         var command = factory.BuildUpdateDelegate<TRequest>();
 
-        return endpoints.MapPut(pattern, async (TRequest request, ISender sender) =>
+        return endpoints.MapPut(pattern, async ([FromBody] TRequest request, ISender sender) =>
             (await sender.Send(command(request))).ToHttpResult()
         );
     }
 
     public static IEndpointConventionBuilder MapEntityDelete<TRequest>(this IEndpointRouteBuilder endpoints, [StringSyntax("Route")] string pattern = "/")
-    where TRequest : IDeleteRequest
+    where TRequest : IDeleteRequest, new()
     {
         pattern = ValidateRoutePattern(pattern);
 
@@ -48,7 +49,7 @@ public static class CommonCrudEndpoints
         var command = factory.BuildDeleteDelegate<TRequest>();
 
         return endpoints.MapDelete($"{pattern}/{{id}}", async (int id, ISender sender) =>
-            (await sender.Send(command(id))).ToHttpResult()
+            (await sender.Send(command(new TRequest() { Id = id }))).ToHttpResult()
         );
     }
 

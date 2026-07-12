@@ -7,19 +7,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FinanceManager.Application.Common.EntityQueries;
 
-public sealed class EntityQueryFactory(IServiceProvider serviceProvider) : IEntityQueryFactory
+public sealed class EntityQueryFactory : IEntityQueryFactory
 {
     public GetEntityQueryDelegate<TResponse> BuildGetEntityQueryDelegate<TResponse>()
         where TResponse : IGetResponse
     {
         Type responseType = typeof(TResponse);
         var entityType = GetEntityType(responseType, typeof(IGetResponse<>));
-        var closedGenericHandlerType = typeof(GetEntityHandler<,>).MakeGenericType(responseType, entityType);
-
-        // Make sure handler can be created by DI with no missing dependencies
-        // serviceProvider.GetRequiredService(closedGenericHandlerType);
-        var _ = serviceProvider;
-
         return GenerateCompiledDelegate<GetEntityQueryDelegate<TResponse>>(typeof(GetEntityQuery<,>), entityType);
     }
 

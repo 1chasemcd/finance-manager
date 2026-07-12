@@ -4,7 +4,13 @@ GET {{host}}/openapi/v1.json
 Accept: application/json
 
 ###
-GET {{host}}/api/spendingcategories/1
+
+GET {{host}}/api/spendingcategories/2
+Accept: application/json
+
+###
+
+DELETE  {{host}}/api/spendingcategories/1
 Accept: application/json
 
 ###
@@ -15,4 +21,14 @@ Content-Type: application/json
 {
   "name": "Groceries",
   "description": "Food and household items"
+}
+
+###
+
+PUT {{host}}/api/spendingcategories
+Content-Type: application/json
+
+{
+  "id": 1,
+  "description": "Food and household items2"
 }

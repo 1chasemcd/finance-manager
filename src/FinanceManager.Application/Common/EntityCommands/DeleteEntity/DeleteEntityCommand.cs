@@ -5,6 +5,7 @@ using MediatR;
 
 namespace FinanceManager.Application.Common.EntityCommands.DeleteEntity;
 
-public sealed record DeleteEntityCommand<TRequest, TEntity>(int Id) : IRequest<Result>
+public sealed record DeleteEntityCommand<TRequest, TEntity>(TRequest Request)
+    : IRequest<Result>
     where TRequest : IDeleteRequest<TEntity>
     where TEntity : Entity;

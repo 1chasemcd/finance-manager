@@ -25,7 +25,9 @@ public static class DependencyInjection
         builder.Services.AddMappers(assembly, typeof(IMapper<,>));
         builder.Services.AddMappers(assembly, typeof(IUpdateMapper<,>));
 
-        builder.Services.AddGenericHandler(assembly, typeof(CreateEntityHandler<,>));
+        builder.Services.AddEntityCommandHandlers(assembly);
+        builder.Services.AddEntityQueryHandlers(assembly);
+
 
         builder.Services
             .AddTransient<IEntityCommandFactory, EntityCommandFactory>()
@@ -60,31 +62,6 @@ public static class DependencyInjection
                 services.AddTransient(
                     mapperInterface,
                     implementation);
-            }
-        }
-
-        return services;
-    }
-
-    public static IServiceCollection AddGenericHandler(
-    this IServiceCollection services,
-    Assembly assembly, Type handlerType)
-    {
-        var requestInterface = handlerType.GetInterface()
-        var requests = assembly
-            .GetTypes()
-            .Where(t => t.GetGenericTypeDefinition() == typeof())
-            .ToList();
-
-        foreach (var handler in handlers)
-        {
-            var interfaces = handler.GetInterfaces()
-                .Where(i => i.IsGenericType &&
-                            i.GetGenericTypeDefinition() == typeof(IRequestHandler<,>));
-
-            foreach (var @interface in interfaces)
-            {
-                services.AddTransient(@interface, handler);
             }
         }
 

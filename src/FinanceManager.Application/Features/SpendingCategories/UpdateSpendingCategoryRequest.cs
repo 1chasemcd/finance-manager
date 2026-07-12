@@ -8,9 +8,6 @@ public sealed record UpdateSpendingCategoryRequest : IUpdateRequest<SpendingCate
 {
     [Required]
     public int Id { get; init; }
-    [Required]
-    [MaxLength(100)]
-    public required string Name { get; init; }
     [MaxLength(500)]
     public string? Description { get; init; }
 }

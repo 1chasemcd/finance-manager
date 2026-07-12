@@ -16,7 +16,7 @@ public class DeleteEntityHandler<TRequest, TEntity>(
 {
     public async Task<Result> Handle(DeleteEntityCommand<TRequest, TEntity> command, CancellationToken cancellationToken)
     {
-        TEntity? entity = await db.Set<TEntity>().FindAsync([command.Id], cancellationToken);
+        TEntity? entity = await db.Set<TEntity>().FindAsync([command.Request.Id], cancellationToken);
         if (entity is null) return Error.NotFound(typeof(TEntity).Name);
 
         db.Set<TEntity>().Remove(entity);

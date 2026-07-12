@@ -35,6 +35,8 @@ public record Result<T> : Result
     {
         Value = value;
     }
+
+    private Result(Error error) : base(error) { }
     public static implicit operator Result<T>(T value) => new(value);
     public static implicit operator Result<T>(Error error) => new(error);
 

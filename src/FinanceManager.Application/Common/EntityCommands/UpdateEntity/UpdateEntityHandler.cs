@@ -10,7 +10,7 @@ namespace FinanceManager.Application.Common.EntityCommands.UpdateEntity;
 
 public class UpdateEntityHandler<TRequest, TEntity>(
     IApplicationDbContext db,
-    IMapper<TRequest, TEntity> mapper)
+    IUpdateMapper<TRequest, TEntity> mapper)
     : IRequestHandler<UpdateEntityCommand<TRequest, TEntity>, Result>
     where TRequest : IUpdateRequest<TEntity>
     where TEntity : Entity
@@ -18,12 +18,9 @@ public class UpdateEntityHandler<TRequest, TEntity>(
 {
     public async Task<Result> Handle(UpdateEntityCommand<TRequest, TEntity> command, CancellationToken cancellationToken)
     {
-        TEntity entity = mapper.Map(command.Request);
-
-        TEntity? existing = await db.Set<TEntity>().FindAsync([entity.Id], cancellationToken);
+        TEntity? existing = await db.Set<TEntity>().FindAsync([command.Request.Id], cancellationToken);
         if (existing is null) return Error.NotFound(typeof(TEntity).Name);
-
-        db.Set<TEntity>().Update(entity);
+        mapper.Map(command.Request, existing);
         await db.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
