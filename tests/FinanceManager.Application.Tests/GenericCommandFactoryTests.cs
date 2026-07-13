@@ -2,6 +2,8 @@
 using FinanceManager.Application.Common.EntityRequests;
 using FinanceManager.Application.Common.EntityRequests.CreateEntity;
 using FinanceManager.Application.Common.EntityRequests.DeleteEntity;
+using FinanceManager.Application.Common.EntityRequests.GetEntity;
+using FinanceManager.Application.Common.EntityRequests.ListEntities;
 using FinanceManager.Application.Common.EntityRequests.UpdateEntity;
 using FinanceManager.Domain.Common;
 using Moq;
@@ -19,6 +21,13 @@ public class EntityCommandFactoryTests
     private record TestDeleteRequest(int Parameter) : IDeleteRequest<TestEntity>
     {
         public int Id { get; init; }
+    }
+
+    private record TestGetResponse(int Value) : IGetResponse<TestEntity>;
+    private record TestListRequest(int Value) : IListRequest<TestEntity>
+    {
+        public int Skip { get; init; }
+        public int Take { get; init; }
     }
 
     private readonly EntityRequestFactory _factory;
@@ -56,5 +65,24 @@ public class EntityCommandFactoryTests
         var res = func(request);
         var resAsCommand = Assert.IsType<DeleteEntityCommand<TestDeleteRequest, TestEntity>>(res);
         Assert.Equal(request, resAsCommand.Request);
+    }
+
+    [Fact]
+    public void BuildGetDelegate_WithValidRequest_BuildsDelegate()
+    {
+        var func = _factory.BuildGetDelegate<TestGetResponse>();
+        var res = func(5);
+        var resAsQuery = Assert.IsType<GetEntityQuery<TestGetResponse, TestEntity>>(res);
+        Assert.Equal(5, resAsQuery.Id);
+    }
+
+    [Fact]
+    public void BuildListDelegate_WithValidRequest_BuildsDelegate()
+    {
+        var func = _factory.BuildListDelegate<TestListRequest, TestGetResponse>();
+        var request = new TestListRequest(5);
+        var res = func(request);
+        var resAsQuery = Assert.IsType<ListEntitiesQuery<TestListRequest, TestGetResponse, TestEntity>>(res);
+        Assert.Equal(5, resAsQuery.Request.Value);
     }
 }
