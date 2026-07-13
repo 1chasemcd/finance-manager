@@ -1,8 +1,7 @@
 using System.Reflection;
+using FinanceManager.Application.Abstractions.Messages;
 using FinanceManager.Application.Abstractions.Services;
-using FinanceManager.Application.Common.EntityCommands;
-using FinanceManager.Application.Common.EntityCommands.CreateEntity;
-using FinanceManager.Application.Common.EntityQueries;
+using FinanceManager.Application.Common.EntityRequests;
 using FinanceManager.Application.Common.Mapping;
 using Microsoft.Extensions.Hosting;
 
@@ -22,21 +21,20 @@ public static class DependencyInjection
         });
 
 
-        builder.Services.AddMappers(assembly, typeof(IMapper<,>));
-        builder.Services.AddMappers(assembly, typeof(IUpdateMapper<,>));
-
-        builder.Services.AddEntityCommandHandlers(assembly);
-        builder.Services.AddEntityQueryHandlers(assembly);
+        builder.Services.AddAllInterfaces(assembly, typeof(IMapper<,>));
+        builder.Services.AddAllInterfaces(assembly, typeof(IUpdateMapper<,>));
+        builder.Services.AddAllInterfaces(assembly, typeof(IEntityListFilterHandler<,>));
 
 
-        builder.Services
-            .AddTransient<IEntityCommandFactory, EntityCommandFactory>()
-            .AddTransient<IEntityQueryFactory, EntityQueryFactory>();
+        builder.Services.AddEntityRequestHandlers(assembly);
+
+
+        builder.Services.AddTransient<IEntityRequestFactory, EntityRequestFactory>();
 
         return builder;
     }
 
-    private static IServiceCollection AddMappers(
+    private static IServiceCollection AddAllInterfaces(
     this IServiceCollection services,
     Assembly assembly, Type mapperType)
     {

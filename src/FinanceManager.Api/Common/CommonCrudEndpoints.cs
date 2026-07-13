@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using FinanceManager.Application.Abstractions.Requests;
+using FinanceManager.Application.Abstractions.Messages;
 using FinanceManager.Application.Abstractions.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +13,11 @@ public static class CommonCrudEndpoints
     {
         pattern = ValidateRoutePattern(pattern);
 
-        var factory = endpoints.ServiceProvider.GetRequiredService<IEntityCommandFactory>();
-        var command = factory.BuildCreateDelegate<TRequest>();
+        var factory = endpoints.ServiceProvider.GetRequiredService<IEntityRequestFactory>();
+        var message = factory.BuildCreateDelegate<TRequest>();
 
         return endpoints.MapPost(pattern, async ([FromBody] TRequest request, ISender sender) =>
-            (await sender.Send(command(request)))
+            (await sender.Send(message(request)))
                 .ToHttpResult(result => getRouteName == null
                     ? TypedResults.Created()
                     : TypedResults.CreatedAtRoute(
@@ -32,11 +32,11 @@ public static class CommonCrudEndpoints
     {
         pattern = ValidateRoutePattern(pattern);
 
-        var factory = endpoints.ServiceProvider.GetRequiredService<IEntityCommandFactory>();
-        var command = factory.BuildUpdateDelegate<TRequest>();
+        var factory = endpoints.ServiceProvider.GetRequiredService<IEntityRequestFactory>();
+        var message = factory.BuildUpdateDelegate<TRequest>();
 
         return endpoints.MapPut(pattern, async ([FromBody] TRequest request, ISender sender) =>
-            (await sender.Send(command(request))).ToHttpResult()
+            (await sender.Send(message(request))).ToHttpResult()
         );
     }
 
@@ -45,11 +45,11 @@ public static class CommonCrudEndpoints
     {
         pattern = ValidateRoutePattern(pattern);
 
-        var factory = endpoints.ServiceProvider.GetRequiredService<IEntityCommandFactory>();
-        var command = factory.BuildDeleteDelegate<TRequest>();
+        var factory = endpoints.ServiceProvider.GetRequiredService<IEntityRequestFactory>();
+        var message = factory.BuildDeleteDelegate<TRequest>();
 
         return endpoints.MapDelete($"{pattern}/{{id}}", async (int id, ISender sender) =>
-            (await sender.Send(command(new TRequest() { Id = id }))).ToHttpResult()
+            (await sender.Send(message(new TRequest() { Id = id }))).ToHttpResult()
         );
     }
 
@@ -58,11 +58,27 @@ public static class CommonCrudEndpoints
     {
         pattern = ValidateRoutePattern(pattern);
 
-        var factory = endpoints.ServiceProvider.GetRequiredService<IEntityQueryFactory>();
-        var command = factory.BuildGetEntityQueryDelegate<TResponse>();
+        var factory = endpoints.ServiceProvider.GetRequiredService<IEntityRequestFactory>();
+        var message = factory.BuildGetDelegate<TResponse>();
 
         return endpoints.MapGet($"{pattern}/{{id}}",
-            async (int id, ISender sender) => (await sender.Send(command(id))).ToHttpResult()
+            async (int id, ISender sender) => (await sender.Send(message(id))).ToHttpResult()
+        );
+    }
+
+    public static IEndpointConventionBuilder MapEntityQuery<TRequest, TResponse>(
+        this IEndpointRouteBuilder endpoints,
+        [StringSyntax("Route")] string pattern = "/")
+        where TRequest : IListRequest
+        where TResponse : IGetResponse
+    {
+        pattern = ValidateRoutePattern(pattern);
+
+        var factory = endpoints.ServiceProvider.GetRequiredService<IEntityRequestFactory>();
+        var message = factory.BuildListDelegate<TRequest, TResponse>();
+
+        return endpoints.MapPost($"{pattern}/query",
+            async (TRequest request, ISender sender) => (await sender.Send(message(request))).ToHttpResult()
         );
     }
 

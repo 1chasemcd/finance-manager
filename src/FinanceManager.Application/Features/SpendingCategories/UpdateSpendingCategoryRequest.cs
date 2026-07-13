@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using FinanceManager.Application.Abstractions.Requests;
+using FinanceManager.Application.Abstractions.Messages;
 using FinanceManager.Domain.SpendingCategories;
 
 namespace FinanceManager.Application.Features.SpendingCategories;

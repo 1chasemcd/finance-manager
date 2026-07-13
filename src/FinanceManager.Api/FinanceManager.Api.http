@@ -5,7 +5,7 @@ Accept: application/json
 
 ###
 
-GET {{host}}/api/spendingcategories/2
+GET {{host}}/api/spendingcategories/1
 Accept: application/json
 
 ###
@@ -19,8 +19,8 @@ POST {{host}}/api/spendingcategories
 Content-Type: application/json
 
 {
-  "name": "Groceries",
-  "description": "Food and household items"
+  "name": "Grasoline",
+  "description": ""
 }
 
 ###
@@ -31,4 +31,16 @@ Content-Type: application/json
 {
   "id": 1,
   "description": "Food and household items2"
+}
+
+###
+
+POST  {{host}}/api/spendingcategories/query
+Content-Type: application/json
+Accept: application/json
+
+{
+    "skip": 0,
+    "take": 1,
+    "nameContains": "Gr"
 }

@@ -1,10 +1,10 @@
-using FinanceManager.Application.Abstractions.Requests;
+using FinanceManager.Application.Abstractions.Messages;
 using FinanceManager.Application.Common.Results;
 using MediatR;
 
 namespace FinanceManager.Application.Abstractions.Services;
 
-public interface IEntityCommandFactory
+public interface IEntityRequestFactory
 {
     Func<TRequest, IRequest<Result<int>>> BuildCreateDelegate<TRequest>()
         where TRequest : ICreateRequest;
@@ -12,4 +12,11 @@ public interface IEntityCommandFactory
         where TRequest : IUpdateRequest;
     Func<TRequest, IRequest<Result>> BuildDeleteDelegate<TRequest>()
         where TRequest : IDeleteRequest;
+
+    Func<int, IRequest<Result<TResponse>>> BuildGetDelegate<TResponse>()
+        where TResponse : IGetResponse;
+
+    Func<TRequest, IRequest<Result<IReadOnlyList<TResponse>>>> BuildListDelegate<TRequest, TResponse>()
+        where TRequest : IListRequest
+        where TResponse : IGetResponse;
 }

@@ -1,12 +1,12 @@
 using FinanceManager.Application.Abstractions.Persistence;
-using FinanceManager.Application.Abstractions.Requests;
+using FinanceManager.Application.Abstractions.Messages;
 using FinanceManager.Application.Common.Errors;
 using FinanceManager.Application.Common.Mapping;
 using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;
 using MediatR;
 
-namespace FinanceManager.Application.Common.EntityCommands.UpdateEntity;
+namespace FinanceManager.Application.Common.EntityRequests.UpdateEntity;
 
 public class UpdateEntityHandler<TRequest, TEntity>(
     IApplicationDbContext db,

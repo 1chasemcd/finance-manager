@@ -1,8 +1,8 @@
-﻿using FinanceManager.Application.Abstractions.Requests;
-using FinanceManager.Application.Common.EntityCommands;
-using FinanceManager.Application.Common.EntityCommands.CreateEntity;
-using FinanceManager.Application.Common.EntityCommands.DeleteEntity;
-using FinanceManager.Application.Common.EntityCommands.UpdateEntity;
+﻿using FinanceManager.Application.Abstractions.Messages;
+using FinanceManager.Application.Common.EntityRequests;
+using FinanceManager.Application.Common.EntityRequests.CreateEntity;
+using FinanceManager.Application.Common.EntityRequests.DeleteEntity;
+using FinanceManager.Application.Common.EntityRequests.UpdateEntity;
 using FinanceManager.Domain.Common;
 using Moq;
 
@@ -21,7 +21,7 @@ public class EntityCommandFactoryTests
         public int Id { get; init; }
     }
 
-    private readonly EntityCommandFactory _factory;
+    private readonly EntityRequestFactory _factory;
 
     public EntityCommandFactoryTests()
     {

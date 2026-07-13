@@ -1,11 +1,11 @@
 using FinanceManager.Application.Abstractions.Persistence;
-using FinanceManager.Application.Abstractions.Requests;
+using FinanceManager.Application.Abstractions.Messages;
 using FinanceManager.Application.Common.Errors;
 using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;
 using MediatR;
 
-namespace FinanceManager.Application.Common.EntityCommands.DeleteEntity;
+namespace FinanceManager.Application.Common.EntityRequests.DeleteEntity;
 
 public class DeleteEntityHandler<TRequest, TEntity>(
     IApplicationDbContext db)

@@ -1,10 +1,10 @@
 using FinanceManager.Domain.Common;
 
-namespace FinanceManager.Application.Abstractions.Requests;
+namespace FinanceManager.Application.Abstractions.Messages;
 
 public interface IListRequest
 {
     int Skip { get; init; }
-    int? Take { get; init; }
+    int Take { get; init; }
 }
 public interface IListRequest<TEntity> : IListRequest where TEntity : Entity;

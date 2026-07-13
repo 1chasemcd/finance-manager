@@ -1,4 +1,4 @@
-using FinanceManager.Application.Abstractions.Requests;
+using FinanceManager.Application.Abstractions.Messages;
 using FinanceManager.Application.Common.EntityQueries;
 using FinanceManager.Application.Common.EntityQueries.GetEntity;
 using FinanceManager.Domain.Common;

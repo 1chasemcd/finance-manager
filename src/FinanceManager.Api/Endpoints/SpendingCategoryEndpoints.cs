@@ -1,5 +1,5 @@
 using FinanceManager.Api.Common;
-using FinanceManager.Application.Abstractions.Requests;
+using FinanceManager.Application.Abstractions.Messages;
 using FinanceManager.Application.Features.SpendingCategories;
 using FinanceManager.Domain.SpendingCategories;
 
@@ -15,6 +15,6 @@ public static class SpendingCategoryEndpoints
         group.MapEntityCreate<CreateSpendingCategoryRequest>(getRouteName: RouteNames.GetSpendingCategory);
         group.MapEntityUpdate<UpdateSpendingCategoryRequest>();
         group.MapEntityDelete<DeleteSpendingCategoryRequest>();
+        group.MapEntityQuery<ListSpendingCategoryRequest, SpendingCategoryResponse>();
     }
-
 }
