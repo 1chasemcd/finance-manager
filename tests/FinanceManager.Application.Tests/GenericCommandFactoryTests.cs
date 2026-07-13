@@ -23,7 +23,7 @@ public class EntityCommandFactoryTests
     }
 
     private record TestGetResponse(int Value) : IGetResponse<TestEntity>;
-    private record TestListRequest(int Value) : IListRequest<TestEntity>
+    private record TestListRequest(int Value) : IFilterRequest<TestEntity>
     {
         public int Skip { get; init; }
         public int Take { get; init; }

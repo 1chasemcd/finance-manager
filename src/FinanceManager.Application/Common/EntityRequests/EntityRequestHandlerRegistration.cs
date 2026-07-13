@@ -19,7 +19,7 @@ internal static class EntityRequestHandlerRegistration
         typeof(IUpdateRequest<>),
         typeof(IDeleteRequest<>),
         typeof(IGetResponse<>),
-        typeof(IListRequest<>)
+        typeof(IFilterRequest<>)
     ];
 
     public static IServiceCollection AddEntityRequestHandlers(this IServiceCollection serviceCollection, Assembly assembly)
@@ -46,7 +46,7 @@ internal static class EntityRequestHandlerRegistration
 
         foreach (var messageInterface in messageInterfaces)
         {
-            if (messageInterface.GetGenericTypeDefinition() == typeof(IListRequest<>))
+            if (messageInterface.GetGenericTypeDefinition() == typeof(IFilterRequest<>))
                 serviceCollection.AddHandlersForListMessage(messageType, messageInterface);
             else
                 serviceCollection.AddHandlerForMessage(messageType, messageInterface);

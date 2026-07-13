@@ -22,7 +22,7 @@ public static class DependencyInjection
         builder.Services.AddAllInterfaces(assembly, typeof(IMapper<,>));
         builder.Services.AddAllInterfaces(assembly, typeof(IUpdateMapper<,>));
         builder.Services.AddAllInterfaces(assembly, typeof(IExpressionMapper<,>));
-        builder.Services.AddAllInterfaces(assembly, typeof(IEntityListFilterHandler<,>));
+        builder.Services.AddAllInterfaces(assembly, typeof(IEntityQueryBuilder<,>));
 
 
         builder.Services.AddEntityRequestHandlers(assembly);

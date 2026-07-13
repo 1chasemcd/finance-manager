@@ -5,7 +5,7 @@ using FinanceManager.Domain.SpendingCategories;
 
 namespace FinanceManager.Application.Features.SpendingCategories;
 
-public sealed record ListSpendingCategoryRequest : IListRequest<SpendingCategory>
+public sealed record ListSpendingCategoryRequest : IFilterRequest<SpendingCategory>
 {
     [DefaultValue(0)]
     public int Skip { get; init; }

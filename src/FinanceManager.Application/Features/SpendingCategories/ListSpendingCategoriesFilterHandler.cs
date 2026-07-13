@@ -3,9 +3,9 @@ using FinanceManager.Domain.SpendingCategories;
 
 namespace FinanceManager.Application.Features.SpendingCategories;
 
-internal sealed record ListSpendingCategoriesFilterHandler : IEntityListFilterHandler<ListSpendingCategoryRequest, SpendingCategory>
+internal sealed record ListSpendingCategoriesFilterHandler : IEntityQueryBuilder<ListSpendingCategoryRequest, SpendingCategory>
 {
-    public IQueryable<SpendingCategory> ApplyFilter(
+    public IQueryable<SpendingCategory> BuildQuery(
         ListSpendingCategoryRequest filter,
         IQueryable<SpendingCategory> query)
     {

@@ -17,6 +17,6 @@ public interface IEntityRequestFactory
         where TResponse : IGetResponse;
 
     Func<TRequest, IRequest<Result<IReadOnlyList<TResponse>>>> BuildListDelegate<TRequest, TResponse>()
-        where TRequest : IListRequest
+        where TRequest : IFilterRequest
         where TResponse : IGetResponse;
 }

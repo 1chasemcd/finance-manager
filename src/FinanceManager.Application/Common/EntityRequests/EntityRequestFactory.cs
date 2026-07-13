@@ -47,7 +47,7 @@ internal sealed class EntityRequestFactory : IEntityRequestFactory
     }
 
     public Func<TRequest, IRequest<Result<IReadOnlyList<TResponse>>>> BuildListDelegate<TRequest, TResponse>()
-        where TRequest : IListRequest
+        where TRequest : IFilterRequest
         where TResponse : IGetResponse
     {
         var requestType = typeof(TRequest);
@@ -79,7 +79,7 @@ internal sealed class EntityRequestFactory : IEntityRequestFactory
             typeof(IUpdateRequest<>),
             typeof(IDeleteRequest<>),
             typeof(IGetResponse<>),
-            typeof(IListRequest<>)
+            typeof(IFilterRequest<>)
         };
 
         Type? interfaceType = genericEntityTypeContainer

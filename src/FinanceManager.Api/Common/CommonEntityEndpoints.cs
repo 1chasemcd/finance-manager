@@ -69,7 +69,7 @@ static class CommonEntityEndpoints
     public static RouteHandlerBuilder MapEntityList<TRequest, TResponse>(
         this IEndpointRouteBuilder endpoints,
         [StringSyntax("Route")] string pattern = "/")
-        where TRequest : IListRequest
+        where TRequest : IFilterRequest
         where TResponse : IGetResponse
     {
         pattern = ValidateRoutePattern(pattern);
