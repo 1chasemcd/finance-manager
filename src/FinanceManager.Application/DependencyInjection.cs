@@ -1,8 +1,6 @@
 using System.Reflection;
-using FinanceManager.Application.Abstractions.Messages;
 using FinanceManager.Application.Abstractions.Services;
 using FinanceManager.Application.Common.EntityRequests;
-using FinanceManager.Application.Common.Mapping;
 using Microsoft.Extensions.Hosting;
 
 #pragma warning disable IDE0130
@@ -23,6 +21,7 @@ public static class DependencyInjection
 
         builder.Services.AddAllInterfaces(assembly, typeof(IMapper<,>));
         builder.Services.AddAllInterfaces(assembly, typeof(IUpdateMapper<,>));
+        builder.Services.AddAllInterfaces(assembly, typeof(IExpressionMapper<,>));
         builder.Services.AddAllInterfaces(assembly, typeof(IEntityListFilterHandler<,>));
 
 

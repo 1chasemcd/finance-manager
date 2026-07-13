@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FinanceManager.Api.Common;
 
-public static class CommonCrudEndpoints
+public static class CommonEntityEndpoints
 {
     public static IEndpointConventionBuilder MapEntityCreate<TRequest>(this IEndpointRouteBuilder endpoints, [StringSyntax("Route")] string pattern = "/", string? getRouteName = null)
         where TRequest : ICreateRequest
@@ -66,7 +66,7 @@ public static class CommonCrudEndpoints
         );
     }
 
-    public static IEndpointConventionBuilder MapEntityQuery<TRequest, TResponse>(
+    public static IEndpointConventionBuilder MapEntityList<TRequest, TResponse>(
         this IEndpointRouteBuilder endpoints,
         [StringSyntax("Route")] string pattern = "/")
         where TRequest : IListRequest
@@ -77,7 +77,7 @@ public static class CommonCrudEndpoints
         var factory = endpoints.ServiceProvider.GetRequiredService<IEntityRequestFactory>();
         var message = factory.BuildListDelegate<TRequest, TResponse>();
 
-        return endpoints.MapPost($"{pattern}/query",
+        return endpoints.MapPost($"{pattern}/list",
             async (TRequest request, ISender sender) => (await sender.Send(message(request))).ToHttpResult()
         );
     }

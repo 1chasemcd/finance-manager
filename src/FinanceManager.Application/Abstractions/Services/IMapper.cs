@@ -1,4 +1,4 @@
-namespace FinanceManager.Application.Common.Mapping;
+namespace FinanceManager.Application.Abstractions.Services;
 
 public interface IMapper<in TSource, out TDestination>
 {

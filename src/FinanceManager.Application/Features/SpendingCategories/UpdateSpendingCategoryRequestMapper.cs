@@ -1,4 +1,4 @@
-using FinanceManager.Application.Common.Mapping;
+using FinanceManager.Application.Abstractions.Services;
 using FinanceManager.Domain.SpendingCategories;
 
 namespace FinanceManager.Application.Features.SpendingCategories;

@@ -2,17 +2,17 @@ using FinanceManager.Application.Abstractions.Persistence;
 using FinanceManager.Application.Abstractions.Messages;
 using FinanceManager.Application.Common.EntityRequests.GetEntity;
 using FinanceManager.Application.Common.Errors;
-using FinanceManager.Application.Common.Mapping;
 using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;
 using MediatR;
+using FinanceManager.Application.Abstractions.Services;
 
 namespace FinanceManager.Application.Common.EntityRequests.ListEntities;
 
 public class ListEntitiesHandler<TRequest, TResponse, TEntity>(
     IApplicationDbContext db,
     IEntityListFilterHandler<TRequest, TEntity> filter,
-    IMapper<TEntity, TResponse> mapper)
+    IExpressionMapper<TEntity, TResponse> mapper)
     : IRequestHandler<ListEntitiesQuery<TRequest, TResponse, TEntity>, Result<IReadOnlyList<TResponse>>>
     where TRequest : IListRequest<TEntity>
     where TResponse : IGetResponse<TEntity>
@@ -22,10 +22,9 @@ public class ListEntitiesHandler<TRequest, TResponse, TEntity>(
     public async Task<Result<IReadOnlyList<TResponse>>> Handle(ListEntitiesQuery<TRequest, TResponse, TEntity> command, CancellationToken cancellationToken)
     {
         var query = db.Set<TEntity>();
-        var results = filter.ApplyFilter(command.Request, query).ToList();
+        var results = filter.ApplyFilter(command.Request, query);
         return results.Skip(command.Request.Skip)
             .Take(command.Request.Take)
-            .ToList()
             .Select(mapper.Map).ToList();
     }
 }

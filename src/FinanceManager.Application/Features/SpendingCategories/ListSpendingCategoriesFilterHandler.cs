@@ -1,4 +1,4 @@
-using FinanceManager.Application.Abstractions.Messages;
+using FinanceManager.Application.Abstractions.Services;
 using FinanceManager.Domain.SpendingCategories;
 
 namespace FinanceManager.Application.Features.SpendingCategories;

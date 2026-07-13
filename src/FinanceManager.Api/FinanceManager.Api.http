@@ -19,7 +19,7 @@ POST {{host}}/api/spendingcategories
 Content-Type: application/json
 
 {
-  "name": "Grasoline",
+  "name": "Fun",
   "description": ""
 }
 
@@ -35,12 +35,12 @@ Content-Type: application/json
 
 ###
 
-POST  {{host}}/api/spendingcategories/query
+POST  {{host}}/api/spendingcategories/list
 Content-Type: application/json
 Accept: application/json
 
 {
     "skip": 0,
-    "take": 1,
+    "take": 60,
     "nameContains": "Gr"
 }

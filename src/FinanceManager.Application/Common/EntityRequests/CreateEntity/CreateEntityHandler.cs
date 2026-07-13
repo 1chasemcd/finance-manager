@@ -1,9 +1,9 @@
 using FinanceManager.Application.Abstractions.Persistence;
 using FinanceManager.Application.Abstractions.Messages;
-using FinanceManager.Application.Common.Mapping;
 using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;
 using MediatR;
+using FinanceManager.Application.Abstractions.Services;
 
 namespace FinanceManager.Application.Common.EntityRequests.CreateEntity;
 

@@ -1,6 +1,7 @@
+using FinanceManager.Application.Abstractions.Messages;
 using FinanceManager.Domain.Common;
 
-namespace FinanceManager.Application.Abstractions.Messages;
+namespace FinanceManager.Application.Abstractions.Services;
 
 public interface IEntityListFilterHandler<TRequest, TEntity>
     where TRequest : IListRequest<TEntity>

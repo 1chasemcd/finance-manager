@@ -1,17 +1,16 @@
-using FinanceManager.Application.Common.Mapping;
+using System.Linq.Expressions;
+using FinanceManager.Application.Abstractions.Services;
 using FinanceManager.Domain.SpendingCategories;
 
 namespace FinanceManager.Application.Features.SpendingCategories;
 
-internal class SpendingCategoryResponseMapper : IMapper<SpendingCategory, SpendingCategoryResponse>
+internal class SpendingCategoryResponseMapper : IExpressionMapper<SpendingCategory, SpendingCategoryResponse>
 {
-    public SpendingCategoryResponse Map(SpendingCategory source)
-    {
-        return new SpendingCategoryResponse
+    public Expression<Func<SpendingCategory, SpendingCategoryResponse>> Map => (source) =>
+        new SpendingCategoryResponse
         {
-            Id = source.Id,
+            // Id = source.Id,
             Name = source.Name,
-            Description = source.Description
+            // Description = source.Description
         };
-    }
 }
