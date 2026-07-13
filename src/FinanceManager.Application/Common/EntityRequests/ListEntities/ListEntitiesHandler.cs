@@ -1,7 +1,5 @@
 using FinanceManager.Application.Abstractions.Persistence;
 using FinanceManager.Application.Abstractions.Messages;
-using FinanceManager.Application.Common.EntityRequests.GetEntity;
-using FinanceManager.Application.Common.Errors;
 using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;
 using MediatR;
@@ -9,7 +7,7 @@ using FinanceManager.Application.Abstractions.Services;
 
 namespace FinanceManager.Application.Common.EntityRequests.ListEntities;
 
-public class ListEntitiesHandler<TRequest, TResponse, TEntity>(
+internal sealed class ListEntitiesHandler<TRequest, TResponse, TEntity>(
     IApplicationDbContext db,
     IEntityListFilterHandler<TRequest, TEntity> filter,
     IExpressionMapper<TEntity, TResponse> mapper)

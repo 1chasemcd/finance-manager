@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinanceManager.Infrastructure.Data;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>(options),
     IApplicationDbContext, IUnitOfWork
 {

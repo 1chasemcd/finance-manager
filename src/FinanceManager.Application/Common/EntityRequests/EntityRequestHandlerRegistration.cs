@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FinanceManager.Application.Common.EntityRequests;
 
-public static class EntityRequestHandlerRegistration
+internal static class EntityRequestHandlerRegistration
 {
     private static readonly Type[] s_messageInterfaces = [
         typeof(ICreateRequest<>),

@@ -26,7 +26,7 @@ public record Result
     }
 }
 
-public record Result<T> : Result
+public sealed record Result<T> : Result
 {
     [MemberNotNullWhen(true, nameof(Value))]
     public override bool IsSuccess => base.IsSuccess;

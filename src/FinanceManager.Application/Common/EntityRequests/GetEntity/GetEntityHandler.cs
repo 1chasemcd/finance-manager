@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinanceManager.Application.Common.EntityRequests.GetEntity;
 
-public class GetEntityHandler<TResponse, TEntity>(
+internal sealed class GetEntityHandler<TResponse, TEntity>(
     IApplicationDbContext db,
     IExpressionMapper<TEntity, TResponse> mapper)
     : IRequestHandler<GetEntityQuery<TResponse, TEntity>, Result<TResponse>>

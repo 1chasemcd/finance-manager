@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FinanceManager.Infrastructure.Data.Configuration;
 
-public class SpendingCategoryConfiguration : IEntityTypeConfiguration<SpendingCategory>
+internal sealed class SpendingCategoryConfiguration : IEntityTypeConfiguration<SpendingCategory>
 {
     public void Configure(EntityTypeBuilder<SpendingCategory> builder)
     {

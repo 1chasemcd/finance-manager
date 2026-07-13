@@ -6,7 +6,6 @@ using FinanceManager.Application.Common.EntityRequests.GetEntity;
 using FinanceManager.Application.Common.EntityRequests.ListEntities;
 using FinanceManager.Application.Common.EntityRequests.UpdateEntity;
 using FinanceManager.Domain.Common;
-using Moq;
 
 namespace FinanceManager.Application.Tests;
 

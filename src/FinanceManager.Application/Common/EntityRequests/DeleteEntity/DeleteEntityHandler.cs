@@ -7,7 +7,7 @@ using MediatR;
 
 namespace FinanceManager.Application.Common.EntityRequests.DeleteEntity;
 
-public class DeleteEntityHandler<TRequest, TEntity>(
+internal sealed class DeleteEntityHandler<TRequest, TEntity>(
     IApplicationDbContext db)
     : IRequestHandler<DeleteEntityCommand<TRequest, TEntity>, Result>
     where TRequest : IDeleteRequest<TEntity>

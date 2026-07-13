@@ -3,7 +3,7 @@ using FinanceManager.Domain.SpendingCategories;
 
 namespace FinanceManager.Application.Features.SpendingCategories;
 
-internal class UpdateSpendingCategoryRequestMapper : IUpdateMapper<UpdateSpendingCategoryRequest, SpendingCategory>
+internal sealed class UpdateSpendingCategoryRequestMapper : IUpdateMapper<UpdateSpendingCategoryRequest, SpendingCategory>
 {
     public void Map(UpdateSpendingCategoryRequest source, SpendingCategory destination)
     {

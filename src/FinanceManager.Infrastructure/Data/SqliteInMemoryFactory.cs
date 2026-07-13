@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinanceManager.Infrastructure.Data;
 
-public static class SqliteInMemoryFactory
+internal static class SqliteInMemoryFactory
 {
     public static IServiceCollection AddInMemoryDb(this IServiceCollection services)
     {

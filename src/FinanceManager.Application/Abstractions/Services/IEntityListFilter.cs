@@ -3,7 +3,7 @@ using FinanceManager.Domain.Common;
 
 namespace FinanceManager.Application.Abstractions.Services;
 
-public interface IEntityListFilterHandler<TRequest, TEntity>
+internal interface IEntityListFilterHandler<TRequest, TEntity>
     where TRequest : IListRequest<TEntity>
     where TEntity : Entity
 {

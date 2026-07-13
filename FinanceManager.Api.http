@@ -41,6 +41,6 @@ Accept: application/json
 
 {
     "skip": 0,
-    "take": 60,
-    "nameContains": "Gr"
+    "take": 60
+//   , "nameContains": "Gr"
 }

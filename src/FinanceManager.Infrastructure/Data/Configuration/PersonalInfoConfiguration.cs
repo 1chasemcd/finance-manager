@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FinanceManager.Infrastructure.Data.Configuration;
 
-public class PersonalInfoConfiguration : IEntityTypeConfiguration<PersonalInfo>
+internal sealed class PersonalInfoConfiguration : IEntityTypeConfiguration<PersonalInfo>
 {
     public void Configure(EntityTypeBuilder<PersonalInfo> builder)
     {

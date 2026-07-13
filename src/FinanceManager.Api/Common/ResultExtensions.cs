@@ -1,9 +1,8 @@
-using FinanceManager.Application.Common.Errors;
 using FinanceManager.Application.Common.Results;
 
 namespace FinanceManager.Api.Common;
 
-public static class ResultExtensions
+static class ResultExtensions
 {
     public static IResult ToHttpResult<T>(this Result<T> result, Func<T, IResult>? onSuccess = null)
     {

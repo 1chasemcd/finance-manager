@@ -2,7 +2,7 @@ using FinanceManager.Application.Common.Errors;
 
 namespace FinanceManager.Api.Common;
 
-public static class ErrorExtensions
+static class ErrorExtensions
 {
     public static IResult ToHttpResult(this Error error)
     {

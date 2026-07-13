@@ -7,7 +7,7 @@ using FinanceManager.Application.Abstractions.Services;
 
 namespace FinanceManager.Application.Common.EntityRequests.CreateEntity;
 
-public class CreateEntityHandler<TRequest, TEntity>(
+internal sealed class CreateEntityHandler<TRequest, TEntity>(
     IApplicationDbContext db,
     IMapper<TRequest, TEntity> mapper)
     : IRequestHandler<CreateEntityCommand<TRequest, TEntity>, Result<int>>

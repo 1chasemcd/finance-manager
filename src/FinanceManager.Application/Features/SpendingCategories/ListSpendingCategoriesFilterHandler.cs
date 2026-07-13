@@ -3,7 +3,7 @@ using FinanceManager.Domain.SpendingCategories;
 
 namespace FinanceManager.Application.Features.SpendingCategories;
 
-public sealed record ListSpendingCategoriesFilterHandler : IEntityListFilterHandler<ListSpendingCategoryRequest, SpendingCategory>
+internal sealed record ListSpendingCategoriesFilterHandler : IEntityListFilterHandler<ListSpendingCategoryRequest, SpendingCategory>
 {
     public IQueryable<SpendingCategory> ApplyFilter(
         ListSpendingCategoryRequest filter,

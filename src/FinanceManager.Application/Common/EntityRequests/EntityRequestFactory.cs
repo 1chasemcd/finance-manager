@@ -12,7 +12,7 @@ using MediatR;
 
 namespace FinanceManager.Application.Common.EntityRequests;
 
-public sealed class EntityRequestFactory : IEntityRequestFactory
+internal sealed class EntityRequestFactory : IEntityRequestFactory
 {
     public Func<TRequest, IRequest<Result<int>>> BuildCreateDelegate<TRequest>()
         where TRequest : ICreateRequest

@@ -1,11 +1,9 @@
 using FinanceManager.Api.Common;
-using FinanceManager.Application.Abstractions.Messages;
 using FinanceManager.Application.Features.SpendingCategories;
-using FinanceManager.Domain.SpendingCategories;
 
 namespace FinanceManager.Api.Endpoints;
 
-public static class SpendingCategoryEndpoints
+static class SpendingCategoryEndpoints
 {
     public static void RegisterSpendingCategoryEndpoints(this IEndpointRouteBuilder endpoints)
     {

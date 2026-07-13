@@ -1,3 +1,3 @@
 namespace FinanceManager.Application.Abstractions;
 
-interface ITransactionCommand;
+internal interface ITransactionCommand;

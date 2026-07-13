@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FinanceManager.Api.Common;
 
-public static class CommonEntityEndpoints
+static class CommonEntityEndpoints
 {
-    public static IEndpointConventionBuilder MapEntityCreate<TRequest>(this IEndpointRouteBuilder endpoints, [StringSyntax("Route")] string pattern = "/", string? getRouteName = null)
+    public static RouteHandlerBuilder MapEntityCreate<TRequest>(this IEndpointRouteBuilder endpoints, [StringSyntax("Route")] string pattern = "/", string? getRouteName = null)
         where TRequest : ICreateRequest
     {
         pattern = ValidateRoutePattern(pattern);
@@ -27,7 +27,7 @@ public static class CommonEntityEndpoints
         );
     }
 
-    public static IEndpointConventionBuilder MapEntityUpdate<TRequest>(this IEndpointRouteBuilder endpoints, [StringSyntax("Route")] string pattern = "/")
+    public static RouteHandlerBuilder MapEntityUpdate<TRequest>(this IEndpointRouteBuilder endpoints, [StringSyntax("Route")] string pattern = "/")
         where TRequest : IUpdateRequest
     {
         pattern = ValidateRoutePattern(pattern);
@@ -40,7 +40,7 @@ public static class CommonEntityEndpoints
         );
     }
 
-    public static IEndpointConventionBuilder MapEntityDelete<TRequest>(this IEndpointRouteBuilder endpoints, [StringSyntax("Route")] string pattern = "/")
+    public static RouteHandlerBuilder MapEntityDelete<TRequest>(this IEndpointRouteBuilder endpoints, [StringSyntax("Route")] string pattern = "/")
     where TRequest : IDeleteRequest, new()
     {
         pattern = ValidateRoutePattern(pattern);
@@ -53,7 +53,7 @@ public static class CommonEntityEndpoints
         );
     }
 
-    public static IEndpointConventionBuilder MapEntityGet<TResponse>(this IEndpointRouteBuilder endpoints, [StringSyntax("Route")] string pattern = "/")
+    public static RouteHandlerBuilder MapEntityGet<TResponse>(this IEndpointRouteBuilder endpoints, [StringSyntax("Route")] string pattern = "/")
         where TResponse : IGetResponse
     {
         pattern = ValidateRoutePattern(pattern);
@@ -66,7 +66,7 @@ public static class CommonEntityEndpoints
         );
     }
 
-    public static IEndpointConventionBuilder MapEntityList<TRequest, TResponse>(
+    public static RouteHandlerBuilder MapEntityList<TRequest, TResponse>(
         this IEndpointRouteBuilder endpoints,
         [StringSyntax("Route")] string pattern = "/")
         where TRequest : IListRequest

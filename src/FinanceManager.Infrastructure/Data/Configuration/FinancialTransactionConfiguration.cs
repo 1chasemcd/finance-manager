@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FinanceManager.Infrastructure.Data.Configuration;
 
-public class FinancialTransactionConfiguration : IEntityTypeConfiguration<FinancialTransaction>
+internal sealed class FinancialTransactionConfiguration : IEntityTypeConfiguration<FinancialTransaction>
 {
     public void Configure(EntityTypeBuilder<FinancialTransaction> builder)
     {

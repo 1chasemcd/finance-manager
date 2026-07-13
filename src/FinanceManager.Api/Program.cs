@@ -1,13 +1,10 @@
 using FinanceManager.Api.Endpoints;
-using FinanceManager.Application.Common.Results;
-using FinanceManager.Application.Features.SpendingCategories;
-using MediatR;
 using Microsoft.AspNetCore.Http.Json;
 using System.Text.Json.Serialization;
 
 namespace FinanceManager.Api;
 
-public class Program
+public sealed class Program
 {
     public static async Task Main(string[] args)
     {

@@ -8,7 +8,7 @@ using FinanceManager.Application.Abstractions.Services;
 
 namespace FinanceManager.Application.Common.EntityRequests.UpdateEntity;
 
-public class UpdateEntityHandler<TRequest, TEntity>(
+internal sealed class UpdateEntityHandler<TRequest, TEntity>(
     IApplicationDbContext db,
     IUpdateMapper<TRequest, TEntity> mapper)
     : IRequestHandler<UpdateEntityCommand<TRequest, TEntity>, Result>
