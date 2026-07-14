@@ -1,12 +1,10 @@
-using System.Diagnostics;
-using System.Reflection;
-using FinanceManager.Application.Abstractions.Messages;
 using FinanceManager.Application.Common.EntityRequests.CreateEntity;
 using FinanceManager.Application.Common.EntityRequests.DeleteEntity;
-using FinanceManager.Application.Common.EntityRequests.GetEntity;
 using FinanceManager.Application.Common.EntityRequests.ListEntities;
+using FinanceManager.Application.Common.EntityRequests.LookupEntity;
 using FinanceManager.Application.Common.EntityRequests.UpdateEntity;
 using FinanceManager.Application.Common.Results;
+using FinanceManager.Domain.Common;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,107 +12,54 @@ namespace FinanceManager.Application.Common.EntityRequests;
 
 internal static class EntityRequestHandlerRegistration
 {
-    private static readonly Type[] s_messageInterfaces = [
-        typeof(ICreateRequest<>),
-        typeof(IUpdateRequest<>),
-        typeof(IDeleteRequest<>),
-        typeof(IGetResponse<>),
-        typeof(IFilterRequest<>)
-    ];
-
-    public static IServiceCollection AddEntityRequestHandlers(this IServiceCollection serviceCollection, Assembly assembly)
+    public static IServiceCollection AddCreateEntityHandler<TEntity, TRequest>(this IServiceCollection serviceCollection)
+        where TEntity : Entity
     {
-        var messageTypes = assembly.GetTypes()
-            .Where(x => x.IsClass)
-            .Where(x => x.GetInterfaces().Any(
-                x => x.IsGenericType
-                && s_messageInterfaces.Contains(x.GetGenericTypeDefinition())));
+        serviceCollection.AddTransient<
+            IRequestHandler<CreateEntityCommand<TEntity, TRequest>, Result<int>>,
+            CreateEntityHandler<TEntity, TRequest>
+        >();
 
-        foreach (var messageType in messageTypes)
-            serviceCollection.AddHandlersForMessage(messageType);
-
+        EntityTypeImplementationRegistry.Instance.Add<TEntity, TRequest>(EntityTypeRegistryCategory.CreateEntityRequest);
         return serviceCollection;
     }
 
-    private static void AddHandlersForMessage(this IServiceCollection serviceCollection, Type messageType)
+    public static IServiceCollection AddUpdateEntityHandler<TEntity, TRequest>(this IServiceCollection serviceCollection)
+        where TEntity : Entity
     {
-        var messageInterfaces = messageType.GetInterfaces()
-            .Where(x =>
-                x.IsGenericType
-                && s_messageInterfaces.Contains(x.GetGenericTypeDefinition()))
-            .ToList();
+        serviceCollection.AddTransient<
+            IRequestHandler<UpdateEntityCommand<TEntity, TRequest>, Result>,
+            UpdateEntityHandler<TEntity, TRequest>
+        >();
 
-        foreach (var messageInterface in messageInterfaces)
-        {
-            if (messageInterface.GetGenericTypeDefinition() == typeof(IFilterRequest<>))
-                serviceCollection.AddHandlersForListMessage(messageType, messageInterface);
-            else
-                serviceCollection.AddHandlerForMessage(messageType, messageInterface);
-        }
+        EntityTypeImplementationRegistry.Instance.Add<TEntity, TRequest>(EntityTypeRegistryCategory.UpdateEntityRequest);
+        return serviceCollection;
     }
 
-    private static void AddHandlerForMessage(this IServiceCollection serviceCollection, Type messageType, Type messageInterface)
+    public static IServiceCollection AddDeleteEntityHandler<TEntity>(this IServiceCollection serviceCollection)
+    where TEntity : Entity
     {
-        var entityType = messageInterface.GenericTypeArguments[0];
-        var openInterfaceType = messageInterface.GetGenericTypeDefinition();
-
-        Type requestType;
-        Type resultType;
-        Type handlerType;
-        if (openInterfaceType == typeof(ICreateRequest<>))
-        {
-            requestType = typeof(CreateEntityCommand<,>).MakeGenericType(messageType, entityType);
-            resultType = typeof(Result<int>);
-            handlerType = typeof(CreateEntityHandler<,>);
-        }
-        else if (openInterfaceType == typeof(IUpdateRequest<>))
-        {
-            requestType = typeof(UpdateEntityCommand<,>).MakeGenericType(messageType, entityType);
-            resultType = typeof(Result);
-            handlerType = typeof(UpdateEntityHandler<,>);
-
-        }
-        else if (openInterfaceType == typeof(IDeleteRequest<>))
-        {
-            requestType = typeof(DeleteEntityCommand<,>).MakeGenericType(messageType, entityType);
-            resultType = typeof(Result);
-            handlerType = typeof(DeleteEntityHandler<,>);
-
-        }
-        else if (openInterfaceType == typeof(IGetResponse<>))
-        {
-            requestType = typeof(GetEntityQuery<,>).MakeGenericType(messageType, entityType);
-            resultType = typeof(Result<>).MakeGenericType(messageType);
-            handlerType = typeof(GetEntityHandler<,>);
-
-        }
-        else throw new UnreachableException();
-
-        var handlerInterfaceType = typeof(IRequestHandler<,>).MakeGenericType(requestType, resultType);
-        var closedHandlerType = handlerType.MakeGenericType(messageType, entityType);
-        serviceCollection.AddTransient(handlerInterfaceType, closedHandlerType);
+        return serviceCollection.AddTransient<
+            IRequestHandler<DeleteEntityCommand<TEntity>, Result>,
+            DeleteEntityHandler<TEntity>
+        >();
     }
 
-    private static void AddHandlersForListMessage(this IServiceCollection serviceCollection, Type messageType, Type messageInterface)
+    public static IServiceCollection AddLookupEntityHandler<TEntity, TResponse>(this IServiceCollection serviceCollection)
+        where TEntity : Entity
     {
-        var entityType = messageInterface.GenericTypeArguments[0];
+        return serviceCollection.AddTransient<
+            IRequestHandler<LookupEntityQuery<TEntity, TResponse>, Result<TResponse>>,
+            LookupEntityHandler<TEntity, TResponse>
+        >();
+    }
 
-        var responseTypes = messageType.Assembly.GetTypes()
-            .Where(x => x.IsClass)
-            .Where(x => x.GetInterfaces().Any(
-                x => x.IsGenericType
-                && x.GetGenericTypeDefinition() == typeof(IGetResponse<>)
-                && x.GetGenericArguments()[0] == entityType));
-
-        foreach (var responseType in responseTypes)
-        {
-            var requestType = typeof(ListEntitiesQuery<,,>).MakeGenericType(messageType, responseType, entityType);
-            var resultType = typeof(Result<>).MakeGenericType(typeof(IReadOnlyList<>).MakeGenericType(responseType));
-
-            var handlerInterfaceType = typeof(IRequestHandler<,>).MakeGenericType(requestType, resultType);
-            var handlerType = typeof(ListEntitiesHandler<,,>).MakeGenericType(messageType, responseType, entityType);
-
-            serviceCollection.AddTransient(handlerInterfaceType, handlerType);
-        }
+    public static IServiceCollection AddListEntitiesHandler<TEntity, TFilter, TResponse>(this IServiceCollection serviceCollection)
+        where TEntity : Entity
+    {
+        return serviceCollection.AddTransient<
+            IRequestHandler<ListEntitiesQuery<TEntity, TFilter, TResponse>, Result<IReadOnlyList<TResponse>>>,
+            ListEntitiesHandler<TEntity, TFilter, TResponse>
+        >();
     }
 }

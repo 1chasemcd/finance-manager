@@ -1,24 +1,21 @@
 using FinanceManager.Application.Common.Results;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace FinanceManager.Api.Common;
 
 static class ResultExtensions
 {
-    public static IResult ToHttpResult<T>(this Result<T> result, Func<T, IResult>? onSuccess = null)
+    public static Results<Ok<T>, Conflict<string>, NotFound<string>, UnprocessableEntity<string>, ProblemHttpResult> ToHttpResult<T>(this Result<T> result)
     {
-        onSuccess ??= x => TypedResults.Ok(x);
-
         if (result.IsSuccess)
-            return onSuccess(result.Value);
-        return result.Error.ToHttpResult();
+            return TypedResults.Ok(result.Value);
+        return result.Error.ToHttpResult<Ok<T>>();
     }
 
-    public static IResult ToHttpResult(this Result result, Func<IResult>? onSuccess = null)
+    public static Results<NoContent, Conflict<string>, NotFound<string>, UnprocessableEntity<string>, ProblemHttpResult> ToHttpResult(this Result result)
     {
-        onSuccess ??= () => Results.NoContent();
-
         if (result.IsSuccess)
-            return onSuccess();
-        return result.Error.ToHttpResult();
+            return TypedResults.NoContent();
+        return result.Error.ToHttpResult<NoContent>();
     }
 }

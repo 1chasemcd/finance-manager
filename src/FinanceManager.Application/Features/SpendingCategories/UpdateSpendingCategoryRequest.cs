@@ -1,13 +1,9 @@
 using System.ComponentModel.DataAnnotations;
-using FinanceManager.Application.Abstractions.Messages;
-using FinanceManager.Domain.SpendingCategories;
 
 namespace FinanceManager.Application.Features.SpendingCategories;
 
-public sealed record UpdateSpendingCategoryRequest : IUpdateRequest<SpendingCategory>
+public sealed record UpdateSpendingCategoryRequest
 {
-    [Required]
-    public int Id { get; init; }
     [MaxLength(500)]
     public string? Description { get; init; }
 }

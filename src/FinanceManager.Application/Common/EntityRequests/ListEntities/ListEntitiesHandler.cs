@@ -1,5 +1,4 @@
 using FinanceManager.Application.Abstractions.Persistence;
-using FinanceManager.Application.Abstractions.Messages;
 using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;
 using MediatR;
@@ -7,22 +6,26 @@ using FinanceManager.Application.Abstractions.Services;
 
 namespace FinanceManager.Application.Common.EntityRequests.ListEntities;
 
-internal sealed class ListEntitiesHandler<TRequest, TResponse, TEntity>(
+internal sealed class ListEntitiesHandler<TEntity, TRequest, TResponse>(
     IApplicationDbContext db,
-    IEntityQueryBuilder<TRequest, TEntity> queryBuilder,
+    IEntityFilterHandler<TEntity, TRequest> queryBuilder,
     IExpressionMapper<TEntity, TResponse> mapper)
-    : IRequestHandler<ListEntitiesQuery<TRequest, TResponse, TEntity>, Result<IReadOnlyList<TResponse>>>
-    where TRequest : IFilterRequest<TEntity>
-    where TResponse : IGetResponse<TEntity>
+    : IRequestHandler<ListEntitiesQuery<TEntity, TRequest, TResponse>, Result<IReadOnlyList<TResponse>>>
     where TEntity : Entity
 
 {
-    public async Task<Result<IReadOnlyList<TResponse>>> Handle(ListEntitiesQuery<TRequest, TResponse, TEntity> command, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyList<TResponse>>> Handle(ListEntitiesQuery<TEntity, TRequest, TResponse> query, CancellationToken cancellationToken)
     {
-        var query = db.Set<TEntity>();
-        var results = queryBuilder.BuildQuery(command.Request, query);
-        return results.Skip(command.Request.Skip)
-            .Take(command.Request.Take)
+        var entities = db.Set<TEntity>();
+        IQueryable<TEntity> results;
+
+        if (query.Filter == null)
+            results = entities;
+        else
+            results = queryBuilder.ApplyFilter(query.Filter, entities);
+
+        return results.Skip(query.Skip)
+            .Take(query.Take)
             .Select(mapper.Map).ToList();
     }
 }

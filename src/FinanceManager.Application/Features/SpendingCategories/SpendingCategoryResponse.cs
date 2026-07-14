@@ -1,10 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using FinanceManager.Application.Abstractions.Messages;
-using FinanceManager.Domain.SpendingCategories;
 
 namespace FinanceManager.Application.Features.SpendingCategories;
 
-public sealed record SpendingCategoryResponse : IGetResponse<SpendingCategory>
+public sealed record SpendingCategoryResponse
 {
     public int Id { get; init; }
     [Required]

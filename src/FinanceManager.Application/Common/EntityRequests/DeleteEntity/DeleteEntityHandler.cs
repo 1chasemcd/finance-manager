@@ -1,5 +1,4 @@
 using FinanceManager.Application.Abstractions.Persistence;
-using FinanceManager.Application.Abstractions.Messages;
 using FinanceManager.Application.Common.Errors;
 using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;
@@ -7,16 +6,15 @@ using MediatR;
 
 namespace FinanceManager.Application.Common.EntityRequests.DeleteEntity;
 
-internal sealed class DeleteEntityHandler<TRequest, TEntity>(
+internal sealed class DeleteEntityHandler<TEntity>(
     IApplicationDbContext db)
-    : IRequestHandler<DeleteEntityCommand<TRequest, TEntity>, Result>
-    where TRequest : IDeleteRequest<TEntity>
+    : IRequestHandler<DeleteEntityCommand<TEntity>, Result>
     where TEntity : Entity
 
 {
-    public async Task<Result> Handle(DeleteEntityCommand<TRequest, TEntity> command, CancellationToken cancellationToken)
+    public async Task<Result> Handle(DeleteEntityCommand<TEntity> command, CancellationToken cancellationToken)
     {
-        TEntity? entity = await db.Set<TEntity>().FindAsync([command.Request.Id], cancellationToken);
+        TEntity? entity = await db.Set<TEntity>().FindAsync([command.Id], cancellationToken);
         if (entity is null) return Error.NotFound(typeof(TEntity).Name);
 
         db.Set<TEntity>().Remove(entity);

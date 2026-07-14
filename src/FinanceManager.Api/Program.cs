@@ -1,4 +1,5 @@
 using FinanceManager.Api.Endpoints;
+using FinanceManager.Application.Abstractions.Services;
 using Microsoft.AspNetCore.Http.Json;
 using System.Text.Json.Serialization;
 
@@ -9,7 +10,6 @@ public sealed class Program
     public static async Task Main(string[] args)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
         builder.Services.AddOpenApi();
 
         builder
@@ -33,6 +33,10 @@ public sealed class Program
 
         RouteGroupBuilder api = app.MapGroup("/api");
         api.RegisterSpendingCategoryEndpoints();
+
+        app.Services
+            .GetRequiredService<IEntityTypeImplementationRegistry>()
+            .Dispose();
 
         app.Run();
     }

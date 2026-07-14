@@ -1,5 +1,4 @@
 using FinanceManager.Application.Abstractions.Persistence;
-using FinanceManager.Application.Abstractions.Messages;
 using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;
 using MediatR;
@@ -7,15 +6,13 @@ using FinanceManager.Application.Abstractions.Services;
 
 namespace FinanceManager.Application.Common.EntityRequests.CreateEntity;
 
-internal sealed class CreateEntityHandler<TRequest, TEntity>(
+internal sealed class CreateEntityHandler<TEntity, TRequest>(
     IApplicationDbContext db,
     IMapper<TRequest, TEntity> mapper)
-    : IRequestHandler<CreateEntityCommand<TRequest, TEntity>, Result<int>>
-    where TRequest : ICreateRequest<TEntity>
+    : IRequestHandler<CreateEntityCommand<TEntity, TRequest>, Result<int>>
     where TEntity : Entity
-
 {
-    public async Task<Result<int>> Handle(CreateEntityCommand<TRequest, TEntity> command, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(CreateEntityCommand<TEntity, TRequest> command, CancellationToken cancellationToken)
     {
         TEntity entity = mapper.Map(command.Request);
         db.Set<TEntity>().Add(entity);

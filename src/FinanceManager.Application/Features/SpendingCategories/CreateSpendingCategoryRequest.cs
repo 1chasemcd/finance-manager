@@ -1,10 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using FinanceManager.Application.Abstractions.Messages;
-using FinanceManager.Domain.SpendingCategories;
 
 namespace FinanceManager.Application.Features.SpendingCategories;
 
-public sealed record CreateSpendingCategoryRequest : ICreateRequest<SpendingCategory>
+public sealed record CreateSpendingCategoryRequest
 {
     [Required]
     [MaxLength(100)]

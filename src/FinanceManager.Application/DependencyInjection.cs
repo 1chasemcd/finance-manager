@@ -1,6 +1,8 @@
 using System.Reflection;
 using FinanceManager.Application.Abstractions.Services;
 using FinanceManager.Application.Common.EntityRequests;
+using FinanceManager.Application.Features.SpendingCategories;
+using FinanceManager.Domain.SpendingCategories;
 using Microsoft.Extensions.Hosting;
 
 #pragma warning disable IDE0130
@@ -18,22 +20,23 @@ public static class DependencyInjection
             cfg.RegisterServicesFromAssembly(assembly);
         });
 
+        builder.Services.AddSingleton<IEntityTypeImplementationRegistry>(EntityTypeImplementationRegistry.Instance);
 
-        builder.Services.AddAllInterfaces(assembly, typeof(IMapper<,>));
-        builder.Services.AddAllInterfaces(assembly, typeof(IUpdateMapper<,>));
-        builder.Services.AddAllInterfaces(assembly, typeof(IExpressionMapper<,>));
-        builder.Services.AddAllInterfaces(assembly, typeof(IEntityQueryBuilder<,>));
+        builder.Services.AddAllImplementationsTransient(assembly, typeof(IMapper<,>));
+        builder.Services.AddAllImplementationsTransient(assembly, typeof(IUpdateMapper<,>));
+        builder.Services.AddAllImplementationsTransient(assembly, typeof(IExpressionMapper<,>));
+        builder.Services.AddAllImplementationsTransient(assembly, typeof(IEntityFilterHandler<,>));
 
-
-        builder.Services.AddEntityRequestHandlers(assembly);
-
-
-        builder.Services.AddTransient<IEntityRequestFactory, EntityRequestFactory>();
+        builder.Services.AddCreateEntityHandler<SpendingCategory, CreateSpendingCategoryRequest>();
+        builder.Services.AddUpdateEntityHandler<SpendingCategory, UpdateSpendingCategoryRequest>();
+        builder.Services.AddDeleteEntityHandler<SpendingCategory>();
+        builder.Services.AddLookupEntityHandler<SpendingCategory, SpendingCategoryResponse>();
+        builder.Services.AddListEntitiesHandler<SpendingCategory, SpendingCategoryFilter, SpendingCategoryResponse>();
 
         return builder;
     }
 
-    private static IServiceCollection AddAllInterfaces(
+    private static IServiceCollection AddAllImplementationsTransient(
     this IServiceCollection services,
     Assembly assembly, Type mapperType)
     {

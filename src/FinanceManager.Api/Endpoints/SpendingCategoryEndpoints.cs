@@ -1,5 +1,5 @@
 using FinanceManager.Api.Common;
-using FinanceManager.Application.Features.SpendingCategories;
+using FinanceManager.Domain.SpendingCategories;
 
 namespace FinanceManager.Api.Endpoints;
 
@@ -8,11 +8,10 @@ static class SpendingCategoryEndpoints
     public static void RegisterSpendingCategoryEndpoints(this IEndpointRouteBuilder endpoints)
     {
         var group = endpoints.MapGroup("/spendingcategories");
-        group.MapEntityGet<SpendingCategoryResponse>()
-            .WithName(RouteNames.GetSpendingCategory);
-        group.MapEntityCreate<CreateSpendingCategoryRequest>(getRouteName: RouteNames.GetSpendingCategory);
-        group.MapEntityUpdate<UpdateSpendingCategoryRequest>();
-        group.MapEntityDelete<DeleteSpendingCategoryRequest>();
-        group.MapEntityList<ListSpendingCategoryRequest, SpendingCategoryResponse>();
+        group.MapLookupEntity<SpendingCategory>().WithName(RouteNames.GetSpendingCategory);
+        group.MapCreateEntity<SpendingCategory>(createdAt: RouteNames.GetSpendingCategory);
+        group.MapUpdateEntity<SpendingCategory>();
+        group.MapDeleteEntity<SpendingCategory>();
+        group.MapListEntities<SpendingCategory>();
     }
 }

@@ -1,5 +1,4 @@
 using FinanceManager.Application.Abstractions.Persistence;
-using FinanceManager.Application.Abstractions.Messages;
 using FinanceManager.Application.Common.Errors;
 using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;
@@ -8,17 +7,15 @@ using FinanceManager.Application.Abstractions.Services;
 
 namespace FinanceManager.Application.Common.EntityRequests.UpdateEntity;
 
-internal sealed class UpdateEntityHandler<TRequest, TEntity>(
+internal sealed class UpdateEntityHandler<TEntity, TRequest>(
     IApplicationDbContext db,
     IUpdateMapper<TRequest, TEntity> mapper)
-    : IRequestHandler<UpdateEntityCommand<TRequest, TEntity>, Result>
-    where TRequest : IUpdateRequest<TEntity>
+    : IRequestHandler<UpdateEntityCommand<TEntity, TRequest>, Result>
     where TEntity : Entity
-
 {
-    public async Task<Result> Handle(UpdateEntityCommand<TRequest, TEntity> command, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdateEntityCommand<TEntity, TRequest> command, CancellationToken cancellationToken)
     {
-        TEntity? existing = await db.Set<TEntity>().FindAsync([command.Request.Id], cancellationToken);
+        TEntity? existing = await db.Set<TEntity>().FindAsync([command.Id], cancellationToken);
         if (existing is null) return Error.NotFound(typeof(TEntity).Name);
         mapper.Map(command.Request, existing);
         await db.SaveChangesAsync(cancellationToken);
