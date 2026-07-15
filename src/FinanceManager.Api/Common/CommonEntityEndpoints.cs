@@ -55,8 +55,8 @@ static class CommonEntityEndpoints
     {
         pattern = ValidateRoutePattern(pattern);
         return endpoints.MapDelete($"{pattern}/{{id}}",
-            async (int id, ISender sender)
-                => (await sender.Send(new DeleteEntityCommand<TEntity>(id))).ToHttpResult()
+            async (int id, ISender sender, CancellationToken cancellationToken)
+                => (await sender.Send(new DeleteEntityCommand<TEntity>(id), cancellationToken)).ToHttpResult()
         );
     }
 
@@ -107,10 +107,10 @@ static class CommonEntityEndpoints
         where TEntity : Entity
     {
         return endpoints.MapPost(pattern,
-            async ([FromBody] TRequest request, ISender sender) =>
+            async ([FromBody] TRequest request, ISender sender, CancellationToken cancellationToken) =>
             {
                 var command = new CreateEntityCommand<TEntity, TRequest>(request);
-                var result = await sender.Send(command);
+                var result = await sender.Send(command, cancellationToken);
                 if (!result.IsSuccess) return result.Error.ToHttpResult<Created, CreatedAtRoute>();
 
                 return createdAt is not null
@@ -126,10 +126,10 @@ static class CommonEntityEndpoints
         where TEntity : Entity
     {
         return endpoints.MapPut($"{pattern}/{{id}}",
-            async (int id, [FromBody] TRequest request, ISender sender) =>
+            async (int id, [FromBody] TRequest request, ISender sender, CancellationToken cancellationToken) =>
             {
                 var command = new UpdateEntityCommand<TEntity, TRequest>(id, request);
-                return (await sender.Send(command)).ToHttpResult();
+                return (await sender.Send(command, cancellationToken)).ToHttpResult();
             }
         );
     }
@@ -140,10 +140,10 @@ static class CommonEntityEndpoints
         where TEntity : Entity
     {
         return endpoints.MapGet($"{pattern}/{{id}}",
-            async (int id, ISender sender) =>
+            async (int id, ISender sender, CancellationToken cancellationToken) =>
             {
                 var query = new LookupEntityQuery<TEntity, TResponse>(id);
-                return (await sender.Send(query)).ToHttpResult();
+                return (await sender.Send(query, cancellationToken)).ToHttpResult();
             }
         );
     }
@@ -155,7 +155,8 @@ static class CommonEntityEndpoints
     {
         return endpoints.MapPost($"{pattern}/list",
             async ([FromBody] SearchEntityQuery<TEntity, TFilter, TResponse> query,
-            ISender sender) => (await sender.Send(query)).ToHttpResult()
+            ISender sender,
+            CancellationToken cancellationToken) => (await sender.Send(query, cancellationToken)).ToHttpResult()
         );
     }
 
@@ -165,13 +166,17 @@ static class CommonEntityEndpoints
     where TEntity : Entity
     {
         return endpoints.MapPost($"{pattern}/list",
-            async ([FromBody] UnfilteredSearchEntityRequest query,
-            ISender sender) => (await sender.Send(
-                new SearchEntityQuery<TEntity, Unit, TResponse>
+            async ([FromBody] UnfilteredSearchEntityRequest request,
+            ISender sender,
+            CancellationToken cancellationToken) =>
+            {
+                var query = new SearchEntityQuery<TEntity, Unit, TResponse>
                 {
-                    Take = query.Take,
-                    Skip = query.Skip
-                })).ToHttpResult()
+                    Take = request.Take,
+                    Skip = request.Skip
+                };
+                return (await sender.Send(query, cancellationToken)).ToHttpResult();
+            }
         );
     }
 
