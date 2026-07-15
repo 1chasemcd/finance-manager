@@ -16,6 +16,7 @@ internal sealed class LookupEntityHandler<TEntity, TResponse>(
     public async Task<Result<TResponse>> Handle(LookupEntityQuery<TEntity, TResponse> command, CancellationToken cancellationToken)
     {
         var response = await db.Set<TEntity>()
+            .AsNoTracking()
             .Where(e => e.Id == command.Id)
             .Select(mapper.Map)
             .SingleOrDefaultAsync(cancellationToken);

@@ -94,7 +94,7 @@ static class CommonEntityEndpoints
         else
             method = typeof(CommonEntityEndpoints)
                 .GetMethod(nameof(MapSearchEntityImpl), BindingFlags.Static | BindingFlags.NonPublic)!
-                .GetGenericMethodDefinition().MakeGenericMethod(typeof(TEntity), filterType, responseType);
+                .GetGenericMethodDefinition().MakeGenericMethod(typeof(TEntity), responseType, filterType);
 
 
         return (RouteHandlerBuilder)method.Invoke(null, [endpoints, pattern])!;
@@ -148,13 +148,13 @@ static class CommonEntityEndpoints
         );
     }
 
-    private static RouteHandlerBuilder MapSearchEntityImpl<TEntity, TFilter, TResponse>(
+    private static RouteHandlerBuilder MapSearchEntityImpl<TEntity, TResponse, TFilter>(
         IEndpointRouteBuilder endpoints,
         string pattern)
         where TEntity : Entity
     {
         return endpoints.MapPost($"{pattern}/list",
-            async ([FromBody] SearchEntityQuery<TEntity, TFilter, TResponse> query,
+            async ([FromBody] SearchEntityQuery<TEntity, TResponse, TFilter> query,
             ISender sender,
             CancellationToken cancellationToken) => (await sender.Send(query, cancellationToken)).ToHttpResult()
         );
@@ -170,7 +170,7 @@ static class CommonEntityEndpoints
             ISender sender,
             CancellationToken cancellationToken) =>
             {
-                var query = new SearchEntityQuery<TEntity, Unit, TResponse>
+                var query = new SearchEntityQuery<TEntity, TResponse, Unit>
                 {
                     Take = request.Take,
                     Skip = request.Skip

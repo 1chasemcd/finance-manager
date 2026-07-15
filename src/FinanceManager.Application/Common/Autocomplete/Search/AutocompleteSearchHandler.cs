@@ -20,7 +20,7 @@ internal sealed class AutocompleteSearchHandler<TEntity, TFilter>(
         AutocompleteSearchQuery<TEntity, TFilter> query,
         CancellationToken cancellationToken)
     {
-        var entities = db.Set<TEntity>();
+        var entities = db.Set<TEntity>().AsNoTracking();
         IQueryable<TEntity> results;
 
         if (EqualityComparer<TFilter>.Default.Equals(query.Filter, default))

@@ -22,6 +22,7 @@ internal sealed class AutocompleteSingleHandler<TEntity>(
         var transormToResponse = expressionService.BuildResponseTransformExpression(displayTransform);
 
         var result = await db.Set<TEntity>()
+            .AsNoTracking()
             .Where(x => x.Id == request.Id)
             .Select(transormToResponse)
             .SingleOrDefaultAsync(cancellationToken);

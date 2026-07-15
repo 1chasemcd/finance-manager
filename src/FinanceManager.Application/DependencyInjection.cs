@@ -4,7 +4,9 @@ using FinanceManager.Application.Common;
 using FinanceManager.Application.Common.Autocomplete;
 using FinanceManager.Application.Common.EntityAssociations;
 using FinanceManager.Application.Common.EntityRequests;
+using FinanceManager.Application.Features.FinancialTransactions;
 using FinanceManager.Application.Features.SpendingCategories;
+using FinanceManager.Domain.FinancialTransactions;
 using FinanceManager.Domain.SpendingCategories;
 using Microsoft.Extensions.Hosting;
 
@@ -37,6 +39,9 @@ public static class DependencyInjection
         builder.Services.AddLookupEntityHandler<SpendingCategory, SpendingCategoryResponse>();
         builder.Services.AddSearchEntityHandler<SpendingCategory, SpendingCategoryResponse>();
         builder.Services.AddAutocompleteHandler<SpendingCategory>(x => x.Name);
+
+        builder.Services.AddLookupEntityHandler<FinancialTransaction, FinancialTransactionResponse>();
+        builder.Services.AddSearchEntityHandler<FinancialTransaction, FinancialTransactionResponse, FinancialTransactionFilter>();
 
         return builder;
     }

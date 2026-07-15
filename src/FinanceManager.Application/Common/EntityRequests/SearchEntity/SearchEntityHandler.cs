@@ -6,17 +6,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinanceManager.Application.Common.EntityRequests.SearchEntity;
 
-internal sealed class SearchEntityHandler<TEntity, TFilter, TResponse>(
+internal sealed class SearchEntityHandler<TEntity, TResponse, TFilter>(
     IApplicationDbContext db,
     IExpressionMapper<TEntity, TResponse> mapper,
     IEntityFilterHandler<TEntity, TFilter>? queryBuilder = null)
-    : IRequestHandler<SearchEntityQuery<TEntity, TFilter, TResponse>, Result<IReadOnlyList<TResponse>>>
+    : IRequestHandler<SearchEntityQuery<TEntity, TResponse, TFilter>, Result<IReadOnlyList<TResponse>>>
     where TEntity : Entity
 
 {
-    public async Task<Result<IReadOnlyList<TResponse>>> Handle(SearchEntityQuery<TEntity, TFilter, TResponse> query, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyList<TResponse>>> Handle(SearchEntityQuery<TEntity, TResponse, TFilter> query, CancellationToken cancellationToken)
     {
-        var entities = db.Set<TEntity>();
+        var entities = db.Set<TEntity>().AsNoTracking();
         IQueryable<TEntity> results;
 
         if (EqualityComparer<TFilter>.Default.Equals(query.Filter, default))

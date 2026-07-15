@@ -10,10 +10,13 @@ public sealed class FinancialAccount : Entity
     public PersonalInfo OwnerInfo { get; private set; } = null!;
 
     private FinancialAccount() { }
-    public FinancialAccount(string name, PersonalInfo ownerInfo)
+    public static FinancialAccount Create(string name, PersonalInfo ownerInfo)
     {
-        Name = name;
-        OwnerInfo = ownerInfo;
-        OwnerInfoId = ownerInfo.Id;
+        return new()
+        {
+            Name = name,
+            OwnerInfo = ownerInfo,
+            OwnerInfoId = ownerInfo.Id
+        };
     }
 }

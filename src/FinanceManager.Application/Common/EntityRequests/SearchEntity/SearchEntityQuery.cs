@@ -6,7 +6,7 @@ using MediatR;
 
 namespace FinanceManager.Application.Common.EntityRequests.SearchEntity;
 
-public sealed record SearchEntityQuery<TEntity, TFilter, TResponse>
+public sealed record SearchEntityQuery<TEntity, TResponse, TFilter>
     : IRequest<Result<IReadOnlyList<TResponse>>>
     where TEntity : Entity
 {

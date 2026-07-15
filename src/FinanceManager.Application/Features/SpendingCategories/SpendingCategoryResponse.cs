@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FinanceManager.Application.Features.SpendingCategories;
 
-public sealed record SpendingCategoryResponse
+internal sealed record SpendingCategoryResponse
 {
     public int Id { get; init; }
     [Required]

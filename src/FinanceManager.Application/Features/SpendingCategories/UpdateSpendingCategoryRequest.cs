@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FinanceManager.Application.Features.SpendingCategories;
 
-public sealed record UpdateSpendingCategoryRequest
+internal sealed record UpdateSpendingCategoryRequest
 {
     [Required]
     [MaxLength(100)]

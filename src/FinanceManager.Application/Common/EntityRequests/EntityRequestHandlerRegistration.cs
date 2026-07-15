@@ -59,12 +59,12 @@ internal static class EntityRequestHandlerRegistration
         return serviceCollection;
     }
 
-    public static IServiceCollection AddSearchEntityHandler<TEntity, TFilter, TResponse>(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddSearchEntityHandler<TEntity, TResponse, TFilter>(this IServiceCollection serviceCollection)
         where TEntity : Entity
     {
         serviceCollection.AddTransient<
-            IRequestHandler<SearchEntityQuery<TEntity, TFilter, TResponse>, Result<IReadOnlyList<TResponse>>>,
-            SearchEntityHandler<TEntity, TFilter, TResponse>
+            IRequestHandler<SearchEntityQuery<TEntity, TResponse, TFilter>, Result<IReadOnlyList<TResponse>>>,
+            SearchEntityHandler<TEntity, TResponse, TFilter>
         >();
 
         EntityAssociationRegistry.Instance.For<TEntity>().Add(EntityAssociationFeature.EntitySearchFilter, typeof(TFilter));
@@ -77,8 +77,8 @@ internal static class EntityRequestHandlerRegistration
     where TEntity : Entity
     {
         serviceCollection.AddTransient<
-            IRequestHandler<SearchEntityQuery<TEntity, Unit, TResponse>, Result<IReadOnlyList<TResponse>>>,
-            SearchEntityHandler<TEntity, Unit, TResponse>
+            IRequestHandler<SearchEntityQuery<TEntity, TResponse, Unit>, Result<IReadOnlyList<TResponse>>>,
+            SearchEntityHandler<TEntity, TResponse, Unit>
         >();
 
         EntityAssociationRegistry.Instance.For<TEntity>().Add(EntityAssociationFeature.EntitySearchResponse, typeof(TResponse));

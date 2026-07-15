@@ -1,5 +1,6 @@
 using System.Reflection;
 using FinanceManager.Application.Abstractions;
+using FinanceManager.Domain.Common;
 using FinanceManager.Domain.FinancialAccounts;
 using FinanceManager.Domain.FinancialTransactions;
 using FinanceManager.Domain.PersonalInfos;
@@ -15,14 +16,22 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
     : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>(options),
     IApplicationDbContext, IUnitOfWork
 {
-    public DbSet<SpendingCategory> SpendingCategories => Set<SpendingCategory>();
-    public DbSet<PersonalInfo> PersonalInfos => Set<PersonalInfo>();
-    public DbSet<FinancialTransaction> FinancialTransactions => Set<FinancialTransaction>();
-    public DbSet<FinancialAccount> FinancialAccounts => Set<FinancialAccount>();
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        var entityTypes = typeof(Entity).Assembly
+            .GetTypes()
+            .Where(t =>
+                t.IsClass &&
+                !t.IsAbstract &&
+                typeof(Entity).IsAssignableFrom(t));
+
+        foreach (var type in entityTypes)
+        {
+            builder.Entity(type);
+        }
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
     }
 
     public Task BeginTransactionAsync(CancellationToken cancellationToken) => Database.BeginTransactionAsync(cancellationToken);
