@@ -25,6 +25,36 @@ Content-Type: application/json
 
 ###
 
+POST {{host}}/api/spendingcategories
+Content-Type: application/json
+
+{
+  "name": "Fun",
+  "description": "For fun"
+}
+
+###
+
+POST {{host}}/api/spendingcategories
+Content-Type: application/json
+
+{
+  "name": "Automotive",
+  "description": "For cars"
+}
+
+###
+
+POST {{host}}/api/spendingcategories
+Content-Type: application/json
+
+{
+  "name": "Gifts",
+  "description": "For others"
+}
+
+###
+
 PUT {{host}}/api/spendingcategories/2
 Content-Type: application/json
 
@@ -42,6 +72,26 @@ Accept: application/json
     "skip": 0,
     "take": 50,
     "filter": {
-        "nameContains": "d"
+        "nameContains": ""
+    }
+}
+
+###
+
+GET  {{host}}/api/autocomplete/spendingcategory/2
+Accept: application/json
+
+###
+
+POST  {{host}}/api/autocomplete/spendingcategory
+Content-Type: application/json
+Accept: application/json
+
+{
+    "skip": 0,
+    "take": 50,
+    "search": "- For f",
+    "filter": {
+        "nameContains": "Gro"
     }
 }

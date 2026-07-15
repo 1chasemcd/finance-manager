@@ -1,6 +1,5 @@
 using FinanceManager.Api.Endpoints;
 using FinanceManager.Application.Abstractions;
-using FinanceManager.Application.Common;
 using Microsoft.AspNetCore.Http.Json;
 using System.Text.Json.Serialization;
 
@@ -34,6 +33,7 @@ public sealed class Program
 
         RouteGroupBuilder api = app.MapGroup("/api");
         api.RegisterSpendingCategoryEndpoints();
+        api.RegisterAutocompleteEndpoints();
 
         app.Services
             .GetRequiredService<IEntityAssociationRegistry>()

@@ -164,6 +164,9 @@ dotnet_diagnostic.IDE0005.severity = suggestion
 # Match namespace to folder structure
 dotnet_diagnostic.IDE0130.severity = error
 
+# Dont suggest primary constructors
+dotnet_diagnostic.IDE0290.severity = none
+
 # Xml project files
 [*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,nativeproj,locproj}]
 indent_size = 2

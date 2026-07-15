@@ -1,15 +1,15 @@
 using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;
 using MediatR;
-using System.Diagnostics;
 using FinanceManager.Application.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinanceManager.Application.Common.EntityRequests.SearchEntity;
 
 internal sealed class SearchEntityHandler<TEntity, TFilter, TResponse>(
     IApplicationDbContext db,
     IExpressionMapper<TEntity, TResponse> mapper,
-        IEntityFilterHandler<TEntity, TFilter>? queryBuilder = null)
+    IEntityFilterHandler<TEntity, TFilter>? queryBuilder = null)
     : IRequestHandler<SearchEntityQuery<TEntity, TFilter, TResponse>, Result<IReadOnlyList<TResponse>>>
     where TEntity : Entity
 
@@ -26,8 +26,9 @@ internal sealed class SearchEntityHandler<TEntity, TFilter, TResponse>(
         else
             throw new InvalidOperationException(); // TODO log
 
-        return results.Skip(query.Skip)
+        return await results.Skip(query.Skip)
             .Take(query.Take)
-            .Select(mapper.Map).ToList();
+            .Select(mapper.Map)
+            .ToListAsync(cancellationToken);
     }
 }

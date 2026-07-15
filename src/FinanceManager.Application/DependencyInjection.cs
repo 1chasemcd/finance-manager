@@ -1,6 +1,7 @@
 using System.Reflection;
 using FinanceManager.Application.Abstractions;
 using FinanceManager.Application.Common;
+using FinanceManager.Application.Common.Autocomplete;
 using FinanceManager.Application.Common.EntityAssociations;
 using FinanceManager.Application.Common.EntityRequests;
 using FinanceManager.Application.Features.SpendingCategories;
@@ -23,6 +24,7 @@ public static class DependencyInjection
         });
 
         builder.Services.AddSingleton<IEntityAssociationRegistry>(EntityAssociationRegistry.Instance);
+        builder.Services.AddTransient<AutocompleteExpressionService>();
 
         builder.Services.AddAllImplementationsTransient(assembly, typeof(IMapper<,>));
         builder.Services.AddAllImplementationsTransient(assembly, typeof(IUpdateMapper<,>));
@@ -33,7 +35,9 @@ public static class DependencyInjection
         builder.Services.AddUpdateEntityHandler<SpendingCategory, UpdateSpendingCategoryRequest>();
         builder.Services.AddDeleteEntityHandler<SpendingCategory>();
         builder.Services.AddLookupEntityHandler<SpendingCategory, SpendingCategoryResponse>();
-        builder.Services.AddSearchEntityHandler<SpendingCategory, SpendingCategoryResponse>();
+        builder.Services.AddSearchEntityHandler<SpendingCategory, SpendingCategoryFilter, SpendingCategoryResponse>();
+
+        builder.Services.AddAutocompleteHandler<SpendingCategory>(x => x.Name + " - " + x.Description);
 
         return builder;
     }
