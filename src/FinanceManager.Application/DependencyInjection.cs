@@ -1,5 +1,5 @@
 using System.Reflection;
-using FinanceManager.Application.Abstractions.Services;
+using FinanceManager.Application.Abstractions;
 using FinanceManager.Application.Common.EntityAssociations;
 using FinanceManager.Application.Common.EntityRequests;
 using FinanceManager.Application.Features.SpendingCategories;

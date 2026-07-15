@@ -8,7 +8,7 @@ using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using FinanceManager.Application.Abstractions.Services;
+using FinanceManager.Application.Abstractions;
 
 namespace FinanceManager.Application.Common.EntityRequests;
 

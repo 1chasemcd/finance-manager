@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using FinanceManager.Application.Abstractions.Services;
+using FinanceManager.Application.Abstractions;
 using FinanceManager.Application.Common.EntityRequests.CreateEntity;
 using FinanceManager.Application.Common.EntityRequests.DeleteEntity;
 using FinanceManager.Application.Common.EntityRequests.LookupEntity;

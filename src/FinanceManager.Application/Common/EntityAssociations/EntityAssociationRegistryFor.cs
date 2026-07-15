@@ -1,5 +1,5 @@
 using System.Collections.Concurrent;
-using FinanceManager.Application.Abstractions.Services;
+using FinanceManager.Application.Abstractions;
 
 namespace FinanceManager.Application.Common.EntityAssociations;
 

@@ -1,9 +1,8 @@
-using FinanceManager.Application.Abstractions.Persistence;
 using FinanceManager.Application.Common.Errors;
 using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;
 using MediatR;
-using FinanceManager.Application.Abstractions.Services;
+using FinanceManager.Application.Abstractions;
 
 namespace FinanceManager.Application.Common.EntityRequests.UpdateEntity;
 

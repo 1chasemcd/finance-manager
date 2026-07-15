@@ -1,4 +1,4 @@
-using FinanceManager.Application.Abstractions.Persistence;
+using FinanceManager.Application.Abstractions;
 using FinanceManager.Application.Common.Errors;
 using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;

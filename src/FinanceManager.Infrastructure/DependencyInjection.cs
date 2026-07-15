@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using FinanceManager.Infrastructure.Data;
-using FinanceManager.Application.Abstractions.Persistence;
+using FinanceManager.Application.Abstractions;
 
 #pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection;

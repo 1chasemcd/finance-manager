@@ -1,5 +1,5 @@
 using System.Reflection;
-using FinanceManager.Application.Abstractions.Persistence;
+using FinanceManager.Application.Abstractions;
 using FinanceManager.Domain.FinancialAccounts;
 using FinanceManager.Domain.FinancialTransactions;
 using FinanceManager.Domain.PersonalInfos;
