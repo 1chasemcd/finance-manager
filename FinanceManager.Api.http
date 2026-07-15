@@ -5,7 +5,7 @@ Accept: application/json
 
 ###
 
-GET {{host}}/api/spendingcategories/1
+GET {{host}}/api/spendingcategories/2
 Accept: application/json
 
 ###
@@ -25,7 +25,7 @@ Content-Type: application/json
 
 ###
 
-PUT {{host}}/api/spendingcategories/3
+PUT {{host}}/api/spendingcategories/2
 Content-Type: application/json
 
 {
@@ -42,6 +42,6 @@ Accept: application/json
     "skip": 0,
     "take": 50,
     "filter": {
-        "nameContains": ""
+        "nameContains": "d"
     }
 }

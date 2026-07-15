@@ -12,6 +12,6 @@ static class SpendingCategoryEndpoints
         group.MapCreateEntity<SpendingCategory>(createdAt: RouteNames.GetSpendingCategory);
         group.MapUpdateEntity<SpendingCategory>();
         group.MapDeleteEntity<SpendingCategory>();
-        group.MapListEntities<SpendingCategory>();
+        group.MapSearchEntity<SpendingCategory>();
     }
 }

@@ -4,9 +4,9 @@ using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;
 using MediatR;
 
-namespace FinanceManager.Application.Common.EntityRequests.ListEntities;
+namespace FinanceManager.Application.Common.EntityRequests.SearchEntity;
 
-public sealed record ListEntitiesQuery<TEntity, TFilter, TResponse>
+public sealed record SearchEntityQuery<TEntity, TFilter, TResponse>
     : IRequest<Result<IReadOnlyList<TResponse>>>
     where TEntity : Entity
 {

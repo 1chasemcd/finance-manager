@@ -1,10 +1,12 @@
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using FinanceManager.Application.Abstractions.Services;
 using FinanceManager.Application.Common.EntityRequests.CreateEntity;
 using FinanceManager.Application.Common.EntityRequests.DeleteEntity;
-using FinanceManager.Application.Common.EntityRequests.ListEntities;
 using FinanceManager.Application.Common.EntityRequests.LookupEntity;
+using FinanceManager.Application.Common.EntityRequests.SearchEntity;
 using FinanceManager.Application.Common.EntityRequests.UpdateEntity;
 using FinanceManager.Domain.Common;
 using MediatR;
@@ -22,8 +24,8 @@ static class CommonEntityEndpoints
         where TEntity : Entity
     {
         pattern = ValidateRoutePattern(pattern);
-        var registry = endpoints.ServiceProvider.GetRequiredService<IEntityTypeImplementationRegistry>();
-        var requestType = registry.GetCreateEntityRequest<TEntity>();
+        var registry = endpoints.ServiceProvider.GetRequiredService<IEntityAssociationRegistry>();
+        var requestType = registry.For<TEntity>().GetRequired(EntityAssociationFeature.EntityCreateRequest);
         var method = typeof(CommonEntityEndpoints)
             .GetMethod(nameof(MapCreateEntityImpl), BindingFlags.Static | BindingFlags.NonPublic)!
             .GetGenericMethodDefinition().MakeGenericMethod(typeof(TEntity), requestType);
@@ -37,8 +39,8 @@ static class CommonEntityEndpoints
         where TEntity : Entity
     {
         pattern = ValidateRoutePattern(pattern);
-        var registry = endpoints.ServiceProvider.GetRequiredService<IEntityTypeImplementationRegistry>();
-        var requestType = registry.GetUpdateEntityRequest<TEntity>();
+        var registry = endpoints.ServiceProvider.GetRequiredService<IEntityAssociationRegistry>();
+        var requestType = registry.For<TEntity>().GetRequired(EntityAssociationFeature.EntityUpdateRequest);
         var method = typeof(CommonEntityEndpoints)
             .GetMethod(nameof(MapUpdateEntityImpl), BindingFlags.Static | BindingFlags.NonPublic)!
             .GetGenericMethodDefinition().MakeGenericMethod(typeof(TEntity), requestType);
@@ -64,8 +66,8 @@ static class CommonEntityEndpoints
     where TEntity : Entity
     {
         pattern = ValidateRoutePattern(pattern);
-        var registry = endpoints.ServiceProvider.GetRequiredService<IEntityTypeImplementationRegistry>();
-        var responseType = registry.GetEntityResponse<TEntity>();
+        var registry = endpoints.ServiceProvider.GetRequiredService<IEntityAssociationRegistry>();
+        var responseType = registry.For<TEntity>().GetRequired(EntityAssociationFeature.EntityLookupResponse);
         var method = typeof(CommonEntityEndpoints)
             .GetMethod(nameof(MapLookupEntityImpl), BindingFlags.Static | BindingFlags.NonPublic)!
             .GetGenericMethodDefinition().MakeGenericMethod(typeof(TEntity), responseType);
@@ -73,19 +75,27 @@ static class CommonEntityEndpoints
         return (RouteHandlerBuilder)method.Invoke(null, [endpoints, pattern])!;
     }
 
-    public static RouteHandlerBuilder MapListEntities<TEntity>(
+    public static RouteHandlerBuilder MapSearchEntity<TEntity>(
         this IEndpointRouteBuilder endpoints,
         [StringSyntax("Route")] string pattern = "/")
         where TEntity : Entity
     {
         pattern = ValidateRoutePattern(pattern);
-        var registry = endpoints.ServiceProvider.GetRequiredService<IEntityTypeImplementationRegistry>();
-        var filterType = registry.GetEntityFilter<TEntity>();
-        var responseType = registry.GetEntityResponse<TEntity>();
+        var registry = endpoints.ServiceProvider.GetRequiredService<IEntityAssociationRegistry>();
+        var filterType = registry.For<TEntity>().GetOptional(EntityAssociationFeature.EntitySearchFilter);
+        var responseType = registry.For<TEntity>().GetRequired(EntityAssociationFeature.EntitySearchResponse);
 
-        var method = typeof(CommonEntityEndpoints)
-            .GetMethod(nameof(MapListEntitiesImpl), BindingFlags.Static | BindingFlags.NonPublic)!
-            .GetGenericMethodDefinition().MakeGenericMethod(typeof(TEntity), filterType, responseType);
+        MethodInfo method;
+
+        if (filterType == null)
+            method = typeof(CommonEntityEndpoints)
+                .GetMethod(nameof(MapUnfilteredSearchEntityImpl), BindingFlags.Static | BindingFlags.NonPublic)!
+                .GetGenericMethodDefinition().MakeGenericMethod(typeof(TEntity), responseType);
+        else
+            method = typeof(CommonEntityEndpoints)
+                .GetMethod(nameof(MapSearchEntityImpl), BindingFlags.Static | BindingFlags.NonPublic)!
+                .GetGenericMethodDefinition().MakeGenericMethod(typeof(TEntity), filterType, responseType);
+
 
         return (RouteHandlerBuilder)method.Invoke(null, [endpoints, pattern])!;
     }
@@ -138,14 +148,30 @@ static class CommonEntityEndpoints
         );
     }
 
-    private static RouteHandlerBuilder MapListEntitiesImpl<TEntity, TFilter, TResponse>(
+    private static RouteHandlerBuilder MapSearchEntityImpl<TEntity, TFilter, TResponse>(
         IEndpointRouteBuilder endpoints,
         string pattern)
         where TEntity : Entity
     {
         return endpoints.MapPost($"{pattern}/list",
-            async ([FromBody] ListEntitiesQuery<TEntity, TFilter, TResponse> query,
+            async ([FromBody] SearchEntityQuery<TEntity, TFilter, TResponse> query,
             ISender sender) => (await sender.Send(query)).ToHttpResult()
+        );
+    }
+
+    private static RouteHandlerBuilder MapUnfilteredSearchEntityImpl<TEntity, TResponse>(
+    IEndpointRouteBuilder endpoints,
+    string pattern)
+    where TEntity : Entity
+    {
+        return endpoints.MapPost($"{pattern}/list",
+            async ([FromBody] UnfilteredSearchEntityRequest query,
+            ISender sender) => (await sender.Send(
+                new SearchEntityQuery<TEntity, Unit, TResponse>
+                {
+                    Take = query.Take,
+                    Skip = query.Skip
+                })).ToHttpResult()
         );
     }
 
@@ -153,5 +179,14 @@ static class CommonEntityEndpoints
     {
         pattern = pattern.TrimEnd('/');
         return pattern;
+    }
+
+    private sealed record UnfilteredSearchEntityRequest
+    {
+        [Range(0, 50)]
+        [DefaultValue(50)]
+        public int Take { get; init; } = 50;
+        [Range(0, int.MaxValue)]
+        public int Skip { get; init; }
     }
 }

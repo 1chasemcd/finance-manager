@@ -1,5 +1,6 @@
 using System.Reflection;
 using FinanceManager.Application.Abstractions.Services;
+using FinanceManager.Application.Common.EntityAssociations;
 using FinanceManager.Application.Common.EntityRequests;
 using FinanceManager.Application.Features.SpendingCategories;
 using FinanceManager.Domain.SpendingCategories;
@@ -20,7 +21,7 @@ public static class DependencyInjection
             cfg.RegisterServicesFromAssembly(assembly);
         });
 
-        builder.Services.AddSingleton<IEntityTypeImplementationRegistry>(EntityTypeImplementationRegistry.Instance);
+        builder.Services.AddSingleton<IEntityAssociationRegistry>(EntityAssociationRegistry.Instance);
 
         builder.Services.AddAllImplementationsTransient(assembly, typeof(IMapper<,>));
         builder.Services.AddAllImplementationsTransient(assembly, typeof(IUpdateMapper<,>));
@@ -31,7 +32,7 @@ public static class DependencyInjection
         builder.Services.AddUpdateEntityHandler<SpendingCategory, UpdateSpendingCategoryRequest>();
         builder.Services.AddDeleteEntityHandler<SpendingCategory>();
         builder.Services.AddLookupEntityHandler<SpendingCategory, SpendingCategoryResponse>();
-        builder.Services.AddListEntitiesHandler<SpendingCategory, SpendingCategoryFilter, SpendingCategoryResponse>();
+        builder.Services.AddSearchEntityHandler<SpendingCategory, SpendingCategoryResponse>();
 
         return builder;
     }

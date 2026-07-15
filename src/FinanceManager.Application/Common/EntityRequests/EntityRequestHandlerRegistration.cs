@@ -1,12 +1,14 @@
 using FinanceManager.Application.Common.EntityRequests.CreateEntity;
 using FinanceManager.Application.Common.EntityRequests.DeleteEntity;
-using FinanceManager.Application.Common.EntityRequests.ListEntities;
 using FinanceManager.Application.Common.EntityRequests.LookupEntity;
+using FinanceManager.Application.Common.EntityRequests.SearchEntity;
 using FinanceManager.Application.Common.EntityRequests.UpdateEntity;
+using FinanceManager.Application.Common.EntityAssociations;
 using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using FinanceManager.Application.Abstractions.Services;
 
 namespace FinanceManager.Application.Common.EntityRequests;
 
@@ -20,7 +22,7 @@ internal static class EntityRequestHandlerRegistration
             CreateEntityHandler<TEntity, TRequest>
         >();
 
-        EntityTypeImplementationRegistry.Instance.Add<TEntity, TRequest>(EntityTypeRegistryCategory.CreateEntityRequest);
+        EntityAssociationRegistry.Instance.For<TEntity>().Add(EntityAssociationFeature.EntityCreateRequest, typeof(TRequest));
         return serviceCollection;
     }
 
@@ -32,7 +34,7 @@ internal static class EntityRequestHandlerRegistration
             UpdateEntityHandler<TEntity, TRequest>
         >();
 
-        EntityTypeImplementationRegistry.Instance.Add<TEntity, TRequest>(EntityTypeRegistryCategory.UpdateEntityRequest);
+        EntityAssociationRegistry.Instance.For<TEntity>().Add(EntityAssociationFeature.EntityUpdateRequest, typeof(TRequest));
         return serviceCollection;
     }
 
@@ -53,20 +55,33 @@ internal static class EntityRequestHandlerRegistration
             LookupEntityHandler<TEntity, TResponse>
         >();
 
-        EntityTypeImplementationRegistry.Instance.Add<TEntity, TResponse>(EntityTypeRegistryCategory.EntityResponse);
+        EntityAssociationRegistry.Instance.For<TEntity>().Add(EntityAssociationFeature.EntityLookupResponse, typeof(TResponse));
         return serviceCollection;
     }
 
-    public static IServiceCollection AddListEntitiesHandler<TEntity, TFilter, TResponse>(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddSearchEntityHandler<TEntity, TFilter, TResponse>(this IServiceCollection serviceCollection)
         where TEntity : Entity
     {
         serviceCollection.AddTransient<
-            IRequestHandler<ListEntitiesQuery<TEntity, TFilter, TResponse>, Result<IReadOnlyList<TResponse>>>,
-            ListEntitiesHandler<TEntity, TFilter, TResponse>
+            IRequestHandler<SearchEntityQuery<TEntity, TFilter, TResponse>, Result<IReadOnlyList<TResponse>>>,
+            SearchEntityHandler<TEntity, TFilter, TResponse>
         >();
 
-        EntityTypeImplementationRegistry.Instance.Add<TEntity, TResponse>(EntityTypeRegistryCategory.EntityResponse);
-        EntityTypeImplementationRegistry.Instance.Add<TEntity, TFilter>(EntityTypeRegistryCategory.EntityFilter);
+        EntityAssociationRegistry.Instance.For<TEntity>().Add(EntityAssociationFeature.EntitySearchFilter, typeof(TFilter));
+        EntityAssociationRegistry.Instance.For<TEntity>().Add(EntityAssociationFeature.EntitySearchResponse, typeof(TResponse));
+
+        return serviceCollection;
+    }
+
+    public static IServiceCollection AddSearchEntityHandler<TEntity, TResponse>(this IServiceCollection serviceCollection)
+    where TEntity : Entity
+    {
+        serviceCollection.AddTransient<
+            IRequestHandler<SearchEntityQuery<TEntity, Unit, TResponse>, Result<IReadOnlyList<TResponse>>>,
+            SearchEntityHandler<TEntity, Unit, TResponse>
+        >();
+
+        EntityAssociationRegistry.Instance.For<TEntity>().Add(EntityAssociationFeature.EntitySearchResponse, typeof(TResponse));
 
         return serviceCollection;
     }

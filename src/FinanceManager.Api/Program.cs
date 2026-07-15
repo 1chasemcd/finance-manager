@@ -35,7 +35,7 @@ public sealed class Program
         api.RegisterSpendingCategoryEndpoints();
 
         app.Services
-            .GetRequiredService<IEntityTypeImplementationRegistry>()
+            .GetRequiredService<IEntityAssociationRegistry>()
             .Dispose();
 
         app.Run();
