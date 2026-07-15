@@ -5,7 +5,7 @@ namespace FinanceManager.Domain.SpendingCategories;
 public sealed class SpendingCategory : Entity
 {
     public string Name { get; private set; }
-    public string? Description { get; private set; }
+    public string? Description { get; set; }
     private SpendingCategory()
     {
         Name = null!;
@@ -21,8 +21,9 @@ public sealed class SpendingCategory : Entity
         return cat;
     }
 
-    public void UpdateDescription(string? newDescription)
+    public void UpdateName(string name)
     {
-        Description = newDescription;
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        Name = name;
     }
 }

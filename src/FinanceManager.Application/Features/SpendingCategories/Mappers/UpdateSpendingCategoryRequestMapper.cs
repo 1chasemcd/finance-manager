@@ -7,6 +7,7 @@ internal sealed class UpdateSpendingCategoryRequestMapper : IUpdateMapper<Update
 {
     public void Map(UpdateSpendingCategoryRequest source, SpendingCategory destination)
     {
-        destination.UpdateDescription(source.Description);
+        destination.UpdateName(source.Name);
+        destination.Description = source.Description;
     }
 }
