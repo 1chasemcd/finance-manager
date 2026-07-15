@@ -1,4 +1,5 @@
 using FinanceManager.Api.Common;
+using FinanceManager.Domain.FinancialAccounts;
 using FinanceManager.Domain.SpendingCategories;
 
 namespace FinanceManager.Api.Endpoints;
@@ -9,5 +10,6 @@ static class AutocompleteEndpoints
     {
         var group = endpoints.MapGroup("/autocomplete");
         group.MapAutocomplete<SpendingCategory>();
+        group.MapAutocomplete<FinancialAccount>();
     }
 }

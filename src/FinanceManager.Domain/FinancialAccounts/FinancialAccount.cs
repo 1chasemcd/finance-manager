@@ -5,18 +5,29 @@ namespace FinanceManager.Domain.FinancialAccounts;
 
 public sealed class FinancialAccount : Entity
 {
-    public string Name { get; private set; } = null!;
-    public int OwnerInfoId { get; private set; }
-    public PersonalInfo OwnerInfo { get; private set; } = null!;
+    public string Name { get; set; } = null!;
+    public int OwnerId { get; set; }
+    public PersonalInfo Owner { get; set; } = null!;
 
     private FinancialAccount() { }
-    public static FinancialAccount Create(string name, PersonalInfo ownerInfo)
+    public static FinancialAccount CreateWithOwner(string name, PersonalInfo owner)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
         return new()
         {
             Name = name,
-            OwnerInfo = ownerInfo,
-            OwnerInfoId = ownerInfo.Id
+            Owner = owner,
+            OwnerId = owner.Id
+        };
+    }
+
+    public static FinancialAccount CreateWithOwnerId(string name, int ownerId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        return new()
+        {
+            Name = name,
+            OwnerId = ownerId
         };
     }
 }

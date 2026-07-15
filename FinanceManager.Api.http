@@ -32,6 +32,29 @@ Accept: application/json
     "take": 50
 }
 
+### ACCOUNTS ###
+
+GET {{host}}/api/financialaccounts/1
+Accept: application/json
+
+###
+POST  {{host}}/api/financialaccounts/list
+Content-Type: application/json
+Accept: application/json
+
+{
+    "skip": 0,
+    "take": 50
+}
+
+###
+POST {{host}}/api/financialaccounts
+Content-Type: application/json
+
+{
+  "name": "Chase's CB Credit"
+}
+
 
 ### TRANSACTIONS ###
 
@@ -49,12 +72,12 @@ Accept: application/json
 }
 
 ### AUTOCOMPLETE ###
-GET  {{host}}/api/autocomplete/spendingcategory/1
+GET  {{host}}/api/autocomplete/financialaccount/1
 Accept: application/json
 
 ###
 
-POST  {{host}}/api/autocomplete/spendingcategory
+POST  {{host}}/api/autocomplete/financialaccount
 Content-Type: application/json
 Accept: application/json
 

@@ -30,11 +30,11 @@ internal sealed class DataSeedService(ApplicationDbContext context)
         await context.SaveChangesAsync();
 
         FinancialAccount[] accounts = [
-            FinancialAccount.Create("Chase Wells Fargo Credit", personalInfos[0]),
-            FinancialAccount.Create("Chase Fidelity Cash Management", personalInfos[0]),
-            FinancialAccount.Create("Hannah Discover Credit", personalInfos[1]),
-            FinancialAccount.Create("Hannah Fidelity Cash Management", personalInfos[1]),
-            FinancialAccount.Create("Hannah CB Credit", personalInfos[1]),
+            FinancialAccount.CreateWithOwner("Chase Wells Fargo Credit", personalInfos[0]),
+            FinancialAccount.CreateWithOwner("Chase Fidelity Cash Management", personalInfos[0]),
+            FinancialAccount.CreateWithOwner("Hannah Discover Credit", personalInfos[1]),
+            FinancialAccount.CreateWithOwner("Hannah Fidelity Cash Management", personalInfos[1]),
+            FinancialAccount.CreateWithOwner("Hannah CB Credit", personalInfos[1]),
         ];
 
         await context.AddRangeAsync(accounts);
