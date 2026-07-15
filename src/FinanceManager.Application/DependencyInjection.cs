@@ -1,5 +1,6 @@
 using System.Reflection;
 using FinanceManager.Application.Abstractions;
+using FinanceManager.Application.Common;
 using FinanceManager.Application.Common.EntityAssociations;
 using FinanceManager.Application.Common.EntityRequests;
 using FinanceManager.Application.Features.SpendingCategories;
@@ -35,37 +36,5 @@ public static class DependencyInjection
         builder.Services.AddSearchEntityHandler<SpendingCategory, SpendingCategoryResponse>();
 
         return builder;
-    }
-
-    private static IServiceCollection AddAllImplementationsTransient(
-    this IServiceCollection services,
-    Assembly assembly, Type mapperType)
-    {
-        IEnumerable<Type> mapperImplementations = assembly
-            .GetTypes()
-            .Where(t =>
-                t.IsClass &&
-                !t.IsAbstract &&
-                t.GetInterfaces()
-                 .Any(i =>
-                     i.IsGenericType &&
-                     i.GetGenericTypeDefinition() == mapperType));
-
-        foreach (Type implementation in mapperImplementations)
-        {
-            IEnumerable<Type> mapperInterfaces = implementation.GetInterfaces()
-                .Where(i =>
-                    i.IsGenericType &&
-                    i.GetGenericTypeDefinition() == mapperType);
-
-            foreach (Type mapperInterface in mapperInterfaces)
-            {
-                services.AddTransient(
-                    mapperInterface,
-                    implementation);
-            }
-        }
-
-        return services;
     }
 }

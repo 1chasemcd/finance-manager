@@ -1,5 +1,6 @@
 using FinanceManager.Api.Endpoints;
 using FinanceManager.Application.Abstractions;
+using FinanceManager.Application.Common;
 using Microsoft.AspNetCore.Http.Json;
 using System.Text.Json.Serialization;
 
