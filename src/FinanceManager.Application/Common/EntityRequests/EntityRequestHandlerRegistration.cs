@@ -48,18 +48,26 @@ internal static class EntityRequestHandlerRegistration
     public static IServiceCollection AddLookupEntityHandler<TEntity, TResponse>(this IServiceCollection serviceCollection)
         where TEntity : Entity
     {
-        return serviceCollection.AddTransient<
+        serviceCollection.AddTransient<
             IRequestHandler<LookupEntityQuery<TEntity, TResponse>, Result<TResponse>>,
             LookupEntityHandler<TEntity, TResponse>
         >();
+
+        EntityTypeImplementationRegistry.Instance.Add<TEntity, TResponse>(EntityTypeRegistryCategory.EntityResponse);
+        return serviceCollection;
     }
 
     public static IServiceCollection AddListEntitiesHandler<TEntity, TFilter, TResponse>(this IServiceCollection serviceCollection)
         where TEntity : Entity
     {
-        return serviceCollection.AddTransient<
+        serviceCollection.AddTransient<
             IRequestHandler<ListEntitiesQuery<TEntity, TFilter, TResponse>, Result<IReadOnlyList<TResponse>>>,
             ListEntitiesHandler<TEntity, TFilter, TResponse>
         >();
+
+        EntityTypeImplementationRegistry.Instance.Add<TEntity, TResponse>(EntityTypeRegistryCategory.EntityResponse);
+        EntityTypeImplementationRegistry.Instance.Add<TEntity, TFilter>(EntityTypeRegistryCategory.EntityFilter);
+
+        return serviceCollection;
     }
 }

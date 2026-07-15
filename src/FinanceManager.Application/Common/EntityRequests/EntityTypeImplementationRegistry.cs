@@ -39,8 +39,12 @@ internal sealed class EntityTypeImplementationRegistry : IEntityTypeImplementati
     internal void Add<TEntity, TType>(EntityTypeRegistryCategory category)
     {
         _map.AddOrUpdate(Key(typeof(TEntity), category), typeof(TType),
-            (key, existing) => throw new InvalidOperationException(
-                $"Already had a registration for {key}"));
+            (key, existing) =>
+            {
+                if (existing != typeof(TType))
+                    throw new InvalidOperationException($"Already had a registration for {key}");
+                return typeof(TType);
+            });
     }
 
     private static Tuple<Type, EntityTypeRegistryCategory> Key(

@@ -52,9 +52,9 @@ static class CommonEntityEndpoints
         where TEntity : Entity
     {
         pattern = ValidateRoutePattern(pattern);
-        return endpoints.MapDelete(pattern,
-            async (DeleteEntityCommand<TEntity> request, ISender sender)
-                => (await sender.Send(request)).ToHttpResult()
+        return endpoints.MapDelete($"{pattern}/{{id}}",
+            async (int id, ISender sender)
+                => (await sender.Send(new DeleteEntityCommand<TEntity>(id))).ToHttpResult()
         );
     }
 
@@ -115,10 +115,10 @@ static class CommonEntityEndpoints
         string pattern)
         where TEntity : Entity
     {
-        return endpoints.MapPut($"pattern/{{id}}",
+        return endpoints.MapPut($"{pattern}/{{id}}",
             async (int id, [FromBody] TRequest request, ISender sender) =>
             {
-                var command = new UpdateEntityCommand<Entity, TRequest>(id, request);
+                var command = new UpdateEntityCommand<TEntity, TRequest>(id, request);
                 return (await sender.Send(command)).ToHttpResult();
             }
         );
@@ -132,7 +132,7 @@ static class CommonEntityEndpoints
         return endpoints.MapGet($"{pattern}/{{id}}",
             async (int id, ISender sender) =>
             {
-                var query = new LookupEntityQuery<Entity, TResponse>(id);
+                var query = new LookupEntityQuery<TEntity, TResponse>(id);
                 return (await sender.Send(query)).ToHttpResult();
             }
         );
@@ -143,8 +143,8 @@ static class CommonEntityEndpoints
         string pattern)
         where TEntity : Entity
     {
-        return endpoints.MapGet($"{pattern}/list",
-            async ([FromBody] ListEntitiesQuery<Entity, TFilter, TResponse> query,
+        return endpoints.MapPost($"{pattern}/list",
+            async ([FromBody] ListEntitiesQuery<TEntity, TFilter, TResponse> query,
             ISender sender) => (await sender.Send(query)).ToHttpResult()
         );
     }

@@ -19,17 +19,16 @@ POST {{host}}/api/spendingcategories
 Content-Type: application/json
 
 {
-  "name": "Fun",
-  "description": ""
+  "name": "Groceries",
+  "description": "For food"
 }
 
 ###
 
-PUT {{host}}/api/spendingcategories
+PUT {{host}}/api/spendingcategories/3
 Content-Type: application/json
 
 {
-  "id": 1,
   "description": "Food and household items2"
 }
 
@@ -41,6 +40,8 @@ Accept: application/json
 
 {
     "skip": 0,
-    "take": 60
-//   , "nameContains": "Gr"
+    "take": 50,
+    "filter": {
+        "nameContains": ""
+    }
 }
