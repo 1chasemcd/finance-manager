@@ -35,9 +35,8 @@ public static class DependencyInjection
         builder.Services.AddUpdateEntityHandler<SpendingCategory, UpdateSpendingCategoryRequest>();
         builder.Services.AddDeleteEntityHandler<SpendingCategory>();
         builder.Services.AddLookupEntityHandler<SpendingCategory, SpendingCategoryResponse>();
-        builder.Services.AddSearchEntityHandler<SpendingCategory, SpendingCategoryFilter, SpendingCategoryResponse>();
-
-        builder.Services.AddAutocompleteHandler<SpendingCategory>(x => x.Name + " - " + x.Description);
+        builder.Services.AddSearchEntityHandler<SpendingCategory, SpendingCategoryResponse>();
+        builder.Services.AddAutocompleteHandler<SpendingCategory>(x => x.Name);
 
         return builder;
     }
