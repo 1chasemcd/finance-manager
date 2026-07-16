@@ -9,6 +9,7 @@ internal sealed record FinancialAccountResponseMapper : IExpressionMapper<Financ
     public Expression<Func<FinancialAccount, FinancialAccountResponse>> Map
         => x => new FinancialAccountResponse
         {
+            Id = x.Id,
             Name = x.Name,
             OwnerId = x.OwnerId,
             OwnerName = x.Owner.FirstName + " " + x.Owner.LastName

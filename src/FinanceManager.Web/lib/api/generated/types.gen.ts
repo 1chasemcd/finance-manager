@@ -10,6 +10,7 @@ export type AutocompleteQueryResponse = {
 };
 
 export type FinancialAccountResponse = {
+    id?: number;
     name: string;
     ownerId?: number;
     ownerName: string;
