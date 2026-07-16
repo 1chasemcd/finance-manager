@@ -9,6 +9,7 @@ internal sealed class FinancialTransactionResponseMapper : IExpressionMapper<Fin
     public Expression<Func<FinancialTransaction, FinancialTransactionResponse>> Map
         => (source) => new FinancialTransactionResponse()
         {
+            Id = source.Id,
             Amount = source.Amount,
             Date = source.Date,
             Summary = source.Summary,

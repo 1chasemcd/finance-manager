@@ -2,6 +2,7 @@ namespace FinanceManager.Application.Features.FinancialTransactions.Query;
 
 internal sealed record FinancialTransactionResponse
 {
+    public int Id { get; init; }
     public decimal Amount { get; init; }
     public DateTimeOffset Date { get; init; }
     public required string Summary { get; init; }
