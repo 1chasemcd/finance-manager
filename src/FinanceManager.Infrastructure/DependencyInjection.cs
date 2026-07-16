@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using FinanceManager.Infrastructure.Data;
 using FinanceManager.Application.Abstractions;
+using System.Reflection;
 
 #pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection;
@@ -12,24 +13,28 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
 {
-    public static void AddInfrastructureServices(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddInfrastructureServices(this IHostApplicationBuilder builder)
     {
-        if (builder.Environment.IsDevelopment())
-        {
-            builder.Services.AddScoped<DataSeedService>();
-            builder.Services.AddInMemoryDb();
-        }
-        else
-        {
-            string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException("Missing required configuration: ConnectionStrings:DefaultConnection");
+        var openapiMode = Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
 
-            builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
+        if (!openapiMode)
+        {
+            if (builder.Environment.IsDevelopment())
             {
-                options.UseSqlite(connectionString);
-            });
-        }
+                builder.Services.AddInMemoryDb()
+                    .SeedData().Wait();
+            }
+            else
+            {
+                string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                ?? throw new InvalidOperationException("Missing required configuration: ConnectionStrings:DefaultConnection");
 
+                builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
+                {
+                    options.UseSqlite(connectionString);
+                });
+            }
+        }
 
         builder.Services
             .AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>())
@@ -43,12 +48,7 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
         builder.Services.AddSingleton(TimeProvider.System);
-    }
 
-    public static async Task SeedDataAsync(this IServiceProvider services)
-    {
-        using IServiceScope scope = services.CreateScope();
-        DataSeedService seedService = scope.ServiceProvider.GetRequiredService<DataSeedService>();
-        await seedService.SeedAsync();
+        return builder;
     }
 }

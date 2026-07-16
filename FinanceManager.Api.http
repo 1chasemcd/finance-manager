@@ -20,13 +20,14 @@ Content-Type: application/json
 PUT {{host}}/api/spendingcategories/2
 Content-Type: application/json
 {
-  "name": ""
+  "name": "",
   "description": "Food and household items2"
 }
 ###
 POST  {{host}}/api/spendingcategories/list
 Content-Type: application/json
 Accept: application/json
+
 {
     "skip": 0,
     "take": 50

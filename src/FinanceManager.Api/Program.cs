@@ -2,6 +2,7 @@ using FinanceManager.Api.Endpoints;
 using FinanceManager.Application.Abstractions;
 using MicroElements.AspNetCore.OpenApi.FluentValidation;
 using Microsoft.AspNetCore.Http.Json;
+using System.Reflection;
 using System.Text.Json.Serialization;
 
 namespace FinanceManager.Api;
@@ -11,9 +12,10 @@ public sealed class Program
     public static async Task Main(string[] args)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
         builder
-            .AddApplicationServices()
-            .AddInfrastructureServices();
+            .AddInfrastructureServices()
+            .AddApplicationServices();
 
         builder.Services.AddFluentValidationRulesToOpenApi();
         builder.Services.AddOpenApi(options =>
@@ -29,8 +31,8 @@ public sealed class Program
 
         WebApplication app = builder.Build();
 
-        if (app.Environment.IsDevelopment())
-            app.MapOpenApi();
+        // if (app.Environment.IsDevelopment())
+        app.MapOpenApi();
 
         app.UseHttpsRedirection();
 
