@@ -9,6 +9,7 @@ using FinanceManager.Domain.Common;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using FinanceManager.Application.Abstractions;
+using FluentValidation;
 
 namespace FinanceManager.Application.Common.EntityRequests;
 
@@ -22,6 +23,11 @@ internal static class EntityRequestHandlerRegistration
             CreateEntityHandler<TEntity, TRequest>
         >();
 
+        serviceCollection.AddTransient<
+            IValidator<CreateEntityCommand<TEntity, TRequest>>,
+            CreateEntityCommandValidator<TEntity, TRequest>
+        >();
+
         EntityAssociationRegistry.Instance.For<TEntity>().Add(EntityAssociationFeature.EntityCreateRequest, typeof(TRequest));
         return serviceCollection;
     }
@@ -32,6 +38,11 @@ internal static class EntityRequestHandlerRegistration
         serviceCollection.AddTransient<
             IRequestHandler<UpdateEntityCommand<TEntity, TRequest>, Result>,
             UpdateEntityHandler<TEntity, TRequest>
+        >();
+
+        serviceCollection.AddTransient<
+            IValidator<UpdateEntityCommand<TEntity, TRequest>>,
+            UpdateEntityCommandValidator<TEntity, TRequest>
         >();
 
         EntityAssociationRegistry.Instance.For<TEntity>().Add(EntityAssociationFeature.EntityUpdateRequest, typeof(TRequest));
@@ -67,6 +78,11 @@ internal static class EntityRequestHandlerRegistration
             SearchEntityHandler<TEntity, TResponse, TFilter>
         >();
 
+        serviceCollection.AddTransient<
+            IValidator<SearchEntityQuery<TEntity, TResponse, TFilter>>,
+            SearchEntityQueryValidator<TEntity, TResponse, TFilter>
+        >();
+
         EntityAssociationRegistry.Instance.For<TEntity>().Add(EntityAssociationFeature.EntitySearchFilter, typeof(TFilter));
         EntityAssociationRegistry.Instance.For<TEntity>().Add(EntityAssociationFeature.EntitySearchResponse, typeof(TResponse));
 
@@ -79,6 +95,11 @@ internal static class EntityRequestHandlerRegistration
         serviceCollection.AddTransient<
             IRequestHandler<SearchEntityQuery<TEntity, TResponse, Unit>, Result<IReadOnlyList<TResponse>>>,
             SearchEntityHandler<TEntity, TResponse, Unit>
+        >();
+
+        serviceCollection.AddTransient<
+            IValidator<SearchEntityQuery<TEntity, TResponse, Unit>>,
+            SearchEntityQueryValidator<TEntity, TResponse, Unit>
         >();
 
         EntityAssociationRegistry.Instance.For<TEntity>().Add(EntityAssociationFeature.EntitySearchResponse, typeof(TResponse));

@@ -1,8 +1,0 @@
-namespace FinanceManager.Application.Features.SpendingCategories;
-
-internal sealed record UpdateSpendingCategoryRequest
-{
-    public required string Name { get; init; }
-    public string? Description { get; init; }
-}
-
