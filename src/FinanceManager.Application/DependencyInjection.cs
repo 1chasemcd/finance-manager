@@ -2,6 +2,7 @@ using System.Reflection;
 using FinanceManager.Application.Abstractions;
 using FinanceManager.Application.Common;
 using FinanceManager.Application.Common.Autocomplete;
+using FinanceManager.Application.Common.Behaviors;
 using FinanceManager.Application.Common.EntityAssociations;
 using FinanceManager.Application.Common.EntityRequests;
 using FinanceManager.Application.Features.FinancialAccounts;
@@ -10,6 +11,7 @@ using FinanceManager.Application.Features.SpendingCategories;
 using FinanceManager.Domain.FinancialAccounts;
 using FinanceManager.Domain.FinancialTransactions;
 using FinanceManager.Domain.SpendingCategories;
+using FluentValidation;
 using Microsoft.Extensions.Hosting;
 
 #pragma warning disable IDE0130
@@ -25,7 +27,11 @@ public static class DependencyInjection
         builder.Services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(assembly);
+
+            cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
+
+        builder.Services.AddValidatorsFromAssembly(assembly);
 
         builder.Services.AddSingleton<IEntityAssociationRegistry>(EntityAssociationRegistry.Instance);
         builder.Services.AddTransient<AutocompleteExpressionService>();

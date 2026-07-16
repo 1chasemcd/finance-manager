@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using FinanceManager.Application.Abstractions;
 using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;

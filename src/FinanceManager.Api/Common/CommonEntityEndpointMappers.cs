@@ -1,5 +1,3 @@
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using FinanceManager.Application.Abstractions;
@@ -188,10 +186,7 @@ static class CommonEntityEndpoints
 
     private sealed record UnfilteredSearchEntityRequest
     {
-        [Range(0, 50)]
-        [DefaultValue(50)]
         public int Take { get; init; } = 50;
-        [Range(0, int.MaxValue)]
         public int Skip { get; init; }
     }
 }

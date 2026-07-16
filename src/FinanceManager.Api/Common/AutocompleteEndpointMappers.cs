@@ -1,5 +1,3 @@
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using FinanceManager.Application.Abstractions;
 using FinanceManager.Application.Common.Autocomplete.Search;
@@ -80,12 +78,8 @@ static class AutocompleteEndpoints
 
     private sealed record UnfilteredSearchEntityRequest
     {
-        [MaxLength(500)]
         public required string Search { get; init; }
-        [Range(0, 50)]
-        [DefaultValue(50)]
         public int Take { get; init; } = 50;
-        [Range(0, int.MaxValue)]
         public int Skip { get; init; }
     }
 }

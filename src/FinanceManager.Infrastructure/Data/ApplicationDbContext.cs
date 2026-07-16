@@ -1,10 +1,6 @@
 using System.Reflection;
 using FinanceManager.Application.Abstractions;
 using FinanceManager.Domain.Common;
-using FinanceManager.Domain.FinancialAccounts;
-using FinanceManager.Domain.FinancialTransactions;
-using FinanceManager.Domain.PersonalInfos;
-using FinanceManager.Domain.SpendingCategories;
 using FinanceManager.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

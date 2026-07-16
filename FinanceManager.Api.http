@@ -52,7 +52,8 @@ POST {{host}}/api/financialaccounts
 Content-Type: application/json
 
 {
-  "name": "Chase's CB Credit"
+  "name": null,
+  "ownerId": 1
 }
 
 
