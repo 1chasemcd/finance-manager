@@ -3,10 +3,10 @@ using FinanceManager.Domain.SpendingCategories;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace FinanceManager.Application.Features.SpendingCategories.Create;
+namespace FinanceManager.Application.Features.SpendingCategories.Write;
 
 public sealed class CreateSpendingCategoryValidator
-    : AbstractValidator<CreateSpendingCategoryRequest>
+    : AbstractValidator<WriteSpendingCategoryRequest>
 {
     private readonly IApplicationDbContext _db;
     public CreateSpendingCategoryValidator(IApplicationDbContext db)

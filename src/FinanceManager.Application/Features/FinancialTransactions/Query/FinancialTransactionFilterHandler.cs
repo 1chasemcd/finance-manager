@@ -1,7 +1,7 @@
 using FinanceManager.Application.Abstractions;
 using FinanceManager.Domain.FinancialTransactions;
 
-namespace FinanceManager.Application.Features.FinancialTransactions;
+namespace FinanceManager.Application.Features.FinancialTransactions.Query;
 
 internal sealed class FinancialTransactionFilterHandler : IEntityFilterHandler<FinancialTransaction, FinancialTransactionFilter>
 {

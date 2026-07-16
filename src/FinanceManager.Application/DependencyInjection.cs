@@ -5,16 +5,16 @@ using FinanceManager.Application.Common.Autocomplete;
 using FinanceManager.Application.Common.Behaviors;
 using FinanceManager.Application.Common.EntityAssociations;
 using FinanceManager.Application.Common.EntityRequests;
-using FinanceManager.Application.Features.FinancialAccounts;
-using FinanceManager.Application.Features.FinancialTransactions;
-using FinanceManager.Application.Features.SpendingCategories.Create;
-using FinanceManager.Application.Features.SpendingCategories.Response;
-using FinanceManager.Application.Features.SpendingCategories.Update;
+using FinanceManager.Application.Features.FinancialAccounts.Query;
+using FinanceManager.Application.Features.FinancialAccounts.Write;
+using FinanceManager.Application.Features.SpendingCategories.Write;
+using FinanceManager.Application.Features.SpendingCategories.Query;
 using FinanceManager.Domain.FinancialAccounts;
 using FinanceManager.Domain.FinancialTransactions;
 using FinanceManager.Domain.SpendingCategories;
 using FluentValidation;
 using Microsoft.Extensions.Hosting;
+using FinanceManager.Application.Features.FinancialTransactions.Query;
 
 #pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection;
@@ -43,15 +43,15 @@ public static class DependencyInjection
         builder.Services.AddAllImplementationsTransient(assembly, typeof(IExpressionMapper<,>));
         builder.Services.AddAllImplementationsTransient(assembly, typeof(IEntityFilterHandler<,>));
 
-        builder.Services.AddCreateEntityHandler<SpendingCategory, CreateSpendingCategoryRequest>();
-        builder.Services.AddUpdateEntityHandler<SpendingCategory, UpdateSpendingCategoryRequest>();
+        builder.Services.AddCreateEntityHandler<SpendingCategory, WriteSpendingCategoryRequest>();
+        builder.Services.AddUpdateEntityHandler<SpendingCategory, WriteSpendingCategoryRequest>();
         builder.Services.AddLookupEntityHandler<SpendingCategory, SpendingCategoryResponse>();
         builder.Services.AddSearchEntityHandler<SpendingCategory, SpendingCategoryResponse>();
         builder.Services.AddDeleteEntityHandler<SpendingCategory>();
         builder.Services.AddAutocompleteHandler<SpendingCategory>(x => x.Name);
 
-        builder.Services.AddCreateEntityHandler<FinancialAccount, CreateFinancialAccountRequest>();
-        builder.Services.AddUpdateEntityHandler<FinancialAccount, UpdateFinancialAccountRequest>();
+        builder.Services.AddCreateEntityHandler<FinancialAccount, WriteFinancialAccountRequest>();
+        builder.Services.AddUpdateEntityHandler<FinancialAccount, WriteFinancialAccountRequest>();
         builder.Services.AddLookupEntityHandler<FinancialAccount, FinancialAccountResponse>();
         builder.Services.AddSearchEntityHandler<FinancialAccount, FinancialAccountResponse>();
         builder.Services.AddDeleteEntityHandler<FinancialAccount>();

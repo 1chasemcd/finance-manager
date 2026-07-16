@@ -1,4 +1,4 @@
-namespace FinanceManager.Application.Features.SpendingCategories.Response;
+namespace FinanceManager.Application.Features.SpendingCategories.Query;
 
 public sealed record SpendingCategoryResponse
 {

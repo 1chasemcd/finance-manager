@@ -1,4 +1,4 @@
-namespace FinanceManager.Application.Features.FinancialTransactions;
+namespace FinanceManager.Application.Features.FinancialTransactions.Query;
 
 internal sealed record FinancialTransactionResponse
 {

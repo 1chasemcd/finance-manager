@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using FinanceManager.Application.Abstractions;
 using FinanceManager.Domain.FinancialAccounts;
 
-namespace FinanceManager.Application.Features.FinancialAccounts.Mappers;
+namespace FinanceManager.Application.Features.FinancialAccounts.Query;
 
 internal sealed record FinancialAccountResponseMapper : IExpressionMapper<FinancialAccount, FinancialAccountResponse>
 {

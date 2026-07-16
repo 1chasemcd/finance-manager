@@ -3,6 +3,7 @@ using FinanceManager.Application.Common.Autocomplete.Search;
 using FinanceManager.Application.Common.Autocomplete.Single;
 using FinanceManager.Application.Common.Results;
 using FinanceManager.Domain.Common;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,6 +26,11 @@ internal static class AutocompleteHandlerRegistration
             IRequestHandler<AutocompleteSingleQuery<TEntity>, Result<AutocompleteQueryResponse>>,
             AutocompleteSingleHandler<TEntity>
         >();
+        services.AddTransient<
+            IValidator<AutocompleteSearchQuery<TEntity, Unit>>,
+            AutocompleteSearchValidator<TEntity, Unit>
+        >();
+
         return services;
     }
 
@@ -43,6 +49,11 @@ internal static class AutocompleteHandlerRegistration
             IRequestHandler<AutocompleteSingleQuery<TEntity>, Result<AutocompleteQueryResponse>>,
             AutocompleteSingleHandler<TEntity>
         >();
+        services.AddTransient<
+            IValidator<AutocompleteSearchQuery<TEntity, TFilter>>,
+            AutocompleteSearchValidator<TEntity, TFilter>
+        >();
+
         return services;
     }
 }

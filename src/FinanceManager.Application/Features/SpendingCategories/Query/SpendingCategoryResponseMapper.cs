@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using FinanceManager.Application.Abstractions;
 using FinanceManager.Domain.SpendingCategories;
 
-namespace FinanceManager.Application.Features.SpendingCategories.Response;
+namespace FinanceManager.Application.Features.SpendingCategories.Query;
 
 internal sealed class SpendingCategoryResponseMapper : IExpressionMapper<SpendingCategory, SpendingCategoryResponse>
 {
