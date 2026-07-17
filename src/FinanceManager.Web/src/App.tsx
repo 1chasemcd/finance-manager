@@ -20,9 +20,9 @@ export function App() {
           <Route path="/import" element={<Import />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/budget" element={<Budget />} />
-          <Route path="/patterns" element={<Patterns />} />
           <Route path="/accounts" element={<Accounts />} />
           <Route path="/importdefs" element={<ImportDefinitions />} />
+          <Route path="/patterns" element={<Patterns />} />
           <Route path="/people" element={<People />} />
         </Route>
       </Routes>

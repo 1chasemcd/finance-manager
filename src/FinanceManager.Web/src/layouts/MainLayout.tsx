@@ -1,14 +1,20 @@
-import Sidebar from "@/components/Sidebar"
+import MainSidebar from "@/components/MainSidebar"
+import PageHeader from "@/components/PageHeader"
+import { SidebarProvider } from "@/components/ui/sidebar"
+import { PageHeaderProvider } from "@/contexts/PageHeaderContext"
 import { Outlet } from "react-router-dom"
 
 export default function MainLayout() {
   return (
-    <>
-      <Sidebar />
+    <SidebarProvider>
+      <MainSidebar />
 
-      <main className="mx-auto max-w-7xl p-6">
-        <Outlet />
+      <main className="flex-1">
+        <PageHeaderProvider>
+          <PageHeader />
+          <Outlet />
+        </PageHeaderProvider>
       </main>
-    </>
+    </SidebarProvider>
   )
 }
