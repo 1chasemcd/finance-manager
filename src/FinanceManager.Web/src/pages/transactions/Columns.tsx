@@ -7,11 +7,19 @@ export const columns: ColumnDef<FinancialTransactionResponse>[] = [
     header: "Date",
   },
   {
-    accessorKey: "email",
-    header: "Email",
-  },
-  {
     accessorKey: "amount",
     header: "Amount",
+  },
+  {
+    accessorKey: "summary",
+    header: "Summary",
+  },
+  {
+    accessorKey: "spendingCategoryName",
+    header: "Category",
+  },
+  {
+    accessorKey: "financialAccountName",
+    header: "Account",
   },
 ]
