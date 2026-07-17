@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu"
 import { Button } from "./ui/button"
-import { usePageHeader } from "@/contexts/PageHeaderContext"
+import { usePageHeader } from "@/providers/PageHeaderProvider"
 
 export default function PageHeader() {
   const headerContext = usePageHeader()

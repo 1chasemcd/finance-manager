@@ -1,11 +1,23 @@
-import type { PageHeaderAction } from "@/lib/models/page-header-action"
-import type { PageHeaderContextState } from "@/lib/models/page-header-context-state"
 import {
   createContext,
   useContext,
   useState,
+  type Dispatch,
   type PropsWithChildren,
+  type SetStateAction,
 } from "react"
+
+export type PageHeaderAction = {
+  label: string
+  callback: () => void
+}
+
+export type PageHeaderContextState = {
+  title: string
+  setTitle: Dispatch<SetStateAction<string>>
+  actions?: PageHeaderAction[] | undefined
+  setActions: Dispatch<SetStateAction<PageHeaderAction[] | undefined>>
+}
 
 const PageHeaderContext = createContext<PageHeaderContextState | null>(null)
 

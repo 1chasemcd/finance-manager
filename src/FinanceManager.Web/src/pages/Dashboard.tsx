@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { usePageHeader } from "@/contexts/PageHeaderContext"
+import { usePageHeader } from "@/providers/PageHeaderProvider"
 import { useEffect } from "react"
 
 function Dashboard() {

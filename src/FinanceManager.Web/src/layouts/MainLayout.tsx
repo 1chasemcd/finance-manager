@@ -1,7 +1,7 @@
 import MainSidebar from "@/components/MainSidebar"
 import PageHeader from "@/components/PageHeader"
 import { SidebarProvider } from "@/components/ui/sidebar"
-import { PageHeaderProvider } from "@/contexts/PageHeaderContext"
+import { PageHeaderProvider } from "@/providers/PageHeaderProvider"
 import { Outlet } from "react-router-dom"
 
 export default function MainLayout() {
