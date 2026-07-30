@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Next.js: Debug",
+      "name": "Debug Frontend",
       "type": "node-terminal",
       "request": "launch",
       "command": "npm --prefix src/FinanceManager.Web run dev"

@@ -1,15 +1,13 @@
 import { type ColumnDef } from "@tanstack/react-table"
 import { type FinancialTransactionResponse } from "@/lib/api/generated/types.gen"
+import {
+  currencyColumn,
+  dateonlyColumn,
+} from "@/components/data-table/column-helpers"
 
 export const columns: ColumnDef<FinancialTransactionResponse>[] = [
-  {
-    accessorKey: "date",
-    header: "Date",
-  },
-  {
-    accessorKey: "amount",
-    header: "Amount",
-  },
+  dateonlyColumn("date", "Date"),
+  currencyColumn("amount", "Amount"),
   {
     accessorKey: "summary",
     header: "Summary",
