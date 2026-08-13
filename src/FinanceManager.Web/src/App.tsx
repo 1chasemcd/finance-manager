@@ -1,20 +1,20 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom"
-import MainLayout from "./layouts/MainLayout"
-import Dashboard from "./pages/Dashboard"
-import Transactions from "./pages/transactions/Transactions"
-import Import from "./pages/Import"
-import Categories from "./pages/Categories"
-import Budget from "./pages/Budget"
-import Patterns from "./pages/Patterns"
-import Accounts from "./pages/Accounts"
-import People from "./pages/People"
-import ImportDefinitions from "./pages/ImportDefinitions"
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import AppLayout from "./layouts/AppLayout";
+import Dashboard from "./pages/Dashboard";
+import Transactions from "./pages/Transactions";
+import Import from "./pages/Import";
+import Categories from "./pages/Categories";
+import Budget from "./pages/Budget";
+import Patterns from "./pages/Patterns";
+import Accounts from "./pages/Accounts";
+import People from "./pages/People";
+import ImportDefinitions from "./pages/ImportDefinitions";
 
 export function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<MainLayout />}>
+        <Route element={<AppLayout />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/transactions" element={<Transactions />} />
           <Route path="/import" element={<Import />} />
@@ -27,7 +27,7 @@ export function App() {
         </Route>
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;

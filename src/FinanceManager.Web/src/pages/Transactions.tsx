@@ -1,6 +1,4 @@
-import type { FinancialTransactionResponse } from "@/lib/api/generated"
-import { columns } from "./Columns"
-import { DataTable } from "@/components/data-table/DataTable"
+import type { FinancialTransactionResponse } from "@/lib/api/generated";
 
 function getData(): FinancialTransactionResponse[] {
   // Fetch data from your API here.
@@ -45,15 +43,11 @@ function getData(): FinancialTransactionResponse[] {
       spendingCategoryName: "Health",
       spendingCategoryId: 4,
     },
-  ]
+  ];
 }
 
 export default function Transactions() {
-  const data = getData()
+  const _ = getData();
 
-  return (
-    <div className="container mx-auto p-5">
-      <DataTable columns={columns} data={data} />
-    </div>
-  )
+  return <>Transactions Works!</>;
 }
