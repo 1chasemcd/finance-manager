@@ -16,7 +16,7 @@ internal sealed class SearchEntityHandler<TEntity, TResponse, TFilter>(
 {
     public async Task<Result<IReadOnlyList<TResponse>>> Handle(SearchEntityQuery<TEntity, TResponse, TFilter> query, CancellationToken cancellationToken)
     {
-        var entities = db.Set<TEntity>().AsNoTracking();
+        var entities = db.Set<TEntity>().AsNoTracking().OrderBy(x => x.Id);
         IQueryable<TEntity> results;
 
         if (EqualityComparer<TFilter>.Default.Equals(query.Filter, default))

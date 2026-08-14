@@ -10,7 +10,7 @@
         "tags": [
           "FinanceManager.Api"
         ],
-        "operationId": "GetSpendingCategory",
+        "operationId": "LookupSpendingCategory",
         "parameters": [
           {
             "name": "id",
@@ -69,6 +69,7 @@
         "tags": [
           "FinanceManager.Api"
         ],
+        "operationId": "UpdateSpendingCategory",
         "parameters": [
           {
             "name": "id",
@@ -129,6 +130,7 @@
         "tags": [
           "FinanceManager.Api"
         ],
+        "operationId": "DeleteSpendingCategory",
         "parameters": [
           {
             "name": "id",
@@ -182,6 +184,7 @@
         "tags": [
           "FinanceManager.Api"
         ],
+        "operationId": "CreateSpendingCategory",
         "requestBody": {
           "content": {
             "application/json": {
@@ -226,23 +229,32 @@
             }
           }
         }
-      }
-    },
-    "/api/spendingcategories/list": {
-      "post": {
+      },
+      "get": {
         "tags": [
           "FinanceManager.Api"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UnfilteredSearchEntityRequest"
-              }
+        "operationId": "SearchSpendingCategory",
+        "parameters": [
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
             }
           },
-          "required": true
-        },
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -295,6 +307,7 @@
         "tags": [
           "FinanceManager.Api"
         ],
+        "operationId": "LookupTransaction",
         "parameters": [
           {
             "name": "id",
@@ -350,21 +363,80 @@
         }
       }
     },
-    "/api/financialtransactions/list": {
-      "post": {
+    "/api/financialtransactions": {
+      "get": {
         "tags": [
           "FinanceManager.Api"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SearchEntityQueryOfFinancialTransactionAndFinancialTransactionResponseAndFinancialTransactionFilter"
-              }
+        "operationId": "SearchTransaction",
+        "parameters": [
+          {
+            "name": "MinDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
             }
           },
-          "required": true
-        },
+          {
+            "name": "MaxDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "MinAmount",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "MaxAmount",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "FinancialAccountId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "SpendingCategoryId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -417,6 +489,7 @@
         "tags": [
           "FinanceManager.Api"
         ],
+        "operationId": "LookupAccount",
         "parameters": [
           {
             "name": "id",
@@ -475,6 +548,7 @@
         "tags": [
           "FinanceManager.Api"
         ],
+        "operationId": "UpdateAccount",
         "parameters": [
           {
             "name": "id",
@@ -535,6 +609,7 @@
         "tags": [
           "FinanceManager.Api"
         ],
+        "operationId": "DeleteAccount",
         "parameters": [
           {
             "name": "id",
@@ -583,21 +658,32 @@
         }
       }
     },
-    "/api/financialaccounts/list": {
-      "post": {
+    "/api/financialaccounts": {
+      "get": {
         "tags": [
           "FinanceManager.Api"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UnfilteredSearchEntityRequest"
-              }
+        "operationId": "SearchAccount",
+        "parameters": [
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
             }
           },
-          "required": true
-        },
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -643,13 +729,12 @@
             }
           }
         }
-      }
-    },
-    "/api/financialaccounts": {
+      },
       "post": {
         "tags": [
           "FinanceManager.Api"
         ],
+        "operationId": "CreateAccount",
         "requestBody": {
           "content": {
             "application/json": {
@@ -757,20 +842,38 @@
       }
     },
     "/api/autocomplete/spendingcategory": {
-      "post": {
+      "get": {
         "tags": [
           "FinanceManager.Api"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UnfilteredSearchEntityRequest"
-              }
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
             }
           },
-          "required": true
-        },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -879,20 +982,38 @@
       }
     },
     "/api/autocomplete/financialaccount": {
-      "post": {
+      "get": {
         "tags": [
           "FinanceManager.Api"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UnfilteredSearchEntityRequest"
-              }
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
             }
           },
-          "required": true
-        },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -982,53 +1103,6 @@
           }
         }
       },
-      "FinancialTransactionFilter": {
-        "type": "object",
-        "properties": {
-          "minDate": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date-time"
-          },
-          "maxDate": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date-time"
-          },
-          "minAmount": {
-            "type": [
-              "null",
-              "number"
-            ],
-            "format": "double"
-          },
-          "maxAmount": {
-            "type": [
-              "null",
-              "number"
-            ],
-            "format": "double"
-          },
-          "financialAccountId": {
-            "type": [
-              "null",
-              "integer"
-            ],
-            "format": "int32"
-          },
-          "spendingCategoryId": {
-            "type": [
-              "null",
-              "integer"
-            ],
-            "format": "int32"
-          }
-        }
-      },
       "FinancialTransactionResponse": {
         "required": [
           "id",
@@ -1069,32 +1143,6 @@
           }
         }
       },
-      "SearchEntityQueryOfFinancialTransactionAndFinancialTransactionResponseAndFinancialTransactionFilter": {
-        "type": "object",
-        "properties": {
-          "filter": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/FinancialTransactionFilter"
-              }
-            ]
-          },
-          "take": {
-            "maximum": 50,
-            "minimum": 1,
-            "type": "integer",
-            "format": "int32"
-          },
-          "skip": {
-            "minimum": 0,
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
       "SpendingCategoryResponse": {
         "required": [
           "name"
@@ -1113,19 +1161,6 @@
               "null",
               "string"
             ]
-          }
-        }
-      },
-      "UnfilteredSearchEntityRequest": {
-        "type": "object",
-        "properties": {
-          "take": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "skip": {
-            "type": "integer",
-            "format": "int32"
           }
         }
       },

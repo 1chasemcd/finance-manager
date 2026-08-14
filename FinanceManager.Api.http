@@ -13,25 +13,22 @@ Accept: application/json
 ###
 POST {{host}}/api/spendingcategories
 Content-Type: application/json
+
 {
-  "name": "Fun",
+  "name": "Fun"
 }
 ###
 PUT {{host}}/api/spendingcategories/2
 Content-Type: application/json
+
 {
   "name": "",
   "description": "Food and household items2"
 }
-###
-POST  {{host}}/api/spendingcategories/list
-Content-Type: application/json
-Accept: application/json
 
-{
-    "skip": 0,
-    "take": 50
-}
+###
+GET  {{host}}/api/spendingcategories?take=1&skip=1
+Accept: application/json
 
 ### ACCOUNTS ###
 
@@ -39,21 +36,15 @@ GET {{host}}/api/financialaccounts/1
 Accept: application/json
 
 ###
-POST  {{host}}/api/financialaccounts/list
-Content-Type: application/json
+GET  {{host}}/api/financialaccounts?take=1&skip=0
 Accept: application/json
-
-{
-    "skip": 0,
-    "take": 50
-}
 
 ###
 POST {{host}}/api/financialaccounts
 Content-Type: application/json
 
 {
-  "name": null,
+  "name": "TEST123",
   "ownerId": 1
 }
 
@@ -64,14 +55,8 @@ GET {{host}}/api/financialtransactions/1
 Accept: application/json
 
 ###
-POST  {{host}}/api/financialtransactions/list
-Content-Type: application/json
+GET  {{host}}/api/financialtransactions?take=5&skip=0&financialAccountId=1
 Accept: application/json
-
-{
-    "skip": 0,
-    "take": 50
-}
 
 ### AUTOCOMPLETE ###
 GET  {{host}}/api/autocomplete/financialaccount/1
@@ -79,12 +64,5 @@ Accept: application/json
 
 ###
 
-POST  {{host}}/api/autocomplete/financialaccount
-Content-Type: application/json
+GET  {{host}}/api/autocomplete/financialaccount?take=5&skip=0&search=Hannah
 Accept: application/json
-
-{
-    "skip": 0,
-    "take": 50,
-    "search": ""
-}

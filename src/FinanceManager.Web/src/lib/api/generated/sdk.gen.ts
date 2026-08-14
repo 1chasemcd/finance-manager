@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { DeleteApiFinancialaccountsByIdData, DeleteApiFinancialaccountsByIdErrors, DeleteApiFinancialaccountsByIdResponses, DeleteApiSpendingcategoriesByIdData, DeleteApiSpendingcategoriesByIdErrors, DeleteApiSpendingcategoriesByIdResponses, GetApiAutocompleteFinancialaccountByIdData, GetApiAutocompleteFinancialaccountByIdErrors, GetApiAutocompleteFinancialaccountByIdResponses, GetApiAutocompleteSpendingcategoryByIdData, GetApiAutocompleteSpendingcategoryByIdErrors, GetApiAutocompleteSpendingcategoryByIdResponses, GetApiFinancialaccountsByIdData, GetApiFinancialaccountsByIdErrors, GetApiFinancialaccountsByIdResponses, GetApiFinancialtransactionsByIdData, GetApiFinancialtransactionsByIdErrors, GetApiFinancialtransactionsByIdResponses, GetSpendingCategoryData, GetSpendingCategoryErrors, GetSpendingCategoryResponses, PostApiAutocompleteFinancialaccountData, PostApiAutocompleteFinancialaccountErrors, PostApiAutocompleteFinancialaccountResponses, PostApiAutocompleteSpendingcategoryData, PostApiAutocompleteSpendingcategoryErrors, PostApiAutocompleteSpendingcategoryResponses, PostApiFinancialaccountsData, PostApiFinancialaccountsErrors, PostApiFinancialaccountsListData, PostApiFinancialaccountsListErrors, PostApiFinancialaccountsListResponses, PostApiFinancialaccountsResponses, PostApiFinancialtransactionsListData, PostApiFinancialtransactionsListErrors, PostApiFinancialtransactionsListResponses, PostApiSpendingcategoriesData, PostApiSpendingcategoriesErrors, PostApiSpendingcategoriesListData, PostApiSpendingcategoriesListErrors, PostApiSpendingcategoriesListResponses, PostApiSpendingcategoriesResponses, PutApiFinancialaccountsByIdData, PutApiFinancialaccountsByIdErrors, PutApiFinancialaccountsByIdResponses, PutApiSpendingcategoriesByIdData, PutApiSpendingcategoriesByIdErrors, PutApiSpendingcategoriesByIdResponses } from './types.gen';
+import type { CreateAccountData, CreateAccountErrors, CreateAccountResponses, CreateSpendingCategoryData, CreateSpendingCategoryErrors, CreateSpendingCategoryResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, DeleteSpendingCategoryData, DeleteSpendingCategoryErrors, DeleteSpendingCategoryResponses, GetApiAutocompleteFinancialaccountByIdData, GetApiAutocompleteFinancialaccountByIdErrors, GetApiAutocompleteFinancialaccountByIdResponses, GetApiAutocompleteFinancialaccountData, GetApiAutocompleteFinancialaccountErrors, GetApiAutocompleteFinancialaccountResponses, GetApiAutocompleteSpendingcategoryByIdData, GetApiAutocompleteSpendingcategoryByIdErrors, GetApiAutocompleteSpendingcategoryByIdResponses, GetApiAutocompleteSpendingcategoryData, GetApiAutocompleteSpendingcategoryErrors, GetApiAutocompleteSpendingcategoryResponses, LookupAccountData, LookupAccountErrors, LookupAccountResponses, LookupSpendingCategoryData, LookupSpendingCategoryErrors, LookupSpendingCategoryResponses, LookupTransactionData, LookupTransactionErrors, LookupTransactionResponses, SearchAccountData, SearchAccountErrors, SearchAccountResponses, SearchSpendingCategoryData, SearchSpendingCategoryErrors, SearchSpendingCategoryResponses, SearchTransactionData, SearchTransactionErrors, SearchTransactionResponses, UpdateAccountData, UpdateAccountErrors, UpdateAccountResponses, UpdateSpendingCategoryData, UpdateSpendingCategoryErrors, UpdateSpendingCategoryResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -18,11 +18,11 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
     meta?: keyof ClientMeta extends never ? Record<string, unknown> : ClientMeta;
 };
 
-export const deleteApiSpendingcategoriesById = <ThrowOnError extends boolean = false>(options: Options<DeleteApiSpendingcategoriesByIdData, ThrowOnError>): RequestResult<DeleteApiSpendingcategoriesByIdResponses, DeleteApiSpendingcategoriesByIdErrors, ThrowOnError> => (options.client ?? client).delete<DeleteApiSpendingcategoriesByIdResponses, DeleteApiSpendingcategoriesByIdErrors, ThrowOnError>({ url: '/api/spendingcategories/{id}', ...options });
+export const deleteSpendingCategory = <ThrowOnError extends boolean = false>(options: Options<DeleteSpendingCategoryData, ThrowOnError>): RequestResult<DeleteSpendingCategoryResponses, DeleteSpendingCategoryErrors, ThrowOnError> => (options.client ?? client).delete<DeleteSpendingCategoryResponses, DeleteSpendingCategoryErrors, ThrowOnError>({ url: '/api/spendingcategories/{id}', ...options });
 
-export const getSpendingCategory = <ThrowOnError extends boolean = false>(options: Options<GetSpendingCategoryData, ThrowOnError>): RequestResult<GetSpendingCategoryResponses, GetSpendingCategoryErrors, ThrowOnError> => (options.client ?? client).get<GetSpendingCategoryResponses, GetSpendingCategoryErrors, ThrowOnError>({ url: '/api/spendingcategories/{id}', ...options });
+export const lookupSpendingCategory = <ThrowOnError extends boolean = false>(options: Options<LookupSpendingCategoryData, ThrowOnError>): RequestResult<LookupSpendingCategoryResponses, LookupSpendingCategoryErrors, ThrowOnError> => (options.client ?? client).get<LookupSpendingCategoryResponses, LookupSpendingCategoryErrors, ThrowOnError>({ url: '/api/spendingcategories/{id}', ...options });
 
-export const putApiSpendingcategoriesById = <ThrowOnError extends boolean = false>(options: Options<PutApiSpendingcategoriesByIdData, ThrowOnError>): RequestResult<PutApiSpendingcategoriesByIdResponses, PutApiSpendingcategoriesByIdErrors, ThrowOnError> => (options.client ?? client).put<PutApiSpendingcategoriesByIdResponses, PutApiSpendingcategoriesByIdErrors, ThrowOnError>({
+export const updateSpendingCategory = <ThrowOnError extends boolean = false>(options: Options<UpdateSpendingCategoryData, ThrowOnError>): RequestResult<UpdateSpendingCategoryResponses, UpdateSpendingCategoryErrors, ThrowOnError> => (options.client ?? client).put<UpdateSpendingCategoryResponses, UpdateSpendingCategoryErrors, ThrowOnError>({
     url: '/api/spendingcategories/{id}',
     ...options,
     headers: {
@@ -31,7 +31,9 @@ export const putApiSpendingcategoriesById = <ThrowOnError extends boolean = fals
     }
 });
 
-export const postApiSpendingcategories = <ThrowOnError extends boolean = false>(options?: Options<PostApiSpendingcategoriesData, ThrowOnError>): RequestResult<PostApiSpendingcategoriesResponses, PostApiSpendingcategoriesErrors, ThrowOnError> => (options?.client ?? client).post<PostApiSpendingcategoriesResponses, PostApiSpendingcategoriesErrors, ThrowOnError>({
+export const searchSpendingCategory = <ThrowOnError extends boolean = false>(options?: Options<SearchSpendingCategoryData, ThrowOnError>): RequestResult<SearchSpendingCategoryResponses, SearchSpendingCategoryErrors, ThrowOnError> => (options?.client ?? client).get<SearchSpendingCategoryResponses, SearchSpendingCategoryErrors, ThrowOnError>({ url: '/api/spendingcategories', ...options });
+
+export const createSpendingCategory = <ThrowOnError extends boolean = false>(options?: Options<CreateSpendingCategoryData, ThrowOnError>): RequestResult<CreateSpendingCategoryResponses, CreateSpendingCategoryErrors, ThrowOnError> => (options?.client ?? client).post<CreateSpendingCategoryResponses, CreateSpendingCategoryErrors, ThrowOnError>({
     url: '/api/spendingcategories',
     ...options,
     headers: {
@@ -40,31 +42,15 @@ export const postApiSpendingcategories = <ThrowOnError extends boolean = false>(
     }
 });
 
-export const postApiSpendingcategoriesList = <ThrowOnError extends boolean = false>(options: Options<PostApiSpendingcategoriesListData, ThrowOnError>): RequestResult<PostApiSpendingcategoriesListResponses, PostApiSpendingcategoriesListErrors, ThrowOnError> => (options.client ?? client).post<PostApiSpendingcategoriesListResponses, PostApiSpendingcategoriesListErrors, ThrowOnError>({
-    url: '/api/spendingcategories/list',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
+export const lookupTransaction = <ThrowOnError extends boolean = false>(options: Options<LookupTransactionData, ThrowOnError>): RequestResult<LookupTransactionResponses, LookupTransactionErrors, ThrowOnError> => (options.client ?? client).get<LookupTransactionResponses, LookupTransactionErrors, ThrowOnError>({ url: '/api/financialtransactions/{id}', ...options });
 
-export const getApiFinancialtransactionsById = <ThrowOnError extends boolean = false>(options: Options<GetApiFinancialtransactionsByIdData, ThrowOnError>): RequestResult<GetApiFinancialtransactionsByIdResponses, GetApiFinancialtransactionsByIdErrors, ThrowOnError> => (options.client ?? client).get<GetApiFinancialtransactionsByIdResponses, GetApiFinancialtransactionsByIdErrors, ThrowOnError>({ url: '/api/financialtransactions/{id}', ...options });
+export const searchTransaction = <ThrowOnError extends boolean = false>(options?: Options<SearchTransactionData, ThrowOnError>): RequestResult<SearchTransactionResponses, SearchTransactionErrors, ThrowOnError> => (options?.client ?? client).get<SearchTransactionResponses, SearchTransactionErrors, ThrowOnError>({ url: '/api/financialtransactions', ...options });
 
-export const postApiFinancialtransactionsList = <ThrowOnError extends boolean = false>(options: Options<PostApiFinancialtransactionsListData, ThrowOnError>): RequestResult<PostApiFinancialtransactionsListResponses, PostApiFinancialtransactionsListErrors, ThrowOnError> => (options.client ?? client).post<PostApiFinancialtransactionsListResponses, PostApiFinancialtransactionsListErrors, ThrowOnError>({
-    url: '/api/financialtransactions/list',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
+export const deleteAccount = <ThrowOnError extends boolean = false>(options: Options<DeleteAccountData, ThrowOnError>): RequestResult<DeleteAccountResponses, DeleteAccountErrors, ThrowOnError> => (options.client ?? client).delete<DeleteAccountResponses, DeleteAccountErrors, ThrowOnError>({ url: '/api/financialaccounts/{id}', ...options });
 
-export const deleteApiFinancialaccountsById = <ThrowOnError extends boolean = false>(options: Options<DeleteApiFinancialaccountsByIdData, ThrowOnError>): RequestResult<DeleteApiFinancialaccountsByIdResponses, DeleteApiFinancialaccountsByIdErrors, ThrowOnError> => (options.client ?? client).delete<DeleteApiFinancialaccountsByIdResponses, DeleteApiFinancialaccountsByIdErrors, ThrowOnError>({ url: '/api/financialaccounts/{id}', ...options });
+export const lookupAccount = <ThrowOnError extends boolean = false>(options: Options<LookupAccountData, ThrowOnError>): RequestResult<LookupAccountResponses, LookupAccountErrors, ThrowOnError> => (options.client ?? client).get<LookupAccountResponses, LookupAccountErrors, ThrowOnError>({ url: '/api/financialaccounts/{id}', ...options });
 
-export const getApiFinancialaccountsById = <ThrowOnError extends boolean = false>(options: Options<GetApiFinancialaccountsByIdData, ThrowOnError>): RequestResult<GetApiFinancialaccountsByIdResponses, GetApiFinancialaccountsByIdErrors, ThrowOnError> => (options.client ?? client).get<GetApiFinancialaccountsByIdResponses, GetApiFinancialaccountsByIdErrors, ThrowOnError>({ url: '/api/financialaccounts/{id}', ...options });
-
-export const putApiFinancialaccountsById = <ThrowOnError extends boolean = false>(options: Options<PutApiFinancialaccountsByIdData, ThrowOnError>): RequestResult<PutApiFinancialaccountsByIdResponses, PutApiFinancialaccountsByIdErrors, ThrowOnError> => (options.client ?? client).put<PutApiFinancialaccountsByIdResponses, PutApiFinancialaccountsByIdErrors, ThrowOnError>({
+export const updateAccount = <ThrowOnError extends boolean = false>(options: Options<UpdateAccountData, ThrowOnError>): RequestResult<UpdateAccountResponses, UpdateAccountErrors, ThrowOnError> => (options.client ?? client).put<UpdateAccountResponses, UpdateAccountErrors, ThrowOnError>({
     url: '/api/financialaccounts/{id}',
     ...options,
     headers: {
@@ -73,16 +59,9 @@ export const putApiFinancialaccountsById = <ThrowOnError extends boolean = false
     }
 });
 
-export const postApiFinancialaccountsList = <ThrowOnError extends boolean = false>(options: Options<PostApiFinancialaccountsListData, ThrowOnError>): RequestResult<PostApiFinancialaccountsListResponses, PostApiFinancialaccountsListErrors, ThrowOnError> => (options.client ?? client).post<PostApiFinancialaccountsListResponses, PostApiFinancialaccountsListErrors, ThrowOnError>({
-    url: '/api/financialaccounts/list',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
+export const searchAccount = <ThrowOnError extends boolean = false>(options?: Options<SearchAccountData, ThrowOnError>): RequestResult<SearchAccountResponses, SearchAccountErrors, ThrowOnError> => (options?.client ?? client).get<SearchAccountResponses, SearchAccountErrors, ThrowOnError>({ url: '/api/financialaccounts', ...options });
 
-export const postApiFinancialaccounts = <ThrowOnError extends boolean = false>(options?: Options<PostApiFinancialaccountsData, ThrowOnError>): RequestResult<PostApiFinancialaccountsResponses, PostApiFinancialaccountsErrors, ThrowOnError> => (options?.client ?? client).post<PostApiFinancialaccountsResponses, PostApiFinancialaccountsErrors, ThrowOnError>({
+export const createAccount = <ThrowOnError extends boolean = false>(options?: Options<CreateAccountData, ThrowOnError>): RequestResult<CreateAccountResponses, CreateAccountErrors, ThrowOnError> => (options?.client ?? client).post<CreateAccountResponses, CreateAccountErrors, ThrowOnError>({
     url: '/api/financialaccounts',
     ...options,
     headers: {
@@ -93,22 +72,8 @@ export const postApiFinancialaccounts = <ThrowOnError extends boolean = false>(o
 
 export const getApiAutocompleteSpendingcategoryById = <ThrowOnError extends boolean = false>(options: Options<GetApiAutocompleteSpendingcategoryByIdData, ThrowOnError>): RequestResult<GetApiAutocompleteSpendingcategoryByIdResponses, GetApiAutocompleteSpendingcategoryByIdErrors, ThrowOnError> => (options.client ?? client).get<GetApiAutocompleteSpendingcategoryByIdResponses, GetApiAutocompleteSpendingcategoryByIdErrors, ThrowOnError>({ url: '/api/autocomplete/spendingcategory/{id}', ...options });
 
-export const postApiAutocompleteSpendingcategory = <ThrowOnError extends boolean = false>(options: Options<PostApiAutocompleteSpendingcategoryData, ThrowOnError>): RequestResult<PostApiAutocompleteSpendingcategoryResponses, PostApiAutocompleteSpendingcategoryErrors, ThrowOnError> => (options.client ?? client).post<PostApiAutocompleteSpendingcategoryResponses, PostApiAutocompleteSpendingcategoryErrors, ThrowOnError>({
-    url: '/api/autocomplete/spendingcategory',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
+export const getApiAutocompleteSpendingcategory = <ThrowOnError extends boolean = false>(options?: Options<GetApiAutocompleteSpendingcategoryData, ThrowOnError>): RequestResult<GetApiAutocompleteSpendingcategoryResponses, GetApiAutocompleteSpendingcategoryErrors, ThrowOnError> => (options?.client ?? client).get<GetApiAutocompleteSpendingcategoryResponses, GetApiAutocompleteSpendingcategoryErrors, ThrowOnError>({ url: '/api/autocomplete/spendingcategory', ...options });
 
 export const getApiAutocompleteFinancialaccountById = <ThrowOnError extends boolean = false>(options: Options<GetApiAutocompleteFinancialaccountByIdData, ThrowOnError>): RequestResult<GetApiAutocompleteFinancialaccountByIdResponses, GetApiAutocompleteFinancialaccountByIdErrors, ThrowOnError> => (options.client ?? client).get<GetApiAutocompleteFinancialaccountByIdResponses, GetApiAutocompleteFinancialaccountByIdErrors, ThrowOnError>({ url: '/api/autocomplete/financialaccount/{id}', ...options });
 
-export const postApiAutocompleteFinancialaccount = <ThrowOnError extends boolean = false>(options: Options<PostApiAutocompleteFinancialaccountData, ThrowOnError>): RequestResult<PostApiAutocompleteFinancialaccountResponses, PostApiAutocompleteFinancialaccountErrors, ThrowOnError> => (options.client ?? client).post<PostApiAutocompleteFinancialaccountResponses, PostApiAutocompleteFinancialaccountErrors, ThrowOnError>({
-    url: '/api/autocomplete/financialaccount',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
+export const getApiAutocompleteFinancialaccount = <ThrowOnError extends boolean = false>(options?: Options<GetApiAutocompleteFinancialaccountData, ThrowOnError>): RequestResult<GetApiAutocompleteFinancialaccountResponses, GetApiAutocompleteFinancialaccountErrors, ThrowOnError> => (options?.client ?? client).get<GetApiAutocompleteFinancialaccountResponses, GetApiAutocompleteFinancialaccountErrors, ThrowOnError>({ url: '/api/autocomplete/financialaccount', ...options });

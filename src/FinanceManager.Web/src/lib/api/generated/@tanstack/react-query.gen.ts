@@ -3,13 +3,13 @@
 import { queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { deleteApiFinancialaccountsById, deleteApiSpendingcategoriesById, getApiAutocompleteFinancialaccountById, getApiAutocompleteSpendingcategoryById, getApiFinancialaccountsById, getApiFinancialtransactionsById, getSpendingCategory, type Options, postApiAutocompleteFinancialaccount, postApiAutocompleteSpendingcategory, postApiFinancialaccounts, postApiFinancialaccountsList, postApiFinancialtransactionsList, postApiSpendingcategories, postApiSpendingcategoriesList, putApiFinancialaccountsById, putApiSpendingcategoriesById } from '../sdk.gen';
-import type { DeleteApiFinancialaccountsByIdData, DeleteApiFinancialaccountsByIdError, DeleteApiFinancialaccountsByIdResponse, DeleteApiSpendingcategoriesByIdData, DeleteApiSpendingcategoriesByIdError, DeleteApiSpendingcategoriesByIdResponse, GetApiAutocompleteFinancialaccountByIdData, GetApiAutocompleteFinancialaccountByIdError, GetApiAutocompleteFinancialaccountByIdResponse, GetApiAutocompleteSpendingcategoryByIdData, GetApiAutocompleteSpendingcategoryByIdError, GetApiAutocompleteSpendingcategoryByIdResponse, GetApiFinancialaccountsByIdData, GetApiFinancialaccountsByIdError, GetApiFinancialaccountsByIdResponse, GetApiFinancialtransactionsByIdData, GetApiFinancialtransactionsByIdError, GetApiFinancialtransactionsByIdResponse, GetSpendingCategoryData, GetSpendingCategoryError, GetSpendingCategoryResponse, PostApiAutocompleteFinancialaccountData, PostApiAutocompleteFinancialaccountError, PostApiAutocompleteFinancialaccountResponse, PostApiAutocompleteSpendingcategoryData, PostApiAutocompleteSpendingcategoryError, PostApiAutocompleteSpendingcategoryResponse, PostApiFinancialaccountsData, PostApiFinancialaccountsError, PostApiFinancialaccountsListData, PostApiFinancialaccountsListError, PostApiFinancialaccountsListResponse, PostApiFinancialtransactionsListData, PostApiFinancialtransactionsListError, PostApiFinancialtransactionsListResponse, PostApiSpendingcategoriesData, PostApiSpendingcategoriesError, PostApiSpendingcategoriesListData, PostApiSpendingcategoriesListError, PostApiSpendingcategoriesListResponse, PutApiFinancialaccountsByIdData, PutApiFinancialaccountsByIdError, PutApiFinancialaccountsByIdResponse, PutApiSpendingcategoriesByIdData, PutApiSpendingcategoriesByIdError, PutApiSpendingcategoriesByIdResponse } from '../types.gen';
+import { createAccount, createSpendingCategory, deleteAccount, deleteSpendingCategory, getApiAutocompleteFinancialaccount, getApiAutocompleteFinancialaccountById, getApiAutocompleteSpendingcategory, getApiAutocompleteSpendingcategoryById, lookupAccount, lookupSpendingCategory, lookupTransaction, type Options, searchAccount, searchSpendingCategory, searchTransaction, updateAccount, updateSpendingCategory } from '../sdk.gen';
+import type { CreateAccountData, CreateAccountError, CreateSpendingCategoryData, CreateSpendingCategoryError, DeleteAccountData, DeleteAccountError, DeleteAccountResponse, DeleteSpendingCategoryData, DeleteSpendingCategoryError, DeleteSpendingCategoryResponse, GetApiAutocompleteFinancialaccountByIdData, GetApiAutocompleteFinancialaccountByIdError, GetApiAutocompleteFinancialaccountByIdResponse, GetApiAutocompleteFinancialaccountData, GetApiAutocompleteFinancialaccountError, GetApiAutocompleteFinancialaccountResponse, GetApiAutocompleteSpendingcategoryByIdData, GetApiAutocompleteSpendingcategoryByIdError, GetApiAutocompleteSpendingcategoryByIdResponse, GetApiAutocompleteSpendingcategoryData, GetApiAutocompleteSpendingcategoryError, GetApiAutocompleteSpendingcategoryResponse, LookupAccountData, LookupAccountError, LookupAccountResponse, LookupSpendingCategoryData, LookupSpendingCategoryError, LookupSpendingCategoryResponse, LookupTransactionData, LookupTransactionError, LookupTransactionResponse, SearchAccountData, SearchAccountError, SearchAccountResponse, SearchSpendingCategoryData, SearchSpendingCategoryError, SearchSpendingCategoryResponse, SearchTransactionData, SearchTransactionError, SearchTransactionResponse, UpdateAccountData, UpdateAccountError, UpdateAccountResponse, UpdateSpendingCategoryData, UpdateSpendingCategoryError, UpdateSpendingCategoryResponse } from '../types.gen';
 
-export const deleteApiSpendingcategoriesByIdMutation = (options?: Partial<Options<DeleteApiSpendingcategoriesByIdData>>): UseMutationOptions<DeleteApiSpendingcategoriesByIdResponse, DeleteApiSpendingcategoriesByIdError, Options<DeleteApiSpendingcategoriesByIdData>> => {
-    const mutationOptions: UseMutationOptions<DeleteApiSpendingcategoriesByIdResponse, DeleteApiSpendingcategoriesByIdError, Options<DeleteApiSpendingcategoriesByIdData>> = {
+export const deleteSpendingCategoryMutation = (options?: Partial<Options<DeleteSpendingCategoryData>>): UseMutationOptions<DeleteSpendingCategoryResponse, DeleteSpendingCategoryError, Options<DeleteSpendingCategoryData>> => {
+    const mutationOptions: UseMutationOptions<DeleteSpendingCategoryResponse, DeleteSpendingCategoryError, Options<DeleteSpendingCategoryData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await deleteApiSpendingcategoriesById({
+            const { data } = await deleteSpendingCategory({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -53,11 +53,11 @@ const createQueryKey = <TOptions extends Options>(id: string, options?: TOptions
     return [params];
 };
 
-export const getSpendingCategoryQueryKey = (options: Options<GetSpendingCategoryData>) => createQueryKey('getSpendingCategory', options);
+export const lookupSpendingCategoryQueryKey = (options: Options<LookupSpendingCategoryData>) => createQueryKey('lookupSpendingCategory', options);
 
-export const getSpendingCategoryOptions = (options: Options<GetSpendingCategoryData>) => queryOptions<GetSpendingCategoryResponse, GetSpendingCategoryError, GetSpendingCategoryResponse, ReturnType<typeof getSpendingCategoryQueryKey>>({
+export const lookupSpendingCategoryOptions = (options: Options<LookupSpendingCategoryData>) => queryOptions<LookupSpendingCategoryResponse, LookupSpendingCategoryError, LookupSpendingCategoryResponse, ReturnType<typeof lookupSpendingCategoryQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getSpendingCategory({
+        const { data } = await lookupSpendingCategory({
             ...options,
             ...queryKey[0],
             signal,
@@ -65,13 +65,13 @@ export const getSpendingCategoryOptions = (options: Options<GetSpendingCategoryD
         });
         return data;
     },
-    queryKey: getSpendingCategoryQueryKey(options)
+    queryKey: lookupSpendingCategoryQueryKey(options)
 });
 
-export const putApiSpendingcategoriesByIdMutation = (options?: Partial<Options<PutApiSpendingcategoriesByIdData>>): UseMutationOptions<PutApiSpendingcategoriesByIdResponse, PutApiSpendingcategoriesByIdError, Options<PutApiSpendingcategoriesByIdData>> => {
-    const mutationOptions: UseMutationOptions<PutApiSpendingcategoriesByIdResponse, PutApiSpendingcategoriesByIdError, Options<PutApiSpendingcategoriesByIdData>> = {
+export const updateSpendingCategoryMutation = (options?: Partial<Options<UpdateSpendingCategoryData>>): UseMutationOptions<UpdateSpendingCategoryResponse, UpdateSpendingCategoryError, Options<UpdateSpendingCategoryData>> => {
+    const mutationOptions: UseMutationOptions<UpdateSpendingCategoryResponse, UpdateSpendingCategoryError, Options<UpdateSpendingCategoryData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await putApiSpendingcategoriesById({
+            const { data } = await updateSpendingCategory({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -82,39 +82,11 @@ export const putApiSpendingcategoriesByIdMutation = (options?: Partial<Options<P
     return mutationOptions;
 };
 
-export const postApiSpendingcategoriesMutation = (options?: Partial<Options<PostApiSpendingcategoriesData>>): UseMutationOptions<unknown, PostApiSpendingcategoriesError, Options<PostApiSpendingcategoriesData>> => {
-    const mutationOptions: UseMutationOptions<unknown, PostApiSpendingcategoriesError, Options<PostApiSpendingcategoriesData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await postApiSpendingcategories({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
+export const searchSpendingCategoryQueryKey = (options?: Options<SearchSpendingCategoryData>) => createQueryKey('searchSpendingCategory', options);
 
-export const postApiSpendingcategoriesListMutation = (options?: Partial<Options<PostApiSpendingcategoriesListData>>): UseMutationOptions<PostApiSpendingcategoriesListResponse, PostApiSpendingcategoriesListError, Options<PostApiSpendingcategoriesListData>> => {
-    const mutationOptions: UseMutationOptions<PostApiSpendingcategoriesListResponse, PostApiSpendingcategoriesListError, Options<PostApiSpendingcategoriesListData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await postApiSpendingcategoriesList({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-export const getApiFinancialtransactionsByIdQueryKey = (options: Options<GetApiFinancialtransactionsByIdData>) => createQueryKey('getApiFinancialtransactionsById', options);
-
-export const getApiFinancialtransactionsByIdOptions = (options: Options<GetApiFinancialtransactionsByIdData>) => queryOptions<GetApiFinancialtransactionsByIdResponse, GetApiFinancialtransactionsByIdError, GetApiFinancialtransactionsByIdResponse, ReturnType<typeof getApiFinancialtransactionsByIdQueryKey>>({
+export const searchSpendingCategoryOptions = (options?: Options<SearchSpendingCategoryData>) => queryOptions<SearchSpendingCategoryResponse, SearchSpendingCategoryError, SearchSpendingCategoryResponse, ReturnType<typeof searchSpendingCategoryQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getApiFinancialtransactionsById({
+        const { data } = await searchSpendingCategory({
             ...options,
             ...queryKey[0],
             signal,
@@ -122,13 +94,13 @@ export const getApiFinancialtransactionsByIdOptions = (options: Options<GetApiFi
         });
         return data;
     },
-    queryKey: getApiFinancialtransactionsByIdQueryKey(options)
+    queryKey: searchSpendingCategoryQueryKey(options)
 });
 
-export const postApiFinancialtransactionsListMutation = (options?: Partial<Options<PostApiFinancialtransactionsListData>>): UseMutationOptions<PostApiFinancialtransactionsListResponse, PostApiFinancialtransactionsListError, Options<PostApiFinancialtransactionsListData>> => {
-    const mutationOptions: UseMutationOptions<PostApiFinancialtransactionsListResponse, PostApiFinancialtransactionsListError, Options<PostApiFinancialtransactionsListData>> = {
+export const createSpendingCategoryMutation = (options?: Partial<Options<CreateSpendingCategoryData>>): UseMutationOptions<unknown, CreateSpendingCategoryError, Options<CreateSpendingCategoryData>> => {
+    const mutationOptions: UseMutationOptions<unknown, CreateSpendingCategoryError, Options<CreateSpendingCategoryData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await postApiFinancialtransactionsList({
+            const { data } = await createSpendingCategory({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -139,25 +111,11 @@ export const postApiFinancialtransactionsListMutation = (options?: Partial<Optio
     return mutationOptions;
 };
 
-export const deleteApiFinancialaccountsByIdMutation = (options?: Partial<Options<DeleteApiFinancialaccountsByIdData>>): UseMutationOptions<DeleteApiFinancialaccountsByIdResponse, DeleteApiFinancialaccountsByIdError, Options<DeleteApiFinancialaccountsByIdData>> => {
-    const mutationOptions: UseMutationOptions<DeleteApiFinancialaccountsByIdResponse, DeleteApiFinancialaccountsByIdError, Options<DeleteApiFinancialaccountsByIdData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await deleteApiFinancialaccountsById({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
+export const lookupTransactionQueryKey = (options: Options<LookupTransactionData>) => createQueryKey('lookupTransaction', options);
 
-export const getApiFinancialaccountsByIdQueryKey = (options: Options<GetApiFinancialaccountsByIdData>) => createQueryKey('getApiFinancialaccountsById', options);
-
-export const getApiFinancialaccountsByIdOptions = (options: Options<GetApiFinancialaccountsByIdData>) => queryOptions<GetApiFinancialaccountsByIdResponse, GetApiFinancialaccountsByIdError, GetApiFinancialaccountsByIdResponse, ReturnType<typeof getApiFinancialaccountsByIdQueryKey>>({
+export const lookupTransactionOptions = (options: Options<LookupTransactionData>) => queryOptions<LookupTransactionResponse, LookupTransactionError, LookupTransactionResponse, ReturnType<typeof lookupTransactionQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getApiFinancialaccountsById({
+        const { data } = await lookupTransaction({
             ...options,
             ...queryKey[0],
             signal,
@@ -165,13 +123,28 @@ export const getApiFinancialaccountsByIdOptions = (options: Options<GetApiFinanc
         });
         return data;
     },
-    queryKey: getApiFinancialaccountsByIdQueryKey(options)
+    queryKey: lookupTransactionQueryKey(options)
 });
 
-export const putApiFinancialaccountsByIdMutation = (options?: Partial<Options<PutApiFinancialaccountsByIdData>>): UseMutationOptions<PutApiFinancialaccountsByIdResponse, PutApiFinancialaccountsByIdError, Options<PutApiFinancialaccountsByIdData>> => {
-    const mutationOptions: UseMutationOptions<PutApiFinancialaccountsByIdResponse, PutApiFinancialaccountsByIdError, Options<PutApiFinancialaccountsByIdData>> = {
+export const searchTransactionQueryKey = (options?: Options<SearchTransactionData>) => createQueryKey('searchTransaction', options);
+
+export const searchTransactionOptions = (options?: Options<SearchTransactionData>) => queryOptions<SearchTransactionResponse, SearchTransactionError, SearchTransactionResponse, ReturnType<typeof searchTransactionQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await searchTransaction({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: searchTransactionQueryKey(options)
+});
+
+export const deleteAccountMutation = (options?: Partial<Options<DeleteAccountData>>): UseMutationOptions<DeleteAccountResponse, DeleteAccountError, Options<DeleteAccountData>> => {
+    const mutationOptions: UseMutationOptions<DeleteAccountResponse, DeleteAccountError, Options<DeleteAccountData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await putApiFinancialaccountsById({
+            const { data } = await deleteAccount({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -182,10 +155,25 @@ export const putApiFinancialaccountsByIdMutation = (options?: Partial<Options<Pu
     return mutationOptions;
 };
 
-export const postApiFinancialaccountsListMutation = (options?: Partial<Options<PostApiFinancialaccountsListData>>): UseMutationOptions<PostApiFinancialaccountsListResponse, PostApiFinancialaccountsListError, Options<PostApiFinancialaccountsListData>> => {
-    const mutationOptions: UseMutationOptions<PostApiFinancialaccountsListResponse, PostApiFinancialaccountsListError, Options<PostApiFinancialaccountsListData>> = {
+export const lookupAccountQueryKey = (options: Options<LookupAccountData>) => createQueryKey('lookupAccount', options);
+
+export const lookupAccountOptions = (options: Options<LookupAccountData>) => queryOptions<LookupAccountResponse, LookupAccountError, LookupAccountResponse, ReturnType<typeof lookupAccountQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await lookupAccount({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: lookupAccountQueryKey(options)
+});
+
+export const updateAccountMutation = (options?: Partial<Options<UpdateAccountData>>): UseMutationOptions<UpdateAccountResponse, UpdateAccountError, Options<UpdateAccountData>> => {
+    const mutationOptions: UseMutationOptions<UpdateAccountResponse, UpdateAccountError, Options<UpdateAccountData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await postApiFinancialaccountsList({
+            const { data } = await updateAccount({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -196,10 +184,25 @@ export const postApiFinancialaccountsListMutation = (options?: Partial<Options<P
     return mutationOptions;
 };
 
-export const postApiFinancialaccountsMutation = (options?: Partial<Options<PostApiFinancialaccountsData>>): UseMutationOptions<unknown, PostApiFinancialaccountsError, Options<PostApiFinancialaccountsData>> => {
-    const mutationOptions: UseMutationOptions<unknown, PostApiFinancialaccountsError, Options<PostApiFinancialaccountsData>> = {
+export const searchAccountQueryKey = (options?: Options<SearchAccountData>) => createQueryKey('searchAccount', options);
+
+export const searchAccountOptions = (options?: Options<SearchAccountData>) => queryOptions<SearchAccountResponse, SearchAccountError, SearchAccountResponse, ReturnType<typeof searchAccountQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await searchAccount({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: searchAccountQueryKey(options)
+});
+
+export const createAccountMutation = (options?: Partial<Options<CreateAccountData>>): UseMutationOptions<unknown, CreateAccountError, Options<CreateAccountData>> => {
+    const mutationOptions: UseMutationOptions<unknown, CreateAccountError, Options<CreateAccountData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await postApiFinancialaccounts({
+            const { data } = await createAccount({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -225,19 +228,20 @@ export const getApiAutocompleteSpendingcategoryByIdOptions = (options: Options<G
     queryKey: getApiAutocompleteSpendingcategoryByIdQueryKey(options)
 });
 
-export const postApiAutocompleteSpendingcategoryMutation = (options?: Partial<Options<PostApiAutocompleteSpendingcategoryData>>): UseMutationOptions<PostApiAutocompleteSpendingcategoryResponse, PostApiAutocompleteSpendingcategoryError, Options<PostApiAutocompleteSpendingcategoryData>> => {
-    const mutationOptions: UseMutationOptions<PostApiAutocompleteSpendingcategoryResponse, PostApiAutocompleteSpendingcategoryError, Options<PostApiAutocompleteSpendingcategoryData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await postApiAutocompleteSpendingcategory({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
+export const getApiAutocompleteSpendingcategoryQueryKey = (options?: Options<GetApiAutocompleteSpendingcategoryData>) => createQueryKey('getApiAutocompleteSpendingcategory', options);
+
+export const getApiAutocompleteSpendingcategoryOptions = (options?: Options<GetApiAutocompleteSpendingcategoryData>) => queryOptions<GetApiAutocompleteSpendingcategoryResponse, GetApiAutocompleteSpendingcategoryError, GetApiAutocompleteSpendingcategoryResponse, ReturnType<typeof getApiAutocompleteSpendingcategoryQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getApiAutocompleteSpendingcategory({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getApiAutocompleteSpendingcategoryQueryKey(options)
+});
 
 export const getApiAutocompleteFinancialaccountByIdQueryKey = (options: Options<GetApiAutocompleteFinancialaccountByIdData>) => createQueryKey('getApiAutocompleteFinancialaccountById', options);
 
@@ -254,16 +258,17 @@ export const getApiAutocompleteFinancialaccountByIdOptions = (options: Options<G
     queryKey: getApiAutocompleteFinancialaccountByIdQueryKey(options)
 });
 
-export const postApiAutocompleteFinancialaccountMutation = (options?: Partial<Options<PostApiAutocompleteFinancialaccountData>>): UseMutationOptions<PostApiAutocompleteFinancialaccountResponse, PostApiAutocompleteFinancialaccountError, Options<PostApiAutocompleteFinancialaccountData>> => {
-    const mutationOptions: UseMutationOptions<PostApiAutocompleteFinancialaccountResponse, PostApiAutocompleteFinancialaccountError, Options<PostApiAutocompleteFinancialaccountData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await postApiAutocompleteFinancialaccount({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
+export const getApiAutocompleteFinancialaccountQueryKey = (options?: Options<GetApiAutocompleteFinancialaccountData>) => createQueryKey('getApiAutocompleteFinancialaccount', options);
+
+export const getApiAutocompleteFinancialaccountOptions = (options?: Options<GetApiAutocompleteFinancialaccountData>) => queryOptions<GetApiAutocompleteFinancialaccountResponse, GetApiAutocompleteFinancialaccountError, GetApiAutocompleteFinancialaccountResponse, ReturnType<typeof getApiAutocompleteFinancialaccountQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getApiAutocompleteFinancialaccount({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getApiAutocompleteFinancialaccountQueryKey(options)
+});

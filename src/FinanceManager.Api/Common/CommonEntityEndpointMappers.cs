@@ -151,10 +151,19 @@ static class CommonEntityEndpoints
         string pattern)
         where TEntity : Entity
     {
-        return endpoints.MapPost($"{pattern}/list",
-            async ([FromBody] SearchEntityQuery<TEntity, TResponse, TFilter> query,
+        return endpoints.MapGet(pattern,
+            async ([AsParameters] TFilter filter,
             ISender sender,
-            CancellationToken cancellationToken) => (await sender.Send(query, cancellationToken)).ToHttpResult()
+            CancellationToken cancellationToken, int take = 50, int skip = 0) =>
+            {
+                var query = new SearchEntityQuery<TEntity, TResponse, TFilter>()
+                {
+                    Filter = filter,
+                    Take = take,
+                    Skip = skip
+                };
+                return (await sender.Send(query, cancellationToken)).ToHttpResult();
+            }
         );
     }
 
@@ -163,15 +172,14 @@ static class CommonEntityEndpoints
     string pattern)
     where TEntity : Entity
     {
-        return endpoints.MapPost($"{pattern}/list",
-            async ([FromBody] UnfilteredSearchEntityRequest request,
-            ISender sender,
-            CancellationToken cancellationToken) =>
+        return endpoints.MapGet(pattern,
+            async (ISender sender,
+            CancellationToken cancellationToken, int take = 50, int skip = 0) =>
             {
                 var query = new SearchEntityQuery<TEntity, TResponse, Unit>
                 {
-                    Take = request.Take,
-                    Skip = request.Skip
+                    Take = take,
+                    Skip = skip
                 };
                 return (await sender.Send(query, cancellationToken)).ToHttpResult();
             }
@@ -182,11 +190,5 @@ static class CommonEntityEndpoints
     {
         pattern = pattern.TrimEnd('/');
         return pattern;
-    }
-
-    private sealed record UnfilteredSearchEntityRequest
-    {
-        public int Take { get; init; } = 50;
-        public int Skip { get; init; }
     }
 }

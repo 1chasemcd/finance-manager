@@ -47,11 +47,21 @@ static class AutocompleteEndpoints
         string pattern)
         where TEntity : Entity
     {
-        endpoints.MapPost($"{pattern}",
-            async ([FromBody] AutocompleteSearchQuery<TEntity, TFilter> query,
+        endpoints.MapGet($"{pattern}",
+            async ([AsParameters] TFilter filter,
             ISender sender,
-            CancellationToken cancellationToken)
-                => (await sender.Send(query, cancellationToken)).ToHttpResult()
+            CancellationToken cancellationToken, string search = "", int take = 50, int skip = 0)
+                =>
+            {
+                var query = new AutocompleteSearchQuery<TEntity, TFilter>()
+                {
+                    Filter = filter,
+                    Search = search,
+                    Take = take,
+                    Skip = skip
+                };
+                return (await sender.Send(query, cancellationToken)).ToHttpResult();
+            }
         );
     }
 
@@ -60,26 +70,18 @@ static class AutocompleteEndpoints
     string pattern)
     where TEntity : Entity
     {
-        endpoints.MapPost($"{pattern}",
-            async ([FromBody] UnfilteredSearchEntityRequest request,
-            ISender sender,
-            CancellationToken cancellationToken) =>
+        endpoints.MapGet($"{pattern}",
+            async (ISender sender,
+            CancellationToken cancellationToken, string search = "", int take = 50, int skip = 0) =>
             {
                 var query = new AutocompleteSearchQuery<TEntity, Unit>
                 {
-                    Search = request.Search,
-                    Take = request.Take,
-                    Skip = request.Skip
+                    Search = search,
+                    Take = take,
+                    Skip = skip
                 };
                 return (await sender.Send(query, cancellationToken)).ToHttpResult();
             }
         );
-    }
-
-    private sealed record UnfilteredSearchEntityRequest
-    {
-        public required string Search { get; init; }
-        public int Take { get; init; } = 50;
-        public int Skip { get; init; }
     }
 }

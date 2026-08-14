@@ -8,7 +8,7 @@ internal static class FinancialTransactionEndpoints
     public static void RegisterFinancialTransactionEndpoints(this IEndpointRouteBuilder endpoints)
     {
         var group = endpoints.MapGroup("/financialtransactions");
-        group.MapLookupEntity<FinancialTransaction>();
-        group.MapSearchEntity<FinancialTransaction>();
+        group.MapLookupEntity<FinancialTransaction>().WithName(RouteNames.LookupTransaction);
+        group.MapSearchEntity<FinancialTransaction>().WithName(RouteNames.SearchTransaction);
     }
 }

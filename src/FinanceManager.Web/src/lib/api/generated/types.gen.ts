@@ -16,15 +16,6 @@ export type FinancialAccountResponse = {
     ownerName: string;
 };
 
-export type FinancialTransactionFilter = {
-    minDate?: null | Date;
-    maxDate?: null | Date;
-    minAmount?: null | number;
-    maxAmount?: null | number;
-    financialAccountId?: null | number;
-    spendingCategoryId?: null | number;
-};
-
 export type FinancialTransactionResponse = {
     id: number;
     amount?: number;
@@ -36,21 +27,10 @@ export type FinancialTransactionResponse = {
     spendingCategoryName: string;
 };
 
-export type SearchEntityQueryOfFinancialTransactionAndFinancialTransactionResponseAndFinancialTransactionFilter = {
-    filter?: null | FinancialTransactionFilter;
-    take?: number;
-    skip?: number;
-};
-
 export type SpendingCategoryResponse = {
     id?: number;
     name: string;
     description?: null | string;
-};
-
-export type UnfilteredSearchEntityRequest = {
-    take?: number;
-    skip?: number;
 };
 
 export type WriteFinancialAccountRequest = {
@@ -63,7 +43,7 @@ export type WriteSpendingCategoryRequest = {
     description?: null | string;
 };
 
-export type DeleteApiSpendingcategoriesByIdData = {
+export type DeleteSpendingCategoryData = {
     body?: never;
     path: {
         id: number;
@@ -72,7 +52,7 @@ export type DeleteApiSpendingcategoriesByIdData = {
     url: '/api/spendingcategories/{id}';
 };
 
-export type DeleteApiSpendingcategoriesByIdErrors = {
+export type DeleteSpendingCategoryErrors = {
     /**
      * Not Found
      */
@@ -87,18 +67,18 @@ export type DeleteApiSpendingcategoriesByIdErrors = {
     422: string;
 };
 
-export type DeleteApiSpendingcategoriesByIdError = DeleteApiSpendingcategoriesByIdErrors[keyof DeleteApiSpendingcategoriesByIdErrors];
+export type DeleteSpendingCategoryError = DeleteSpendingCategoryErrors[keyof DeleteSpendingCategoryErrors];
 
-export type DeleteApiSpendingcategoriesByIdResponses = {
+export type DeleteSpendingCategoryResponses = {
     /**
      * No Content
      */
     204: void;
 };
 
-export type DeleteApiSpendingcategoriesByIdResponse = DeleteApiSpendingcategoriesByIdResponses[keyof DeleteApiSpendingcategoriesByIdResponses];
+export type DeleteSpendingCategoryResponse = DeleteSpendingCategoryResponses[keyof DeleteSpendingCategoryResponses];
 
-export type GetSpendingCategoryData = {
+export type LookupSpendingCategoryData = {
     body?: never;
     path: {
         id: number;
@@ -107,7 +87,7 @@ export type GetSpendingCategoryData = {
     url: '/api/spendingcategories/{id}';
 };
 
-export type GetSpendingCategoryErrors = {
+export type LookupSpendingCategoryErrors = {
     /**
      * Not Found
      */
@@ -122,18 +102,18 @@ export type GetSpendingCategoryErrors = {
     422: string;
 };
 
-export type GetSpendingCategoryError = GetSpendingCategoryErrors[keyof GetSpendingCategoryErrors];
+export type LookupSpendingCategoryError = LookupSpendingCategoryErrors[keyof LookupSpendingCategoryErrors];
 
-export type GetSpendingCategoryResponses = {
+export type LookupSpendingCategoryResponses = {
     /**
      * OK
      */
     200: SpendingCategoryResponse;
 };
 
-export type GetSpendingCategoryResponse = GetSpendingCategoryResponses[keyof GetSpendingCategoryResponses];
+export type LookupSpendingCategoryResponse = LookupSpendingCategoryResponses[keyof LookupSpendingCategoryResponses];
 
-export type PutApiSpendingcategoriesByIdData = {
+export type UpdateSpendingCategoryData = {
     body?: WriteSpendingCategoryRequest;
     path: {
         id: number;
@@ -142,7 +122,7 @@ export type PutApiSpendingcategoriesByIdData = {
     url: '/api/spendingcategories/{id}';
 };
 
-export type PutApiSpendingcategoriesByIdErrors = {
+export type UpdateSpendingCategoryErrors = {
     /**
      * Not Found
      */
@@ -157,25 +137,28 @@ export type PutApiSpendingcategoriesByIdErrors = {
     422: string;
 };
 
-export type PutApiSpendingcategoriesByIdError = PutApiSpendingcategoriesByIdErrors[keyof PutApiSpendingcategoriesByIdErrors];
+export type UpdateSpendingCategoryError = UpdateSpendingCategoryErrors[keyof UpdateSpendingCategoryErrors];
 
-export type PutApiSpendingcategoriesByIdResponses = {
+export type UpdateSpendingCategoryResponses = {
     /**
      * No Content
      */
     204: void;
 };
 
-export type PutApiSpendingcategoriesByIdResponse = PutApiSpendingcategoriesByIdResponses[keyof PutApiSpendingcategoriesByIdResponses];
+export type UpdateSpendingCategoryResponse = UpdateSpendingCategoryResponses[keyof UpdateSpendingCategoryResponses];
 
-export type PostApiSpendingcategoriesData = {
-    body?: WriteSpendingCategoryRequest;
+export type SearchSpendingCategoryData = {
+    body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        take?: number;
+        skip?: number;
+    };
     url: '/api/spendingcategories';
 };
 
-export type PostApiSpendingcategoriesErrors = {
+export type SearchSpendingCategoryErrors = {
     /**
      * Not Found
      */
@@ -190,49 +173,49 @@ export type PostApiSpendingcategoriesErrors = {
     422: string;
 };
 
-export type PostApiSpendingcategoriesError = PostApiSpendingcategoriesErrors[keyof PostApiSpendingcategoriesErrors];
+export type SearchSpendingCategoryError = SearchSpendingCategoryErrors[keyof SearchSpendingCategoryErrors];
 
-export type PostApiSpendingcategoriesResponses = {
-    /**
-     * Created
-     */
-    201: unknown;
-};
-
-export type PostApiSpendingcategoriesListData = {
-    body: UnfilteredSearchEntityRequest;
-    path?: never;
-    query?: never;
-    url: '/api/spendingcategories/list';
-};
-
-export type PostApiSpendingcategoriesListErrors = {
-    /**
-     * Not Found
-     */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
-};
-
-export type PostApiSpendingcategoriesListError = PostApiSpendingcategoriesListErrors[keyof PostApiSpendingcategoriesListErrors];
-
-export type PostApiSpendingcategoriesListResponses = {
+export type SearchSpendingCategoryResponses = {
     /**
      * OK
      */
     200: Array<SpendingCategoryResponse>;
 };
 
-export type PostApiSpendingcategoriesListResponse = PostApiSpendingcategoriesListResponses[keyof PostApiSpendingcategoriesListResponses];
+export type SearchSpendingCategoryResponse = SearchSpendingCategoryResponses[keyof SearchSpendingCategoryResponses];
 
-export type GetApiFinancialtransactionsByIdData = {
+export type CreateSpendingCategoryData = {
+    body?: WriteSpendingCategoryRequest;
+    path?: never;
+    query?: never;
+    url: '/api/spendingcategories';
+};
+
+export type CreateSpendingCategoryErrors = {
+    /**
+     * Not Found
+     */
+    404: string;
+    /**
+     * Conflict
+     */
+    409: string;
+    /**
+     * Unprocessable Entity
+     */
+    422: string;
+};
+
+export type CreateSpendingCategoryError = CreateSpendingCategoryErrors[keyof CreateSpendingCategoryErrors];
+
+export type CreateSpendingCategoryResponses = {
+    /**
+     * Created
+     */
+    201: unknown;
+};
+
+export type LookupTransactionData = {
     body?: never;
     path: {
         id: number;
@@ -241,7 +224,7 @@ export type GetApiFinancialtransactionsByIdData = {
     url: '/api/financialtransactions/{id}';
 };
 
-export type GetApiFinancialtransactionsByIdErrors = {
+export type LookupTransactionErrors = {
     /**
      * Not Found
      */
@@ -256,25 +239,34 @@ export type GetApiFinancialtransactionsByIdErrors = {
     422: string;
 };
 
-export type GetApiFinancialtransactionsByIdError = GetApiFinancialtransactionsByIdErrors[keyof GetApiFinancialtransactionsByIdErrors];
+export type LookupTransactionError = LookupTransactionErrors[keyof LookupTransactionErrors];
 
-export type GetApiFinancialtransactionsByIdResponses = {
+export type LookupTransactionResponses = {
     /**
      * OK
      */
     200: FinancialTransactionResponse;
 };
 
-export type GetApiFinancialtransactionsByIdResponse = GetApiFinancialtransactionsByIdResponses[keyof GetApiFinancialtransactionsByIdResponses];
+export type LookupTransactionResponse = LookupTransactionResponses[keyof LookupTransactionResponses];
 
-export type PostApiFinancialtransactionsListData = {
-    body: SearchEntityQueryOfFinancialTransactionAndFinancialTransactionResponseAndFinancialTransactionFilter;
+export type SearchTransactionData = {
+    body?: never;
     path?: never;
-    query?: never;
-    url: '/api/financialtransactions/list';
+    query?: {
+        MinDate?: Date;
+        MaxDate?: Date;
+        MinAmount?: number;
+        MaxAmount?: number;
+        FinancialAccountId?: number;
+        SpendingCategoryId?: number;
+        take?: number;
+        skip?: number;
+    };
+    url: '/api/financialtransactions';
 };
 
-export type PostApiFinancialtransactionsListErrors = {
+export type SearchTransactionErrors = {
     /**
      * Not Found
      */
@@ -289,18 +281,18 @@ export type PostApiFinancialtransactionsListErrors = {
     422: string;
 };
 
-export type PostApiFinancialtransactionsListError = PostApiFinancialtransactionsListErrors[keyof PostApiFinancialtransactionsListErrors];
+export type SearchTransactionError = SearchTransactionErrors[keyof SearchTransactionErrors];
 
-export type PostApiFinancialtransactionsListResponses = {
+export type SearchTransactionResponses = {
     /**
      * OK
      */
     200: Array<FinancialTransactionResponse>;
 };
 
-export type PostApiFinancialtransactionsListResponse = PostApiFinancialtransactionsListResponses[keyof PostApiFinancialtransactionsListResponses];
+export type SearchTransactionResponse = SearchTransactionResponses[keyof SearchTransactionResponses];
 
-export type DeleteApiFinancialaccountsByIdData = {
+export type DeleteAccountData = {
     body?: never;
     path: {
         id: number;
@@ -309,7 +301,7 @@ export type DeleteApiFinancialaccountsByIdData = {
     url: '/api/financialaccounts/{id}';
 };
 
-export type DeleteApiFinancialaccountsByIdErrors = {
+export type DeleteAccountErrors = {
     /**
      * Not Found
      */
@@ -324,18 +316,18 @@ export type DeleteApiFinancialaccountsByIdErrors = {
     422: string;
 };
 
-export type DeleteApiFinancialaccountsByIdError = DeleteApiFinancialaccountsByIdErrors[keyof DeleteApiFinancialaccountsByIdErrors];
+export type DeleteAccountError = DeleteAccountErrors[keyof DeleteAccountErrors];
 
-export type DeleteApiFinancialaccountsByIdResponses = {
+export type DeleteAccountResponses = {
     /**
      * No Content
      */
     204: void;
 };
 
-export type DeleteApiFinancialaccountsByIdResponse = DeleteApiFinancialaccountsByIdResponses[keyof DeleteApiFinancialaccountsByIdResponses];
+export type DeleteAccountResponse = DeleteAccountResponses[keyof DeleteAccountResponses];
 
-export type GetApiFinancialaccountsByIdData = {
+export type LookupAccountData = {
     body?: never;
     path: {
         id: number;
@@ -344,7 +336,7 @@ export type GetApiFinancialaccountsByIdData = {
     url: '/api/financialaccounts/{id}';
 };
 
-export type GetApiFinancialaccountsByIdErrors = {
+export type LookupAccountErrors = {
     /**
      * Not Found
      */
@@ -359,18 +351,18 @@ export type GetApiFinancialaccountsByIdErrors = {
     422: string;
 };
 
-export type GetApiFinancialaccountsByIdError = GetApiFinancialaccountsByIdErrors[keyof GetApiFinancialaccountsByIdErrors];
+export type LookupAccountError = LookupAccountErrors[keyof LookupAccountErrors];
 
-export type GetApiFinancialaccountsByIdResponses = {
+export type LookupAccountResponses = {
     /**
      * OK
      */
     200: FinancialAccountResponse;
 };
 
-export type GetApiFinancialaccountsByIdResponse = GetApiFinancialaccountsByIdResponses[keyof GetApiFinancialaccountsByIdResponses];
+export type LookupAccountResponse = LookupAccountResponses[keyof LookupAccountResponses];
 
-export type PutApiFinancialaccountsByIdData = {
+export type UpdateAccountData = {
     body?: WriteFinancialAccountRequest;
     path: {
         id: number;
@@ -379,7 +371,7 @@ export type PutApiFinancialaccountsByIdData = {
     url: '/api/financialaccounts/{id}';
 };
 
-export type PutApiFinancialaccountsByIdErrors = {
+export type UpdateAccountErrors = {
     /**
      * Not Found
      */
@@ -394,25 +386,28 @@ export type PutApiFinancialaccountsByIdErrors = {
     422: string;
 };
 
-export type PutApiFinancialaccountsByIdError = PutApiFinancialaccountsByIdErrors[keyof PutApiFinancialaccountsByIdErrors];
+export type UpdateAccountError = UpdateAccountErrors[keyof UpdateAccountErrors];
 
-export type PutApiFinancialaccountsByIdResponses = {
+export type UpdateAccountResponses = {
     /**
      * No Content
      */
     204: void;
 };
 
-export type PutApiFinancialaccountsByIdResponse = PutApiFinancialaccountsByIdResponses[keyof PutApiFinancialaccountsByIdResponses];
+export type UpdateAccountResponse = UpdateAccountResponses[keyof UpdateAccountResponses];
 
-export type PostApiFinancialaccountsListData = {
-    body: UnfilteredSearchEntityRequest;
+export type SearchAccountData = {
+    body?: never;
     path?: never;
-    query?: never;
-    url: '/api/financialaccounts/list';
+    query?: {
+        take?: number;
+        skip?: number;
+    };
+    url: '/api/financialaccounts';
 };
 
-export type PostApiFinancialaccountsListErrors = {
+export type SearchAccountErrors = {
     /**
      * Not Found
      */
@@ -427,25 +422,25 @@ export type PostApiFinancialaccountsListErrors = {
     422: string;
 };
 
-export type PostApiFinancialaccountsListError = PostApiFinancialaccountsListErrors[keyof PostApiFinancialaccountsListErrors];
+export type SearchAccountError = SearchAccountErrors[keyof SearchAccountErrors];
 
-export type PostApiFinancialaccountsListResponses = {
+export type SearchAccountResponses = {
     /**
      * OK
      */
     200: Array<FinancialAccountResponse>;
 };
 
-export type PostApiFinancialaccountsListResponse = PostApiFinancialaccountsListResponses[keyof PostApiFinancialaccountsListResponses];
+export type SearchAccountResponse = SearchAccountResponses[keyof SearchAccountResponses];
 
-export type PostApiFinancialaccountsData = {
+export type CreateAccountData = {
     body?: WriteFinancialAccountRequest;
     path?: never;
     query?: never;
     url: '/api/financialaccounts';
 };
 
-export type PostApiFinancialaccountsErrors = {
+export type CreateAccountErrors = {
     /**
      * Not Found
      */
@@ -460,9 +455,9 @@ export type PostApiFinancialaccountsErrors = {
     422: string;
 };
 
-export type PostApiFinancialaccountsError = PostApiFinancialaccountsErrors[keyof PostApiFinancialaccountsErrors];
+export type CreateAccountError = CreateAccountErrors[keyof CreateAccountErrors];
 
-export type PostApiFinancialaccountsResponses = {
+export type CreateAccountResponses = {
     /**
      * Created
      */
@@ -504,14 +499,18 @@ export type GetApiAutocompleteSpendingcategoryByIdResponses = {
 
 export type GetApiAutocompleteSpendingcategoryByIdResponse = GetApiAutocompleteSpendingcategoryByIdResponses[keyof GetApiAutocompleteSpendingcategoryByIdResponses];
 
-export type PostApiAutocompleteSpendingcategoryData = {
-    body: UnfilteredSearchEntityRequest;
+export type GetApiAutocompleteSpendingcategoryData = {
+    body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        search?: string;
+        take?: number;
+        skip?: number;
+    };
     url: '/api/autocomplete/spendingcategory';
 };
 
-export type PostApiAutocompleteSpendingcategoryErrors = {
+export type GetApiAutocompleteSpendingcategoryErrors = {
     /**
      * Not Found
      */
@@ -526,16 +525,16 @@ export type PostApiAutocompleteSpendingcategoryErrors = {
     422: string;
 };
 
-export type PostApiAutocompleteSpendingcategoryError = PostApiAutocompleteSpendingcategoryErrors[keyof PostApiAutocompleteSpendingcategoryErrors];
+export type GetApiAutocompleteSpendingcategoryError = GetApiAutocompleteSpendingcategoryErrors[keyof GetApiAutocompleteSpendingcategoryErrors];
 
-export type PostApiAutocompleteSpendingcategoryResponses = {
+export type GetApiAutocompleteSpendingcategoryResponses = {
     /**
      * OK
      */
     200: Array<AutocompleteQueryResponse>;
 };
 
-export type PostApiAutocompleteSpendingcategoryResponse = PostApiAutocompleteSpendingcategoryResponses[keyof PostApiAutocompleteSpendingcategoryResponses];
+export type GetApiAutocompleteSpendingcategoryResponse = GetApiAutocompleteSpendingcategoryResponses[keyof GetApiAutocompleteSpendingcategoryResponses];
 
 export type GetApiAutocompleteFinancialaccountByIdData = {
     body?: never;
@@ -572,14 +571,18 @@ export type GetApiAutocompleteFinancialaccountByIdResponses = {
 
 export type GetApiAutocompleteFinancialaccountByIdResponse = GetApiAutocompleteFinancialaccountByIdResponses[keyof GetApiAutocompleteFinancialaccountByIdResponses];
 
-export type PostApiAutocompleteFinancialaccountData = {
-    body: UnfilteredSearchEntityRequest;
+export type GetApiAutocompleteFinancialaccountData = {
+    body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        search?: string;
+        take?: number;
+        skip?: number;
+    };
     url: '/api/autocomplete/financialaccount';
 };
 
-export type PostApiAutocompleteFinancialaccountErrors = {
+export type GetApiAutocompleteFinancialaccountErrors = {
     /**
      * Not Found
      */
@@ -594,13 +597,13 @@ export type PostApiAutocompleteFinancialaccountErrors = {
     422: string;
 };
 
-export type PostApiAutocompleteFinancialaccountError = PostApiAutocompleteFinancialaccountErrors[keyof PostApiAutocompleteFinancialaccountErrors];
+export type GetApiAutocompleteFinancialaccountError = GetApiAutocompleteFinancialaccountErrors[keyof GetApiAutocompleteFinancialaccountErrors];
 
-export type PostApiAutocompleteFinancialaccountResponses = {
+export type GetApiAutocompleteFinancialaccountResponses = {
     /**
      * OK
      */
     200: Array<AutocompleteQueryResponse>;
 };
 
-export type PostApiAutocompleteFinancialaccountResponse = PostApiAutocompleteFinancialaccountResponses[keyof PostApiAutocompleteFinancialaccountResponses];
+export type GetApiAutocompleteFinancialaccountResponse = GetApiAutocompleteFinancialaccountResponses[keyof GetApiAutocompleteFinancialaccountResponses];

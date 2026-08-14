@@ -14,15 +14,6 @@ export const zFinancialAccountResponse = z.object({
     ownerName: z.string()
 });
 
-export const zFinancialTransactionFilter = z.object({
-    minDate: z.iso.datetime().nullish(),
-    maxDate: z.iso.datetime().nullish(),
-    minAmount: z.number().nullish(),
-    maxAmount: z.number().nullish(),
-    financialAccountId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).nullish(),
-    spendingCategoryId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).nullish()
-});
-
 export const zFinancialTransactionResponse = z.object({
     id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
     amount: z.number().optional(),
@@ -34,21 +25,10 @@ export const zFinancialTransactionResponse = z.object({
     spendingCategoryName: z.string()
 });
 
-export const zSearchEntityQueryOfFinancialTransactionAndFinancialTransactionResponseAndFinancialTransactionFilter = z.object({
-    filter: zFinancialTransactionFilter.nullish(),
-    take: z.int().gte(1).lte(50).optional(),
-    skip: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
-});
-
 export const zSpendingCategoryResponse = z.object({
     id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
     name: z.string(),
     description: z.string().nullish()
-});
-
-export const zUnfilteredSearchEntityRequest = z.object({
-    take: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
-    skip: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
 });
 
 export const zWriteFinancialAccountRequest = z.object({
@@ -61,97 +41,112 @@ export const zWriteSpendingCategoryRequest = z.object({
     description: z.string().nullish()
 });
 
-export const zDeleteApiSpendingcategoriesByIdPath = z.object({
+export const zDeleteSpendingCategoryPath = z.object({
     id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
 });
 
 /**
  * No Content
  */
-export const zDeleteApiSpendingcategoriesByIdResponse = z.void();
+export const zDeleteSpendingCategoryResponse = z.void();
 
-export const zGetSpendingCategoryPath = z.object({
+export const zLookupSpendingCategoryPath = z.object({
     id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
 });
 
 /**
  * OK
  */
-export const zGetSpendingCategoryResponse = zSpendingCategoryResponse;
+export const zLookupSpendingCategoryResponse = zSpendingCategoryResponse;
 
-export const zPutApiSpendingcategoriesByIdBody = zWriteSpendingCategoryRequest;
+export const zUpdateSpendingCategoryBody = zWriteSpendingCategoryRequest;
 
-export const zPutApiSpendingcategoriesByIdPath = z.object({
-    id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
-});
-
-/**
- * No Content
- */
-export const zPutApiSpendingcategoriesByIdResponse = z.void();
-
-export const zPostApiSpendingcategoriesBody = zWriteSpendingCategoryRequest;
-
-export const zPostApiSpendingcategoriesListBody = zUnfilteredSearchEntityRequest;
-
-/**
- * OK
- */
-export const zPostApiSpendingcategoriesListResponse = z.array(zSpendingCategoryResponse);
-
-export const zGetApiFinancialtransactionsByIdPath = z.object({
-    id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
-});
-
-/**
- * OK
- */
-export const zGetApiFinancialtransactionsByIdResponse = zFinancialTransactionResponse;
-
-export const zPostApiFinancialtransactionsListBody = zSearchEntityQueryOfFinancialTransactionAndFinancialTransactionResponseAndFinancialTransactionFilter;
-
-/**
- * OK
- */
-export const zPostApiFinancialtransactionsListResponse = z.array(zFinancialTransactionResponse);
-
-export const zDeleteApiFinancialaccountsByIdPath = z.object({
+export const zUpdateSpendingCategoryPath = z.object({
     id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
 });
 
 /**
  * No Content
  */
-export const zDeleteApiFinancialaccountsByIdResponse = z.void();
+export const zUpdateSpendingCategoryResponse = z.void();
 
-export const zGetApiFinancialaccountsByIdPath = z.object({
+export const zSearchSpendingCategoryQuery = z.object({
+    take: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(50),
+    skip: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0)
+});
+
+/**
+ * OK
+ */
+export const zSearchSpendingCategoryResponse = z.array(zSpendingCategoryResponse);
+
+export const zCreateSpendingCategoryBody = zWriteSpendingCategoryRequest;
+
+export const zLookupTransactionPath = z.object({
     id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
 });
 
 /**
  * OK
  */
-export const zGetApiFinancialaccountsByIdResponse = zFinancialAccountResponse;
+export const zLookupTransactionResponse = zFinancialTransactionResponse;
 
-export const zPutApiFinancialaccountsByIdBody = zWriteFinancialAccountRequest;
+export const zSearchTransactionQuery = z.object({
+    MinDate: z.iso.datetime().optional(),
+    MaxDate: z.iso.datetime().optional(),
+    MinAmount: z.number().optional(),
+    MaxAmount: z.number().optional(),
+    FinancialAccountId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    SpendingCategoryId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    take: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(50),
+    skip: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0)
+});
 
-export const zPutApiFinancialaccountsByIdPath = z.object({
+/**
+ * OK
+ */
+export const zSearchTransactionResponse = z.array(zFinancialTransactionResponse);
+
+export const zDeleteAccountPath = z.object({
     id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
 });
 
 /**
  * No Content
  */
-export const zPutApiFinancialaccountsByIdResponse = z.void();
+export const zDeleteAccountResponse = z.void();
 
-export const zPostApiFinancialaccountsListBody = zUnfilteredSearchEntityRequest;
+export const zLookupAccountPath = z.object({
+    id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+});
 
 /**
  * OK
  */
-export const zPostApiFinancialaccountsListResponse = z.array(zFinancialAccountResponse);
+export const zLookupAccountResponse = zFinancialAccountResponse;
 
-export const zPostApiFinancialaccountsBody = zWriteFinancialAccountRequest;
+export const zUpdateAccountBody = zWriteFinancialAccountRequest;
+
+export const zUpdateAccountPath = z.object({
+    id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+});
+
+/**
+ * No Content
+ */
+export const zUpdateAccountResponse = z.void();
+
+export const zSearchAccountQuery = z.object({
+    take: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(50),
+    skip: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0)
+});
+
+/**
+ * OK
+ */
+export const zSearchAccountResponse = z.array(zFinancialAccountResponse);
+
+export const zCreateAccountBody = zWriteFinancialAccountRequest;
 
 export const zGetApiAutocompleteSpendingcategoryByIdPath = z.object({
     id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
@@ -162,12 +157,16 @@ export const zGetApiAutocompleteSpendingcategoryByIdPath = z.object({
  */
 export const zGetApiAutocompleteSpendingcategoryByIdResponse = zAutocompleteQueryResponse;
 
-export const zPostApiAutocompleteSpendingcategoryBody = zUnfilteredSearchEntityRequest;
+export const zGetApiAutocompleteSpendingcategoryQuery = z.object({
+    search: z.string().optional().default(''),
+    take: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(50),
+    skip: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0)
+});
 
 /**
  * OK
  */
-export const zPostApiAutocompleteSpendingcategoryResponse = z.array(zAutocompleteQueryResponse);
+export const zGetApiAutocompleteSpendingcategoryResponse = z.array(zAutocompleteQueryResponse);
 
 export const zGetApiAutocompleteFinancialaccountByIdPath = z.object({
     id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
@@ -178,9 +177,13 @@ export const zGetApiAutocompleteFinancialaccountByIdPath = z.object({
  */
 export const zGetApiAutocompleteFinancialaccountByIdResponse = zAutocompleteQueryResponse;
 
-export const zPostApiAutocompleteFinancialaccountBody = zUnfilteredSearchEntityRequest;
+export const zGetApiAutocompleteFinancialaccountQuery = z.object({
+    search: z.string().optional().default(''),
+    take: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(50),
+    skip: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0)
+});
 
 /**
  * OK
  */
-export const zPostApiAutocompleteFinancialaccountResponse = z.array(zAutocompleteQueryResponse);
+export const zGetApiAutocompleteFinancialaccountResponse = z.array(zAutocompleteQueryResponse);
