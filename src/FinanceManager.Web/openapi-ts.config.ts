@@ -1,4 +1,4 @@
-import { defineConfig } from "@hey-api/openapi-ts"
+import { defineConfig } from "@hey-api/openapi-ts";
 
 export default defineConfig({
   input: "./FinanceManager.Api.json",
@@ -12,5 +12,9 @@ export default defineConfig({
       dates: true,
       name: "@hey-api/transformers",
     },
+    {
+      name: "@hey-api/client-fetch",
+      runtimeConfigPath: "./src/lib/api/hey-api.ts",
+    },
   ],
-})
+});

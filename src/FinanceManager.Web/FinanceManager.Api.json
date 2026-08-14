@@ -1031,6 +1031,7 @@
       },
       "FinancialTransactionResponse": {
         "required": [
+          "id",
           "summary",
           "financialAccountName",
           "spendingCategoryName"

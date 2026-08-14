@@ -1,4 +1,11 @@
 import type { FinancialTransactionResponse } from "@/lib/api/generated";
+import { useQuery } from "@tanstack/react-query";
+import { Button, Popconfirm, Space, Table } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import { Pencil, Trash } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+import { getApiFinancialtransactionsByIdOptions } from "@/lib/api/generated/@tanstack/react-query.gen";
 
 function getData(): FinancialTransactionResponse[] {
   // Fetch data from your API here.
@@ -47,7 +54,72 @@ function getData(): FinancialTransactionResponse[] {
 }
 
 export default function Transactions() {
-  const _ = getData();
+  const navigate = useNavigate();
+  const columns: ColumnsType<FinancialTransactionResponse> = [
+    {
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
+    },
+    {
+      title: "Summary",
+      dataIndex: "summary",
+      key: "summary",
+    },
+    {
+      title: "Account",
+      dataIndex: "financialAccountName",
+      key: "financialAccountName",
+    },
+    {
+      title: "Category",
+      dataIndex: "spendingCategoryName",
+      key: "spendingCategoryName",
+    },
+  ];
+  columns.push({
+    title: "",
+    key: "actions",
+    render: (_: any, record: FinancialTransactionResponse) => (
+      <Space>
+        <Button
+          type="text"
+          icon={<Pencil size={16} absoluteStrokeWidth={true} />}
+          onClick={() => navigate(`/transactions/${record.id}/edit`)}
+        />
 
-  return <>Transactions Works!</>;
+        <Popconfirm
+          title="Delete this record?"
+          onConfirm={() => console.log("delete")}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button
+            type="text"
+            icon={<Trash size={16} absoluteStrokeWidth={true} />}
+          />
+        </Popconfirm>
+      </Space>
+    ),
+  });
+  let query = useQuery(
+    getApiFinancialtransactionsByIdOptions({
+      path: {
+        id: 1,
+      },
+    }),
+  );
+
+  return (
+    <Table
+      rowKey={(record) => record.id}
+      dataSource={getData()}
+      columns={columns}
+    />
+  );
 }

@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace FinanceManager.Application.Features.FinancialTransactions.Query;
 
 internal sealed record FinancialTransactionResponse
 {
+    [Required]
     public int Id { get; init; }
     public decimal Amount { get; init; }
     public DateTimeOffset Date { get; init; }

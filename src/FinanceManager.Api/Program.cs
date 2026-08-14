@@ -23,6 +23,22 @@ public sealed class Program
             options.AddFluentValidationRules();
         });
 
+        var allowedOrigins =
+            builder.Configuration
+                .GetSection("Cors:AllowedOrigins")
+                .Get<string[]>() ?? [];
+        if (allowedOrigins.Length > 0)
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("Frontend", policy =>
+                {
+                    policy
+                        .WithOrigins(allowedOrigins)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
 
         builder.Services.Configure<JsonOptions>(options =>
         {
@@ -35,6 +51,8 @@ public sealed class Program
         app.MapOpenApi();
 
         app.UseHttpsRedirection();
+        if (allowedOrigins.Length > 0)
+            app.UseCors("Frontend");
 
         RouteGroupBuilder api = app.MapGroup("/api");
         api.RegisterSpendingCategoryEndpoints();

@@ -24,7 +24,7 @@ export const zFinancialTransactionFilter = z.object({
 });
 
 export const zFinancialTransactionResponse = z.object({
-    id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
     amount: z.number().optional(),
     date: z.iso.datetime().optional(),
     summary: z.string(),

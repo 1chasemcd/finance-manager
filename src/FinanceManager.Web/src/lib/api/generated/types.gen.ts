@@ -26,7 +26,7 @@ export type FinancialTransactionFilter = {
 };
 
 export type FinancialTransactionResponse = {
-    id?: number;
+    id: number;
     amount?: number;
     date?: Date;
     summary: string;
