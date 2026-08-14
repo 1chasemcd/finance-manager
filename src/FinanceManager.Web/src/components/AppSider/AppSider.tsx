@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { Logo } from "../Logo";
+import "./AppSider.css";
 
 type MenuItem = Required<MenuProps>["items"][number];
 const { Sider } = Layout;
@@ -36,6 +38,7 @@ function divider(): MenuItem {
 }
 
 const items: MenuItem[] = [
+  divider(),
   menuItem("Dashboard", "/", LayoutDashboard),
   menuItem("Transactions", "/transactions", Banknote),
   menuItem("Import", "/import", FileUp),
@@ -59,6 +62,10 @@ export default function AppSider() {
       collapsed={collapsed}
       onCollapse={(value) => setCollapsed(value)}
     >
+      <div className={`app-header ${collapsed ? "collapsed" : ""}`}>
+        <Logo size={24} className="logo" />
+        <span className="app-greeting">Finance Manager</span>
+      </div>
       <Menu mode="inline" items={items} selectedKeys={[location.pathname]} />
     </Sider>
   );
