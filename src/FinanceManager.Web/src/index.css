@@ -1,0 +1,60 @@
+/* Box sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default spacing */
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Make the app fill the viewport */
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+}
+
+/* Make media responsive by default */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Make form controls inherit typography */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Buttons/links */
+button {
+  cursor: pointer;
+}
+
+/* Remove default list styling when using lists as UI elements */
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+
+/* Improve text rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

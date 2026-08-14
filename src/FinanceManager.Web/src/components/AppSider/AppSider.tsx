@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import "./AppSider.css";
 
 type MenuItem = Required<MenuProps>["items"][number];
 const { Sider } = Layout;
@@ -23,12 +22,7 @@ function menuItem(label: string, path: string, Icon: LucideIcon): MenuItem {
     key: path,
     icon: (
       <span>
-        <Icon
-          style={{
-            flexShrink: 0,
-            // transform: "translateX(-4px)",
-          }}
-        />
+        <Icon size={16} />
       </span>
     ),
     label: <Link to={path}>{label}</Link>,
