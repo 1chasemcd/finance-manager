@@ -1,125 +1,106 @@
 import type { FinancialTransactionResponse } from "@/lib/generated";
 import { useQuery } from "@tanstack/react-query";
-import { Button, Popconfirm, Space, Table } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { Pencil, Trash } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Table } from "antd";
+import type { TablePaginationConfig } from "antd";
 
 import { searchTransactionOptions } from "@/lib/generated/@tanstack/react-query.gen";
+import { useState } from "react";
+import type { ColumnsType } from "antd/es/table";
 
-function getData(): FinancialTransactionResponse[] {
-  // Fetch data from your API here.
-  return [
-    {
-      id: 1,
-      amount: 100.0,
-      date: new Date(2017, 1, 3, 10, 3, 15),
-      summary: "City Market purchase",
-      financialAccountName: "Chase Wells Fargo Credit",
-      financialAccountId: 1,
-      spendingCategoryName: "Groceries",
-      spendingCategoryId: 2,
-    },
-    {
-      id: 2,
-      amount: 20.0,
-      date: new Date(2017, 1, 6, 11, 2, 5),
-      summary: "Simply Automotive",
-      financialAccountName: "Hannah Discover Credit",
-      financialAccountId: 2,
-      spendingCategoryName: "Automotive",
-      spendingCategoryId: 1,
-    },
-    {
-      id: 3,
-      amount: 230.0,
-      date: new Date(2017, 1, 11, 1, 5, 15),
-      summary: "United Airlines flight purchase",
-      financialAccountName: "Chase Wells Fargo Credit",
-      financialAccountId: 1,
-      spendingCategoryName: "Travel",
-      spendingCategoryId: 3,
-    },
-    {
-      id: 4,
-      amount: 300.0,
-      date: new Date(2017, 1, 12, 2, 3, 55),
-      summary: "Valley View Hospital Bill",
-      financialAccountName: "Hannah CB Credit",
-      financialAccountId: 0,
-      spendingCategoryName: "Health",
-      spendingCategoryId: 4,
-    },
-  ];
-}
+const getColumns: () => ColumnsType<FinancialTransactionResponse> = () => [
+  {
+    title: "Date",
+    dataIndex: "date",
+    key: "date",
+    render: (value: Date) => value.toLocaleDateString(),
+  },
+  {
+    title: "Amount",
+    dataIndex: "amount",
+    key: "amount",
+  },
+  {
+    title: "Summary",
+    dataIndex: "summary",
+    key: "summary",
+    width: "50%",
+  },
+  {
+    title: "Account",
+    dataIndex: "financialAccountName",
+    key: "financialAccountName",
+  },
+  {
+    title: "Category",
+    dataIndex: "spendingCategoryName",
+    key: "spendingCategoryName",
+  },
+];
 
 export default function Transactions() {
-  const navigate = useNavigate();
-  const columns: ColumnsType<FinancialTransactionResponse> = [
-    {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
-    },
-    {
-      title: "Amount",
-      dataIndex: "amount",
-      key: "amount",
-    },
-    {
-      title: "Summary",
-      dataIndex: "summary",
-      key: "summary",
-    },
-    {
-      title: "Account",
-      dataIndex: "financialAccountName",
-      key: "financialAccountName",
-    },
-    {
-      title: "Category",
-      dataIndex: "spendingCategoryName",
-      key: "spendingCategoryName",
-    },
-  ];
-  columns.push({
-    title: "",
-    key: "actions",
-    render: (_: any, record: FinancialTransactionResponse) => (
-      <Space>
-        <Button
-          type="text"
-          icon={<Pencil size={16} absoluteStrokeWidth={true} />}
-          onClick={() => navigate(`/transactions/${record.id}/edit`)}
-        />
-
-        <Popconfirm
-          title="Delete this record?"
-          onConfirm={() => console.log("delete")}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Button
-            type="text"
-            icon={<Trash size={16} absoluteStrokeWidth={true} />}
-          />
-        </Popconfirm>
-      </Space>
-    ),
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 20,
   });
-  let query = useQuery(
-    searchTransactionOptions({
+
+  const { data, isPending, isFetching } = useQuery({
+    ...searchTransactionOptions({
       query: {
-        take: 5,
+        take: pagination.pageSize,
+        skip: (pagination.current - 1) * pagination.pageSize,
       },
     }),
-  );
+    placeholderData: (previousData) => previousData,
+  });
+
+  const handleTableChange = (newPagination: TablePaginationConfig) => {
+    setPagination({
+      current: newPagination.current ?? 1,
+      pageSize: newPagination.pageSize ?? 20,
+    });
+  };
+
+  const columns = getColumns();
+  // columns.push({
+  //   title: "",
+  //   key: "actions",
+  //   render: (_: any, record: FinancialTransactionResponse) => (
+  //     <Space>
+  //       <Button
+  //         type="text"
+  //         icon={<Pencil size={16} absoluteStrokeWidth={true} />}
+  //         onClick={() => navigate(`/transactions/${record.id}/edit`)}
+  //       />
+
+  //       <Popconfirm
+  //         title="Delete this record?"
+  //         onConfirm={() => console.log("delete")}
+  //         okText="Yes"
+  //         cancelText="No"
+  //       >
+  //         <Button
+  //           type="text"
+  //           icon={<Trash size={16} absoluteStrokeWidth={true} />}
+  //         />
+  //       </Popconfirm>
+  //     </Space>
+  //   ),
+  // });
 
   return (
-    <Table
+    <Table<FinancialTransactionResponse>
       rowKey={(record) => record.id}
-      dataSource={getData()}
+      tableLayout="fixed"
+      dataSource={data?.results ?? []}
+      loading={isPending || isFetching}
       columns={columns}
+      pagination={{
+        current: pagination.current,
+        pageSize: pagination.pageSize,
+        total: data?.total ?? 0,
+        showSizeChanger: true,
+      }}
+      onChange={handleTableChange}
     />
   );
 }

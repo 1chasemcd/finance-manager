@@ -2,6 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
+import { lookupTransactionResponseTransformer, searchTransactionResponseTransformer } from './transformers.gen';
 import type { CreateAccountData, CreateAccountErrors, CreateAccountResponses, CreateSpendingCategoryData, CreateSpendingCategoryErrors, CreateSpendingCategoryResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, DeleteSpendingCategoryData, DeleteSpendingCategoryErrors, DeleteSpendingCategoryResponses, GetApiAutocompleteFinancialaccountByIdData, GetApiAutocompleteFinancialaccountByIdErrors, GetApiAutocompleteFinancialaccountByIdResponses, GetApiAutocompleteFinancialaccountData, GetApiAutocompleteFinancialaccountErrors, GetApiAutocompleteFinancialaccountResponses, GetApiAutocompleteSpendingcategoryByIdData, GetApiAutocompleteSpendingcategoryByIdErrors, GetApiAutocompleteSpendingcategoryByIdResponses, GetApiAutocompleteSpendingcategoryData, GetApiAutocompleteSpendingcategoryErrors, GetApiAutocompleteSpendingcategoryResponses, LookupAccountData, LookupAccountErrors, LookupAccountResponses, LookupSpendingCategoryData, LookupSpendingCategoryErrors, LookupSpendingCategoryResponses, LookupTransactionData, LookupTransactionErrors, LookupTransactionResponses, SearchAccountData, SearchAccountErrors, SearchAccountResponses, SearchSpendingCategoryData, SearchSpendingCategoryErrors, SearchSpendingCategoryResponses, SearchTransactionData, SearchTransactionErrors, SearchTransactionResponses, UpdateAccountData, UpdateAccountErrors, UpdateAccountResponses, UpdateSpendingCategoryData, UpdateSpendingCategoryErrors, UpdateSpendingCategoryResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
@@ -42,9 +43,17 @@ export const createSpendingCategory = <ThrowOnError extends boolean = false>(opt
     }
 });
 
-export const lookupTransaction = <ThrowOnError extends boolean = false>(options: Options<LookupTransactionData, ThrowOnError>): RequestResult<LookupTransactionResponses, LookupTransactionErrors, ThrowOnError> => (options.client ?? client).get<LookupTransactionResponses, LookupTransactionErrors, ThrowOnError>({ url: '/api/financialtransactions/{id}', ...options });
+export const lookupTransaction = <ThrowOnError extends boolean = false>(options: Options<LookupTransactionData, ThrowOnError>): RequestResult<LookupTransactionResponses, LookupTransactionErrors, ThrowOnError> => (options.client ?? client).get<LookupTransactionResponses, LookupTransactionErrors, ThrowOnError>({
+    responseTransformer: lookupTransactionResponseTransformer,
+    url: '/api/financialtransactions/{id}',
+    ...options
+});
 
-export const searchTransaction = <ThrowOnError extends boolean = false>(options?: Options<SearchTransactionData, ThrowOnError>): RequestResult<SearchTransactionResponses, SearchTransactionErrors, ThrowOnError> => (options?.client ?? client).get<SearchTransactionResponses, SearchTransactionErrors, ThrowOnError>({ url: '/api/financialtransactions', ...options });
+export const searchTransaction = <ThrowOnError extends boolean = false>(options?: Options<SearchTransactionData, ThrowOnError>): RequestResult<SearchTransactionResponses, SearchTransactionErrors, ThrowOnError> => (options?.client ?? client).get<SearchTransactionResponses, SearchTransactionErrors, ThrowOnError>({
+    responseTransformer: searchTransactionResponseTransformer,
+    url: '/api/financialtransactions',
+    ...options
+});
 
 export const deleteAccount = <ThrowOnError extends boolean = false>(options: Options<DeleteAccountData, ThrowOnError>): RequestResult<DeleteAccountResponses, DeleteAccountErrors, ThrowOnError> => (options.client ?? client).delete<DeleteAccountResponses, DeleteAccountErrors, ThrowOnError>({ url: '/api/financialaccounts/{id}', ...options });
 

@@ -7,7 +7,6 @@ export default defineConfig({
   },
   plugins: [
     "@tanstack/react-query",
-    "zod",
     {
       dates: true,
       name: "@hey-api/transformers",
@@ -16,5 +15,10 @@ export default defineConfig({
       name: "@hey-api/client-fetch",
       runtimeConfigPath: "./src/lib/hey-api.ts",
     },
+    {
+      name: "@hey-api/sdk",
+      transformer: true,
+    },
+    "zod",
   ],
 });
