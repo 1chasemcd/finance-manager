@@ -3,7 +3,7 @@ import { defineConfig } from "@hey-api/openapi-ts";
 export default defineConfig({
   input: "./FinanceManager.Api.json",
   output: {
-    path: "./src/lib/api/generated",
+    path: "./src/lib/generated",
   },
   plugins: [
     "@tanstack/react-query",
@@ -14,7 +14,7 @@ export default defineConfig({
     },
     {
       name: "@hey-api/client-fetch",
-      runtimeConfigPath: "./src/lib/api/hey-api.ts",
+      runtimeConfigPath: "./src/lib/hey-api.ts",
     },
   ],
 });

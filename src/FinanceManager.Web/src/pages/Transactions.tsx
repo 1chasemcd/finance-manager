@@ -1,11 +1,11 @@
-import type { FinancialTransactionResponse } from "@/lib/api/generated";
+import type { FinancialTransactionResponse } from "@/lib/generated";
 import { useQuery } from "@tanstack/react-query";
 import { Button, Popconfirm, Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Pencil, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import { getApiFinancialtransactionsByIdOptions } from "@/lib/api/generated/@tanstack/react-query.gen";
+import { searchTransactionOptions } from "@/lib/generated/@tanstack/react-query.gen";
 
 function getData(): FinancialTransactionResponse[] {
   // Fetch data from your API here.
@@ -108,9 +108,9 @@ export default function Transactions() {
     ),
   });
   let query = useQuery(
-    getApiFinancialtransactionsByIdOptions({
-      path: {
-        id: 1,
+    searchTransactionOptions({
+      query: {
+        take: 5,
       },
     }),
   );
