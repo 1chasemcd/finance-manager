@@ -74,7 +74,7 @@ internal static class EntityRequestHandlerRegistration
         where TEntity : Entity
     {
         serviceCollection.AddTransient<
-            IRequestHandler<SearchEntityQuery<TEntity, TResponse, TFilter>, Result<IReadOnlyList<TResponse>>>,
+            IRequestHandler<SearchEntityQuery<TEntity, TResponse, TFilter>, Result<SearchEntityResponse<TResponse>>>,
             SearchEntityHandler<TEntity, TResponse, TFilter>
         >();
 
@@ -93,7 +93,7 @@ internal static class EntityRequestHandlerRegistration
     where TEntity : Entity
     {
         serviceCollection.AddTransient<
-            IRequestHandler<SearchEntityQuery<TEntity, TResponse, Unit>, Result<IReadOnlyList<TResponse>>>,
+            IRequestHandler<SearchEntityQuery<TEntity, TResponse, Unit>, Result<SearchEntityResponse<TResponse>>>,
             SearchEntityHandler<TEntity, TResponse, Unit>
         >();
 

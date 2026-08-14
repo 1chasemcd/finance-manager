@@ -10,11 +10,11 @@ internal sealed class SearchEntityHandler<TEntity, TResponse, TFilter>(
     IApplicationDbContext db,
     IExpressionMapper<TEntity, TResponse> mapper,
     IEntityFilterHandler<TEntity, TFilter>? queryBuilder = null)
-    : IRequestHandler<SearchEntityQuery<TEntity, TResponse, TFilter>, Result<IReadOnlyList<TResponse>>>
+    : IRequestHandler<SearchEntityQuery<TEntity, TResponse, TFilter>, Result<SearchEntityResponse<TResponse>>>
     where TEntity : Entity
 
 {
-    public async Task<Result<IReadOnlyList<TResponse>>> Handle(SearchEntityQuery<TEntity, TResponse, TFilter> query, CancellationToken cancellationToken)
+    public async Task<Result<SearchEntityResponse<TResponse>>> Handle(SearchEntityQuery<TEntity, TResponse, TFilter> query, CancellationToken cancellationToken)
     {
         var entities = db.Set<TEntity>().AsNoTracking().OrderBy(x => x.Id);
         IQueryable<TEntity> results;
@@ -26,9 +26,17 @@ internal sealed class SearchEntityHandler<TEntity, TResponse, TFilter>(
         else
             throw new InvalidOperationException(); // TODO log
 
-        return await results.Skip(query.Skip)
+        var list = await results.Skip(query.Skip)
             .Take(query.Take)
             .Select(mapper.Map)
             .ToListAsync(cancellationToken);
+
+        var count = await db.Set<TEntity>().AsNoTracking().CountAsync(cancellationToken);
+
+        return new SearchEntityResponse<TResponse>
+        {
+            Results = list,
+            Total = count
+        };
     }
 }

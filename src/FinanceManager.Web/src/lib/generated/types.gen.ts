@@ -27,6 +27,21 @@ export type FinancialTransactionResponse = {
     spendingCategoryName: string;
 };
 
+export type SearchEntityResponseOfFinancialAccountResponse = {
+    results: Array<FinancialAccountResponse>;
+    total?: number;
+};
+
+export type SearchEntityResponseOfFinancialTransactionResponse = {
+    results: Array<FinancialTransactionResponse>;
+    total?: number;
+};
+
+export type SearchEntityResponseOfSpendingCategoryResponse = {
+    results: Array<SpendingCategoryResponse>;
+    total?: number;
+};
+
 export type SpendingCategoryResponse = {
     id?: number;
     name: string;
@@ -179,7 +194,7 @@ export type SearchSpendingCategoryResponses = {
     /**
      * OK
      */
-    200: Array<SpendingCategoryResponse>;
+    200: SearchEntityResponseOfSpendingCategoryResponse;
 };
 
 export type SearchSpendingCategoryResponse = SearchSpendingCategoryResponses[keyof SearchSpendingCategoryResponses];
@@ -287,7 +302,7 @@ export type SearchTransactionResponses = {
     /**
      * OK
      */
-    200: Array<FinancialTransactionResponse>;
+    200: SearchEntityResponseOfFinancialTransactionResponse;
 };
 
 export type SearchTransactionResponse = SearchTransactionResponses[keyof SearchTransactionResponses];
@@ -428,7 +443,7 @@ export type SearchAccountResponses = {
     /**
      * OK
      */
-    200: Array<FinancialAccountResponse>;
+    200: SearchEntityResponseOfFinancialAccountResponse;
 };
 
 export type SearchAccountResponse = SearchAccountResponses[keyof SearchAccountResponses];

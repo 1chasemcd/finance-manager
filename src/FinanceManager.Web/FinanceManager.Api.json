@@ -261,10 +261,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SpendingCategoryResponse"
-                  }
+                  "$ref": "#/components/schemas/SearchEntityResponseOfSpendingCategoryResponse"
                 }
               }
             }
@@ -443,10 +440,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FinancialTransactionResponse"
-                  }
+                  "$ref": "#/components/schemas/SearchEntityResponseOfFinancialTransactionResponse"
                 }
               }
             }
@@ -690,10 +684,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FinancialAccountResponse"
-                  }
+                  "$ref": "#/components/schemas/SearchEntityResponseOfFinancialAccountResponse"
                 }
               }
             }
@@ -1140,6 +1131,60 @@
           },
           "spendingCategoryName": {
             "type": "string"
+          }
+        }
+      },
+      "SearchEntityResponseOfFinancialAccountResponse": {
+        "required": [
+          "results"
+        ],
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FinancialAccountResponse"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "SearchEntityResponseOfFinancialTransactionResponse": {
+        "required": [
+          "results"
+        ],
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FinancialTransactionResponse"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "SearchEntityResponseOfSpendingCategoryResponse": {
+        "required": [
+          "results"
+        ],
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpendingCategoryResponse"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },

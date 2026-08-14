@@ -14,7 +14,12 @@ export const lookupTransactionResponseTransformer = async (data: any): Promise<L
     return data;
 };
 
+const searchEntityResponseOfFinancialTransactionResponseSchemaResponseTransformer = (data: any) => {
+    data.results = data.results.map((item: any) => financialTransactionResponseSchemaResponseTransformer(item));
+    return data;
+};
+
 export const searchTransactionResponseTransformer = async (data: any): Promise<SearchTransactionResponse> => {
-    data = data.map((item: any) => financialTransactionResponseSchemaResponseTransformer(item));
+    data = searchEntityResponseOfFinancialTransactionResponseSchemaResponseTransformer(data);
     return data;
 };
