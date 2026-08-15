@@ -12,6 +12,7 @@ import Title from "antd/es/typography/Title";
 import { useTableHeight } from "@/hooks/useTableHeight";
 import type { Options } from "@/lib/generated";
 import { Route, Routes } from "react-router";
+import "./AppTablePage.css";
 
 type SearchEntityData = {
   query?: {

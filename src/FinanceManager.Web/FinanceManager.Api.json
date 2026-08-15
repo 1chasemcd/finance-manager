@@ -1073,7 +1073,9 @@
       },
       "FinancialAccountResponse": {
         "required": [
+          "id",
           "name",
+          "ownerId",
           "ownerName"
         ],
         "type": "object",
@@ -1097,8 +1099,12 @@
       "FinancialTransactionResponse": {
         "required": [
           "id",
+          "amount",
+          "date",
           "summary",
+          "financialAccountId",
           "financialAccountName",
+          "spendingCategoryId",
           "spendingCategoryName"
         ],
         "type": "object",
@@ -1136,7 +1142,8 @@
       },
       "SearchEntityResponseOfFinancialAccountResponse": {
         "required": [
-          "results"
+          "results",
+          "total"
         ],
         "type": "object",
         "properties": {
@@ -1154,7 +1161,8 @@
       },
       "SearchEntityResponseOfFinancialTransactionResponse": {
         "required": [
-          "results"
+          "results",
+          "total"
         ],
         "type": "object",
         "properties": {
@@ -1172,7 +1180,8 @@
       },
       "SearchEntityResponseOfSpendingCategoryResponse": {
         "required": [
-          "results"
+          "results",
+          "total"
         ],
         "type": "object",
         "properties": {
@@ -1190,6 +1199,7 @@
       },
       "SpendingCategoryResponse": {
         "required": [
+          "id",
           "name"
         ],
         "type": "object",

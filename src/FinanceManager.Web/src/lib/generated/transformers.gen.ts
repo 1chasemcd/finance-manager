@@ -3,9 +3,7 @@
 import type { LookupTransactionResponse, SearchTransactionResponse } from './types.gen';
 
 const financialTransactionResponseSchemaResponseTransformer = (data: any) => {
-    if (data.date) {
-        data.date = new Date(data.date);
-    }
+    data.date = new Date(data.date);
     return data;
 };
 

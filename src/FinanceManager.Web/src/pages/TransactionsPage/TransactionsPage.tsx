@@ -2,9 +2,7 @@ import type { FinancialTransactionResponse } from "@/lib/generated";
 
 import { searchTransactionOptions } from "@/lib/generated/@tanstack/react-query.gen";
 import type { ColumnsType } from "antd/es/table";
-import "./TransactionsPage.css";
 import AppTablePage from "@/components/AppTablePage/AppTablePage";
-import TransactionsEditPage from "./TransactionsEditPage";
 
 const getColumns: () => ColumnsType<FinancialTransactionResponse> = () => [
   {
@@ -43,7 +41,6 @@ export default function TransactionsPage() {
       title="Transactions"
       columns={getColumns()}
       searchRequestOptions={searchTransactionOptions}
-      editForm={TransactionsEditPage}
     />
   );
 }

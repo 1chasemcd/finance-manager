@@ -10,40 +10,40 @@ export type AutocompleteQueryResponse = {
 };
 
 export type FinancialAccountResponse = {
-    id?: number;
+    id: number;
     name: string;
-    ownerId?: number;
+    ownerId: number;
     ownerName: string;
 };
 
 export type FinancialTransactionResponse = {
     id: number;
-    amount?: number;
-    date?: Date;
+    amount: number;
+    date: Date;
     summary: string;
-    financialAccountId?: number;
+    financialAccountId: number;
     financialAccountName: string;
-    spendingCategoryId?: number;
+    spendingCategoryId: number;
     spendingCategoryName: string;
 };
 
 export type SearchEntityResponseOfFinancialAccountResponse = {
     results: Array<FinancialAccountResponse>;
-    total?: number;
+    total: number;
 };
 
 export type SearchEntityResponseOfFinancialTransactionResponse = {
     results: Array<FinancialTransactionResponse>;
-    total?: number;
+    total: number;
 };
 
 export type SearchEntityResponseOfSpendingCategoryResponse = {
     results: Array<SpendingCategoryResponse>;
-    total?: number;
+    total: number;
 };
 
 export type SpendingCategoryResponse = {
-    id?: number;
+    id: number;
     name: string;
     description?: null | string;
 };

@@ -3,10 +3,10 @@ import AppLayout from "./layouts/AppLayout";
 import Dashboard from "./pages/Dashboard";
 import TransactionsPage from "./pages/TransactionsPage/TransactionsPage";
 import Import from "./pages/Import";
-import Categories from "./pages/Categories";
+import CategoriesPage from "./pages/Categories/CategoriesPage";
 import Budget from "./pages/Budget";
 import Patterns from "./pages/Patterns";
-import Accounts from "./pages/Accounts";
+import AccountsPage from "./pages/Accounts/AccountsPage";
 import People from "./pages/People";
 import ImportDefinitions from "./pages/ImportDefinitions";
 
@@ -18,9 +18,9 @@ export function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/transactions/*" element={<TransactionsPage />} />
           <Route path="/import" element={<Import />} />
-          <Route path="/categories" element={<Categories />} />
+          <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/budget" element={<Budget />} />
-          <Route path="/accounts" element={<Accounts />} />
+          <Route path="/accounts" element={<AccountsPage />} />
           <Route path="/importdefs" element={<ImportDefinitions />} />
           <Route path="/patterns" element={<Patterns />} />
           <Route path="/people" element={<People />} />
