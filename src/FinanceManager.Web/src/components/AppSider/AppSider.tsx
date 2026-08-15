@@ -66,7 +66,17 @@ export default function AppSider() {
         <Logo size={24} className="logo" />
         <span className="app-greeting">Finance Manager</span>
       </div>
-      <Menu mode="inline" items={items} selectedKeys={[location.pathname]} />
+      <Menu
+        mode="inline"
+        items={items}
+        selectedKeys={[
+          items
+            .map((x) => x?.key?.toString())
+            .filter((x) => x != undefined)
+            .filter((x) => location.pathname.startsWith(x))
+            .reduce((a, b) => (b.length > a.length ? b : a)),
+        ]}
+      />
     </Sider>
   );
 }
