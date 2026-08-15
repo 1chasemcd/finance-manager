@@ -91,6 +91,9 @@ function AppTableView<
   });
   const columns = useMemo(() => {
     const columns = [...props.columns];
+    columns.forEach((x) => {
+      if (x.ellipsis != false) x.ellipsis = true;
+    });
 
     if (props.canEdit || props.deleteEntityMutation)
       columns.push({

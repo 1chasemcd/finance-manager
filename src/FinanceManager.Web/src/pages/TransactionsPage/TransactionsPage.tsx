@@ -2,6 +2,7 @@ import type { FinancialTransactionResponse } from "@/lib/generated";
 import { searchTransactionOptions } from "@/lib/generated/@tanstack/react-query.gen";
 import AppTablePage from "@/components/AppTablePage/AppTablePage";
 import useMemoizedColumns from "@/hooks/useMemoizedColumns";
+import TransactionsFilterPage from "./TransactionsFilterPage";
 
 export default function TransactionsPage() {
   const columns = useMemoizedColumns<FinancialTransactionResponse>(() => [
@@ -26,7 +27,6 @@ export default function TransactionsPage() {
       title: "Account",
       dataIndex: "financialAccountName",
       key: "financialAccountName",
-      ellipsis: true,
     },
     {
       title: "Category",
@@ -40,6 +40,7 @@ export default function TransactionsPage() {
       title="Transactions"
       columns={columns}
       searchRequestOptions={searchTransactionOptions}
+      FilterForm={TransactionsFilterPage}
     />
   );
 }
