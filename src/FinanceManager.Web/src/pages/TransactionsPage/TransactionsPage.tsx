@@ -1,11 +1,14 @@
 import type { FinancialTransactionResponse } from "@/lib/generated";
 import { useQuery } from "@tanstack/react-query";
-import { Table } from "antd";
+import { Button, Drawer, Flex, Table } from "antd";
 import type { TablePaginationConfig } from "antd";
 
 import { searchTransactionOptions } from "@/lib/generated/@tanstack/react-query.gen";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { ColumnsType } from "antd/es/table";
+import Title from "antd/es/typography/Title";
+import "./TransactionsPage.css";
+import { useTableHeight } from "@/hooks/useTableHeight";
 
 const getColumns: () => ColumnsType<FinancialTransactionResponse> = () => [
   {
@@ -23,12 +26,13 @@ const getColumns: () => ColumnsType<FinancialTransactionResponse> = () => [
     title: "Summary",
     dataIndex: "summary",
     key: "summary",
-    width: "50%",
+    width: "30%",
   },
   {
     title: "Account",
     dataIndex: "financialAccountName",
     key: "financialAccountName",
+    ellipsis: true,
   },
   {
     title: "Category",
@@ -37,11 +41,14 @@ const getColumns: () => ColumnsType<FinancialTransactionResponse> = () => [
   },
 ];
 
-export default function Transactions() {
+export default function TransactionsPage() {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const tableHeight = useTableHeight(contentRef, 39);
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 20,
+    pageSize: 50,
   });
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const { data, isPending, isFetching } = useQuery({
     ...searchTransactionOptions({
@@ -56,7 +63,7 @@ export default function Transactions() {
   const handleTableChange = (newPagination: TablePaginationConfig) => {
     setPagination({
       current: newPagination.current ?? 1,
-      pageSize: newPagination.pageSize ?? 20,
+      pageSize: newPagination.pageSize ?? 50,
     });
   };
 
@@ -88,19 +95,47 @@ export default function Transactions() {
   // });
 
   return (
-    <Table<FinancialTransactionResponse>
-      rowKey={(record) => record.id}
-      tableLayout="fixed"
-      dataSource={data?.results ?? []}
-      loading={isPending || isFetching}
-      columns={columns}
-      pagination={{
-        current: pagination.current,
-        pageSize: pagination.pageSize,
-        total: data?.total ?? 0,
-        showSizeChanger: true,
-      }}
-      onChange={handleTableChange}
-    />
+    <div className="page">
+      <Flex justify="space-between" className="header">
+        <Title level={2} style={{ margin: 0 }}>
+          Transactions
+        </Title>
+        <Flex align="center" gap="medium">
+          <Button onClick={() => setFiltersOpen(true)}>Filter</Button>
+          <Button type="primary">Add Record</Button>
+        </Flex>
+      </Flex>
+      <Drawer
+        title="Filter Results"
+        onClose={() => setFiltersOpen(false)}
+        open={filtersOpen}
+
+        extra={<Button>Clear Filters</Button>}
+      ></Drawer>
+      <div
+        ref={contentRef}
+        className="table-container"
+        style={{ height: tableHeight }}
+      >
+        <Table<FinancialTransactionResponse>
+          size="small"
+          className="table"
+          rowKey={(record) => record.id}
+          tableLayout="fixed"
+          dataSource={data?.results ?? []}
+          loading={isPending || isFetching}
+          columns={columns}
+          pagination={{
+            current: pagination.current,
+            pageSize: pagination.pageSize,
+            total: data?.total ?? 0,
+            showSizeChanger: true,
+            pageSizeOptions: [10, 20, 50],
+          }}
+          scroll={{ y: tableHeight }}
+          onChange={handleTableChange}
+        />
+      </div>
+    </div>
   );
 }

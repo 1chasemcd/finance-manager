@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AppLayout from "./layouts/AppLayout";
 import Dashboard from "./pages/Dashboard";
-import Transactions from "./pages/Transactions";
+import TransactionsPage from "./pages/TransactionsPage/TransactionsPage";
 import Import from "./pages/Import";
 import Categories from "./pages/Categories";
 import Budget from "./pages/Budget";
@@ -16,7 +16,7 @@ export function App() {
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/transactions" element={<Transactions />} />
+          <Route path="/transactions" element={<TransactionsPage />} />
           <Route path="/import" element={<Import />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/budget" element={<Budget />} />
