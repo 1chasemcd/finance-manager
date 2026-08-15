@@ -2,22 +2,32 @@ import {
   useQuery,
   type DataTag,
   type UnusedSkipTokenOptions,
+  type UseMutationOptions,
 } from "@tanstack/react-query";
-import { Button, Drawer, Flex, Table } from "antd";
+import { Button, Drawer, Flex, Popconfirm, Space, Table } from "antd";
 import type { TablePaginationConfig } from "antd";
 
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { ColumnsType } from "antd/es/table";
 import Title from "antd/es/typography/Title";
 import { useTableHeight } from "@/hooks/useTableHeight";
 import type { Options } from "@/lib/generated";
 import { Route, Routes } from "react-router";
 import "./AppTablePage.css";
+import { LinkButton } from "../LinkButton";
+import { Pencil, Trash } from "lucide-react";
 
 type SearchEntityData = {
   query?: {
     take?: number;
     skip?: number;
+  };
+  url: string;
+};
+
+export type DeleteEntityData = {
+  path: {
+    id: number;
   };
   url: string;
 };
@@ -47,14 +57,17 @@ type TableProps<
   searchRequestOptions: (
     options?: Options<SearchEntityData>,
   ) => SearchRequestOptionsResult<TEntityResponse, TSearchResponse>;
-  filterForm?: React.ReactNode;
-  editForm?: React.ComponentType;
+  deleteEntityMutation?: (
+    options?: Partial<Options<DeleteEntityData>>,
+  ) => UseMutationOptions<void, any, Options<DeleteEntityData>>;
+  FilterForm?: React.ComponentType;
 };
 
 type TableViewProps<
   TEntityResponse extends EntityResponse,
   TSearchResponse extends SearchResponse<TEntityResponse>,
 > = TableProps<TEntityResponse, TSearchResponse> & {
+  canAdd: boolean;
   canEdit: boolean;
 };
 
@@ -62,7 +75,8 @@ type TablePageProps<
   TEntityResponse extends EntityResponse,
   TSearchResponse extends SearchResponse<TEntityResponse>,
 > = TableProps<TEntityResponse, TSearchResponse> & {
-  editForm?: React.ComponentType;
+  EditForm?: React.ComponentType;
+  AddForm?: React.ComponentType;
 };
 
 function AppTableView<
@@ -75,6 +89,43 @@ function AppTableView<
     current: 1,
     pageSize: 50,
   });
+  const columns = useMemo(() => {
+    const columns = [...props.columns];
+
+    if (props.canEdit || props.deleteEntityMutation)
+      columns.push({
+        title: "",
+        key: "$actions",
+        width: props.canEdit && props.deleteEntityMutation ? 88 : 48,
+        render: (_: any, record: TEntityResponse) => (
+          <Space size="small">
+            {props.canEdit && (
+              <LinkButton
+                type="text"
+                to={`./${record.id}/edit`}
+                icon={<Pencil size={16} absoluteStrokeWidth />}
+              />
+            )}
+            {props.deleteEntityMutation && (
+              <Popconfirm
+                title="Delete this record?"
+                onConfirm={() => console.log("delete")}
+                okText="Confirm"
+                okButtonProps={{ danger: true }}
+              >
+                <Button
+                  type="text"
+                  icon={<Trash size={16} absoluteStrokeWidth />}
+                />
+              </Popconfirm>
+            )}
+          </Space>
+        ),
+      });
+
+    return columns;
+  }, [props.columns, props.canEdit, props.deleteEntityMutation]);
+
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const { data, isPending, isFetching } = useQuery({
@@ -94,32 +145,6 @@ function AppTableView<
     });
   };
 
-  // columns.push({
-  //   title: "",
-  //   key: "actions",
-  //   render: (_: any, record: FinancialTransactionResponse) => (
-  //     <Space>
-  //       <Button
-  //         type="text"
-  //         icon={<Pencil size={16} absoluteStrokeWidth={true} />}
-  //         onClick={() => navigate(`/transactions/${record.id}/edit`)}
-  //       />
-
-  //       <Popconfirm
-  //         title="Delete this record?"
-  //         onConfirm={() => console.log("delete")}
-  //         okText="Yes"
-  //         cancelText="No"
-  //       >
-  //         <Button
-  //           type="text"
-  //           icon={<Trash size={16} absoluteStrokeWidth={true} />}
-  //         />
-  //       </Popconfirm>
-  //     </Space>
-  //   ),
-  // });
-
   return (
     <div className="page">
       <Flex justify="space-between" className="header">
@@ -127,17 +152,25 @@ function AppTableView<
           {props.title}
         </Title>
         <Flex align="center" gap="medium">
-          <Button onClick={() => setFiltersOpen(true)}>Filter</Button>
-          <Button type="primary">Add Record</Button>
+          {props.FilterForm && (
+            <Button onClick={() => setFiltersOpen(true)}>Filter</Button>
+          )}
+          {props.canAdd && (
+            <LinkButton to="./add" type="primary">
+              Add
+            </LinkButton>
+          )}
         </Flex>
       </Flex>
-      <Drawer
-        title="Filter Results"
-        onClose={() => setFiltersOpen(false)}
-        open={filtersOpen}
+      {props.FilterForm && (
+        <Drawer
+          title="Filter Results"
+          onClose={() => setFiltersOpen(false)}
+          open={filtersOpen}
 
-        extra={<Button>Clear Filters</Button>}
-      ></Drawer>
+          extra={<Button>Clear Filters</Button>}
+        ></Drawer>
+      )}
       <div
         ref={contentRef}
         className="table-container"
@@ -150,7 +183,7 @@ function AppTableView<
           tableLayout="fixed"
           dataSource={data?.results ?? []}
           loading={isPending || isFetching}
-          columns={props.columns}
+          columns={columns}
           pagination={{
             current: pagination.current,
             pageSize: pagination.pageSize,
@@ -170,16 +203,24 @@ export default function AppTablePage<
   TEntityResponse extends EntityResponse,
   TSearchResponse extends SearchResponse<TEntityResponse>,
 >({
-  editForm: EditForm,
+  EditForm,
+  AddForm,
   ...props
 }: TablePageProps<TEntityResponse, TSearchResponse>) {
   return (
     <Routes>
       <Route
         index
-        element={<AppTableView {...props} canEdit={Boolean(EditForm)} />}
+        element={
+          <AppTableView
+            {...props}
+            canEdit={Boolean(EditForm)}
+            canAdd={Boolean(AddForm)}
+          />
+        }
       />
       {EditForm && <Route path=":id/edit" element={<EditForm />} />}
+      {AddForm && <Route path="add" element={<AddForm />} />}
     </Routes>
   );
 }

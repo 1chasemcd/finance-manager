@@ -17,13 +17,13 @@ export function App() {
         <Route element={<AppLayout />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/transactions/*" element={<TransactionsPage />} />
-          <Route path="/import" element={<Import />} />
-          <Route path="/categories" element={<CategoriesPage />} />
-          <Route path="/budget" element={<Budget />} />
-          <Route path="/accounts" element={<AccountsPage />} />
-          <Route path="/importdefs" element={<ImportDefinitions />} />
-          <Route path="/patterns" element={<Patterns />} />
-          <Route path="/people" element={<People />} />
+          <Route path="/import/*" element={<Import />} />
+          <Route path="/categories/*" element={<CategoriesPage />} />
+          <Route path="/budget/*" element={<Budget />} />
+          <Route path="/accounts/*" element={<AccountsPage />} />
+          <Route path="/importdefs/*" element={<ImportDefinitions />} />
+          <Route path="/patterns/*" element={<Patterns />} />
+          <Route path="/people/*" element={<People />} />
         </Route>
       </Routes>
     </BrowserRouter>
