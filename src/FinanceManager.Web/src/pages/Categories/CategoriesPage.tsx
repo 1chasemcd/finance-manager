@@ -1,4 +1,4 @@
-import AppTablePage from "@/components/AppTablePage/AppTablePage";
+import EntityTablePage from "@/components/EntityTable/EntityTablePage";
 import useMemoizedColumns from "@/hooks/useMemoizedColumns";
 import type { SpendingCategoryResponse } from "@/lib/generated";
 import { searchSpendingCategoryOptions } from "@/lib/generated/@tanstack/react-query.gen";
@@ -17,7 +17,7 @@ export default function CategoriesPage() {
     },
   ]);
   return (
-    <AppTablePage
+    <EntityTablePage
       title="Categories"
       columns={columns}
       searchEntityOptions={searchSpendingCategoryOptions}

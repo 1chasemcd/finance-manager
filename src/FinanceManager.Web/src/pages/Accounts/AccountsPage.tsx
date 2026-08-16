@@ -1,4 +1,3 @@
-import AppTablePage from "@/components/AppTablePage/AppTablePage";
 import type { FinancialAccountResponse } from "@/lib/generated";
 import {
   deleteAccountMutation,
@@ -6,6 +5,7 @@ import {
 } from "@/lib/generated/@tanstack/react-query.gen";
 import AccountsEditPage from "./AccountsEditPage";
 import useMemoizedColumns from "@/hooks/useMemoizedColumns";
+import EntityTablePage from "@/components/EntityTable/EntityTablePage";
 
 export default function AccountsPage() {
   const columns = useMemoizedColumns<FinancialAccountResponse>(() => [
@@ -22,7 +22,7 @@ export default function AccountsPage() {
   ]);
 
   return (
-    <AppTablePage
+    <EntityTablePage
       title="Accounts"
       columns={columns}
       searchEntityOptions={searchAccountOptions}

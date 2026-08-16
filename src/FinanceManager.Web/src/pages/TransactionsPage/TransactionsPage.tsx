@@ -1,8 +1,8 @@
 import type { FinancialTransactionResponse } from "@/lib/generated";
 import { searchTransactionOptions } from "@/lib/generated/@tanstack/react-query.gen";
-import AppTablePage from "@/components/AppTablePage/AppTablePage";
 import useMemoizedColumns from "@/hooks/useMemoizedColumns";
 import TransactionsFilterPage from "./TransactionsFilterPage";
+import EntityTablePage from "@/components/EntityTable/EntityTablePage";
 
 export default function TransactionsPage() {
   const columns = useMemoizedColumns<FinancialTransactionResponse>(() => [
@@ -36,7 +36,7 @@ export default function TransactionsPage() {
   ]);
 
   return (
-    <AppTablePage
+    <EntityTablePage
       title="Transactions"
       columns={columns}
       searchEntityOptions={searchTransactionOptions}
