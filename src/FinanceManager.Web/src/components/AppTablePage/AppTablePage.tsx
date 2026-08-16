@@ -1,6 +1,9 @@
 import {
+  useMutation,
   useQuery,
+  useQueryClient,
   type DataTag,
+  type QueryKey,
   type UnusedSkipTokenOptions,
   type UseMutationOptions,
 } from "@tanstack/react-query";
@@ -25,12 +28,14 @@ type SearchEntityData = {
   url: string;
 };
 
-export type DeleteEntityData = {
+type LookupEntityData = {
   path: {
     id: number;
   };
   url: string;
 };
+
+type DeleteEntityData = LookupEntityData;
 
 type EntityResponse = {
   id: number;
@@ -41,7 +46,7 @@ type SearchResponse<TEntityResponse extends EntityResponse> = {
   total?: number;
 };
 
-type SearchRequestOptionsResult<
+type SearchEntityOptionsResult<
   TEntityResponse extends EntityResponse,
   TSearchResponse extends SearchResponse<TEntityResponse>,
 > = UnusedSkipTokenOptions<TSearchResponse, any, TSearchResponse, any> & {
@@ -54,12 +59,13 @@ type TableProps<
 > = {
   title: string;
   columns: ColumnsType<TEntityResponse>;
-  searchRequestOptions: (
+  searchEntityOptions: (
     options?: Options<SearchEntityData>,
-  ) => SearchRequestOptionsResult<TEntityResponse, TSearchResponse>;
+  ) => SearchEntityOptionsResult<TEntityResponse, TSearchResponse>;
   deleteEntityMutation?: (
     options?: Partial<Options<DeleteEntityData>>,
   ) => UseMutationOptions<void, any, Options<DeleteEntityData>>;
+  queryKeysToInvalidate?: (((id: number) => QueryKey) | (() => QueryKey))[];
   FilterForm?: React.ComponentType;
 };
 
@@ -89,17 +95,41 @@ function AppTableView<
     current: 1,
     pageSize: 50,
   });
+  const queryClient = useQueryClient();
+  const { data, isPending, isFetching } = useQuery({
+    ...props.searchEntityOptions({
+      query: {
+        take: pagination.pageSize,
+        skip: (pagination.current - 1) * pagination.pageSize,
+      },
+    }),
+    placeholderData: (previousData) => previousData,
+  });
+
+  const deleteEntity =
+    props.deleteEntityMutation &&
+    useMutation({
+      ...props.deleteEntityMutation(),
+      onSuccess: (_, data) => {
+        props.queryKeysToInvalidate?.forEach((queryKey) => {
+          queryClient.invalidateQueries({
+            queryKey: queryKey(data.path.id),
+          });
+        });
+      },
+    });
+
   const columns = useMemo(() => {
     const columns = [...props.columns];
     columns.forEach((x) => {
       if (x.ellipsis != false) x.ellipsis = true;
     });
 
-    if (props.canEdit || props.deleteEntityMutation)
+    if (props.canEdit || deleteEntity)
       columns.push({
         title: "",
         key: "$actions",
-        width: props.canEdit && props.deleteEntityMutation ? 88 : 48,
+        width: props.canEdit && deleteEntity ? 88 : 48,
         render: (_: any, record: TEntityResponse) => (
           <Space size="small">
             {props.canEdit && (
@@ -109,10 +139,12 @@ function AppTableView<
                 icon={<Pencil size={16} absoluteStrokeWidth />}
               />
             )}
-            {props.deleteEntityMutation && (
+            {deleteEntity && (
               <Popconfirm
                 title="Delete this record?"
-                onConfirm={() => console.log("delete")}
+                onConfirm={() =>
+                  deleteEntity.mutate({ path: { id: record.id } })
+                }
                 okText="Confirm"
                 okButtonProps={{ danger: true }}
               >
@@ -127,19 +159,9 @@ function AppTableView<
       });
 
     return columns;
-  }, [props.columns, props.canEdit, props.deleteEntityMutation]);
+  }, [props.columns, props.canEdit, deleteEntity]);
 
   const [filtersOpen, setFiltersOpen] = useState(false);
-
-  const { data, isPending, isFetching } = useQuery({
-    ...props.searchRequestOptions({
-      query: {
-        take: pagination.pageSize,
-        skip: (pagination.current - 1) * pagination.pageSize,
-      },
-    }),
-    placeholderData: (previousData) => previousData,
-  });
 
   const handleTableChange = (newPagination: TablePaginationConfig) => {
     setPagination({

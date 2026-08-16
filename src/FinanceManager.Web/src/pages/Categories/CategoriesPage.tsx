@@ -20,7 +20,7 @@ export default function CategoriesPage() {
     <AppTablePage
       title="Categories"
       columns={columns}
-      searchRequestOptions={searchSpendingCategoryOptions}
+      searchEntityOptions={searchSpendingCategoryOptions}
     />
   );
 }

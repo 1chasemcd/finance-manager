@@ -39,7 +39,7 @@ export default function TransactionsPage() {
     <AppTablePage
       title="Transactions"
       columns={columns}
-      searchRequestOptions={searchTransactionOptions}
+      searchEntityOptions={searchTransactionOptions}
       FilterForm={TransactionsFilterPage}
     />
   );
