@@ -14,7 +14,7 @@ export default function AppLayout() {
             minWidth: 0,
             minHeight: 0,
             padding: 24,
-            overflow: "hidden",
+            // overflow: "hidden",
           }}
         >
           <Outlet />

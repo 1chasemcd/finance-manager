@@ -2,10 +2,9 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
-  type DataTag,
   type QueryKey,
-  type UnusedSkipTokenOptions,
   type UseMutationOptions,
+  type UseQueryOptions,
 } from "@tanstack/react-query";
 import { Button, Drawer, Flex, Popconfirm, Space, Table } from "antd";
 import type { TablePaginationConfig } from "antd";
@@ -43,15 +42,19 @@ type EntityResponse = {
 
 type SearchResponse<TEntityResponse extends EntityResponse> = {
   results: TEntityResponse[];
-  total?: number;
+  total: number;
 };
 
-type SearchEntityOptionsResult<
+type SearchEntityOptions<
   TEntityResponse extends EntityResponse,
   TSearchResponse extends SearchResponse<TEntityResponse>,
-> = UnusedSkipTokenOptions<TSearchResponse, any, TSearchResponse, any> & {
-  queryKey: DataTag<any, TSearchResponse, any>;
-};
+> = (
+  options?: Options<SearchEntityData>,
+) => UseQueryOptions<TSearchResponse, string, TSearchResponse, any>;
+
+type DeleteEntityMutation = (
+  options?: Partial<Options<DeleteEntityData>>,
+) => UseMutationOptions<void, string, Options<DeleteEntityData>>;
 
 type TableProps<
   TEntityResponse extends EntityResponse,
@@ -59,13 +62,8 @@ type TableProps<
 > = {
   title: string;
   columns: ColumnsType<TEntityResponse>;
-  searchEntityOptions: (
-    options?: Options<SearchEntityData>,
-  ) => SearchEntityOptionsResult<TEntityResponse, TSearchResponse>;
-  deleteEntityMutation?: (
-    options?: Partial<Options<DeleteEntityData>>,
-  ) => UseMutationOptions<void, any, Options<DeleteEntityData>>;
-  queryKeysToInvalidate?: (((id: number) => QueryKey) | (() => QueryKey))[];
+  searchEntityOptions: SearchEntityOptions<TEntityResponse, TSearchResponse>;
+  deleteEntityMutation?: DeleteEntityMutation;
   FilterForm?: React.ComponentType;
 };
 
@@ -85,17 +83,53 @@ type TablePageProps<
   AddForm?: React.ComponentType;
 };
 
+function DeleteButton({
+  id,
+  deleteEntityMutation,
+  queryKeyToInvalidate,
+}: {
+  id: number;
+  deleteEntityMutation: DeleteEntityMutation;
+  queryKeyToInvalidate: QueryKey;
+}) {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    ...deleteEntityMutation(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeyToInvalidate,
+      });
+    },
+  });
+
+  return (
+    <Popconfirm
+      title="Delete this record?"
+      onConfirm={() => mutation.mutate({ path: { id } })}
+      okText="Confirm"
+      okButtonProps={{ danger: true }}
+    >
+      <Button
+        type="text"
+        loading={mutation.isPending}
+        icon={<Trash size={16} absoluteStrokeWidth />}
+      />
+    </Popconfirm>
+  );
+}
+
 function AppTableView<
   TEntityResponse extends EntityResponse,
   TSearchResponse extends SearchResponse<TEntityResponse>,
 >(props: TableViewProps<TEntityResponse, TSearchResponse>) {
   const contentRef = useRef<HTMLDivElement>(null);
   const tableHeight = useTableHeight(contentRef, 39);
+
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 50,
   });
-  const queryClient = useQueryClient();
   const { data, isPending, isFetching } = useQuery({
     ...props.searchEntityOptions({
       query: {
@@ -106,60 +140,54 @@ function AppTableView<
     placeholderData: (previousData) => previousData,
   });
 
-  const deleteEntity =
-    props.deleteEntityMutation &&
-    useMutation({
-      ...props.deleteEntityMutation(),
-      onSuccess: (_, data) => {
-        props.queryKeysToInvalidate?.forEach((queryKey) => {
-          queryClient.invalidateQueries({
-            queryKey: queryKey(data.path.id),
-          });
-        });
-      },
-    });
+  const searchQueryKey = useMemo(
+    () => props.searchEntityOptions().queryKey,
+    [props.searchEntityOptions],
+  );
 
   const columns = useMemo(() => {
-    const columns = [...props.columns];
-    columns.forEach((x) => {
-      if (x.ellipsis != false) x.ellipsis = true;
-    });
+    const columns: ColumnsType<TEntityResponse> = props.columns.map(
+      (column) => ({
+        ...column,
+        ellipsis: column.ellipsis !== false,
+      }),
+    );
 
-    if (props.canEdit || deleteEntity)
+    const canEdit = props.canEdit;
+    const canDelete = Boolean(props.deleteEntityMutation);
+
+    if (canEdit || canDelete)
       columns.push({
         title: "",
         key: "$actions",
-        width: props.canEdit && deleteEntity ? 88 : 48,
-        render: (_: any, record: TEntityResponse) => (
+        width: canEdit && canDelete ? 88 : 48,
+        render: (_, record) => (
           <Space size="small">
-            {props.canEdit && (
+            {canEdit && (
               <LinkButton
                 type="text"
                 to={`./${record.id}/edit`}
-                icon={<Pencil size={16} absoluteStrokeWidth />}
+                icon={<Pencil size={16} />}
               />
             )}
-            {deleteEntity && (
-              <Popconfirm
-                title="Delete this record?"
-                onConfirm={() =>
-                  deleteEntity.mutate({ path: { id: record.id } })
-                }
-                okText="Confirm"
-                okButtonProps={{ danger: true }}
-              >
-                <Button
-                  type="text"
-                  icon={<Trash size={16} absoluteStrokeWidth />}
-                />
-              </Popconfirm>
+            {canDelete && (
+              <DeleteButton
+                id={record.id}
+                deleteEntityMutation={props.deleteEntityMutation!}
+                queryKeyToInvalidate={searchQueryKey}
+              />
             )}
           </Space>
         ),
       });
 
     return columns;
-  }, [props.columns, props.canEdit, deleteEntity]);
+  }, [
+    props.columns,
+    props.canEdit,
+    props.deleteEntityMutation,
+    searchQueryKey,
+  ]);
 
   const [filtersOpen, setFiltersOpen] = useState(false);
 
@@ -173,10 +201,10 @@ function AppTableView<
   return (
     <div className="page">
       <Flex justify="space-between" className="header">
-        <Title level={2} style={{ margin: 0 }}>
+        <Title level={4} style={{ margin: 0 }}>
           {props.title}
         </Title>
-        <Flex align="center" gap="medium">
+        <Flex align="center" gap="middle">
           {props.FilterForm && (
             <Button onClick={() => setFiltersOpen(true)}>Filter</Button>
           )}
@@ -194,16 +222,14 @@ function AppTableView<
           open={filtersOpen}
 
           extra={<Button>Clear Filters</Button>}
-        ></Drawer>
+        >
+          <props.FilterForm />
+        </Drawer>
       )}
-      <div
-        ref={contentRef}
-        className="table-container"
-        style={{ height: tableHeight }}
-      >
+      <div ref={contentRef} className="table-container">
         <Table<TEntityResponse>
           size="small"
-          className="table"
+          // className="table"
           rowKey={(record) => record.id}
           tableLayout="fixed"
           dataSource={data?.results ?? []}

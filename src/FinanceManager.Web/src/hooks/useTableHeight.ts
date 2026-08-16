@@ -15,8 +15,15 @@ export const useTableHeight = (
       if (!node) {
         return;
       }
-      const { height } = node.getBoundingClientRect();
-      setTableHeight(height - headerHeight - footerHeight);
+      const tableHeight =
+        node.querySelector(".ant-table-wrapper")?.getBoundingClientRect()
+          .height ?? 0;
+      const bodyHeight =
+        node.querySelector(".ant-table-body")?.getBoundingClientRect().height ??
+        0;
+      const otherContentHeight = tableHeight - bodyHeight;
+      const { height: containerHeight } = node.getBoundingClientRect();
+      setTableHeight(containerHeight - otherContentHeight);
     },
     100,
     {

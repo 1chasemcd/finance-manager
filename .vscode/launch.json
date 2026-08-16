@@ -2,10 +2,22 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Debug Backend",
+      "type": "dotnet",
+      "request": "launch",
+      "projectPath": "${workspaceFolder}/src/FinanceManager.Api/FinanceManager.Api.csproj"
+    },
+    {
       "name": "Debug Frontend",
       "type": "node-terminal",
       "request": "launch",
       "command": "npm --prefix src/FinanceManager.Web run dev"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug Full Stack",
+      "configurations": ["Debug Backend", "Debug Frontend"]
     }
   ]
 }
