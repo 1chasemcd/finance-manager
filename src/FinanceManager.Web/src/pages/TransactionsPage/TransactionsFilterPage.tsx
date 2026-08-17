@@ -1,5 +1,6 @@
 import AppAutocomplete from "@/components/AppAutocomplete";
 import AppDatePicker from "@/components/AppDatePicker.tsx";
+import { spendingCategoryAutocomplete } from "@/lib/autocomplete-requests";
 import type { SearchTransactionData } from "@/lib/generated";
 import { Form, type FormInstance } from "antd";
 import dayjs, { Dayjs } from "dayjs";
@@ -26,7 +27,7 @@ export default function TransactionsFilterPage({
         <AppDatePicker style={{ width: "100%" }} placeholder={"From"} />
       </Form.Item>
       <Form.Item<TransactionQuery> label="Category" name="SpendingCategoryId">
-        <AppAutocomplete />
+        <AppAutocomplete requestOptions={spendingCategoryAutocomplete} />
       </Form.Item>
     </Form>
   );

@@ -1,16 +1,14 @@
 import type { AutocompleteQueryResponse } from "@/lib/generated";
-import {
-  getApiAutocompleteSpendingcategoryByIdOptions,
-  getApiAutocompleteSpendingcategoryOptions,
-} from "@/lib/generated/@tanstack/react-query.gen";
+import type { AutocompleteRequestOptions } from "@/lib/types/autocomplete";
 import { useQuery } from "@tanstack/react-query";
 import { Select } from "antd";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDebounce } from "use-debounce";
 
 interface AppAutocompleteProps {
   value?: number | null;
   onChange?: (value: number | null) => void;
+  requestOptions: AutocompleteRequestOptions;
 }
 
 function transformAutocompleteResponse(
@@ -22,13 +20,15 @@ function transformAutocompleteResponse(
 export default function AppAutocomplete({
   value,
   onChange,
-}: AppAutocompleteProps) {
+  requestOptions,
+  ...props
+}: AppAutocompleteProps & React.ComponentProps<typeof Select>) {
   const [hasBeenFocused, setHasBeenFocused] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [debouncedSearchText] = useDebounce(searchText, 300);
 
   const { data, isFetching } = useQuery({
-    ...getApiAutocompleteSpendingcategoryOptions({
+    ...requestOptions.search({
       query: { search: debouncedSearchText, take: 50, skip: 0 },
     }),
     enabled: hasBeenFocused,
@@ -36,7 +36,7 @@ export default function AppAutocomplete({
 
   const { data: selectedOption, isFetching: isFetchingSelectedOption } =
     useQuery({
-      ...getApiAutocompleteSpendingcategoryByIdOptions({
+      ...requestOptions.byId({
         path: { id: value! },
       }),
       enabled: value != null && !data?.some((x) => x.id === value),
@@ -48,6 +48,7 @@ export default function AppAutocomplete({
 
   return (
     <Select
+      {...props}
       value={value ?? null}
       onChange={onChange ?? ((_) => {})}
       showSearch={{ filterOption: false, onSearch: setSearchText }}
