@@ -1,6 +1,6 @@
 import type { FinancialTransactionResponse } from "@/lib/generated";
 import { searchTransactionOptions } from "@/lib/generated/@tanstack/react-query.gen";
-import TransactionsFilterPage from "./TransactionsFilterPage";
+import TransactionsFilter from "./TransactionsFilter";
 import { currencyColumn, dateColumn } from "@/lib/column-formatters";
 import useQueryForTable from "@/hooks/useQueryForTable";
 import EntityTable from "@/components/EntityTable/EntityTable";
@@ -8,7 +8,7 @@ import EntityTableFilterAction from "@/components/EntityTable/EntityTableFilterA
 import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";
 
-export default function TransactionsPage() {
+export default function Transactions() {
   const columns = useMemo<ColumnsType<FinancialTransactionResponse>>(
     () => [
       {
@@ -49,7 +49,7 @@ export default function TransactionsPage() {
 
   const filterAction = (
     <EntityTableFilterAction
-      FilterForm={TransactionsFilterPage}
+      FilterForm={TransactionsFilter}
       query={query}
       updateQuery={updateQuery}
     />

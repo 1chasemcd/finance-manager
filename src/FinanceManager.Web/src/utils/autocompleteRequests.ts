@@ -1,8 +1,8 @@
 import {
   getApiAutocompleteSpendingcategoryByIdOptions,
   getApiAutocompleteSpendingcategoryOptions,
-} from "./generated/@tanstack/react-query.gen";
-import type { AutocompleteRequestOptions } from "./types/autocomplete";
+} from "../lib/generated/@tanstack/react-query.gen";
+import type { AutocompleteRequestOptions } from "../lib/types/autocomplete";
 
 export const spendingCategoryAutocomplete: AutocompleteRequestOptions = {
   search: getApiAutocompleteSpendingcategoryOptions,

@@ -12,7 +12,7 @@ import EntityTableAddAction from "@/components/EntityTable/EntityTableAddAction"
 import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";
 
-export default function AccountsPage() {
+export default function Accounts() {
   const columns = useMemo<ColumnsType<FinancialAccountResponse>>(
     () => [
       {

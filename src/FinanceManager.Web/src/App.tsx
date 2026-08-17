@@ -1,16 +1,16 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AppLayout from "./layouts/AppLayout";
 import Dashboard from "./pages/Dashboard";
-import TransactionsPage from "./pages/TransactionsPage/TransactionsPage";
+import Transactions from "./pages/Transactions";
 import Import from "./pages/Import";
-import CategoriesPage from "./pages/Categories/CategoriesPage";
+import Categories from "./pages/Categories";
 import Budget from "./pages/Budget";
 import Patterns from "./pages/Patterns";
-import AccountsPage from "./pages/Accounts/AccountsPage";
+import Accounts from "./pages/Accounts";
 import People from "./pages/People";
 import ImportDefinitions from "./pages/ImportDefinitions";
-import AccountsAddPage from "./pages/Accounts/AccountsAddPage";
-import AccountsEditPage from "./pages/Accounts/AccountsEditPage";
+import AccountAdd from "./pages/AccountAdd";
+import AccountEdit from "./pages/AccountEdit";
 import NotFound from "./pages/NotFound";
 
 export function App() {
@@ -19,14 +19,14 @@ export function App() {
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/transactions" element={<TransactionsPage />} />
+          <Route path="/transactions" element={<Transactions />} />
           <Route path="/import" element={<Import />} />
-          <Route path="/categories" element={<CategoriesPage />} />
+          <Route path="/categories" element={<Categories />} />
           <Route path="/budget" element={<Budget />} />
           <Route path="/accounts">
-            <Route index element={<AccountsPage />} />
-            <Route path="add" element={<AccountsAddPage />} />
-            <Route path=":id/edit" element={<AccountsEditPage />} />
+            <Route index element={<Accounts />} />
+            <Route path="add" element={<AccountAdd />} />
+            <Route path=":id/edit" element={<AccountEdit />} />
           </Route>
           <Route path="/importdefs" element={<ImportDefinitions />} />
           <Route path="/patterns" element={<Patterns />} />

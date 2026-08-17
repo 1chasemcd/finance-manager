@@ -5,7 +5,7 @@ import { searchSpendingCategoryOptions } from "@/lib/generated/@tanstack/react-q
 import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";
 
-export default function CategoriesPage() {
+export default function Categories() {
   const columns = useMemo<ColumnsType<SpendingCategoryResponse>>(
     () => [
       {

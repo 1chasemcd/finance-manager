@@ -1,6 +1,6 @@
 import AppAutocomplete from "@/components/AppAutocomplete";
 import AppDatePicker from "@/components/AppDatePicker.tsx";
-import { spendingCategoryAutocomplete } from "@/lib/autocomplete-requests";
+import { spendingCategoryAutocomplete } from "@/utils/autocompleteRequests";
 import type { SearchTransactionData } from "@/lib/generated";
 import { Form, type FormInstance } from "antd";
 import dayjs, { Dayjs } from "dayjs";
@@ -11,7 +11,7 @@ type TransactionsFilterPageProps = {
   form: FormInstance<TransactionQuery>;
 };
 
-export default function TransactionsFilterPage({
+export default function TransactionsFilter({
   form,
 }: TransactionsFilterPageProps) {
   return (
