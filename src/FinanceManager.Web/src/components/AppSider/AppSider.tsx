@@ -51,6 +51,17 @@ const items: MenuItem[] = [
   menuItem("People", "/people", Users),
 ];
 
+function getSelectedPath(currentPath: string) {
+  const matchingItem = items
+    .map((x) => x?.key?.toString())
+    .filter((x) => x != undefined)
+    .filter((x) => currentPath.startsWith(x))
+    .reduce((a, b) => (b.length > a.length ? b : a), "");
+
+  if (matchingItem == "/" && currentPath.length > 1) return [];
+  return [matchingItem];
+}
+
 export default function AppSider() {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
@@ -69,13 +80,7 @@ export default function AppSider() {
       <Menu
         mode="inline"
         items={items}
-        selectedKeys={[
-          items
-            .map((x) => x?.key?.toString())
-            .filter((x) => x != undefined)
-            .filter((x) => location.pathname.startsWith(x))
-            .reduce((a, b) => (b.length > a.length ? b : a)),
-        ]}
+        selectedKeys={getSelectedPath(location.pathname)}
       />
     </Sider>
   );

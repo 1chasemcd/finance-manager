@@ -11,6 +11,7 @@ import People from "./pages/People";
 import ImportDefinitions from "./pages/ImportDefinitions";
 import AccountsAddPage from "./pages/Accounts/AccountsAddPage";
 import AccountsEditPage from "./pages/Accounts/AccountsEditPage";
+import NotFound from "./pages/NotFound";
 
 export function App() {
   return (
@@ -30,6 +31,7 @@ export function App() {
           <Route path="/importdefs" element={<ImportDefinitions />} />
           <Route path="/patterns" element={<Patterns />} />
           <Route path="/people" element={<People />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </BrowserRouter>
