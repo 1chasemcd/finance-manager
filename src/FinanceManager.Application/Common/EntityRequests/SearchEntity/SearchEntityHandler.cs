@@ -31,12 +31,12 @@ internal sealed class SearchEntityHandler<TEntity, TResponse, TFilter>(
             .Select(mapper.Map)
             .ToListAsync(cancellationToken);
 
-        var count = await db.Set<TEntity>().AsNoTracking().CountAsync(cancellationToken);
+        var total = await results.CountAsync(cancellationToken);
 
         return new SearchEntityResponse<TResponse>
         {
             Results = list,
-            Total = count
+            Total = total
         };
     }
 }

@@ -9,6 +9,8 @@ import Patterns from "./pages/Patterns";
 import AccountsPage from "./pages/Accounts/AccountsPage";
 import People from "./pages/People";
 import ImportDefinitions from "./pages/ImportDefinitions";
+import AccountsAddPage from "./pages/Accounts/AccountsAddPage";
+import AccountsEditPage from "./pages/Accounts/AccountsEditPage";
 
 export function App() {
   return (
@@ -16,14 +18,18 @@ export function App() {
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/transactions/*" element={<TransactionsPage />} />
-          <Route path="/import/*" element={<Import />} />
-          <Route path="/categories/*" element={<CategoriesPage />} />
-          <Route path="/budget/*" element={<Budget />} />
-          <Route path="/accounts/*" element={<AccountsPage />} />
-          <Route path="/importdefs/*" element={<ImportDefinitions />} />
-          <Route path="/patterns/*" element={<Patterns />} />
-          <Route path="/people/*" element={<People />} />
+          <Route path="/transactions" element={<TransactionsPage />} />
+          <Route path="/import" element={<Import />} />
+          <Route path="/categories" element={<CategoriesPage />} />
+          <Route path="/budget" element={<Budget />} />
+          <Route path="/accounts">
+            <Route index element={<AccountsPage />} />
+            <Route path="add" element={<AccountsAddPage />} />
+            <Route path=":id/edit" element={<AccountsEditPage />} />
+          </Route>
+          <Route path="/importdefs" element={<ImportDefinitions />} />
+          <Route path="/patterns" element={<Patterns />} />
+          <Route path="/people" element={<People />} />
         </Route>
       </Routes>
     </BrowserRouter>

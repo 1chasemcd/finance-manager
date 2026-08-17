@@ -1,11 +1,15 @@
 import type { FinancialAccountResponse } from "@/lib/generated";
+import useMemoizedColumns from "@/hooks/useMemoizedColumns";
+import EntityTable from "@/components/EntityTable/EntityTable";
+import useEditActionForTable from "@/hooks/useEditActionForTable";
+import useDeleteActionForTable from "@/hooks/useDeleteActionForTable";
+import useQueryForTable from "@/hooks/useQueryForTable";
 import {
   deleteAccountMutation,
   searchAccountOptions,
+  searchAccountQueryKey,
 } from "@/lib/generated/@tanstack/react-query.gen";
-import AccountsEditPage from "./AccountsEditPage";
-import useMemoizedColumns from "@/hooks/useMemoizedColumns";
-import EntityTablePage from "@/components/EntityTable/EntityTablePage";
+import EntityTableAddAction from "@/components/EntityTable/EntityTableAddAction";
 
 export default function AccountsPage() {
   const columns = useMemoizedColumns<FinancialAccountResponse>(() => [
@@ -21,14 +25,22 @@ export default function AccountsPage() {
     },
   ]);
 
+  const { query, updateQuery, useQueryResult } =
+    useQueryForTable(searchAccountOptions);
+  const editAction = useEditActionForTable();
+  const deleteAction = useDeleteActionForTable(deleteAccountMutation, [
+    searchAccountQueryKey(),
+  ]);
+
   return (
-    <EntityTablePage
+    <EntityTable
       title="Accounts"
       columns={columns}
-      searchEntityOptions={searchAccountOptions}
-      deleteEntityMutation={deleteAccountMutation}
-      AddForm={AccountsEditPage}
-      EditForm={AccountsEditPage}
+      pagination={query}
+      updatePagination={updateQuery}
+      useQueryResult={useQueryResult}
+      rowActions={[editAction, deleteAction]}
+      tableActions={[<EntityTableAddAction />]}
     />
   );
 }

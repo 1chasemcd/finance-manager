@@ -1,5 +1,6 @@
-import EntityTablePage from "@/components/EntityTable/EntityTablePage";
+import EntityTable from "@/components/EntityTable/EntityTable";
 import useMemoizedColumns from "@/hooks/useMemoizedColumns";
+import useQueryForTable from "@/hooks/useQueryForTable";
 import type { SpendingCategoryResponse } from "@/lib/generated";
 import { searchSpendingCategoryOptions } from "@/lib/generated/@tanstack/react-query.gen";
 
@@ -16,11 +17,17 @@ export default function CategoriesPage() {
       key: "description",
     },
   ]);
+  const { query, updateQuery, useQueryResult } = useQueryForTable(
+    searchSpendingCategoryOptions,
+  );
+
   return (
-    <EntityTablePage
+    <EntityTable
       title="Categories"
       columns={columns}
-      searchEntityOptions={searchSpendingCategoryOptions}
+      pagination={query}
+      updatePagination={updateQuery}
+      useQueryResult={useQueryResult}
     />
   );
 }
