@@ -1,5 +1,4 @@
 import type { FinancialAccountResponse } from "@/lib/generated";
-import useMemoizedColumns from "@/hooks/useMemoizedColumns";
 import EntityTable from "@/components/EntityTable/EntityTable";
 import useEditActionForTable from "@/hooks/useEditActionForTable";
 import useDeleteActionForTable from "@/hooks/useDeleteActionForTable";
@@ -10,20 +9,25 @@ import {
   searchAccountQueryKey,
 } from "@/lib/generated/@tanstack/react-query.gen";
 import EntityTableAddAction from "@/components/EntityTable/EntityTableAddAction";
+import type { ColumnsType } from "antd/es/table";
+import { useMemo } from "react";
 
 export default function AccountsPage() {
-  const columns = useMemoizedColumns<FinancialAccountResponse>(() => [
-    {
-      title: "Account Name",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Owner",
-      dataIndex: "ownerName",
-      key: "ownerName",
-    },
-  ]);
+  const columns = useMemo<ColumnsType<FinancialAccountResponse>>(
+    () => [
+      {
+        title: "Account Name",
+        dataIndex: "name",
+        key: "name",
+      },
+      {
+        title: "Owner",
+        dataIndex: "ownerName",
+        key: "ownerName",
+      },
+    ],
+    [],
+  );
 
   const { query, updateQuery, useQueryResult } =
     useQueryForTable(searchAccountOptions);

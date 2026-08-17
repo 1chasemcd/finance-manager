@@ -1,22 +1,26 @@
 import EntityTable from "@/components/EntityTable/EntityTable";
-import useMemoizedColumns from "@/hooks/useMemoizedColumns";
 import useQueryForTable from "@/hooks/useQueryForTable";
 import type { SpendingCategoryResponse } from "@/lib/generated";
 import { searchSpendingCategoryOptions } from "@/lib/generated/@tanstack/react-query.gen";
+import type { ColumnsType } from "antd/es/table";
+import { useMemo } from "react";
 
 export default function CategoriesPage() {
-  const columns = useMemoizedColumns<SpendingCategoryResponse>(() => [
-    {
-      title: "Category Name",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-    },
-  ]);
+  const columns = useMemo<ColumnsType<SpendingCategoryResponse>>(
+    () => [
+      {
+        title: "Category Name",
+        dataIndex: "name",
+        key: "name",
+      },
+      {
+        title: "Description",
+        dataIndex: "description",
+        key: "description",
+      },
+    ],
+    [],
+  );
   const { query, updateQuery, useQueryResult } = useQueryForTable(
     searchSpendingCategoryOptions,
   );
