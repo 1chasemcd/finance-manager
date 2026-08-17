@@ -54,8 +54,10 @@ export default function AppAutocomplete({
       showSearch={{ filterOption: false, onSearch: setSearchText }}
       options={options}
       loading={isFetching || isFetchingSelectedOption}
-      onFocus={() => setHasBeenFocused(true)}
-      placeholder="Search spending category"
+      onFocus={(...args) => {
+        setHasBeenFocused(true);
+        if (props.onFocus) props.onFocus(...args);
+      }}
     />
   );
 }
