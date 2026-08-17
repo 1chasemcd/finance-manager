@@ -21,7 +21,7 @@ export default function EntityTableFilterAction<
 
   const applyFiltersFromForm = () => {
     setFiltersOpen(false);
-    updateQuery(filterForm.getFieldsValue());
+    updateQuery({ ...filterForm.getFieldsValue(), skip: 0 });
   };
 
   return (
