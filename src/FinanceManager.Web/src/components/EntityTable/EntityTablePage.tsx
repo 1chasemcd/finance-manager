@@ -8,26 +8,37 @@ import {
   type UseMutationOptions,
   type UseQueryOptions,
 } from "@tanstack/react-query";
-import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
+import type { ColumnsType } from "antd/es/table";
 import { useState } from "react";
-import { App, Button, Drawer, type MenuProps } from "antd";
+import {
+  App,
+  Button,
+  Drawer,
+  Form,
+  type FormInstance,
+  type MenuProps,
+} from "antd";
 import { LinkButton } from "../LinkButton";
 import type {
   DeleteEntityData,
   Entity,
   SearchEntityData,
+  SearchEntityQuery,
   SearchResponse,
 } from "@/lib/types/types";
 import { Link } from "react-router";
 import type { QueryKey } from "@/lib/generated/@tanstack/react-query.gen";
 
-type SearchEntityOptions<TSearchResponse extends SearchResponse<Entity>> = (
-  options?: Options<SearchEntityData>,
+type SearchEntityOptions<
+  TQuery extends SearchEntityQuery,
+  TSearchResponse extends SearchResponse<Entity>,
+> = (
+  options?: Options<SearchEntityData<TQuery>>,
 ) => UseQueryOptions<
   TSearchResponse,
   string,
   TSearchResponse,
-  QueryKey<Options<SearchEntityData>>
+  QueryKey<Options<SearchEntityData<TQuery>>>
 >;
 
 type DeleteEntityMutation = (
@@ -37,12 +48,13 @@ type DeleteEntityMutation = (
 type EntityTablePageProps<
   TEntity extends Entity,
   TSearchResponse extends SearchResponse<TEntity>,
+  TQuery extends SearchEntityQuery,
 > = {
   title: string;
   columns: ColumnsType<TEntity>;
-  searchEntityOptions: SearchEntityOptions<TSearchResponse>;
+  searchEntityOptions: SearchEntityOptions<TQuery, TSearchResponse>;
   deleteEntityMutation?: DeleteEntityMutation;
-  FilterForm?: React.ComponentType;
+  FilterForm?: React.ComponentType<{ form: FormInstance<TQuery> }>;
   AddForm?: React.ComponentType;
   EditForm?: React.ComponentType<{ id: number }>;
 };
@@ -50,19 +62,12 @@ type EntityTablePageProps<
 export default function EntityTablePage<
   TEntity extends Entity,
   TSearchResponse extends SearchResponse<TEntity>,
->({
-  AddForm,
-  EditForm,
-  ...props
-}: EntityTablePageProps<TEntity, TSearchResponse>) {
+  TQuery extends SearchEntityQuery,
+>(props: EntityTablePageProps<TEntity, TSearchResponse, TQuery>) {
   const { modal } = App.useApp();
-  const [query, updateQuery] = useState({ take: 50, skip: 0 });
-  const onPaginationChange = (p: TablePaginationConfig) => {
-    updateQuery({
-      take: p.pageSize ?? 50,
-      skip: (p.pageSize ?? 50) * ((p.current ?? 1) - 1),
-    });
-  };
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filterForm] = Form.useForm<TQuery>();
+  const [query, updateQuery] = useState<Partial<TQuery>>({});
 
   const queryResult = useQuery({
     ...props.searchEntityOptions({ query }),
@@ -80,14 +85,12 @@ export default function EntityTablePage<
     },
   });
 
-  const [filtersOpen, setFiltersOpen] = useState(false);
-
   let rowActions:
     ((id: number) => NonNullable<MenuProps["items"]>) | undefined = undefined;
-  if (EditForm || props.deleteEntityMutation)
+  if (props.EditForm || props.deleteEntityMutation)
     rowActions = (id: number) => {
       const rowActions = [];
-      if (EditForm)
+      if (props.EditForm)
         rowActions.push({
           key: "edit",
           label: (
@@ -127,12 +130,12 @@ export default function EntityTablePage<
 
           extra={<Button>Clear Filters</Button>}
         >
-          <props.FilterForm />
+          <props.FilterForm form={filterForm} />
         </Drawer>
       </div>,
     );
 
-  if (AddForm)
+  if (props.AddForm)
     tableActions.push(
       <LinkButton key="add_button" to="./add" type="primary">
         Add
@@ -146,13 +149,16 @@ export default function EntityTablePage<
           title={props.title}
           columns={props.columns}
           queryResult={queryResult}
-          onPaginationChange={onPaginationChange}
+          pagination={query}
+          onPaginationChange={({ take, skip }) =>
+            updateQuery({ ...query, take, skip })
+          }
           rowActions={rowActions}
           tableActions={tableActions}
         />
       }
-      AddForm={AddForm}
-      EditForm={EditForm}
+      AddForm={props.AddForm}
+      EditForm={props.EditForm}
     />
   );
 }

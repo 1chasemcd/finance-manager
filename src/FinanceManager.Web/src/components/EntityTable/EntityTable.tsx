@@ -2,13 +2,18 @@ import { type UseQueryResult } from "@tanstack/react-query";
 import { Button, Dropdown, Flex, Table } from "antd";
 import type { MenuProps, TablePaginationConfig } from "antd";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import type { ColumnsType } from "antd/es/table";
 import Title from "antd/es/typography/Title";
 import { useTableHeight } from "@/hooks/useTableHeight";
 import "./EntityTable.css";
 import { Ellipsis } from "lucide-react";
 import type { Entity, SearchResponse } from "@/lib/types/types";
+
+type PageDef = {
+  take?: number | undefined;
+  skip?: number | undefined;
+};
 
 type EntityTableProps<
   TEntity extends Entity,
@@ -17,10 +22,25 @@ type EntityTableProps<
   title: string;
   columns: ColumnsType<TEntity>;
   queryResult: UseQueryResult<TSearchResponse, unknown>;
-  onPaginationChange: (newPagination: TablePaginationConfig) => void;
+  pagination: PageDef;
+  onPaginationChange: (newPagination: PageDef) => void;
   tableActions?: React.ReactNode[];
   rowActions?: ((id: number) => NonNullable<MenuProps["items"]>) | undefined;
 };
+
+function toPageDef(config: TablePaginationConfig): PageDef {
+  return {
+    take: config.pageSize ?? 0,
+    skip: ((config.current ?? 1) - 1) * (config.pageSize ?? 0),
+  };
+}
+
+function fromPageDef(pageDef: PageDef): TablePaginationConfig {
+  return {
+    current: Math.floor((pageDef.skip ?? 0) / (pageDef.take ?? 0) + 1),
+    pageSize: pageDef.take ?? 0,
+  };
+}
 
 export default function EntityTable<
   TEntity extends Entity,
@@ -28,11 +48,6 @@ export default function EntityTable<
 >(props: EntityTableProps<TEntity, TSearchResponse>) {
   const contentRef = useRef<HTMLDivElement>(null);
   const tableHeight = useTableHeight(contentRef);
-
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 50,
-  });
 
   const columns = useMemo(() => {
     const columns: ColumnsType<TEntity> = props.columns.map((column) => ({
@@ -60,14 +75,6 @@ export default function EntityTable<
     return columns;
   }, [props.columns, props.rowActions]);
 
-  const handleTableChange = (newPagination: TablePaginationConfig) => {
-    setPagination({
-      current: newPagination.current ?? 1,
-      pageSize: newPagination.pageSize ?? 50,
-    });
-    props.onPaginationChange(newPagination);
-  };
-
   return (
     <div className="page">
       <Flex justify="space-between" className="header">
@@ -90,14 +97,15 @@ export default function EntityTable<
           loading={props.queryResult.isPending || props.queryResult.isFetching}
           columns={columns}
           pagination={{
-            current: pagination.current,
-            pageSize: pagination.pageSize,
+            ...fromPageDef(props.pagination),
             total: props.queryResult.data?.total ?? 0,
             showSizeChanger: true,
             pageSizeOptions: [10, 20, 50],
           }}
           scroll={{ y: tableHeight }}
-          onChange={handleTableChange}
+          onChange={(newPagination: TablePaginationConfig) =>
+            props.onPaginationChange(toPageDef(newPagination))
+          }
         />
       </div>
     </div>

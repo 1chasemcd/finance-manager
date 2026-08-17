@@ -3,6 +3,7 @@ import { searchTransactionOptions } from "@/lib/generated/@tanstack/react-query.
 import useMemoizedColumns from "@/hooks/useMemoizedColumns";
 import TransactionsFilterPage from "./TransactionsFilterPage";
 import EntityTablePage from "@/components/EntityTable/EntityTablePage";
+import { currencyColumn, dateColumn } from "@/lib/column-formatters";
 
 export default function TransactionsPage() {
   const columns = useMemoizedColumns<FinancialTransactionResponse>(() => [
@@ -10,12 +11,13 @@ export default function TransactionsPage() {
       title: "Date",
       dataIndex: "date",
       key: "date",
-      render: (value: Date) => value.toLocaleDateString(),
+      ...dateColumn,
     },
     {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
+      ...currencyColumn,
     },
     {
       title: "Summary",

@@ -16,12 +16,14 @@ export type LookupEntityData = {
 
 export type DeleteEntityData = LookupEntityData;
 
-export type SearchEntityData = {
+export type SearchEntityQuery = {
+  take?: number;
+  skip?: number;
+};
+
+export type SearchEntityData<TQuery extends SearchEntityQuery> = {
   body?: never;
   path?: never;
-  query?: {
-    take?: number;
-    skip?: number;
-  };
+  query?: Partial<TQuery>;
   url: string;
 };
