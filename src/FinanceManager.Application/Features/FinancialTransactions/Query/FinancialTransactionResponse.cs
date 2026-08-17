@@ -9,7 +9,7 @@ internal sealed record FinancialTransactionResponse
     [Required]
     public decimal Amount { get; init; }
     [Required]
-    public DateTimeOffset Date { get; init; }
+    public DateTime Date { get; init; }
     [Required]
     public required string Summary { get; init; }
     [Required]

@@ -7,7 +7,7 @@ namespace FinanceManager.Domain.FinancialTransactions;
 public sealed class FinancialTransaction : Entity
 {
     public decimal Amount { get; private set; }
-    public DateTimeOffset Date { get; private set; }
+    public DateTime Date { get; private set; }
     public string Summary { get; private set; } = null!;
     public int FinancialAccountId { get; private set; }
     public FinancialAccount FinancialAccount { get; private set; } = null!;
@@ -18,7 +18,7 @@ public sealed class FinancialTransaction : Entity
 
     public static FinancialTransaction Create(
         decimal amount,
-        DateTimeOffset date,
+        DateTime date,
         string summary,
         FinancialAccount financialAccount,
         SpendingCategory category)

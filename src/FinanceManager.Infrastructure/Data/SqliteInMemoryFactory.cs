@@ -84,7 +84,7 @@ internal static class SqliteInMemoryFactory
 
     }
 
-    private static DateTimeOffset RandomDate()
+    private static DateTime RandomDate()
     {
         Random random = new();
         return new DateTime(2026, random.Next() % 12 + 1, random.Next() % 28 + 1);

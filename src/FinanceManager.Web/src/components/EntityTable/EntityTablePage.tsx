@@ -15,6 +15,7 @@ import {
   Button,
   Drawer,
   Form,
+  Space,
   type FormInstance,
   type MenuProps,
 } from "antd";
@@ -76,7 +77,7 @@ export default function EntityTablePage<
 
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
+  const deleteMutation = useMutation({
     ...(props.deleteEntityMutation?.() ?? {}),
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -110,7 +111,7 @@ export default function EntityTablePage<
               content: "This action cannot be undone.",
               okText: "Delete",
               okType: "danger",
-              onOk: () => mutation.mutate({ path: { id } }),
+              onOk: () => deleteMutation.mutate({ path: { id } }),
             });
           },
           danger: true,
@@ -118,17 +119,33 @@ export default function EntityTablePage<
       return rowActions;
     };
 
+  const openFiltersForm = () => {
+    filterForm.setFieldsValue(query);
+    setFiltersOpen(true);
+  };
+
+  const applyFiltersFromForm = () => {
+    setFiltersOpen(false);
+    updateQuery(filterForm.getFieldsValue());
+  };
   const tableActions: React.ReactNode[] = [];
   if (props.FilterForm)
     tableActions.push(
       <div key="filter_button">
-        <Button onClick={() => setFiltersOpen(true)}>Filter</Button>
+        <Button onClick={openFiltersForm}>Filter</Button>
         <Drawer
           title="Filter Results"
           onClose={() => setFiltersOpen(false)}
           open={filtersOpen}
 
-          extra={<Button>Clear Filters</Button>}
+          extra={
+            <Space size="small">
+              <Button onClick={() => filterForm.resetFields()}>Reset</Button>
+              <Button type="primary" onClick={applyFiltersFromForm}>
+                Apply
+              </Button>
+            </Space>
+          }
         >
           <props.FilterForm form={filterForm} />
         </Drawer>
