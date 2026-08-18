@@ -7,7 +7,7 @@ internal static class TransactionSourceEndpoints
 {
     public static void RegisterTransactionSourceEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        var group = endpoints.MapGroup("/transactionsource");
+        var group = endpoints.MapGroup("/sources");
         group.MapLookupEntity<TransactionSource>().WithName(RouteNames.LookupTransactionSource);
         group.MapSearchEntity<TransactionSource>().WithName(RouteNames.SearchTransactionSource);
         group.MapCreateEntity<TransactionSource>().WithName(RouteNames.CreateTransactionSource);

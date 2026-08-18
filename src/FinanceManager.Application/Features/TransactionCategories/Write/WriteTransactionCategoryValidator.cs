@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinanceManager.Application.Features.TransactionCategories.Write;
 
-public sealed class CreateTransactionCategoryValidator
+public sealed class WriteTransactionCategoryValidator
     : AbstractValidator<WriteTransactionCategoryRequest>
 {
     private readonly IApplicationDbContext _db;
-    public CreateTransactionCategoryValidator(IApplicationDbContext db)
+    public WriteTransactionCategoryValidator(IApplicationDbContext db)
     {
         _db = db;
 

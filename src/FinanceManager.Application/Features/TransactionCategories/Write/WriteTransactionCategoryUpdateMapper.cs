@@ -3,7 +3,7 @@ using FinanceManager.Domain.TransactionCategories;
 
 namespace FinanceManager.Application.Features.TransactionCategories.Write;
 
-internal sealed class UpdateTransactionCategoryRequestMapper : IUpdateMapper<WriteTransactionCategoryRequest, TransactionCategory>
+internal sealed class WriteTransactionCategoryRequestMapper : IUpdateMapper<WriteTransactionCategoryRequest, TransactionCategory>
 {
     public void Map(WriteTransactionCategoryRequest source, TransactionCategory destination)
     {

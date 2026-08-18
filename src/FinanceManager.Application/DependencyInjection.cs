@@ -15,6 +15,9 @@ using FluentValidation;
 using Microsoft.Extensions.Hosting;
 using FinanceManager.Application.Features.Transactions.Query;
 using FinanceManager.Domain.TransactionSources;
+using FinanceManager.Domain.People;
+using FinanceManager.Application.Features.People.Write;
+using FinanceManager.Application.Features.People.Query;
 
 #pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection;
@@ -59,6 +62,13 @@ public static class DependencyInjection
 
         builder.Services.AddLookupEntityHandler<Transaction, TransactionResponse>();
         builder.Services.AddSearchEntityHandler<Transaction, TransactionResponse, TransactionFilter>();
+
+        builder.Services.AddCreateEntityHandler<Person, WritePersonRequest>();
+        builder.Services.AddUpdateEntityHandler<Person, WritePersonRequest>();
+        builder.Services.AddLookupEntityHandler<Person, PersonResponse>();
+        builder.Services.AddSearchEntityHandler<Person, PersonResponse>();
+        builder.Services.AddDeleteEntityHandler<Person>();
+        builder.Services.AddAutocompleteHandler<Person>(x => x.FirstName + " " + x.LastName);
 
         return builder;
     }

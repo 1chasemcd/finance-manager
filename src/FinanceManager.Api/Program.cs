@@ -52,6 +52,7 @@ public sealed class Program
         api.RegisterTransactionCategoryEndpoints();
         api.RegisterTransactionEndpoints();
         api.RegisterTransactionSourceEndpoints();
+        api.RegisterPersonEndpoints();
         api.RegisterAutocompleteEndpoints();
 
         app.Services

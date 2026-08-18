@@ -8,7 +8,6 @@ static class RouteNames
     public const string UpdateTransactionCategory = "UpdateTransactionCategory";
     public const string DeleteTransactionCategory = "DeleteTransactionCategory";
 
-
     public const string LookupTransactionSource = "LookupTransactionSource";
     public const string SearchTransactionSource = "SearchTransactionSource";
     public const string CreateTransactionSource = "CreateTransactionSource";
@@ -20,4 +19,10 @@ static class RouteNames
     public const string CreateTransaction = "CreateTransaction";
     public const string UpdateTransaction = "UpdateTransaction";
     public const string DeleteTransaction = "DeleteTransaction";
+
+    public const string LookupPerson = "LookupPerson";
+    public const string SearchPerson = "SearchPerson";
+    public const string CreatePerson = "CreatePerson";
+    public const string UpdatePerson = "UpdatePerson";
+    public const string DeletePerson = "DeletePerson";
 }
