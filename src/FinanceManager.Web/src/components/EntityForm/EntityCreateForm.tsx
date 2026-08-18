@@ -9,7 +9,7 @@ type EntityCreateFormProps<TSave> = {
     | ReactElement<typeof Form.Item<TSave>>
     | ReactElement<typeof Form.Item<TSave>>[];
   title: string;
-  toInvalidate?: QueryKey;
+  toInvalidate?: QueryKey[];
   createEntityMutation: CreateEntityMutation<TSave>;
 };
 

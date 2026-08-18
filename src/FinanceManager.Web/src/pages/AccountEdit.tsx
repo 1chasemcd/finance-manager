@@ -22,7 +22,7 @@ export default function AccountEdit() {
       lookupEntityOptions={lookupAccountOptions}
       updateEntityMutation={updateAccountMutation}
       dataTransform={dataTransform}
-      toInvalidate={searchAccountQueryKey()}
+      toInvalidate={[searchAccountQueryKey()]}
     >
       <Form.Item<WriteFinancialAccountRequest>
         label="Account Name"

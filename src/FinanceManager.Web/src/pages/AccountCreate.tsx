@@ -11,7 +11,7 @@ export default function AccountCreate() {
     <EntityCreateForm
       title="Add Account"
       createEntityMutation={createAccountMutation}
-      toInvalidate={searchAccountQueryKey()}
+      toInvalidate={[searchAccountQueryKey()]}
     >
       <Form.Item<WriteFinancialAccountRequest>
         label="Account Name"
