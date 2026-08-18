@@ -1,18 +1,12 @@
-import type { Options } from "@/lib/generated";
-import type { DeleteEntityData } from "@/lib/types";
+import type { DeleteEntityMutation } from "@/lib/types";
 import {
   useMutation,
   useQueryClient,
   type QueryKey,
-  type UseMutationOptions,
 } from "@tanstack/react-query";
 import { App, type MenuProps } from "antd";
 
 type ItemType = NonNullable<MenuProps["items"]>[0];
-
-type DeleteEntityMutation = (
-  options?: Partial<Options<DeleteEntityData>>,
-) => UseMutationOptions<void, string, Options<DeleteEntityData>>;
 
 export default function useDeleteActionForTable(
   deleteEntityMutation: DeleteEntityMutation,

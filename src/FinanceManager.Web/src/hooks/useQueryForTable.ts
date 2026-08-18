@@ -1,26 +1,11 @@
-import type { Options } from "@/lib/generated";
-import type { QueryKey } from "@/lib/generated/@tanstack/react-query.gen";
 import type {
   Entity,
-  SearchEntityData,
+  SearchEntityOptions,
   SearchEntityQuery,
   SearchResponse,
 } from "@/lib/types";
-import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-
-type SearchEntityOptions<
-  TQuery extends SearchEntityQuery,
-  TEntity extends Entity,
-  TSearchResponse extends SearchResponse<TEntity>,
-> = (
-  options?: Options<SearchEntityData<TQuery>>,
-) => UseQueryOptions<
-  TSearchResponse,
-  string,
-  TSearchResponse,
-  QueryKey<Options<SearchEntityData<TQuery>>>
->;
 
 export default function useQueryForTable<
   TQuery extends SearchEntityQuery,
