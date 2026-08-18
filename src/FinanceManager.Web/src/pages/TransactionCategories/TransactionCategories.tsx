@@ -1,11 +1,18 @@
 import EntityTable from "@/components/EntityTable/EntityTable";
+import EntityTableCreateAction from "@/components/EntityTable/EntityTableCreateAction";
+import useDeleteActionForTable from "@/hooks/useDeleteActionForTable";
+import useEditActionForTable from "@/hooks/useEditActionForTable";
 import useQueryForTable from "@/hooks/useQueryForTable";
 import type { TransactionCategoryResponse } from "@/lib/generated";
-import { searchTransactionCategoryOptions } from "@/lib/generated/@tanstack/react-query.gen";
+import {
+  deleteTransactionCategoryMutation,
+  searchTransactionCategoryOptions,
+  searchTransactionCategoryQueryKey,
+} from "@/lib/generated/@tanstack/react-query.gen";
 import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";
 
-export default function Categories() {
+export default function TransactionCategories() {
   const columns = useMemo<ColumnsType<TransactionCategoryResponse>>(
     () => [
       {
@@ -25,6 +32,12 @@ export default function Categories() {
     searchTransactionCategoryOptions,
   );
 
+  const editAction = useEditActionForTable();
+  const deleteAction = useDeleteActionForTable(
+    deleteTransactionCategoryMutation,
+    [searchTransactionCategoryQueryKey()],
+  );
+
   return (
     <EntityTable
       title="Categories"
@@ -32,6 +45,8 @@ export default function Categories() {
       pagination={query}
       updatePagination={updateQuery}
       useQueryResult={useQueryResult}
+      tableActions={[<EntityTableCreateAction />]}
+      rowActions={[editAction, deleteAction]}
     />
   );
 }

@@ -15,15 +15,17 @@ import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions/Transactions";
 import Import from "./pages/Import";
 import Budget from "./pages/Budget";
-import Categories from "./pages/Categories";
-import TransactionSources from "./pages/TransactionSources";
+import TransactionCategories from "./pages/TransactionCategories/TransactionCategories";
+import TransactionSources from "./pages/TransactionSources/TransactionSources";
 import ImportDefinitions from "./pages/ImportDefinitions";
 import Patterns from "./pages/Patterns";
-import TransactionSourceUpdate from "./pages/TransactionSourceUpdate";
-import TransactionSourceCreate from "./pages/TransactionSourceCreate";
+import TransactionSourceUpdate from "./pages/TransactionSources/TransactionSourceUpdate";
+import TransactionSourceCreate from "./pages/TransactionSources/TransactionSourceCreate";
 import People from "./pages/People/People";
 import PersonUpdate from "./pages/People/PersonUpdate";
 import PersonCreate from "./pages/People/PersonCreate";
+import TransactionCategoryUpdate from "./pages/TransactionCategories/TransactionCategoryUpdate";
+import TransactionCategoryCreate from "./pages/TransactionCategories/TransactionCategoryCreate";
 
 export const paths = {
   dashboard: "/",
@@ -100,7 +102,11 @@ export const navEntries: NavEntry[] = [
     path: paths.categories,
     label: "Categories",
     icon: FolderTree,
-    element: <Categories />,
+    element: <TransactionCategories />,
+    children: [
+      editFormRoute(<TransactionCategoryUpdate />),
+      addFormRoute(<TransactionCategoryCreate />),
+    ],
   }),
   route({
     path: paths.transactionSources,
