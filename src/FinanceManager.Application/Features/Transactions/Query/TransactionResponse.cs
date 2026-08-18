@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FinanceManager.Application.Features.FinancialTransactions.Query;
+namespace FinanceManager.Application.Features.Transactions.Query;
 
-internal sealed record FinancialTransactionResponse
+internal sealed record TransactionResponse
 {
     [Required]
     public int Id { get; init; }

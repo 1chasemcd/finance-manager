@@ -45,13 +45,13 @@ export const createTransactionCategory = <ThrowOnError extends boolean = false>(
 
 export const lookupTransaction = <ThrowOnError extends boolean = false>(options: Options<LookupTransactionData, ThrowOnError>): RequestResult<LookupTransactionResponses, LookupTransactionErrors, ThrowOnError> => (options.client ?? client).get<LookupTransactionResponses, LookupTransactionErrors, ThrowOnError>({
     responseTransformer: lookupTransactionResponseTransformer,
-    url: '/api/financialtransactions/{id}',
+    url: '/api/transactions/{id}',
     ...options
 });
 
 export const searchTransaction = <ThrowOnError extends boolean = false>(options?: Options<SearchTransactionData, ThrowOnError>): RequestResult<SearchTransactionResponses, SearchTransactionErrors, ThrowOnError> => (options?.client ?? client).get<SearchTransactionResponses, SearchTransactionErrors, ThrowOnError>({
     responseTransformer: searchTransactionResponseTransformer,
-    url: '/api/financialtransactions',
+    url: '/api/transactions',
     ...options
 });
 

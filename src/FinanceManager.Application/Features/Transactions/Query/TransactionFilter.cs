@@ -1,6 +1,6 @@
-namespace FinanceManager.Application.Features.FinancialTransactions.Query;
+namespace FinanceManager.Application.Features.Transactions.Query;
 
-public sealed record FinancialTransactionFilter
+public sealed record TransactionFilter
 {
     public DateTime? MinDate { get; init; }
     public DateTime? MaxDate { get; init; }

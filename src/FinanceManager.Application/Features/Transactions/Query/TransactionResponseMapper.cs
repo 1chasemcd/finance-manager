@@ -1,13 +1,13 @@
 using System.Linq.Expressions;
 using FinanceManager.Application.Abstractions;
-using FinanceManager.Domain.FinancialTransactions;
+using FinanceManager.Domain.Transactions;
 
-namespace FinanceManager.Application.Features.FinancialTransactions.Query;
+namespace FinanceManager.Application.Features.Transactions.Query;
 
-internal sealed class FinancialTransactionResponseMapper : IExpressionMapper<FinancialTransaction, FinancialTransactionResponse>
+internal sealed class TransactionResponseMapper : IExpressionMapper<Transaction, TransactionResponse>
 {
-    public Expression<Func<FinancialTransaction, FinancialTransactionResponse>> Map
-        => (source) => new FinancialTransactionResponse()
+    public Expression<Func<Transaction, TransactionResponse>> Map
+        => (source) => new TransactionResponse()
         {
             Id = source.Id,
             Amount = source.Amount,

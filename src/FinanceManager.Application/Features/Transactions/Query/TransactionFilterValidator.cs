@@ -1,10 +1,10 @@
 using FluentValidation;
 
-namespace FinanceManager.Application.Features.FinancialTransactions.Query;
+namespace FinanceManager.Application.Features.Transactions.Query;
 
-public sealed class FinancialTransactionFilterValidator : AbstractValidator<FinancialTransactionFilter>
+public sealed class TransactionFilterValidator : AbstractValidator<TransactionFilter>
 {
-    public FinancialTransactionFilterValidator()
+    public TransactionFilterValidator()
     {
         RuleFor(x => x.MaxDate)
             .GreaterThan(x => x.MinDate)

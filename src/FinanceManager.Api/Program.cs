@@ -55,7 +55,7 @@ public sealed class Program
 
         RouteGroupBuilder api = app.MapGroup("/api");
         api.RegisterTransactionCategoryEndpoints();
-        api.RegisterFinancialTransactionEndpoints();
+        api.RegisterTransactionEndpoints();
         api.RegisterTransactionSourceEndpoints();
         api.RegisterAutocompleteEndpoints();
 

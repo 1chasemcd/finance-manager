@@ -9,24 +9,13 @@ export type AutocompleteQueryResponse = {
     value: string;
 };
 
-export type FinancialTransactionResponse = {
-    id: number;
-    amount: number;
-    date: Date;
-    summary: string;
-    transactionSourceId: number;
-    transactionSourceName: string;
-    transactionCategoryId: number;
-    transactionCategoryName: string;
-};
-
-export type SearchEntityResponseOfFinancialTransactionResponse = {
-    results: Array<FinancialTransactionResponse>;
+export type SearchEntityResponseOfTransactionCategoryResponse = {
+    results: Array<TransactionCategoryResponse>;
     total: number;
 };
 
-export type SearchEntityResponseOfTransactionCategoryResponse = {
-    results: Array<TransactionCategoryResponse>;
+export type SearchEntityResponseOfTransactionResponse = {
+    results: Array<TransactionResponse>;
     total: number;
 };
 
@@ -39,6 +28,17 @@ export type TransactionCategoryResponse = {
     id: number;
     name: string;
     description?: null | string;
+};
+
+export type TransactionResponse = {
+    id: number;
+    amount: number;
+    date: Date;
+    summary: string;
+    transactionSourceId: number;
+    transactionSourceName: string;
+    transactionCategoryId: number;
+    transactionCategoryName: string;
 };
 
 export type TransactionSourceResponse = {
@@ -236,7 +236,7 @@ export type LookupTransactionData = {
         id: number;
     };
     query?: never;
-    url: '/api/financialtransactions/{id}';
+    url: '/api/transactions/{id}';
 };
 
 export type LookupTransactionErrors = {
@@ -260,7 +260,7 @@ export type LookupTransactionResponses = {
     /**
      * OK
      */
-    200: FinancialTransactionResponse;
+    200: TransactionResponse;
 };
 
 export type LookupTransactionResponse = LookupTransactionResponses[keyof LookupTransactionResponses];
@@ -278,7 +278,7 @@ export type SearchTransactionData = {
         take?: number;
         skip?: number;
     };
-    url: '/api/financialtransactions';
+    url: '/api/transactions';
 };
 
 export type SearchTransactionErrors = {
@@ -302,7 +302,7 @@ export type SearchTransactionResponses = {
     /**
      * OK
      */
-    200: SearchEntityResponseOfFinancialTransactionResponse;
+    200: SearchEntityResponseOfTransactionResponse;
 };
 
 export type SearchTransactionResponse = SearchTransactionResponses[keyof SearchTransactionResponses];

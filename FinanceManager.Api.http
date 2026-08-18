@@ -51,11 +51,11 @@ Content-Type: application/json
 
 ### TRANSACTIONS ###
 
-GET {{host}}/api/financialtransactions/1
+GET {{host}}/api/transactions/1
 Accept: application/json
 
 ###
-GET  {{host}}/api/financialtransactions?take=5&skip=0&transactionSourceId=1
+GET  {{host}}/api/transactions?take=5&skip=0&transactionSourceId=1
 Accept: application/json
 
 ### AUTOCOMPLETE ###

@@ -1,4 +1,4 @@
-import type { FinancialTransactionResponse } from "@/lib/generated";
+import type { TransactionResponse } from "@/lib/generated";
 import { searchTransactionOptions } from "@/lib/generated/@tanstack/react-query.gen";
 import TransactionsFilter from "./TransactionsFilter";
 import { currencyColumn, dateColumn } from "@/utils/columnFormatters";
@@ -9,7 +9,7 @@ import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";
 
 export default function Transactions() {
-  const columns = useMemo<ColumnsType<FinancialTransactionResponse>>(
+  const columns = useMemo<ColumnsType<TransactionResponse>>(
     () => [
       {
         title: "Date",

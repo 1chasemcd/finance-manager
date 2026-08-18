@@ -1,14 +1,14 @@
 using FinanceManager.Application.Abstractions;
-using FinanceManager.Domain.FinancialTransactions;
+using FinanceManager.Domain.Transactions;
 
-namespace FinanceManager.Application.Features.FinancialTransactions.Query;
+namespace FinanceManager.Application.Features.Transactions.Query;
 
-internal sealed class FinancialTransactionFilterHandler : IEntityFilterHandler<FinancialTransaction, FinancialTransactionFilter>
+internal sealed class TransactionFilterHandler : IEntityFilterHandler<Transaction, TransactionFilter>
 {
-    public IQueryable<FinancialTransaction> ApplyFilter(
+    public IQueryable<Transaction> ApplyFilter(
 
-        FinancialTransactionFilter filter,
-        IQueryable<FinancialTransaction> query)
+        TransactionFilter filter,
+        IQueryable<Transaction> query)
     {
         if (filter.MinDate != null)
             query = query.Where(x => x.Date > filter.MinDate);

@@ -2,9 +2,9 @@ using FinanceManager.Domain.Common;
 using FinanceManager.Domain.TransactionCategories;
 using FinanceManager.Domain.TransactionSources;
 
-namespace FinanceManager.Domain.FinancialTransactions;
+namespace FinanceManager.Domain.Transactions;
 
-public sealed class FinancialTransaction : Entity
+public sealed class Transaction : Entity
 {
     public decimal Amount { get; private set; }
     public DateTime Date { get; private set; }
@@ -14,9 +14,9 @@ public sealed class FinancialTransaction : Entity
     public int TransactionCategoryId { get; set; }
     public TransactionCategory TransactionCategory { get; private set; } = null!;
 
-    private FinancialTransaction() { }
+    private Transaction() { }
 
-    public static FinancialTransaction Create(
+    public static Transaction Create(
         decimal amount,
         DateTime date,
         string summary,

@@ -299,7 +299,7 @@
         }
       }
     },
-    "/api/financialtransactions/{id}": {
+    "/api/transactions/{id}": {
       "get": {
         "tags": [
           "FinanceManager.Api"
@@ -322,7 +322,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FinancialTransactionResponse"
+                  "$ref": "#/components/schemas/TransactionResponse"
                 }
               }
             }
@@ -360,7 +360,7 @@
         }
       }
     },
-    "/api/financialtransactions": {
+    "/api/transactions": {
       "get": {
         "tags": [
           "FinanceManager.Api"
@@ -440,7 +440,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SearchEntityResponseOfFinancialTransactionResponse"
+                  "$ref": "#/components/schemas/SearchEntityResponseOfTransactionResponse"
                 }
               }
             }
@@ -1071,69 +1071,6 @@
           }
         }
       },
-      "FinancialTransactionResponse": {
-        "required": [
-          "id",
-          "amount",
-          "date",
-          "summary",
-          "transactionSourceId",
-          "transactionSourceName",
-          "transactionCategoryId",
-          "transactionCategoryName"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "amount": {
-            "type": "number",
-            "format": "double"
-          },
-          "date": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "summary": {
-            "type": "string"
-          },
-          "transactionSourceId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "transactionSourceName": {
-            "type": "string"
-          },
-          "transactionCategoryId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "transactionCategoryName": {
-            "type": "string"
-          }
-        }
-      },
-      "SearchEntityResponseOfFinancialTransactionResponse": {
-        "required": [
-          "results",
-          "total"
-        ],
-        "type": "object",
-        "properties": {
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FinancialTransactionResponse"
-            }
-          },
-          "total": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
       "SearchEntityResponseOfTransactionCategoryResponse": {
         "required": [
           "results",
@@ -1145,6 +1082,25 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/TransactionCategoryResponse"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "SearchEntityResponseOfTransactionResponse": {
+        "required": [
+          "results",
+          "total"
+        ],
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TransactionResponse"
             }
           },
           "total": {
@@ -1191,6 +1147,50 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "TransactionResponse": {
+        "required": [
+          "id",
+          "amount",
+          "date",
+          "summary",
+          "transactionSourceId",
+          "transactionSourceName",
+          "transactionCategoryId",
+          "transactionCategoryName"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "transactionSourceId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "transactionSourceName": {
+            "type": "string"
+          },
+          "transactionCategoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "transactionCategoryName": {
+            "type": "string"
           }
         }
       },

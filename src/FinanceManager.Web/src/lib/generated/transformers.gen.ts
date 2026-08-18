@@ -2,22 +2,22 @@
 
 import type { LookupTransactionResponse, SearchTransactionResponse } from './types.gen';
 
-const financialTransactionResponseSchemaResponseTransformer = (data: any) => {
+const transactionResponseSchemaResponseTransformer = (data: any) => {
     data.date = new Date(data.date);
     return data;
 };
 
 export const lookupTransactionResponseTransformer = async (data: any): Promise<LookupTransactionResponse> => {
-    data = financialTransactionResponseSchemaResponseTransformer(data);
+    data = transactionResponseSchemaResponseTransformer(data);
     return data;
 };
 
-const searchEntityResponseOfFinancialTransactionResponseSchemaResponseTransformer = (data: any) => {
-    data.results = data.results.map((item: any) => financialTransactionResponseSchemaResponseTransformer(item));
+const searchEntityResponseOfTransactionResponseSchemaResponseTransformer = (data: any) => {
+    data.results = data.results.map((item: any) => transactionResponseSchemaResponseTransformer(item));
     return data;
 };
 
 export const searchTransactionResponseTransformer = async (data: any): Promise<SearchTransactionResponse> => {
-    data = searchEntityResponseOfFinancialTransactionResponseSchemaResponseTransformer(data);
+    data = searchEntityResponseOfTransactionResponseSchemaResponseTransformer(data);
     return data;
 };
