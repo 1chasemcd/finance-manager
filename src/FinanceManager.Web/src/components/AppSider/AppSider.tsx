@@ -1,65 +1,34 @@
 import { Layout, Menu, type MenuProps } from "antd";
-import {
-  LayoutDashboard,
-  Banknote,
-  FileUp,
-  Scale,
-  Asterisk,
-  Landmark,
-  FileCog,
-  Users,
-  FolderTree,
-  type LucideIcon,
-} from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Logo } from "../Logo";
 import "./AppSider.css";
+import { navEntries, paths, type NavEntry } from "@/routes";
 
 type MenuItem = Required<MenuProps>["items"][number];
+
 const { Sider } = Layout;
-
-function menuItem(label: string, path: string, Icon: LucideIcon): MenuItem {
-  return {
-    key: path,
-    icon: (
-      <span>
-        <Icon size={16} />
-      </span>
-    ),
-    label: <Link to={path}>{label}</Link>,
-  } as MenuItem;
-}
-
-function divider(): MenuItem {
-  return {
-    type: "divider",
-  };
-}
-
-const items: MenuItem[] = [
-  divider(),
-  menuItem("Dashboard", "/", LayoutDashboard),
-  menuItem("Transactions", "/transactions", Banknote),
-  menuItem("Import", "/import", FileUp),
-  divider(),
-  menuItem("Budget", "/budget", Scale),
-  menuItem("Categories", "/categories", FolderTree),
-  menuItem("Accounts", "/accounts", Landmark),
-  menuItem("Import Definitions", "/importdefs", FileCog),
-  menuItem("Patterns", "/patterns", Asterisk),
-  menuItem("People", "/people", Users),
-];
-
 function getSelectedPath(currentPath: string) {
-  const matchingItem = items
-    .map((x) => x?.key?.toString())
-    .filter((x) => x != undefined)
+  const matchingItem = Object.values(paths)
     .filter((x) => currentPath.startsWith(x))
     .reduce((a, b) => (b.length > a.length ? b : a), "");
 
   if (matchingItem == "/" && currentPath.length > 1) return [];
   return [matchingItem];
+}
+
+function toMenuItem(navEntry: NavEntry): MenuItem {
+  if (navEntry.type === "divider") return navEntry;
+  const Icon = navEntry.icon;
+  return {
+    key: navEntry.path,
+    icon: (
+      <span>
+        <Icon size={16} />
+      </span>
+    ),
+    label: <Link to={navEntry.path}>{navEntry.label}</Link>,
+  } as MenuItem;
 }
 
 export default function AppSider() {
@@ -79,7 +48,7 @@ export default function AppSider() {
       </div>
       <Menu
         mode="inline"
-        items={items}
+        items={navEntries.map(toMenuItem)}
         selectedKeys={getSelectedPath(location.pathname)}
       />
     </Sider>
