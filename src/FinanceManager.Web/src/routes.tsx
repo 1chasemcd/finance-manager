@@ -6,7 +6,6 @@ import {
   FolderTree,
   Landmark,
   LayoutDashboard,
-  Scale,
   Users,
   type LucideIcon,
 } from "lucide-react";
@@ -14,7 +13,6 @@ import type { ReactNode } from "react";
 import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions/Transactions";
 import Import from "./pages/Import";
-import Budget from "./pages/Budget";
 import TransactionCategories from "./pages/TransactionCategories/TransactionCategories";
 import TransactionSources from "./pages/TransactionSources/TransactionSources";
 import ImportDefinitions from "./pages/ImportDefinitions";
@@ -32,7 +30,6 @@ export const paths = {
   transactions: "/transactions",
   import: "/import",
   categories: "/categories",
-  budget: "/budget",
   transactionSources: "/sources",
   importDefs: "/importdefs",
   patterns: "/patterns",
@@ -92,12 +89,6 @@ export const navEntries: NavEntry[] = [
     element: <Import />,
   }),
   divider(),
-  route({
-    path: paths.budget,
-    label: "Budget",
-    icon: Scale,
-    element: <Budget />,
-  }),
   route({
     path: paths.categories,
     label: "Categories",
