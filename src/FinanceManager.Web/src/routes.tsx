@@ -19,7 +19,7 @@ import Categories from "./pages/Categories";
 import Accounts from "./pages/Accounts";
 import ImportDefinitions from "./pages/ImportDefinitions";
 import Patterns from "./pages/Patterns";
-import AccountEdit from "./pages/AccountEdit";
+import AccountUpdate from "./pages/AccountUpdate";
 import AccountCreate from "./pages/AccountCreate";
 
 export const paths = {
@@ -104,7 +104,10 @@ export const navEntries: NavEntry[] = [
     label: "Accounts",
     icon: Landmark,
     element: <Accounts />,
-    children: [editFormRoute(<AccountEdit />), addFormRoute(<AccountCreate />)],
+    children: [
+      editFormRoute(<AccountUpdate />),
+      addFormRoute(<AccountCreate />),
+    ],
   }),
   route({
     path: paths.importDefs,

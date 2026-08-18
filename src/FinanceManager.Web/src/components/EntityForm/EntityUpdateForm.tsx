@@ -5,7 +5,7 @@ import { useMutation, useQuery, type QueryKey } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import EntityForm from "./EntityForm";
 
-type EntityEditFormProps<TLookup, TSave> = {
+type EntityUpdateFormProps<TLookup, TSave> = {
   children:
     | ReactElement<typeof Form.Item<TSave>>
     | ReactElement<typeof Form.Item<TSave>>[];
@@ -16,7 +16,7 @@ type EntityEditFormProps<TLookup, TSave> = {
   toInvalidate?: QueryKey[];
 };
 
-export default function EntityEditForm<
+export default function EntityUpdateForm<
   TLookup,
   TSave extends Record<string, unknown>,
 >({
@@ -25,7 +25,7 @@ export default function EntityEditForm<
   dataTransform,
   toInvalidate,
   ...props
-}: EntityEditFormProps<TLookup, TSave>) {
+}: EntityUpdateFormProps<TLookup, TSave>) {
   const { id } = useParams();
   const entityId = Number(id);
   const lookupOptions = lookupEntityOptions({

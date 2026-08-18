@@ -1,4 +1,4 @@
-import EntityEditForm from "@/components/EntityForm/EntityEditForm";
+import EntityUpdateForm from "@/components/EntityForm/EntityEditForm";
 import type {
   FinancialAccountResponse,
   WriteFinancialAccountRequest,
@@ -11,13 +11,13 @@ import {
 import { Form, Input, InputNumber } from "antd";
 import { useCallback } from "react";
 
-export default function AccountEdit() {
+export default function AccountUpdate() {
   const dataTransform = useCallback(
     (data: FinancialAccountResponse) => data as WriteFinancialAccountRequest,
     [],
   );
   return (
-    <EntityEditForm
+    <EntityUpdateForm
       title="Edit Account"
       lookupEntityOptions={lookupAccountOptions}
       updateEntityMutation={updateAccountMutation}
@@ -38,6 +38,6 @@ export default function AccountEdit() {
       >
         <InputNumber />
       </Form.Item>
-    </EntityEditForm>
+    </EntityUpdateForm>
   );
 }
