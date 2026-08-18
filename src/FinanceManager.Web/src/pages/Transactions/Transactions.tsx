@@ -1,6 +1,6 @@
 import type { TransactionResponse } from "@/lib/generated";
 import { searchTransactionOptions } from "@/lib/generated/@tanstack/react-query.gen";
-import TransactionsFilter from "./TransactionsFilter";
+import TransactionsFilter from "../TransactionsFilter";
 import { currencyColumn, dateColumn } from "@/utils/columnFormatters";
 import useQueryForTable from "@/hooks/useQueryForTable";
 import EntityTable from "@/components/EntityTable/EntityTable";

@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import Dashboard from "./pages/Dashboard";
-import Transactions from "./pages/Transactions";
+import Transactions from "./pages/Transactions/Transactions";
 import Import from "./pages/Import";
 import Budget from "./pages/Budget";
 import Categories from "./pages/Categories";
