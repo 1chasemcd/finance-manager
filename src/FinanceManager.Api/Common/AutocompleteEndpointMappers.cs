@@ -38,7 +38,7 @@ static class AutocompleteEndpoints
                 var query = new AutocompleteSingleQuery<TEntity>(id);
                 var result = await sender.Send(query, cancellationToken);
                 return result.ToHttpResult();
-            });
+            }).WithName($"Autocomplete{typeof(TEntity).Name}ById");
     }
 
     private static void MapAutocompleteSearchImpl<TEntity, TFilter>(
@@ -61,7 +61,7 @@ static class AutocompleteEndpoints
                 };
                 return (await sender.Send(query, cancellationToken)).ToHttpResult();
             }
-        );
+        ).WithName($"Autocomplete{typeof(TEntity).Name}");
     }
 
     private static void MapUnfilteredAutocompleteSearchImpl<TEntity>(
@@ -81,6 +81,6 @@ static class AutocompleteEndpoints
                 };
                 return (await sender.Send(query, cancellationToken)).ToHttpResult();
             }
-        );
+        ).WithName($"Autocomplete{typeof(TEntity).Name}");
     }
 }

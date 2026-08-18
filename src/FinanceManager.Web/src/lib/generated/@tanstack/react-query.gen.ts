@@ -3,8 +3,8 @@
 import { queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { createTransactionCategory, createTransactionSource, deleteTransactionCategory, deleteTransactionSource, getApiAutocompleteTransactioncategory, getApiAutocompleteTransactioncategoryById, getApiAutocompleteTransactionsource, getApiAutocompleteTransactionsourceById, lookupTransaction, lookupTransactionCategory, lookupTransactionSource, type Options, searchTransaction, searchTransactionCategory, searchTransactionSource, updateTransactionCategory, updateTransactionSource } from '../sdk.gen';
-import type { CreateTransactionCategoryData, CreateTransactionCategoryError, CreateTransactionSourceData, CreateTransactionSourceError, DeleteTransactionCategoryData, DeleteTransactionCategoryError, DeleteTransactionCategoryResponse, DeleteTransactionSourceData, DeleteTransactionSourceError, DeleteTransactionSourceResponse, GetApiAutocompleteTransactioncategoryByIdData, GetApiAutocompleteTransactioncategoryByIdError, GetApiAutocompleteTransactioncategoryByIdResponse, GetApiAutocompleteTransactioncategoryData, GetApiAutocompleteTransactioncategoryError, GetApiAutocompleteTransactioncategoryResponse, GetApiAutocompleteTransactionsourceByIdData, GetApiAutocompleteTransactionsourceByIdError, GetApiAutocompleteTransactionsourceByIdResponse, GetApiAutocompleteTransactionsourceData, GetApiAutocompleteTransactionsourceError, GetApiAutocompleteTransactionsourceResponse, LookupTransactionCategoryData, LookupTransactionCategoryError, LookupTransactionCategoryResponse, LookupTransactionData, LookupTransactionError, LookupTransactionResponse, LookupTransactionSourceData, LookupTransactionSourceError, LookupTransactionSourceResponse, SearchTransactionCategoryData, SearchTransactionCategoryError, SearchTransactionCategoryResponse, SearchTransactionData, SearchTransactionError, SearchTransactionResponse, SearchTransactionSourceData, SearchTransactionSourceError, SearchTransactionSourceResponse, UpdateTransactionCategoryData, UpdateTransactionCategoryError, UpdateTransactionCategoryResponse, UpdateTransactionSourceData, UpdateTransactionSourceError, UpdateTransactionSourceResponse } from '../types.gen';
+import { autocompleteTransactionCategory, autocompleteTransactionCategoryById, autocompleteTransactionSource, autocompleteTransactionSourceById, createTransactionCategory, createTransactionSource, deleteTransactionCategory, deleteTransactionSource, lookupTransaction, lookupTransactionCategory, lookupTransactionSource, type Options, searchTransaction, searchTransactionCategory, searchTransactionSource, updateTransactionCategory, updateTransactionSource } from '../sdk.gen';
+import type { AutocompleteTransactionCategoryByIdData, AutocompleteTransactionCategoryByIdError, AutocompleteTransactionCategoryByIdResponse, AutocompleteTransactionCategoryData, AutocompleteTransactionCategoryError, AutocompleteTransactionCategoryResponse, AutocompleteTransactionSourceByIdData, AutocompleteTransactionSourceByIdError, AutocompleteTransactionSourceByIdResponse, AutocompleteTransactionSourceData, AutocompleteTransactionSourceError, AutocompleteTransactionSourceResponse, CreateTransactionCategoryData, CreateTransactionCategoryError, CreateTransactionSourceData, CreateTransactionSourceError, DeleteTransactionCategoryData, DeleteTransactionCategoryError, DeleteTransactionCategoryResponse, DeleteTransactionSourceData, DeleteTransactionSourceError, DeleteTransactionSourceResponse, LookupTransactionCategoryData, LookupTransactionCategoryError, LookupTransactionCategoryResponse, LookupTransactionData, LookupTransactionError, LookupTransactionResponse, LookupTransactionSourceData, LookupTransactionSourceError, LookupTransactionSourceResponse, SearchTransactionCategoryData, SearchTransactionCategoryError, SearchTransactionCategoryResponse, SearchTransactionData, SearchTransactionError, SearchTransactionResponse, SearchTransactionSourceData, SearchTransactionSourceError, SearchTransactionSourceResponse, UpdateTransactionCategoryData, UpdateTransactionCategoryError, UpdateTransactionCategoryResponse, UpdateTransactionSourceData, UpdateTransactionSourceError, UpdateTransactionSourceResponse } from '../types.gen';
 
 export const deleteTransactionCategoryMutation = (options?: Partial<Options<DeleteTransactionCategoryData>>): UseMutationOptions<DeleteTransactionCategoryResponse, DeleteTransactionCategoryError, Options<DeleteTransactionCategoryData>> => {
     const mutationOptions: UseMutationOptions<DeleteTransactionCategoryResponse, DeleteTransactionCategoryError, Options<DeleteTransactionCategoryData>> = {
@@ -213,11 +213,11 @@ export const createTransactionSourceMutation = (options?: Partial<Options<Create
     return mutationOptions;
 };
 
-export const getApiAutocompleteTransactioncategoryByIdQueryKey = (options: Options<GetApiAutocompleteTransactioncategoryByIdData>) => createQueryKey('getApiAutocompleteTransactioncategoryById', options);
+export const autocompleteTransactionCategoryByIdQueryKey = (options: Options<AutocompleteTransactionCategoryByIdData>) => createQueryKey('autocompleteTransactionCategoryById', options);
 
-export const getApiAutocompleteTransactioncategoryByIdOptions = (options: Options<GetApiAutocompleteTransactioncategoryByIdData>) => queryOptions<GetApiAutocompleteTransactioncategoryByIdResponse, GetApiAutocompleteTransactioncategoryByIdError, GetApiAutocompleteTransactioncategoryByIdResponse, ReturnType<typeof getApiAutocompleteTransactioncategoryByIdQueryKey>>({
+export const autocompleteTransactionCategoryByIdOptions = (options: Options<AutocompleteTransactionCategoryByIdData>) => queryOptions<AutocompleteTransactionCategoryByIdResponse, AutocompleteTransactionCategoryByIdError, AutocompleteTransactionCategoryByIdResponse, ReturnType<typeof autocompleteTransactionCategoryByIdQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getApiAutocompleteTransactioncategoryById({
+        const { data } = await autocompleteTransactionCategoryById({
             ...options,
             ...queryKey[0],
             signal,
@@ -225,14 +225,14 @@ export const getApiAutocompleteTransactioncategoryByIdOptions = (options: Option
         });
         return data;
     },
-    queryKey: getApiAutocompleteTransactioncategoryByIdQueryKey(options)
+    queryKey: autocompleteTransactionCategoryByIdQueryKey(options)
 });
 
-export const getApiAutocompleteTransactioncategoryQueryKey = (options?: Options<GetApiAutocompleteTransactioncategoryData>) => createQueryKey('getApiAutocompleteTransactioncategory', options);
+export const autocompleteTransactionCategoryQueryKey = (options?: Options<AutocompleteTransactionCategoryData>) => createQueryKey('autocompleteTransactionCategory', options);
 
-export const getApiAutocompleteTransactioncategoryOptions = (options?: Options<GetApiAutocompleteTransactioncategoryData>) => queryOptions<GetApiAutocompleteTransactioncategoryResponse, GetApiAutocompleteTransactioncategoryError, GetApiAutocompleteTransactioncategoryResponse, ReturnType<typeof getApiAutocompleteTransactioncategoryQueryKey>>({
+export const autocompleteTransactionCategoryOptions = (options?: Options<AutocompleteTransactionCategoryData>) => queryOptions<AutocompleteTransactionCategoryResponse, AutocompleteTransactionCategoryError, AutocompleteTransactionCategoryResponse, ReturnType<typeof autocompleteTransactionCategoryQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getApiAutocompleteTransactioncategory({
+        const { data } = await autocompleteTransactionCategory({
             ...options,
             ...queryKey[0],
             signal,
@@ -240,14 +240,14 @@ export const getApiAutocompleteTransactioncategoryOptions = (options?: Options<G
         });
         return data;
     },
-    queryKey: getApiAutocompleteTransactioncategoryQueryKey(options)
+    queryKey: autocompleteTransactionCategoryQueryKey(options)
 });
 
-export const getApiAutocompleteTransactionsourceByIdQueryKey = (options: Options<GetApiAutocompleteTransactionsourceByIdData>) => createQueryKey('getApiAutocompleteTransactionsourceById', options);
+export const autocompleteTransactionSourceByIdQueryKey = (options: Options<AutocompleteTransactionSourceByIdData>) => createQueryKey('autocompleteTransactionSourceById', options);
 
-export const getApiAutocompleteTransactionsourceByIdOptions = (options: Options<GetApiAutocompleteTransactionsourceByIdData>) => queryOptions<GetApiAutocompleteTransactionsourceByIdResponse, GetApiAutocompleteTransactionsourceByIdError, GetApiAutocompleteTransactionsourceByIdResponse, ReturnType<typeof getApiAutocompleteTransactionsourceByIdQueryKey>>({
+export const autocompleteTransactionSourceByIdOptions = (options: Options<AutocompleteTransactionSourceByIdData>) => queryOptions<AutocompleteTransactionSourceByIdResponse, AutocompleteTransactionSourceByIdError, AutocompleteTransactionSourceByIdResponse, ReturnType<typeof autocompleteTransactionSourceByIdQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getApiAutocompleteTransactionsourceById({
+        const { data } = await autocompleteTransactionSourceById({
             ...options,
             ...queryKey[0],
             signal,
@@ -255,14 +255,14 @@ export const getApiAutocompleteTransactionsourceByIdOptions = (options: Options<
         });
         return data;
     },
-    queryKey: getApiAutocompleteTransactionsourceByIdQueryKey(options)
+    queryKey: autocompleteTransactionSourceByIdQueryKey(options)
 });
 
-export const getApiAutocompleteTransactionsourceQueryKey = (options?: Options<GetApiAutocompleteTransactionsourceData>) => createQueryKey('getApiAutocompleteTransactionsource', options);
+export const autocompleteTransactionSourceQueryKey = (options?: Options<AutocompleteTransactionSourceData>) => createQueryKey('autocompleteTransactionSource', options);
 
-export const getApiAutocompleteTransactionsourceOptions = (options?: Options<GetApiAutocompleteTransactionsourceData>) => queryOptions<GetApiAutocompleteTransactionsourceResponse, GetApiAutocompleteTransactionsourceError, GetApiAutocompleteTransactionsourceResponse, ReturnType<typeof getApiAutocompleteTransactionsourceQueryKey>>({
+export const autocompleteTransactionSourceOptions = (options?: Options<AutocompleteTransactionSourceData>) => queryOptions<AutocompleteTransactionSourceResponse, AutocompleteTransactionSourceError, AutocompleteTransactionSourceResponse, ReturnType<typeof autocompleteTransactionSourceQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getApiAutocompleteTransactionsource({
+        const { data } = await autocompleteTransactionSource({
             ...options,
             ...queryKey[0],
             signal,
@@ -270,5 +270,5 @@ export const getApiAutocompleteTransactionsourceOptions = (options?: Options<Get
         });
         return data;
     },
-    queryKey: getApiAutocompleteTransactionsourceQueryKey(options)
+    queryKey: autocompleteTransactionSourceQueryKey(options)
 });

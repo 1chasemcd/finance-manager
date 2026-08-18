@@ -777,6 +777,7 @@
         "tags": [
           "FinanceManager.Api"
         ],
+        "operationId": "AutocompleteTransactionCategoryById",
         "parameters": [
           {
             "name": "id",
@@ -837,6 +838,7 @@
         "tags": [
           "FinanceManager.Api"
         ],
+        "operationId": "AutocompleteTransactionCategory",
         "parameters": [
           {
             "name": "search",
@@ -917,6 +919,7 @@
         "tags": [
           "FinanceManager.Api"
         ],
+        "operationId": "AutocompleteTransactionSourceById",
         "parameters": [
           {
             "name": "id",
@@ -977,6 +980,7 @@
         "tags": [
           "FinanceManager.Api"
         ],
+        "operationId": "AutocompleteTransactionSource",
         "parameters": [
           {
             "name": "search",

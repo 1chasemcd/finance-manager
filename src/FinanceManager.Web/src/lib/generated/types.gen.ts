@@ -479,7 +479,7 @@ export type CreateTransactionSourceResponses = {
     201: unknown;
 };
 
-export type GetApiAutocompleteTransactioncategoryByIdData = {
+export type AutocompleteTransactionCategoryByIdData = {
     body?: never;
     path: {
         id: number;
@@ -488,7 +488,7 @@ export type GetApiAutocompleteTransactioncategoryByIdData = {
     url: '/api/autocomplete/transactioncategory/{id}';
 };
 
-export type GetApiAutocompleteTransactioncategoryByIdErrors = {
+export type AutocompleteTransactionCategoryByIdErrors = {
     /**
      * Not Found
      */
@@ -503,18 +503,18 @@ export type GetApiAutocompleteTransactioncategoryByIdErrors = {
     422: string;
 };
 
-export type GetApiAutocompleteTransactioncategoryByIdError = GetApiAutocompleteTransactioncategoryByIdErrors[keyof GetApiAutocompleteTransactioncategoryByIdErrors];
+export type AutocompleteTransactionCategoryByIdError = AutocompleteTransactionCategoryByIdErrors[keyof AutocompleteTransactionCategoryByIdErrors];
 
-export type GetApiAutocompleteTransactioncategoryByIdResponses = {
+export type AutocompleteTransactionCategoryByIdResponses = {
     /**
      * OK
      */
     200: AutocompleteQueryResponse;
 };
 
-export type GetApiAutocompleteTransactioncategoryByIdResponse = GetApiAutocompleteTransactioncategoryByIdResponses[keyof GetApiAutocompleteTransactioncategoryByIdResponses];
+export type AutocompleteTransactionCategoryByIdResponse = AutocompleteTransactionCategoryByIdResponses[keyof AutocompleteTransactionCategoryByIdResponses];
 
-export type GetApiAutocompleteTransactioncategoryData = {
+export type AutocompleteTransactionCategoryData = {
     body?: never;
     path?: never;
     query?: {
@@ -525,7 +525,7 @@ export type GetApiAutocompleteTransactioncategoryData = {
     url: '/api/autocomplete/transactioncategory';
 };
 
-export type GetApiAutocompleteTransactioncategoryErrors = {
+export type AutocompleteTransactionCategoryErrors = {
     /**
      * Not Found
      */
@@ -540,18 +540,18 @@ export type GetApiAutocompleteTransactioncategoryErrors = {
     422: string;
 };
 
-export type GetApiAutocompleteTransactioncategoryError = GetApiAutocompleteTransactioncategoryErrors[keyof GetApiAutocompleteTransactioncategoryErrors];
+export type AutocompleteTransactionCategoryError = AutocompleteTransactionCategoryErrors[keyof AutocompleteTransactionCategoryErrors];
 
-export type GetApiAutocompleteTransactioncategoryResponses = {
+export type AutocompleteTransactionCategoryResponses = {
     /**
      * OK
      */
     200: Array<AutocompleteQueryResponse>;
 };
 
-export type GetApiAutocompleteTransactioncategoryResponse = GetApiAutocompleteTransactioncategoryResponses[keyof GetApiAutocompleteTransactioncategoryResponses];
+export type AutocompleteTransactionCategoryResponse = AutocompleteTransactionCategoryResponses[keyof AutocompleteTransactionCategoryResponses];
 
-export type GetApiAutocompleteTransactionsourceByIdData = {
+export type AutocompleteTransactionSourceByIdData = {
     body?: never;
     path: {
         id: number;
@@ -560,7 +560,7 @@ export type GetApiAutocompleteTransactionsourceByIdData = {
     url: '/api/autocomplete/transactionsource/{id}';
 };
 
-export type GetApiAutocompleteTransactionsourceByIdErrors = {
+export type AutocompleteTransactionSourceByIdErrors = {
     /**
      * Not Found
      */
@@ -575,18 +575,18 @@ export type GetApiAutocompleteTransactionsourceByIdErrors = {
     422: string;
 };
 
-export type GetApiAutocompleteTransactionsourceByIdError = GetApiAutocompleteTransactionsourceByIdErrors[keyof GetApiAutocompleteTransactionsourceByIdErrors];
+export type AutocompleteTransactionSourceByIdError = AutocompleteTransactionSourceByIdErrors[keyof AutocompleteTransactionSourceByIdErrors];
 
-export type GetApiAutocompleteTransactionsourceByIdResponses = {
+export type AutocompleteTransactionSourceByIdResponses = {
     /**
      * OK
      */
     200: AutocompleteQueryResponse;
 };
 
-export type GetApiAutocompleteTransactionsourceByIdResponse = GetApiAutocompleteTransactionsourceByIdResponses[keyof GetApiAutocompleteTransactionsourceByIdResponses];
+export type AutocompleteTransactionSourceByIdResponse = AutocompleteTransactionSourceByIdResponses[keyof AutocompleteTransactionSourceByIdResponses];
 
-export type GetApiAutocompleteTransactionsourceData = {
+export type AutocompleteTransactionSourceData = {
     body?: never;
     path?: never;
     query?: {
@@ -597,7 +597,7 @@ export type GetApiAutocompleteTransactionsourceData = {
     url: '/api/autocomplete/transactionsource';
 };
 
-export type GetApiAutocompleteTransactionsourceErrors = {
+export type AutocompleteTransactionSourceErrors = {
     /**
      * Not Found
      */
@@ -612,13 +612,13 @@ export type GetApiAutocompleteTransactionsourceErrors = {
     422: string;
 };
 
-export type GetApiAutocompleteTransactionsourceError = GetApiAutocompleteTransactionsourceErrors[keyof GetApiAutocompleteTransactionsourceErrors];
+export type AutocompleteTransactionSourceError = AutocompleteTransactionSourceErrors[keyof AutocompleteTransactionSourceErrors];
 
-export type GetApiAutocompleteTransactionsourceResponses = {
+export type AutocompleteTransactionSourceResponses = {
     /**
      * OK
      */
     200: Array<AutocompleteQueryResponse>;
 };
 
-export type GetApiAutocompleteTransactionsourceResponse = GetApiAutocompleteTransactionsourceResponses[keyof GetApiAutocompleteTransactionsourceResponses];
+export type AutocompleteTransactionSourceResponse = AutocompleteTransactionSourceResponses[keyof AutocompleteTransactionSourceResponses];
