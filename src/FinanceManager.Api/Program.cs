@@ -54,7 +54,7 @@ public sealed class Program
             app.UseCors("Frontend");
 
         RouteGroupBuilder api = app.MapGroup("/api");
-        api.RegisterSpendingCategoryEndpoints();
+        api.RegisterTransactionCategoryEndpoints();
         api.RegisterFinancialTransactionEndpoints();
         api.RegisterTransactionSourceEndpoints();
         api.RegisterAutocompleteEndpoints();

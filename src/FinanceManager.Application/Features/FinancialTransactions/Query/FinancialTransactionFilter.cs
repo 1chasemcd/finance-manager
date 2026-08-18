@@ -7,5 +7,5 @@ public sealed record FinancialTransactionFilter
     public decimal? MinAmount { get; init; }
     public decimal? MaxAmount { get; init; }
     public int? TransactionSourceId { get; init; }
-    public int? SpendingCategoryId { get; init; }
+    public int? TransactionCategoryId { get; init; }
 }

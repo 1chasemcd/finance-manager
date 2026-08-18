@@ -1,12 +1,12 @@
 import EntityTable from "@/components/EntityTable/EntityTable";
 import useQueryForTable from "@/hooks/useQueryForTable";
-import type { SpendingCategoryResponse } from "@/lib/generated";
-import { searchSpendingCategoryOptions } from "@/lib/generated/@tanstack/react-query.gen";
+import type { TransactionCategoryResponse } from "@/lib/generated";
+import { searchTransactionCategoryOptions } from "@/lib/generated/@tanstack/react-query.gen";
 import type { ColumnsType } from "antd/es/table";
 import { useMemo } from "react";
 
 export default function Categories() {
-  const columns = useMemo<ColumnsType<SpendingCategoryResponse>>(
+  const columns = useMemo<ColumnsType<TransactionCategoryResponse>>(
     () => [
       {
         title: "Category Name",
@@ -22,7 +22,7 @@ export default function Categories() {
     [],
   );
   const { query, updateQuery, useQueryResult } = useQueryForTable(
-    searchSpendingCategoryOptions,
+    searchTransactionCategoryOptions,
   );
 
   return (

@@ -1,15 +1,15 @@
 using FinanceManager.Application.Abstractions;
-using FinanceManager.Domain.SpendingCategories;
+using FinanceManager.Domain.TransactionCategories;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace FinanceManager.Application.Features.SpendingCategories.Write;
+namespace FinanceManager.Application.Features.TransactionCategories.Write;
 
-public sealed class CreateSpendingCategoryValidator
-    : AbstractValidator<WriteSpendingCategoryRequest>
+public sealed class CreateTransactionCategoryValidator
+    : AbstractValidator<WriteTransactionCategoryRequest>
 {
     private readonly IApplicationDbContext _db;
-    public CreateSpendingCategoryValidator(IApplicationDbContext db)
+    public CreateTransactionCategoryValidator(IApplicationDbContext db)
     {
         _db = db;
 
@@ -23,7 +23,7 @@ public sealed class CreateSpendingCategoryValidator
 
     private async Task<bool> NameIsUnique(string name, CancellationToken cancellationToken)
     {
-        var any = await _db.Set<SpendingCategory>()
+        var any = await _db.Set<TransactionCategory>()
             .AnyAsync(x => x.Name == name, cancellationToken);
         return !any;
     }

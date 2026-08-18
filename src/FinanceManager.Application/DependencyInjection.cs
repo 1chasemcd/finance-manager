@@ -7,10 +7,10 @@ using FinanceManager.Application.Common.EntityAssociations;
 using FinanceManager.Application.Common.EntityRequests;
 using FinanceManager.Application.Features.TransactionSources.Query;
 using FinanceManager.Application.Features.TransactionSources.Write;
-using FinanceManager.Application.Features.SpendingCategories.Write;
-using FinanceManager.Application.Features.SpendingCategories.Query;
+using FinanceManager.Application.Features.TransactionCategories.Write;
+using FinanceManager.Application.Features.TransactionCategories.Query;
 using FinanceManager.Domain.FinancialTransactions;
-using FinanceManager.Domain.SpendingCategories;
+using FinanceManager.Domain.TransactionCategories;
 using FluentValidation;
 using Microsoft.Extensions.Hosting;
 using FinanceManager.Application.Features.FinancialTransactions.Query;
@@ -43,12 +43,12 @@ public static class DependencyInjection
         builder.Services.AddAllImplementationsTransient(assembly, typeof(IExpressionMapper<,>));
         builder.Services.AddAllImplementationsTransient(assembly, typeof(IEntityFilterHandler<,>));
 
-        builder.Services.AddCreateEntityHandler<SpendingCategory, WriteSpendingCategoryRequest>();
-        builder.Services.AddUpdateEntityHandler<SpendingCategory, WriteSpendingCategoryRequest>();
-        builder.Services.AddLookupEntityHandler<SpendingCategory, SpendingCategoryResponse>();
-        builder.Services.AddSearchEntityHandler<SpendingCategory, SpendingCategoryResponse>();
-        builder.Services.AddDeleteEntityHandler<SpendingCategory>();
-        builder.Services.AddAutocompleteHandler<SpendingCategory>(x => x.Name);
+        builder.Services.AddCreateEntityHandler<TransactionCategory, WriteTransactionCategoryRequest>();
+        builder.Services.AddUpdateEntityHandler<TransactionCategory, WriteTransactionCategoryRequest>();
+        builder.Services.AddLookupEntityHandler<TransactionCategory, TransactionCategoryResponse>();
+        builder.Services.AddSearchEntityHandler<TransactionCategory, TransactionCategoryResponse>();
+        builder.Services.AddDeleteEntityHandler<TransactionCategory>();
+        builder.Services.AddAutocompleteHandler<TransactionCategory>(x => x.Name);
 
         builder.Services.AddCreateEntityHandler<TransactionSource, WriteTransactionSourceRequest>();
         builder.Services.AddUpdateEntityHandler<TransactionSource, WriteTransactionSourceRequest>();

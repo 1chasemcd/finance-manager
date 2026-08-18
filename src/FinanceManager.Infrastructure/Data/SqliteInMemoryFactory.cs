@@ -1,7 +1,7 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using FinanceManager.Domain.SpendingCategories;
+using FinanceManager.Domain.TransactionCategories;
 using FinanceManager.Domain.PersonalInfos;
 using FinanceManager.Domain.FinancialTransactions;
 using FinanceManager.Domain.TransactionSources;
@@ -35,13 +35,13 @@ internal static class SqliteInMemoryFactory
         using var context = new ApplicationDbContext(options);
         await context.Database.EnsureCreatedAsync();
 
-        SpendingCategory[] spendingCategories = [
-            SpendingCategory.Create("Groceries", "Food and Home Goods"),
-            SpendingCategory.Create("Travel", "Adventures in Faraway places"),
-            SpendingCategory.Create("Automotive"),
-            SpendingCategory.Create("Gifts"),
-            SpendingCategory.Create("Healthcare"),
-            SpendingCategory.Create("Transfers", "Moving funds between accounts"),
+        TransactionCategory[] spendingCategories = [
+            TransactionCategory.Create("Groceries", "Food and Home Goods"),
+            TransactionCategory.Create("Travel", "Adventures in Faraway places"),
+            TransactionCategory.Create("Automotive"),
+            TransactionCategory.Create("Gifts"),
+            TransactionCategory.Create("Healthcare"),
+            TransactionCategory.Create("Transfers", "Moving funds between accounts"),
         ];
         await context.AddRangeAsync(spendingCategories);
 
@@ -66,17 +66,17 @@ internal static class SqliteInMemoryFactory
 
 
         FinancialTransaction[] transactions = [
-            FinancialTransaction.Create(89.23m, RandomDate(), "KROGER PURCHASE", accounts[0], spendingCategories[0]),
-            FinancialTransaction.Create(305.80m, RandomDate(), "UNITED AIRLINES FLIGHT DEN -> LGA", accounts[4], spendingCategories[1]),
-            FinancialTransaction.Create(48.15m, RandomDate(), "MAVERICK GAS STATION", accounts[2], spendingCategories[2]),
-            FinancialTransaction.Create(68.54m, RandomDate(), "CITY MARKET PURCHASE", accounts[4], spendingCategories[0]),
-            FinancialTransaction.Create(523.90m, RandomDate(), "CREDIT CARD PAYMENT - THANK YOU", accounts[0], spendingCategories[5]),
-            FinancialTransaction.Create(156.13m, RandomDate(), "TRUE AUTOMOTIVE GLENWOOD", accounts[0], spendingCategories[2]),
-            FinancialTransaction.Create(209.13m, RandomDate(), "VALLEY VIEW HOSPITAL VISIT BILL", accounts[0], spendingCategories[4]),
-            FinancialTransaction.Create(29.97m, RandomDate(), "CITY MARKET PURCHASE", accounts[2], spendingCategories[0]),
-            FinancialTransaction.Create(200.00m, RandomDate(), "FIDELITY TRANSFER BETWEEN ACCOUNTS", accounts[1], spendingCategories[5]),
-            FinancialTransaction.Create(50.99m, RandomDate(), "AMAZON.COM PURCHASE", accounts[0], spendingCategories[3]),
-            FinancialTransaction.Create(122.50m, RandomDate(), "HILTON HOTELS", accounts[4], spendingCategories[1]),
+            FinancialTransaction.Create(89.23m, RandomDate(), "KROGER PURCHASE", sources[0], spendingCategories[0]),
+            FinancialTransaction.Create(305.80m, RandomDate(), "UNITED AIRLINES FLIGHT DEN -> LGA", sources[4], spendingCategories[1]),
+            FinancialTransaction.Create(48.15m, RandomDate(), "MAVERICK GAS STATION", sources[2], spendingCategories[2]),
+            FinancialTransaction.Create(68.54m, RandomDate(), "CITY MARKET PURCHASE", sources[4], spendingCategories[0]),
+            FinancialTransaction.Create(523.90m, RandomDate(), "CREDIT CARD PAYMENT - THANK YOU", sources[0], spendingCategories[5]),
+            FinancialTransaction.Create(156.13m, RandomDate(), "TRUE AUTOMOTIVE GLENWOOD", sources[0], spendingCategories[2]),
+            FinancialTransaction.Create(209.13m, RandomDate(), "VALLEY VIEW HOSPITAL VISIT BILL", sources[0], spendingCategories[4]),
+            FinancialTransaction.Create(29.97m, RandomDate(), "CITY MARKET PURCHASE", sources[2], spendingCategories[0]),
+            FinancialTransaction.Create(200.00m, RandomDate(), "FIDELITY TRANSFER BETWEEN ACCOUNTS", sources[1], spendingCategories[5]),
+            FinancialTransaction.Create(50.99m, RandomDate(), "AMAZON.COM PURCHASE", sources[0], spendingCategories[3]),
+            FinancialTransaction.Create(122.50m, RandomDate(), "HILTON HOTELS", sources[4], spendingCategories[1]),
         ];
 
         await context.AddRangeAsync(transactions);

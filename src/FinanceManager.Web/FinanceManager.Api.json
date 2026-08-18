@@ -5,12 +5,12 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/spendingcategories/{id}": {
+    "/api/transactioncategories/{id}": {
       "get": {
         "tags": [
           "FinanceManager.Api"
         ],
-        "operationId": "LookupSpendingCategory",
+        "operationId": "LookupTransactionCategory",
         "parameters": [
           {
             "name": "id",
@@ -28,7 +28,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SpendingCategoryResponse"
+                  "$ref": "#/components/schemas/TransactionCategoryResponse"
                 }
               }
             }
@@ -69,7 +69,7 @@
         "tags": [
           "FinanceManager.Api"
         ],
-        "operationId": "UpdateSpendingCategory",
+        "operationId": "UpdateTransactionCategory",
         "parameters": [
           {
             "name": "id",
@@ -85,7 +85,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/WriteSpendingCategoryRequest"
+                "$ref": "#/components/schemas/WriteTransactionCategoryRequest"
               }
             }
           }
@@ -130,7 +130,7 @@
         "tags": [
           "FinanceManager.Api"
         ],
-        "operationId": "DeleteSpendingCategory",
+        "operationId": "DeleteTransactionCategory",
         "parameters": [
           {
             "name": "id",
@@ -179,17 +179,17 @@
         }
       }
     },
-    "/api/spendingcategories": {
+    "/api/transactioncategories": {
       "post": {
         "tags": [
           "FinanceManager.Api"
         ],
-        "operationId": "CreateSpendingCategory",
+        "operationId": "CreateTransactionCategory",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/WriteSpendingCategoryRequest"
+                "$ref": "#/components/schemas/WriteTransactionCategoryRequest"
               }
             }
           }
@@ -234,7 +234,7 @@
         "tags": [
           "FinanceManager.Api"
         ],
-        "operationId": "SearchSpendingCategory",
+        "operationId": "SearchTransactionCategory",
         "parameters": [
           {
             "name": "take",
@@ -261,7 +261,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SearchEntityResponseOfSpendingCategoryResponse"
+                  "$ref": "#/components/schemas/SearchEntityResponseOfTransactionCategoryResponse"
                 }
               }
             }
@@ -408,7 +408,7 @@
             }
           },
           {
-            "name": "SpendingCategoryId",
+            "name": "TransactionCategoryId",
             "in": "query",
             "schema": {
               "type": "integer",
@@ -772,7 +772,7 @@
         }
       }
     },
-    "/api/autocomplete/spendingcategory/{id}": {
+    "/api/autocomplete/transactioncategory/{id}": {
       "get": {
         "tags": [
           "FinanceManager.Api"
@@ -832,7 +832,7 @@
         }
       }
     },
-    "/api/autocomplete/spendingcategory": {
+    "/api/autocomplete/transactioncategory": {
       "get": {
         "tags": [
           "FinanceManager.Api"
@@ -1079,8 +1079,8 @@
           "summary",
           "transactionSourceId",
           "transactionSourceName",
-          "spendingCategoryId",
-          "spendingCategoryName"
+          "transactionCategoryId",
+          "transactionCategoryName"
         ],
         "type": "object",
         "properties": {
@@ -1106,11 +1106,11 @@
           "transactionSourceName": {
             "type": "string"
           },
-          "spendingCategoryId": {
+          "transactionCategoryId": {
             "type": "integer",
             "format": "int32"
           },
-          "spendingCategoryName": {
+          "transactionCategoryName": {
             "type": "string"
           }
         }
@@ -1134,7 +1134,7 @@
           }
         }
       },
-      "SearchEntityResponseOfSpendingCategoryResponse": {
+      "SearchEntityResponseOfTransactionCategoryResponse": {
         "required": [
           "results",
           "total"
@@ -1144,7 +1144,7 @@
           "results": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SpendingCategoryResponse"
+              "$ref": "#/components/schemas/TransactionCategoryResponse"
             }
           },
           "total": {
@@ -1172,7 +1172,7 @@
           }
         }
       },
-      "SpendingCategoryResponse": {
+      "TransactionCategoryResponse": {
         "required": [
           "id",
           "name"
@@ -1219,7 +1219,7 @@
           }
         }
       },
-      "WriteSpendingCategoryRequest": {
+      "WriteTransactionCategoryRequest": {
         "required": [
           "name"
         ],

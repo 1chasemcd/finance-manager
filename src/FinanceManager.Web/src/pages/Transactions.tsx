@@ -36,8 +36,8 @@ export default function Transactions() {
       },
       {
         title: "Category",
-        dataIndex: "spendingCategoryName",
-        key: "spendingCategoryName",
+        dataIndex: "transactionCategoryName",
+        key: "transactionCategoryName",
       },
     ],
     [],

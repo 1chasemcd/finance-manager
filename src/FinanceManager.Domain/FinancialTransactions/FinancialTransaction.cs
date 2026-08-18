@@ -1,5 +1,5 @@
 using FinanceManager.Domain.Common;
-using FinanceManager.Domain.SpendingCategories;
+using FinanceManager.Domain.TransactionCategories;
 using FinanceManager.Domain.TransactionSources;
 
 namespace FinanceManager.Domain.FinancialTransactions;
@@ -11,8 +11,8 @@ public sealed class FinancialTransaction : Entity
     public string Summary { get; private set; } = null!;
     public int TransactionSourceId { get; private set; }
     public TransactionSource TransactionSource { get; private set; } = null!;
-    public int SpendingCategoryId { get; set; }
-    public SpendingCategory SpendingCategory { get; private set; } = null!;
+    public int TransactionCategoryId { get; set; }
+    public TransactionCategory TransactionCategory { get; private set; } = null!;
 
     private FinancialTransaction() { }
 
@@ -20,11 +20,11 @@ public sealed class FinancialTransaction : Entity
         decimal amount,
         DateTime date,
         string summary,
-        TransactionSource financialAccount,
-        SpendingCategory category)
+        TransactionSource transactionSource,
+        TransactionCategory category)
     {
         ArgumentException.ThrowIfNullOrEmpty(summary);
-        ArgumentNullException.ThrowIfNull(financialAccount);
+        ArgumentNullException.ThrowIfNull(transactionSource);
         ArgumentNullException.ThrowIfNull(category);
 
         return new()
@@ -32,10 +32,10 @@ public sealed class FinancialTransaction : Entity
             Amount = amount,
             Date = date,
             Summary = summary,
-            TransactionSourceId = financialAccount.Id,
-            TransactionSource = financialAccount,
-            SpendingCategoryId = category.Id,
-            SpendingCategory = category
+            TransactionSourceId = transactionSource.Id,
+            TransactionSource = transactionSource,
+            TransactionCategoryId = category.Id,
+            TransactionCategory = category
         };
     }
 }

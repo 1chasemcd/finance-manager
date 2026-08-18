@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FinanceManager.Application.Features.SpendingCategories.Query;
+namespace FinanceManager.Application.Features.TransactionCategories.Query;
 
-public sealed record SpendingCategoryResponse
+public sealed record TransactionCategoryResponse
 {
 
     [Required]

@@ -1,12 +1,12 @@
-using FinanceManager.Domain.SpendingCategories;
+using FinanceManager.Domain.TransactionCategories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FinanceManager.Infrastructure.Data.Configuration;
 
-internal sealed class SpendingCategoryConfiguration : IEntityTypeConfiguration<SpendingCategory>
+internal sealed class TransactionCategoryConfiguration : IEntityTypeConfiguration<TransactionCategory>
 {
-    public void Configure(EntityTypeBuilder<SpendingCategory> builder)
+    public void Configure(EntityTypeBuilder<TransactionCategory> builder)
     {
         builder.Property(x => x.Name)
             .HasMaxLength(100)

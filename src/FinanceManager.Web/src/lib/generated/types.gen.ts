@@ -16,8 +16,8 @@ export type FinancialTransactionResponse = {
     summary: string;
     transactionSourceId: number;
     transactionSourceName: string;
-    spendingCategoryId: number;
-    spendingCategoryName: string;
+    transactionCategoryId: number;
+    transactionCategoryName: string;
 };
 
 export type SearchEntityResponseOfFinancialTransactionResponse = {
@@ -25,8 +25,8 @@ export type SearchEntityResponseOfFinancialTransactionResponse = {
     total: number;
 };
 
-export type SearchEntityResponseOfSpendingCategoryResponse = {
-    results: Array<SpendingCategoryResponse>;
+export type SearchEntityResponseOfTransactionCategoryResponse = {
+    results: Array<TransactionCategoryResponse>;
     total: number;
 };
 
@@ -35,7 +35,7 @@ export type SearchEntityResponseOfTransactionSourceResponse = {
     total: number;
 };
 
-export type SpendingCategoryResponse = {
+export type TransactionCategoryResponse = {
     id: number;
     name: string;
     description?: null | string;
@@ -48,7 +48,7 @@ export type TransactionSourceResponse = {
     ownerName: string;
 };
 
-export type WriteSpendingCategoryRequest = {
+export type WriteTransactionCategoryRequest = {
     name: string;
     description?: null | string;
 };
@@ -58,16 +58,16 @@ export type WriteTransactionSourceRequest = {
     ownerId?: number;
 };
 
-export type DeleteSpendingCategoryData = {
+export type DeleteTransactionCategoryData = {
     body?: never;
     path: {
         id: number;
     };
     query?: never;
-    url: '/api/spendingcategories/{id}';
+    url: '/api/transactioncategories/{id}';
 };
 
-export type DeleteSpendingCategoryErrors = {
+export type DeleteTransactionCategoryErrors = {
     /**
      * Not Found
      */
@@ -82,27 +82,27 @@ export type DeleteSpendingCategoryErrors = {
     422: string;
 };
 
-export type DeleteSpendingCategoryError = DeleteSpendingCategoryErrors[keyof DeleteSpendingCategoryErrors];
+export type DeleteTransactionCategoryError = DeleteTransactionCategoryErrors[keyof DeleteTransactionCategoryErrors];
 
-export type DeleteSpendingCategoryResponses = {
+export type DeleteTransactionCategoryResponses = {
     /**
      * No Content
      */
     204: void;
 };
 
-export type DeleteSpendingCategoryResponse = DeleteSpendingCategoryResponses[keyof DeleteSpendingCategoryResponses];
+export type DeleteTransactionCategoryResponse = DeleteTransactionCategoryResponses[keyof DeleteTransactionCategoryResponses];
 
-export type LookupSpendingCategoryData = {
+export type LookupTransactionCategoryData = {
     body?: never;
     path: {
         id: number;
     };
     query?: never;
-    url: '/api/spendingcategories/{id}';
+    url: '/api/transactioncategories/{id}';
 };
 
-export type LookupSpendingCategoryErrors = {
+export type LookupTransactionCategoryErrors = {
     /**
      * Not Found
      */
@@ -117,27 +117,27 @@ export type LookupSpendingCategoryErrors = {
     422: string;
 };
 
-export type LookupSpendingCategoryError = LookupSpendingCategoryErrors[keyof LookupSpendingCategoryErrors];
+export type LookupTransactionCategoryError = LookupTransactionCategoryErrors[keyof LookupTransactionCategoryErrors];
 
-export type LookupSpendingCategoryResponses = {
+export type LookupTransactionCategoryResponses = {
     /**
      * OK
      */
-    200: SpendingCategoryResponse;
+    200: TransactionCategoryResponse;
 };
 
-export type LookupSpendingCategoryResponse = LookupSpendingCategoryResponses[keyof LookupSpendingCategoryResponses];
+export type LookupTransactionCategoryResponse = LookupTransactionCategoryResponses[keyof LookupTransactionCategoryResponses];
 
-export type UpdateSpendingCategoryData = {
-    body?: WriteSpendingCategoryRequest;
+export type UpdateTransactionCategoryData = {
+    body?: WriteTransactionCategoryRequest;
     path: {
         id: number;
     };
     query?: never;
-    url: '/api/spendingcategories/{id}';
+    url: '/api/transactioncategories/{id}';
 };
 
-export type UpdateSpendingCategoryErrors = {
+export type UpdateTransactionCategoryErrors = {
     /**
      * Not Found
      */
@@ -152,28 +152,28 @@ export type UpdateSpendingCategoryErrors = {
     422: string;
 };
 
-export type UpdateSpendingCategoryError = UpdateSpendingCategoryErrors[keyof UpdateSpendingCategoryErrors];
+export type UpdateTransactionCategoryError = UpdateTransactionCategoryErrors[keyof UpdateTransactionCategoryErrors];
 
-export type UpdateSpendingCategoryResponses = {
+export type UpdateTransactionCategoryResponses = {
     /**
      * No Content
      */
     204: void;
 };
 
-export type UpdateSpendingCategoryResponse = UpdateSpendingCategoryResponses[keyof UpdateSpendingCategoryResponses];
+export type UpdateTransactionCategoryResponse = UpdateTransactionCategoryResponses[keyof UpdateTransactionCategoryResponses];
 
-export type SearchSpendingCategoryData = {
+export type SearchTransactionCategoryData = {
     body?: never;
     path?: never;
     query?: {
         take?: number;
         skip?: number;
     };
-    url: '/api/spendingcategories';
+    url: '/api/transactioncategories';
 };
 
-export type SearchSpendingCategoryErrors = {
+export type SearchTransactionCategoryErrors = {
     /**
      * Not Found
      */
@@ -188,25 +188,25 @@ export type SearchSpendingCategoryErrors = {
     422: string;
 };
 
-export type SearchSpendingCategoryError = SearchSpendingCategoryErrors[keyof SearchSpendingCategoryErrors];
+export type SearchTransactionCategoryError = SearchTransactionCategoryErrors[keyof SearchTransactionCategoryErrors];
 
-export type SearchSpendingCategoryResponses = {
+export type SearchTransactionCategoryResponses = {
     /**
      * OK
      */
-    200: SearchEntityResponseOfSpendingCategoryResponse;
+    200: SearchEntityResponseOfTransactionCategoryResponse;
 };
 
-export type SearchSpendingCategoryResponse = SearchSpendingCategoryResponses[keyof SearchSpendingCategoryResponses];
+export type SearchTransactionCategoryResponse = SearchTransactionCategoryResponses[keyof SearchTransactionCategoryResponses];
 
-export type CreateSpendingCategoryData = {
-    body?: WriteSpendingCategoryRequest;
+export type CreateTransactionCategoryData = {
+    body?: WriteTransactionCategoryRequest;
     path?: never;
     query?: never;
-    url: '/api/spendingcategories';
+    url: '/api/transactioncategories';
 };
 
-export type CreateSpendingCategoryErrors = {
+export type CreateTransactionCategoryErrors = {
     /**
      * Not Found
      */
@@ -221,9 +221,9 @@ export type CreateSpendingCategoryErrors = {
     422: string;
 };
 
-export type CreateSpendingCategoryError = CreateSpendingCategoryErrors[keyof CreateSpendingCategoryErrors];
+export type CreateTransactionCategoryError = CreateTransactionCategoryErrors[keyof CreateTransactionCategoryErrors];
 
-export type CreateSpendingCategoryResponses = {
+export type CreateTransactionCategoryResponses = {
     /**
      * Created
      */
@@ -274,7 +274,7 @@ export type SearchTransactionData = {
         MinAmount?: number;
         MaxAmount?: number;
         TransactionSourceId?: number;
-        SpendingCategoryId?: number;
+        TransactionCategoryId?: number;
         take?: number;
         skip?: number;
     };
@@ -479,16 +479,16 @@ export type CreateTransactionSourceResponses = {
     201: unknown;
 };
 
-export type GetApiAutocompleteSpendingcategoryByIdData = {
+export type GetApiAutocompleteTransactioncategoryByIdData = {
     body?: never;
     path: {
         id: number;
     };
     query?: never;
-    url: '/api/autocomplete/spendingcategory/{id}';
+    url: '/api/autocomplete/transactioncategory/{id}';
 };
 
-export type GetApiAutocompleteSpendingcategoryByIdErrors = {
+export type GetApiAutocompleteTransactioncategoryByIdErrors = {
     /**
      * Not Found
      */
@@ -503,18 +503,18 @@ export type GetApiAutocompleteSpendingcategoryByIdErrors = {
     422: string;
 };
 
-export type GetApiAutocompleteSpendingcategoryByIdError = GetApiAutocompleteSpendingcategoryByIdErrors[keyof GetApiAutocompleteSpendingcategoryByIdErrors];
+export type GetApiAutocompleteTransactioncategoryByIdError = GetApiAutocompleteTransactioncategoryByIdErrors[keyof GetApiAutocompleteTransactioncategoryByIdErrors];
 
-export type GetApiAutocompleteSpendingcategoryByIdResponses = {
+export type GetApiAutocompleteTransactioncategoryByIdResponses = {
     /**
      * OK
      */
     200: AutocompleteQueryResponse;
 };
 
-export type GetApiAutocompleteSpendingcategoryByIdResponse = GetApiAutocompleteSpendingcategoryByIdResponses[keyof GetApiAutocompleteSpendingcategoryByIdResponses];
+export type GetApiAutocompleteTransactioncategoryByIdResponse = GetApiAutocompleteTransactioncategoryByIdResponses[keyof GetApiAutocompleteTransactioncategoryByIdResponses];
 
-export type GetApiAutocompleteSpendingcategoryData = {
+export type GetApiAutocompleteTransactioncategoryData = {
     body?: never;
     path?: never;
     query?: {
@@ -522,10 +522,10 @@ export type GetApiAutocompleteSpendingcategoryData = {
         take?: number;
         skip?: number;
     };
-    url: '/api/autocomplete/spendingcategory';
+    url: '/api/autocomplete/transactioncategory';
 };
 
-export type GetApiAutocompleteSpendingcategoryErrors = {
+export type GetApiAutocompleteTransactioncategoryErrors = {
     /**
      * Not Found
      */
@@ -540,16 +540,16 @@ export type GetApiAutocompleteSpendingcategoryErrors = {
     422: string;
 };
 
-export type GetApiAutocompleteSpendingcategoryError = GetApiAutocompleteSpendingcategoryErrors[keyof GetApiAutocompleteSpendingcategoryErrors];
+export type GetApiAutocompleteTransactioncategoryError = GetApiAutocompleteTransactioncategoryErrors[keyof GetApiAutocompleteTransactioncategoryErrors];
 
-export type GetApiAutocompleteSpendingcategoryResponses = {
+export type GetApiAutocompleteTransactioncategoryResponses = {
     /**
      * OK
      */
     200: Array<AutocompleteQueryResponse>;
 };
 
-export type GetApiAutocompleteSpendingcategoryResponse = GetApiAutocompleteSpendingcategoryResponses[keyof GetApiAutocompleteSpendingcategoryResponses];
+export type GetApiAutocompleteTransactioncategoryResponse = GetApiAutocompleteTransactioncategoryResponses[keyof GetApiAutocompleteTransactioncategoryResponses];
 
 export type GetApiAutocompleteTransactionsourceByIdData = {
     body?: never;

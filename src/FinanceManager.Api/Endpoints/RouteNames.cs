@@ -2,11 +2,11 @@ namespace FinanceManager.Api.Endpoints;
 
 static class RouteNames
 {
-    public const string LookupSpendingCategory = "LookupSpendingCategory";
-    public const string SearchSpendingCategory = "SearchSpendingCategory";
-    public const string CreateSpendingCategory = "CreateSpendingCategory";
-    public const string UpdateSpendingCategory = "UpdateSpendingCategory";
-    public const string DeleteSpendingCategory = "DeleteSpendingCategory";
+    public const string LookupTransactionCategory = "LookupTransactionCategory";
+    public const string SearchTransactionCategory = "SearchTransactionCategory";
+    public const string CreateTransactionCategory = "CreateTransactionCategory";
+    public const string UpdateTransactionCategory = "UpdateTransactionCategory";
+    public const string DeleteTransactionCategory = "DeleteTransactionCategory";
 
 
     public const string LookupTransactionSource = "LookupTransactionSource";

@@ -15,7 +15,7 @@ internal sealed class FinancialTransactionResponseMapper : IExpressionMapper<Fin
             Summary = source.Summary,
             TransactionSourceId = source.TransactionSourceId,
             TransactionSourceName = source.TransactionSource.Name,
-            SpendingCategoryId = source.SpendingCategoryId,
-            SpendingCategoryName = source.SpendingCategory.Name
+            TransactionCategoryId = source.TransactionCategoryId,
+            TransactionCategoryName = source.TransactionCategory.Name
         };
 }
