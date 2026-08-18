@@ -1,5 +1,5 @@
 using FinanceManager.Application.Abstractions;
-using FinanceManager.Domain.PersonalInfos;
+using FinanceManager.Domain.People;
 using FinanceManager.Domain.TransactionSources;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +31,7 @@ public sealed class WriteTransactionSourceValidator : AbstractValidator<WriteTra
 
     private async Task<bool> OwnerExists(int ownerId, CancellationToken cancellationToken)
     {
-        var any = await _db.Set<PersonalInfo>()
+        var any = await _db.Set<Person>()
             .AnyAsync(x => x.Id == ownerId, cancellationToken);
         return any;
     }

@@ -1,5 +1,5 @@
 using FinanceManager.Domain.Common;
-using FinanceManager.Domain.PersonalInfos;
+using FinanceManager.Domain.People;
 
 namespace FinanceManager.Domain.TransactionSources;
 
@@ -7,10 +7,10 @@ public sealed class TransactionSource : Entity
 {
     public string Name { get; set; } = null!;
     public int OwnerId { get; set; }
-    public PersonalInfo Owner { get; set; } = null!;
+    public Person Owner { get; set; } = null!;
 
     private TransactionSource() { }
-    public static TransactionSource CreateWithOwner(string name, PersonalInfo owner)
+    public static TransactionSource CreateWithOwner(string name, Person owner)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         return new()

@@ -2,9 +2,9 @@ using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using FinanceManager.Domain.TransactionCategories;
-using FinanceManager.Domain.PersonalInfos;
 using FinanceManager.Domain.Transactions;
 using FinanceManager.Domain.TransactionSources;
+using FinanceManager.Domain.People;
 
 namespace FinanceManager.Infrastructure.Data;
 
@@ -45,20 +45,20 @@ internal static class SqliteInMemoryFactory
         ];
         await context.AddRangeAsync(spendingCategories);
 
-        PersonalInfo[] personalInfos = [
-            PersonalInfo.Create("Chase", "McDonald"),
-            PersonalInfo.Create("Hannah", "McDonald"),
+        Person[] people = [
+            Person.Create("Chase", "McDonald"),
+            Person.Create("Hannah", "McDonald"),
         ];
 
-        await context.AddRangeAsync(personalInfos);
+        await context.AddRangeAsync(people);
         await context.SaveChangesAsync();
 
         TransactionSource[] sources = [
-            TransactionSource.CreateWithOwner("Chase Wells Fargo Credit", personalInfos[0]),
-            TransactionSource.CreateWithOwner("Chase Fidelity Cash Management", personalInfos[0]),
-            TransactionSource.CreateWithOwner("Hannah Discover Credit", personalInfos[1]),
-            TransactionSource.CreateWithOwner("Hannah Fidelity Cash Management", personalInfos[1]),
-            TransactionSource.CreateWithOwner("Hannah CB Credit", personalInfos[1]),
+            TransactionSource.CreateWithOwner("Chase Wells Fargo Credit", people[0]),
+            TransactionSource.CreateWithOwner("Chase Fidelity Cash Management", people[0]),
+            TransactionSource.CreateWithOwner("Hannah Discover Credit", people[1]),
+            TransactionSource.CreateWithOwner("Hannah Fidelity Cash Management", people[1]),
+            TransactionSource.CreateWithOwner("Hannah CB Credit", people[1]),
         ];
 
         await context.AddRangeAsync(sources);
