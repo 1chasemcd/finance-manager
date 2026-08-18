@@ -53,7 +53,7 @@ internal static class SqliteInMemoryFactory
         await context.AddRangeAsync(personalInfos);
         await context.SaveChangesAsync();
 
-        TransactionSource[] accounts = [
+        TransactionSource[] sources = [
             TransactionSource.CreateWithOwner("Chase Wells Fargo Credit", personalInfos[0]),
             TransactionSource.CreateWithOwner("Chase Fidelity Cash Management", personalInfos[0]),
             TransactionSource.CreateWithOwner("Hannah Discover Credit", personalInfos[1]),
@@ -61,7 +61,7 @@ internal static class SqliteInMemoryFactory
             TransactionSource.CreateWithOwner("Hannah CB Credit", personalInfos[1]),
         ];
 
-        await context.AddRangeAsync(accounts);
+        await context.AddRangeAsync(sources);
         await context.SaveChangesAsync();
 
 

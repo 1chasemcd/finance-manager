@@ -30,7 +30,7 @@ Content-Type: application/json
 GET  {{host}}/api/spendingcategories?take=1&skip=1
 Accept: application/json
 
-### ACCOUNTS ###
+### TRANSACTION SOURCES ###
 
 GET {{host}}/api/transactionsource/1
 Accept: application/json
@@ -64,5 +64,5 @@ Accept: application/json
 
 ###
 
-GET  {{host}}/api/autocomplete/financialaccount?take=5&skip=0&search=Hannah
+GET  {{host}}/api/autocomplete/transactionsource?take=5&skip=0&search=Hannah
 Accept: application/json
