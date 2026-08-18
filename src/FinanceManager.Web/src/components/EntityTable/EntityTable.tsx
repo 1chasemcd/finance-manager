@@ -6,7 +6,6 @@ import { useMemo, useRef } from "react";
 import type { ColumnsType } from "antd/es/table";
 import Title from "antd/es/typography/Title";
 import { useTableHeight } from "@/hooks/useTableHeight";
-import "./EntityTable.css";
 import { Ellipsis } from "lucide-react";
 import type { Entity, SearchResponse } from "@/lib/types";
 
@@ -82,8 +81,13 @@ export default function EntityTable<
   }, [props.columns, props.rowActions]);
 
   return (
-    <div className="page">
-      <Flex justify="space-between" className="header">
+    <Flex
+      vertical
+      justify="space-between"
+      gap="middle"
+      style={{ height: "100%" }}
+    >
+      <Flex justify="space-between">
         <Title level={4} style={{ margin: 0 }}>
           {props.title}
         </Title>
@@ -96,7 +100,7 @@ export default function EntityTable<
         )}
       </Flex>
 
-      <div ref={contentRef} className="table-container">
+      <div ref={contentRef} style={{ minHeight: 0, flex: 1 }}>
         <Table
           size="small"
           rowKey={(record) => record.id}
@@ -116,6 +120,6 @@ export default function EntityTable<
           }
         />
       </div>
-    </div>
+    </Flex>
   );
 }

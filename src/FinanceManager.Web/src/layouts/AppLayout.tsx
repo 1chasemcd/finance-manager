@@ -6,17 +6,10 @@ const { Content } = Layout;
 
 export default function AppLayout() {
   return (
-    <Layout style={{ height: "100vh" }}>
+    <Layout style={{ height: "100vh", overflow: "hidden" }}>
       <AppSider />
-      <Layout style={{ minHeight: 0 }}>
-        <Content
-          style={{
-            minWidth: 0,
-            minHeight: 0,
-            padding: 24,
-            // overflow: "hidden",
-          }}
-        >
+      <Layout>
+        <Content style={{ padding: 16 }}>
           <Outlet />
         </Content>
       </Layout>

@@ -68,7 +68,6 @@ function divider(): Divider {
 export type NavEntry = RouteEntry | Divider;
 
 export const navEntries: NavEntry[] = [
-  divider(),
   route({
     path: paths.dashboard,
     label: "Dashboard",

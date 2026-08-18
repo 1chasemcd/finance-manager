@@ -1,4 +1,4 @@
-import { Layout, Menu, type MenuProps } from "antd";
+import { Divider, Layout, Menu, type MenuProps } from "antd";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Logo } from "../Logo";
@@ -46,10 +46,12 @@ export default function AppSider() {
         <Logo size={24} className="logo" />
         <span className="app-greeting">Finance Manager</span>
       </div>
+      <Divider orientation="horizontal" style={{ margin: 0 }}></Divider>
       <Menu
         mode="inline"
         items={navEntries.map(toMenuItem)}
         selectedKeys={getSelectedPath(location.pathname)}
+        style={{ height: "100%", overflowY: "auto" }}
       />
     </Sider>
   );
