@@ -1,5 +1,6 @@
 import type { SearchEntityQuery } from "@/lib/types";
 import { Button, Drawer, Form, Space, type FormInstance } from "antd";
+import { Funnel } from "lucide-react";
 import { useState } from "react";
 
 type EntityTableFilterActionProps<TQuery extends SearchEntityQuery> = {
@@ -26,7 +27,9 @@ export default function EntityTableFilterAction<
 
   return (
     <>
-      <Button onClick={openFiltersForm}>Filter</Button>
+      <Button onClick={openFiltersForm} icon={<Funnel size={16} />}>
+        Filter
+      </Button>
       <Drawer
         title="Filter Results"
         onClose={() => setFiltersOpen(false)}
