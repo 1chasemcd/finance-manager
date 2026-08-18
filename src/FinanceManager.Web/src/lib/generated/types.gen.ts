@@ -9,6 +9,17 @@ export type AutocompleteQueryResponse = {
     value: string;
 };
 
+export type PersonResponse = {
+    id: number;
+    firstName: string;
+    lastName: string;
+};
+
+export type SearchEntityResponseOfPersonResponse = {
+    results: Array<PersonResponse>;
+    total: number;
+};
+
 export type SearchEntityResponseOfTransactionCategoryResponse = {
     results: Array<TransactionCategoryResponse>;
     total: number;
@@ -46,6 +57,11 @@ export type TransactionSourceResponse = {
     name: string;
     ownerId: number;
     ownerName: string;
+};
+
+export type WritePersonRequest = {
+    firstName: string;
+    lastName: string;
 };
 
 export type WriteTransactionCategoryRequest = {
@@ -313,7 +329,7 @@ export type DeleteTransactionSourceData = {
         id: number;
     };
     query?: never;
-    url: '/api/transactionsource/{id}';
+    url: '/api/sources/{id}';
 };
 
 export type DeleteTransactionSourceErrors = {
@@ -348,7 +364,7 @@ export type LookupTransactionSourceData = {
         id: number;
     };
     query?: never;
-    url: '/api/transactionsource/{id}';
+    url: '/api/sources/{id}';
 };
 
 export type LookupTransactionSourceErrors = {
@@ -383,7 +399,7 @@ export type UpdateTransactionSourceData = {
         id: number;
     };
     query?: never;
-    url: '/api/transactionsource/{id}';
+    url: '/api/sources/{id}';
 };
 
 export type UpdateTransactionSourceErrors = {
@@ -419,7 +435,7 @@ export type SearchTransactionSourceData = {
         take?: number;
         skip?: number;
     };
-    url: '/api/transactionsource';
+    url: '/api/sources';
 };
 
 export type SearchTransactionSourceErrors = {
@@ -452,7 +468,7 @@ export type CreateTransactionSourceData = {
     body?: WriteTransactionSourceRequest;
     path?: never;
     query?: never;
-    url: '/api/transactionsource';
+    url: '/api/sources';
 };
 
 export type CreateTransactionSourceErrors = {
@@ -473,6 +489,178 @@ export type CreateTransactionSourceErrors = {
 export type CreateTransactionSourceError = CreateTransactionSourceErrors[keyof CreateTransactionSourceErrors];
 
 export type CreateTransactionSourceResponses = {
+    /**
+     * Created
+     */
+    201: unknown;
+};
+
+export type DeletePersonData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/people/{id}';
+};
+
+export type DeletePersonErrors = {
+    /**
+     * Not Found
+     */
+    404: string;
+    /**
+     * Conflict
+     */
+    409: string;
+    /**
+     * Unprocessable Entity
+     */
+    422: string;
+};
+
+export type DeletePersonError = DeletePersonErrors[keyof DeletePersonErrors];
+
+export type DeletePersonResponses = {
+    /**
+     * No Content
+     */
+    204: void;
+};
+
+export type DeletePersonResponse = DeletePersonResponses[keyof DeletePersonResponses];
+
+export type LookupPersonData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/people/{id}';
+};
+
+export type LookupPersonErrors = {
+    /**
+     * Not Found
+     */
+    404: string;
+    /**
+     * Conflict
+     */
+    409: string;
+    /**
+     * Unprocessable Entity
+     */
+    422: string;
+};
+
+export type LookupPersonError = LookupPersonErrors[keyof LookupPersonErrors];
+
+export type LookupPersonResponses = {
+    /**
+     * OK
+     */
+    200: PersonResponse;
+};
+
+export type LookupPersonResponse = LookupPersonResponses[keyof LookupPersonResponses];
+
+export type UpdatePersonData = {
+    body?: WritePersonRequest;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/people/{id}';
+};
+
+export type UpdatePersonErrors = {
+    /**
+     * Not Found
+     */
+    404: string;
+    /**
+     * Conflict
+     */
+    409: string;
+    /**
+     * Unprocessable Entity
+     */
+    422: string;
+};
+
+export type UpdatePersonError = UpdatePersonErrors[keyof UpdatePersonErrors];
+
+export type UpdatePersonResponses = {
+    /**
+     * No Content
+     */
+    204: void;
+};
+
+export type UpdatePersonResponse = UpdatePersonResponses[keyof UpdatePersonResponses];
+
+export type SearchPersonData = {
+    body?: never;
+    path?: never;
+    query?: {
+        take?: number;
+        skip?: number;
+    };
+    url: '/api/people';
+};
+
+export type SearchPersonErrors = {
+    /**
+     * Not Found
+     */
+    404: string;
+    /**
+     * Conflict
+     */
+    409: string;
+    /**
+     * Unprocessable Entity
+     */
+    422: string;
+};
+
+export type SearchPersonError = SearchPersonErrors[keyof SearchPersonErrors];
+
+export type SearchPersonResponses = {
+    /**
+     * OK
+     */
+    200: SearchEntityResponseOfPersonResponse;
+};
+
+export type SearchPersonResponse = SearchPersonResponses[keyof SearchPersonResponses];
+
+export type CreatePersonData = {
+    body?: WritePersonRequest;
+    path?: never;
+    query?: never;
+    url: '/api/people';
+};
+
+export type CreatePersonErrors = {
+    /**
+     * Not Found
+     */
+    404: string;
+    /**
+     * Conflict
+     */
+    409: string;
+    /**
+     * Unprocessable Entity
+     */
+    422: string;
+};
+
+export type CreatePersonError = CreatePersonErrors[keyof CreatePersonErrors];
+
+export type CreatePersonResponses = {
     /**
      * Created
      */
@@ -622,3 +810,75 @@ export type AutocompleteTransactionSourceResponses = {
 };
 
 export type AutocompleteTransactionSourceResponse = AutocompleteTransactionSourceResponses[keyof AutocompleteTransactionSourceResponses];
+
+export type AutocompletePersonByIdData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/autocomplete/person/{id}';
+};
+
+export type AutocompletePersonByIdErrors = {
+    /**
+     * Not Found
+     */
+    404: string;
+    /**
+     * Conflict
+     */
+    409: string;
+    /**
+     * Unprocessable Entity
+     */
+    422: string;
+};
+
+export type AutocompletePersonByIdError = AutocompletePersonByIdErrors[keyof AutocompletePersonByIdErrors];
+
+export type AutocompletePersonByIdResponses = {
+    /**
+     * OK
+     */
+    200: AutocompleteQueryResponse;
+};
+
+export type AutocompletePersonByIdResponse = AutocompletePersonByIdResponses[keyof AutocompletePersonByIdResponses];
+
+export type AutocompletePersonData = {
+    body?: never;
+    path?: never;
+    query?: {
+        search?: string;
+        take?: number;
+        skip?: number;
+    };
+    url: '/api/autocomplete/person';
+};
+
+export type AutocompletePersonErrors = {
+    /**
+     * Not Found
+     */
+    404: string;
+    /**
+     * Conflict
+     */
+    409: string;
+    /**
+     * Unprocessable Entity
+     */
+    422: string;
+};
+
+export type AutocompletePersonError = AutocompletePersonErrors[keyof AutocompletePersonErrors];
+
+export type AutocompletePersonResponses = {
+    /**
+     * OK
+     */
+    200: Array<AutocompleteQueryResponse>;
+};
+
+export type AutocompletePersonResponse = AutocompletePersonResponses[keyof AutocompletePersonResponses];

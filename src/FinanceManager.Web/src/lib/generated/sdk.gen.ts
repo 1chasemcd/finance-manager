@@ -3,7 +3,7 @@
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
 import { lookupTransactionResponseTransformer, searchTransactionResponseTransformer } from './transformers.gen';
-import type { AutocompleteTransactionCategoryByIdData, AutocompleteTransactionCategoryByIdErrors, AutocompleteTransactionCategoryByIdResponses, AutocompleteTransactionCategoryData, AutocompleteTransactionCategoryErrors, AutocompleteTransactionCategoryResponses, AutocompleteTransactionSourceByIdData, AutocompleteTransactionSourceByIdErrors, AutocompleteTransactionSourceByIdResponses, AutocompleteTransactionSourceData, AutocompleteTransactionSourceErrors, AutocompleteTransactionSourceResponses, CreateTransactionCategoryData, CreateTransactionCategoryErrors, CreateTransactionCategoryResponses, CreateTransactionSourceData, CreateTransactionSourceErrors, CreateTransactionSourceResponses, DeleteTransactionCategoryData, DeleteTransactionCategoryErrors, DeleteTransactionCategoryResponses, DeleteTransactionSourceData, DeleteTransactionSourceErrors, DeleteTransactionSourceResponses, LookupTransactionCategoryData, LookupTransactionCategoryErrors, LookupTransactionCategoryResponses, LookupTransactionData, LookupTransactionErrors, LookupTransactionResponses, LookupTransactionSourceData, LookupTransactionSourceErrors, LookupTransactionSourceResponses, SearchTransactionCategoryData, SearchTransactionCategoryErrors, SearchTransactionCategoryResponses, SearchTransactionData, SearchTransactionErrors, SearchTransactionResponses, SearchTransactionSourceData, SearchTransactionSourceErrors, SearchTransactionSourceResponses, UpdateTransactionCategoryData, UpdateTransactionCategoryErrors, UpdateTransactionCategoryResponses, UpdateTransactionSourceData, UpdateTransactionSourceErrors, UpdateTransactionSourceResponses } from './types.gen';
+import type { AutocompletePersonByIdData, AutocompletePersonByIdErrors, AutocompletePersonByIdResponses, AutocompletePersonData, AutocompletePersonErrors, AutocompletePersonResponses, AutocompleteTransactionCategoryByIdData, AutocompleteTransactionCategoryByIdErrors, AutocompleteTransactionCategoryByIdResponses, AutocompleteTransactionCategoryData, AutocompleteTransactionCategoryErrors, AutocompleteTransactionCategoryResponses, AutocompleteTransactionSourceByIdData, AutocompleteTransactionSourceByIdErrors, AutocompleteTransactionSourceByIdResponses, AutocompleteTransactionSourceData, AutocompleteTransactionSourceErrors, AutocompleteTransactionSourceResponses, CreatePersonData, CreatePersonErrors, CreatePersonResponses, CreateTransactionCategoryData, CreateTransactionCategoryErrors, CreateTransactionCategoryResponses, CreateTransactionSourceData, CreateTransactionSourceErrors, CreateTransactionSourceResponses, DeletePersonData, DeletePersonErrors, DeletePersonResponses, DeleteTransactionCategoryData, DeleteTransactionCategoryErrors, DeleteTransactionCategoryResponses, DeleteTransactionSourceData, DeleteTransactionSourceErrors, DeleteTransactionSourceResponses, LookupPersonData, LookupPersonErrors, LookupPersonResponses, LookupTransactionCategoryData, LookupTransactionCategoryErrors, LookupTransactionCategoryResponses, LookupTransactionData, LookupTransactionErrors, LookupTransactionResponses, LookupTransactionSourceData, LookupTransactionSourceErrors, LookupTransactionSourceResponses, SearchPersonData, SearchPersonErrors, SearchPersonResponses, SearchTransactionCategoryData, SearchTransactionCategoryErrors, SearchTransactionCategoryResponses, SearchTransactionData, SearchTransactionErrors, SearchTransactionResponses, SearchTransactionSourceData, SearchTransactionSourceErrors, SearchTransactionSourceResponses, UpdatePersonData, UpdatePersonErrors, UpdatePersonResponses, UpdateTransactionCategoryData, UpdateTransactionCategoryErrors, UpdateTransactionCategoryResponses, UpdateTransactionSourceData, UpdateTransactionSourceErrors, UpdateTransactionSourceResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -55,12 +55,12 @@ export const searchTransaction = <ThrowOnError extends boolean = false>(options?
     ...options
 });
 
-export const deleteTransactionSource = <ThrowOnError extends boolean = false>(options: Options<DeleteTransactionSourceData, ThrowOnError>): RequestResult<DeleteTransactionSourceResponses, DeleteTransactionSourceErrors, ThrowOnError> => (options.client ?? client).delete<DeleteTransactionSourceResponses, DeleteTransactionSourceErrors, ThrowOnError>({ url: '/api/transactionsource/{id}', ...options });
+export const deleteTransactionSource = <ThrowOnError extends boolean = false>(options: Options<DeleteTransactionSourceData, ThrowOnError>): RequestResult<DeleteTransactionSourceResponses, DeleteTransactionSourceErrors, ThrowOnError> => (options.client ?? client).delete<DeleteTransactionSourceResponses, DeleteTransactionSourceErrors, ThrowOnError>({ url: '/api/sources/{id}', ...options });
 
-export const lookupTransactionSource = <ThrowOnError extends boolean = false>(options: Options<LookupTransactionSourceData, ThrowOnError>): RequestResult<LookupTransactionSourceResponses, LookupTransactionSourceErrors, ThrowOnError> => (options.client ?? client).get<LookupTransactionSourceResponses, LookupTransactionSourceErrors, ThrowOnError>({ url: '/api/transactionsource/{id}', ...options });
+export const lookupTransactionSource = <ThrowOnError extends boolean = false>(options: Options<LookupTransactionSourceData, ThrowOnError>): RequestResult<LookupTransactionSourceResponses, LookupTransactionSourceErrors, ThrowOnError> => (options.client ?? client).get<LookupTransactionSourceResponses, LookupTransactionSourceErrors, ThrowOnError>({ url: '/api/sources/{id}', ...options });
 
 export const updateTransactionSource = <ThrowOnError extends boolean = false>(options: Options<UpdateTransactionSourceData, ThrowOnError>): RequestResult<UpdateTransactionSourceResponses, UpdateTransactionSourceErrors, ThrowOnError> => (options.client ?? client).put<UpdateTransactionSourceResponses, UpdateTransactionSourceErrors, ThrowOnError>({
-    url: '/api/transactionsource/{id}',
+    url: '/api/sources/{id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -68,10 +68,34 @@ export const updateTransactionSource = <ThrowOnError extends boolean = false>(op
     }
 });
 
-export const searchTransactionSource = <ThrowOnError extends boolean = false>(options?: Options<SearchTransactionSourceData, ThrowOnError>): RequestResult<SearchTransactionSourceResponses, SearchTransactionSourceErrors, ThrowOnError> => (options?.client ?? client).get<SearchTransactionSourceResponses, SearchTransactionSourceErrors, ThrowOnError>({ url: '/api/transactionsource', ...options });
+export const searchTransactionSource = <ThrowOnError extends boolean = false>(options?: Options<SearchTransactionSourceData, ThrowOnError>): RequestResult<SearchTransactionSourceResponses, SearchTransactionSourceErrors, ThrowOnError> => (options?.client ?? client).get<SearchTransactionSourceResponses, SearchTransactionSourceErrors, ThrowOnError>({ url: '/api/sources', ...options });
 
 export const createTransactionSource = <ThrowOnError extends boolean = false>(options?: Options<CreateTransactionSourceData, ThrowOnError>): RequestResult<CreateTransactionSourceResponses, CreateTransactionSourceErrors, ThrowOnError> => (options?.client ?? client).post<CreateTransactionSourceResponses, CreateTransactionSourceErrors, ThrowOnError>({
-    url: '/api/transactionsource',
+    url: '/api/sources',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+export const deletePerson = <ThrowOnError extends boolean = false>(options: Options<DeletePersonData, ThrowOnError>): RequestResult<DeletePersonResponses, DeletePersonErrors, ThrowOnError> => (options.client ?? client).delete<DeletePersonResponses, DeletePersonErrors, ThrowOnError>({ url: '/api/people/{id}', ...options });
+
+export const lookupPerson = <ThrowOnError extends boolean = false>(options: Options<LookupPersonData, ThrowOnError>): RequestResult<LookupPersonResponses, LookupPersonErrors, ThrowOnError> => (options.client ?? client).get<LookupPersonResponses, LookupPersonErrors, ThrowOnError>({ url: '/api/people/{id}', ...options });
+
+export const updatePerson = <ThrowOnError extends boolean = false>(options: Options<UpdatePersonData, ThrowOnError>): RequestResult<UpdatePersonResponses, UpdatePersonErrors, ThrowOnError> => (options.client ?? client).put<UpdatePersonResponses, UpdatePersonErrors, ThrowOnError>({
+    url: '/api/people/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+export const searchPerson = <ThrowOnError extends boolean = false>(options?: Options<SearchPersonData, ThrowOnError>): RequestResult<SearchPersonResponses, SearchPersonErrors, ThrowOnError> => (options?.client ?? client).get<SearchPersonResponses, SearchPersonErrors, ThrowOnError>({ url: '/api/people', ...options });
+
+export const createPerson = <ThrowOnError extends boolean = false>(options?: Options<CreatePersonData, ThrowOnError>): RequestResult<CreatePersonResponses, CreatePersonErrors, ThrowOnError> => (options?.client ?? client).post<CreatePersonResponses, CreatePersonErrors, ThrowOnError>({
+    url: '/api/people',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -86,3 +110,7 @@ export const autocompleteTransactionCategory = <ThrowOnError extends boolean = f
 export const autocompleteTransactionSourceById = <ThrowOnError extends boolean = false>(options: Options<AutocompleteTransactionSourceByIdData, ThrowOnError>): RequestResult<AutocompleteTransactionSourceByIdResponses, AutocompleteTransactionSourceByIdErrors, ThrowOnError> => (options.client ?? client).get<AutocompleteTransactionSourceByIdResponses, AutocompleteTransactionSourceByIdErrors, ThrowOnError>({ url: '/api/autocomplete/transactionsource/{id}', ...options });
 
 export const autocompleteTransactionSource = <ThrowOnError extends boolean = false>(options?: Options<AutocompleteTransactionSourceData, ThrowOnError>): RequestResult<AutocompleteTransactionSourceResponses, AutocompleteTransactionSourceErrors, ThrowOnError> => (options?.client ?? client).get<AutocompleteTransactionSourceResponses, AutocompleteTransactionSourceErrors, ThrowOnError>({ url: '/api/autocomplete/transactionsource', ...options });
+
+export const autocompletePersonById = <ThrowOnError extends boolean = false>(options: Options<AutocompletePersonByIdData, ThrowOnError>): RequestResult<AutocompletePersonByIdResponses, AutocompletePersonByIdErrors, ThrowOnError> => (options.client ?? client).get<AutocompletePersonByIdResponses, AutocompletePersonByIdErrors, ThrowOnError>({ url: '/api/autocomplete/person/{id}', ...options });
+
+export const autocompletePerson = <ThrowOnError extends boolean = false>(options?: Options<AutocompletePersonData, ThrowOnError>): RequestResult<AutocompletePersonResponses, AutocompletePersonErrors, ThrowOnError> => (options?.client ?? client).get<AutocompletePersonResponses, AutocompletePersonErrors, ThrowOnError>({ url: '/api/autocomplete/person', ...options });

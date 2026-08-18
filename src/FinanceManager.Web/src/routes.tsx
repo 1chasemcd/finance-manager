@@ -21,6 +21,9 @@ import ImportDefinitions from "./pages/ImportDefinitions";
 import Patterns from "./pages/Patterns";
 import TransactionSourceUpdate from "./pages/TransactionSourceUpdate";
 import TransactionSourceCreate from "./pages/TransactionSourceCreate";
+import People from "./pages/People/People";
+import PersonUpdate from "./pages/People/PersonUpdate";
+import PersonCreate from "./pages/People/PersonCreate";
 
 export const paths = {
   dashboard: "/",
@@ -121,5 +124,11 @@ export const navEntries: NavEntry[] = [
     icon: Asterisk,
     element: <Patterns />,
   }),
-  route({ path: paths.people, label: "People", icon: Users, element: "" }),
+  route({
+    path: paths.people,
+    label: "People",
+    icon: Users,
+    element: <People />,
+    children: [editFormRoute(<PersonUpdate />), addFormRoute(<PersonCreate />)],
+  }),
 ];
