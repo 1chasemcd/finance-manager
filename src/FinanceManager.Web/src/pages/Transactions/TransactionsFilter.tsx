@@ -73,11 +73,8 @@ export default function TransactionsFilter({
         <AppAutocomplete requestOptions={transactionCategoryAutocomplete} />
       </Form.Item>
 
-      <Form.Item<TransactionQuery> label="Owner">
-        <AppAutocomplete
-          placeholder="Note: Not yet implemented"
-          requestOptions={personAutocomplete}
-        />
+      <Form.Item<TransactionQuery> label="Owner" name="OwnerId">
+        <AppAutocomplete requestOptions={personAutocomplete} />
       </Form.Item>
     </Form>
   );

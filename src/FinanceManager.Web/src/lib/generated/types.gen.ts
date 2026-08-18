@@ -291,6 +291,7 @@ export type SearchTransactionData = {
         MaxAmount?: number;
         TransactionSourceId?: number;
         TransactionCategoryId?: number;
+        OwnerId?: number;
         take?: number;
         skip?: number;
     };

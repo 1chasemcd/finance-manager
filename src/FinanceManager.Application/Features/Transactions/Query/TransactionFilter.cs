@@ -8,4 +8,6 @@ public sealed record TransactionFilter
     public decimal? MaxAmount { get; init; }
     public int? TransactionSourceId { get; init; }
     public int? TransactionCategoryId { get; init; }
+    public int? OwnerId { get; init; }
+
 }

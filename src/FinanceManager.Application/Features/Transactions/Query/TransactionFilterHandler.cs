@@ -28,6 +28,9 @@ internal sealed class TransactionFilterHandler : IEntityFilterHandler<Transactio
         if (filter.TransactionCategoryId != null)
             query = query.Where(x => x.TransactionCategoryId == filter.TransactionCategoryId);
 
+        if (filter.OwnerId != null)
+            query = query.Where(x => x.TransactionSource.OwnerId == filter.OwnerId);
+
         return query;
     }
 }
