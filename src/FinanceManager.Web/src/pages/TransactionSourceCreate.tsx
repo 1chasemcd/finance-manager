@@ -1,26 +1,26 @@
 import EntityCreateForm from "@/components/EntityForm/EntityCreateForm";
-import type { WriteFinancialAccountRequest } from "@/lib/generated";
+import type { WriteTransactionSourceRequest } from "@/lib/generated";
 import {
-  searchAccountQueryKey,
-  createAccountMutation,
+  searchTransactionSourceQueryKey,
+  createTransactionSourceMutation,
 } from "@/lib/generated/@tanstack/react-query.gen";
 import { Form, Input, InputNumber } from "antd";
 
-export default function AccountCreate() {
+export default function TransactionSourceCreate() {
   return (
     <EntityCreateForm
-      title="Add Account"
-      createEntityMutation={createAccountMutation}
-      toInvalidate={[searchAccountQueryKey()]}
+      title="Add TransactionSource"
+      createEntityMutation={createTransactionSourceMutation}
+      toInvalidate={[searchTransactionSourceQueryKey()]}
     >
-      <Form.Item<WriteFinancialAccountRequest>
-        label="Account Name"
+      <Form.Item<WriteTransactionSourceRequest>
+        label="Name"
         name="name"
         rules={[{ required: true }]}
       >
         <Input maxLength={100} />
       </Form.Item>
-      <Form.Item<WriteFinancialAccountRequest>
+      <Form.Item<WriteTransactionSourceRequest>
         label="Owner"
         name="ownerId"
         rules={[{ required: true }]}

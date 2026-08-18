@@ -32,15 +32,15 @@ Accept: application/json
 
 ### ACCOUNTS ###
 
-GET {{host}}/api/financialaccounts/1
+GET {{host}}/api/transactionsource/1
 Accept: application/json
 
 ###
-GET  {{host}}/api/financialaccounts?take=1&skip=0
+GET  {{host}}/api/transactionsource?take=1&skip=0
 Accept: application/json
 
 ###
-POST {{host}}/api/financialaccounts
+POST {{host}}/api/transactionsource
 Content-Type: application/json
 
 {
@@ -55,11 +55,11 @@ GET {{host}}/api/financialtransactions/1
 Accept: application/json
 
 ###
-GET  {{host}}/api/financialtransactions?take=5&skip=0&financialAccountId=1
+GET  {{host}}/api/financialtransactions?take=5&skip=0&transactionSourceId=1
 Accept: application/json
 
 ### AUTOCOMPLETE ###
-GET  {{host}}/api/autocomplete/financialaccount/1
+GET  {{host}}/api/autocomplete/transactionsource/1
 Accept: application/json
 
 ###

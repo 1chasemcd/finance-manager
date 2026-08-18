@@ -9,11 +9,11 @@ static class RouteNames
     public const string DeleteSpendingCategory = "DeleteSpendingCategory";
 
 
-    public const string LookupAccount = "LookupAccount";
-    public const string SearchAccount = "SearchAccount";
-    public const string CreateAccount = "CreateAccount";
-    public const string UpdateAccount = "UpdateAccount";
-    public const string DeleteAccount = "DeleteAccount";
+    public const string LookupTransactionSource = "LookupTransactionSource";
+    public const string SearchTransactionSource = "SearchTransactionSource";
+    public const string CreateTransactionSource = "CreateTransactionSource";
+    public const string UpdateTransactionSource = "UpdateTransactionSource";
+    public const string DeleteTransactionSource = "DeleteTransactionSource";
 
     public const string LookupTransaction = "LookupTransaction";
     public const string SearchTransaction = "SearchTransaction";

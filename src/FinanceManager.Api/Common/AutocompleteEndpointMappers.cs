@@ -4,7 +4,6 @@ using FinanceManager.Application.Common.Autocomplete.Search;
 using FinanceManager.Application.Common.Autocomplete.Single;
 using FinanceManager.Domain.Common;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 
 namespace FinanceManager.Api.Common;
 

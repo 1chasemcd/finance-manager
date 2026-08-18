@@ -1,16 +1,16 @@
 using FinanceManager.Domain.Common;
 using FinanceManager.Domain.PersonalInfos;
 
-namespace FinanceManager.Domain.FinancialAccounts;
+namespace FinanceManager.Domain.TransactionSources;
 
-public sealed class FinancialAccount : Entity
+public sealed class TransactionSource : Entity
 {
     public string Name { get; set; } = null!;
     public int OwnerId { get; set; }
     public PersonalInfo Owner { get; set; } = null!;
 
-    private FinancialAccount() { }
-    public static FinancialAccount CreateWithOwner(string name, PersonalInfo owner)
+    private TransactionSource() { }
+    public static TransactionSource CreateWithOwner(string name, PersonalInfo owner)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         return new()
@@ -21,7 +21,7 @@ public sealed class FinancialAccount : Entity
         };
     }
 
-    public static FinancialAccount CreateWithOwnerId(string name, int ownerId)
+    public static TransactionSource CreateWithOwnerId(string name, int ownerId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         return new()

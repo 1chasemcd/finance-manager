@@ -1,12 +1,12 @@
-using FinanceManager.Domain.FinancialAccounts;
+using FinanceManager.Domain.TransactionSources;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FinanceManager.Infrastructure.Data.Configuration;
 
-internal sealed class FinancialAccountConfiguration : IEntityTypeConfiguration<FinancialAccount>
+internal sealed class TransactionSourceConfiguration : IEntityTypeConfiguration<TransactionSource>
 {
-    public void Configure(EntityTypeBuilder<FinancialAccount> builder)
+    public void Configure(EntityTypeBuilder<TransactionSource> builder)
     {
         builder.Property(x => x.Name)
             .HasMaxLength(100)

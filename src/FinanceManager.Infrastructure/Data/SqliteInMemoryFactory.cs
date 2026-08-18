@@ -3,8 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using FinanceManager.Domain.SpendingCategories;
 using FinanceManager.Domain.PersonalInfos;
-using FinanceManager.Domain.FinancialAccounts;
 using FinanceManager.Domain.FinancialTransactions;
+using FinanceManager.Domain.TransactionSources;
 
 namespace FinanceManager.Infrastructure.Data;
 
@@ -53,12 +53,12 @@ internal static class SqliteInMemoryFactory
         await context.AddRangeAsync(personalInfos);
         await context.SaveChangesAsync();
 
-        FinancialAccount[] accounts = [
-            FinancialAccount.CreateWithOwner("Chase Wells Fargo Credit", personalInfos[0]),
-            FinancialAccount.CreateWithOwner("Chase Fidelity Cash Management", personalInfos[0]),
-            FinancialAccount.CreateWithOwner("Hannah Discover Credit", personalInfos[1]),
-            FinancialAccount.CreateWithOwner("Hannah Fidelity Cash Management", personalInfos[1]),
-            FinancialAccount.CreateWithOwner("Hannah CB Credit", personalInfos[1]),
+        TransactionSource[] accounts = [
+            TransactionSource.CreateWithOwner("Chase Wells Fargo Credit", personalInfos[0]),
+            TransactionSource.CreateWithOwner("Chase Fidelity Cash Management", personalInfos[0]),
+            TransactionSource.CreateWithOwner("Hannah Discover Credit", personalInfos[1]),
+            TransactionSource.CreateWithOwner("Hannah Fidelity Cash Management", personalInfos[1]),
+            TransactionSource.CreateWithOwner("Hannah CB Credit", personalInfos[1]),
         ];
 
         await context.AddRangeAsync(accounts);

@@ -2,7 +2,6 @@ using FinanceManager.Api.Endpoints;
 using FinanceManager.Application.Abstractions;
 using MicroElements.AspNetCore.OpenApi.FluentValidation;
 using Microsoft.AspNetCore.Http.Json;
-using System.Reflection;
 using System.Text.Json.Serialization;
 
 namespace FinanceManager.Api;
@@ -57,7 +56,7 @@ public sealed class Program
         RouteGroupBuilder api = app.MapGroup("/api");
         api.RegisterSpendingCategoryEndpoints();
         api.RegisterFinancialTransactionEndpoints();
-        api.RegisterFinancialAccountEndpoints();
+        api.RegisterTransactionSourceEndpoints();
         api.RegisterAutocompleteEndpoints();
 
         app.Services

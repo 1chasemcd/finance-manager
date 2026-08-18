@@ -22,8 +22,8 @@ internal sealed class FinancialTransactionFilterHandler : IEntityFilterHandler<F
         if (filter.MaxAmount != null)
             query = query.Where(x => x.Amount < filter.MaxAmount);
 
-        if (filter.FinancialAccountId != null)
-            query = query.Where(x => x.FinancialAccountId == filter.FinancialAccountId);
+        if (filter.TransactionSourceId != null)
+            query = query.Where(x => x.TransactionSourceId == filter.TransactionSourceId);
 
         if (filter.SpendingCategoryId != null)
             query = query.Where(x => x.SpendingCategoryId == filter.SpendingCategoryId);

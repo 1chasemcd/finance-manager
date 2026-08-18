@@ -1,15 +1,15 @@
 using FinanceManager.Application.Abstractions;
-using FinanceManager.Domain.FinancialAccounts;
 using FinanceManager.Domain.PersonalInfos;
+using FinanceManager.Domain.TransactionSources;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace FinanceManager.Application.Features.FinancialAccounts.Write;
+namespace FinanceManager.Application.Features.TransactionSources.Write;
 
-public sealed class WriteFinancialAccountValidator : AbstractValidator<WriteFinancialAccountRequest>
+public sealed class WriteTransactionSourceValidator : AbstractValidator<WriteTransactionSourceRequest>
 {
     private readonly IApplicationDbContext _db;
-    public WriteFinancialAccountValidator(IApplicationDbContext db)
+    public WriteTransactionSourceValidator(IApplicationDbContext db)
     {
         _db = db;
 
@@ -24,7 +24,7 @@ public sealed class WriteFinancialAccountValidator : AbstractValidator<WriteFina
 
     private async Task<bool> NameIsUnique(string name, CancellationToken cancellationToken)
     {
-        var any = await _db.Set<FinancialAccount>()
+        var any = await _db.Set<TransactionSource>()
             .AnyAsync(x => x.Name == name, cancellationToken);
         return !any;
     }

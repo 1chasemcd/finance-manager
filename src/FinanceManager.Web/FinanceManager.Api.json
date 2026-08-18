@@ -400,7 +400,7 @@
             }
           },
           {
-            "name": "FinancialAccountId",
+            "name": "TransactionSourceId",
             "in": "query",
             "schema": {
               "type": "integer",
@@ -478,12 +478,12 @@
         }
       }
     },
-    "/api/financialaccounts/{id}": {
+    "/api/transactionsource/{id}": {
       "get": {
         "tags": [
           "FinanceManager.Api"
         ],
-        "operationId": "LookupAccount",
+        "operationId": "LookupTransactionSource",
         "parameters": [
           {
             "name": "id",
@@ -501,7 +501,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FinancialAccountResponse"
+                  "$ref": "#/components/schemas/TransactionSourceResponse"
                 }
               }
             }
@@ -542,7 +542,7 @@
         "tags": [
           "FinanceManager.Api"
         ],
-        "operationId": "UpdateAccount",
+        "operationId": "UpdateTransactionSource",
         "parameters": [
           {
             "name": "id",
@@ -558,7 +558,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/WriteFinancialAccountRequest"
+                "$ref": "#/components/schemas/WriteTransactionSourceRequest"
               }
             }
           }
@@ -603,7 +603,7 @@
         "tags": [
           "FinanceManager.Api"
         ],
-        "operationId": "DeleteAccount",
+        "operationId": "DeleteTransactionSource",
         "parameters": [
           {
             "name": "id",
@@ -652,12 +652,12 @@
         }
       }
     },
-    "/api/financialaccounts": {
+    "/api/transactionsource": {
       "get": {
         "tags": [
           "FinanceManager.Api"
         ],
-        "operationId": "SearchAccount",
+        "operationId": "SearchTransactionSource",
         "parameters": [
           {
             "name": "take",
@@ -684,7 +684,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SearchEntityResponseOfFinancialAccountResponse"
+                  "$ref": "#/components/schemas/SearchEntityResponseOfTransactionSourceResponse"
                 }
               }
             }
@@ -725,12 +725,12 @@
         "tags": [
           "FinanceManager.Api"
         ],
-        "operationId": "CreateAccount",
+        "operationId": "CreateTransactionSource",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/WriteFinancialAccountRequest"
+                "$ref": "#/components/schemas/WriteTransactionSourceRequest"
               }
             }
           }
@@ -912,7 +912,7 @@
         }
       }
     },
-    "/api/autocomplete/financialaccount/{id}": {
+    "/api/autocomplete/transactionsource/{id}": {
       "get": {
         "tags": [
           "FinanceManager.Api"
@@ -972,7 +972,7 @@
         }
       }
     },
-    "/api/autocomplete/financialaccount": {
+    "/api/autocomplete/transactionsource": {
       "get": {
         "tags": [
           "FinanceManager.Api"
@@ -1071,39 +1071,14 @@
           }
         }
       },
-      "FinancialAccountResponse": {
-        "required": [
-          "id",
-          "name",
-          "ownerId",
-          "ownerName"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "type": "string"
-          },
-          "ownerId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "ownerName": {
-            "type": "string"
-          }
-        }
-      },
       "FinancialTransactionResponse": {
         "required": [
           "id",
           "amount",
           "date",
           "summary",
-          "financialAccountId",
-          "financialAccountName",
+          "transactionSourceId",
+          "transactionSourceName",
           "spendingCategoryId",
           "spendingCategoryName"
         ],
@@ -1124,11 +1099,11 @@
           "summary": {
             "type": "string"
           },
-          "financialAccountId": {
+          "transactionSourceId": {
             "type": "integer",
             "format": "int32"
           },
-          "financialAccountName": {
+          "transactionSourceName": {
             "type": "string"
           },
           "spendingCategoryId": {
@@ -1137,25 +1112,6 @@
           },
           "spendingCategoryName": {
             "type": "string"
-          }
-        }
-      },
-      "SearchEntityResponseOfFinancialAccountResponse": {
-        "required": [
-          "results",
-          "total"
-        ],
-        "type": "object",
-        "properties": {
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FinancialAccountResponse"
-            }
-          },
-          "total": {
-            "type": "integer",
-            "format": "int32"
           }
         }
       },
@@ -1197,6 +1153,25 @@
           }
         }
       },
+      "SearchEntityResponseOfTransactionSourceResponse": {
+        "required": [
+          "results",
+          "total"
+        ],
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TransactionSourceResponse"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "SpendingCategoryResponse": {
         "required": [
           "id",
@@ -1219,18 +1194,28 @@
           }
         }
       },
-      "WriteFinancialAccountRequest": {
+      "TransactionSourceResponse": {
         "required": [
-          "name"
+          "id",
+          "name",
+          "ownerId",
+          "ownerName"
         ],
         "type": "object",
         "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
           "name": {
             "type": "string"
           },
           "ownerId": {
             "type": "integer",
             "format": "int32"
+          },
+          "ownerName": {
+            "type": "string"
           }
         }
       },
@@ -1248,6 +1233,21 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "WriteTransactionSourceRequest": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       }

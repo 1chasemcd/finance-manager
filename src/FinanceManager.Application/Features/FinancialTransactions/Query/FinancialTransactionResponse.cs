@@ -13,9 +13,9 @@ internal sealed record FinancialTransactionResponse
     [Required]
     public required string Summary { get; init; }
     [Required]
-    public int FinancialAccountId { get; init; }
+    public int TransactionSourceId { get; init; }
     [Required]
-    public required string FinancialAccountName { get; init; }
+    public required string TransactionSourceName { get; init; }
     [Required]
     public int SpendingCategoryId { get; init; }
     [Required]

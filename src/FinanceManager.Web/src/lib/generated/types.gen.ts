@@ -9,27 +9,15 @@ export type AutocompleteQueryResponse = {
     value: string;
 };
 
-export type FinancialAccountResponse = {
-    id: number;
-    name: string;
-    ownerId: number;
-    ownerName: string;
-};
-
 export type FinancialTransactionResponse = {
     id: number;
     amount: number;
     date: Date;
     summary: string;
-    financialAccountId: number;
-    financialAccountName: string;
+    transactionSourceId: number;
+    transactionSourceName: string;
     spendingCategoryId: number;
     spendingCategoryName: string;
-};
-
-export type SearchEntityResponseOfFinancialAccountResponse = {
-    results: Array<FinancialAccountResponse>;
-    total: number;
 };
 
 export type SearchEntityResponseOfFinancialTransactionResponse = {
@@ -42,20 +30,32 @@ export type SearchEntityResponseOfSpendingCategoryResponse = {
     total: number;
 };
 
+export type SearchEntityResponseOfTransactionSourceResponse = {
+    results: Array<TransactionSourceResponse>;
+    total: number;
+};
+
 export type SpendingCategoryResponse = {
     id: number;
     name: string;
     description?: null | string;
 };
 
-export type WriteFinancialAccountRequest = {
+export type TransactionSourceResponse = {
+    id: number;
     name: string;
-    ownerId?: number;
+    ownerId: number;
+    ownerName: string;
 };
 
 export type WriteSpendingCategoryRequest = {
     name: string;
     description?: null | string;
+};
+
+export type WriteTransactionSourceRequest = {
+    name: string;
+    ownerId?: number;
 };
 
 export type DeleteSpendingCategoryData = {
@@ -273,7 +273,7 @@ export type SearchTransactionData = {
         MaxDate?: Date;
         MinAmount?: number;
         MaxAmount?: number;
-        FinancialAccountId?: number;
+        TransactionSourceId?: number;
         SpendingCategoryId?: number;
         take?: number;
         skip?: number;
@@ -307,16 +307,16 @@ export type SearchTransactionResponses = {
 
 export type SearchTransactionResponse = SearchTransactionResponses[keyof SearchTransactionResponses];
 
-export type DeleteAccountData = {
+export type DeleteTransactionSourceData = {
     body?: never;
     path: {
         id: number;
     };
     query?: never;
-    url: '/api/financialaccounts/{id}';
+    url: '/api/transactionsource/{id}';
 };
 
-export type DeleteAccountErrors = {
+export type DeleteTransactionSourceErrors = {
     /**
      * Not Found
      */
@@ -331,27 +331,27 @@ export type DeleteAccountErrors = {
     422: string;
 };
 
-export type DeleteAccountError = DeleteAccountErrors[keyof DeleteAccountErrors];
+export type DeleteTransactionSourceError = DeleteTransactionSourceErrors[keyof DeleteTransactionSourceErrors];
 
-export type DeleteAccountResponses = {
+export type DeleteTransactionSourceResponses = {
     /**
      * No Content
      */
     204: void;
 };
 
-export type DeleteAccountResponse = DeleteAccountResponses[keyof DeleteAccountResponses];
+export type DeleteTransactionSourceResponse = DeleteTransactionSourceResponses[keyof DeleteTransactionSourceResponses];
 
-export type LookupAccountData = {
+export type LookupTransactionSourceData = {
     body?: never;
     path: {
         id: number;
     };
     query?: never;
-    url: '/api/financialaccounts/{id}';
+    url: '/api/transactionsource/{id}';
 };
 
-export type LookupAccountErrors = {
+export type LookupTransactionSourceErrors = {
     /**
      * Not Found
      */
@@ -366,27 +366,27 @@ export type LookupAccountErrors = {
     422: string;
 };
 
-export type LookupAccountError = LookupAccountErrors[keyof LookupAccountErrors];
+export type LookupTransactionSourceError = LookupTransactionSourceErrors[keyof LookupTransactionSourceErrors];
 
-export type LookupAccountResponses = {
+export type LookupTransactionSourceResponses = {
     /**
      * OK
      */
-    200: FinancialAccountResponse;
+    200: TransactionSourceResponse;
 };
 
-export type LookupAccountResponse = LookupAccountResponses[keyof LookupAccountResponses];
+export type LookupTransactionSourceResponse = LookupTransactionSourceResponses[keyof LookupTransactionSourceResponses];
 
-export type UpdateAccountData = {
-    body?: WriteFinancialAccountRequest;
+export type UpdateTransactionSourceData = {
+    body?: WriteTransactionSourceRequest;
     path: {
         id: number;
     };
     query?: never;
-    url: '/api/financialaccounts/{id}';
+    url: '/api/transactionsource/{id}';
 };
 
-export type UpdateAccountErrors = {
+export type UpdateTransactionSourceErrors = {
     /**
      * Not Found
      */
@@ -401,28 +401,28 @@ export type UpdateAccountErrors = {
     422: string;
 };
 
-export type UpdateAccountError = UpdateAccountErrors[keyof UpdateAccountErrors];
+export type UpdateTransactionSourceError = UpdateTransactionSourceErrors[keyof UpdateTransactionSourceErrors];
 
-export type UpdateAccountResponses = {
+export type UpdateTransactionSourceResponses = {
     /**
      * No Content
      */
     204: void;
 };
 
-export type UpdateAccountResponse = UpdateAccountResponses[keyof UpdateAccountResponses];
+export type UpdateTransactionSourceResponse = UpdateTransactionSourceResponses[keyof UpdateTransactionSourceResponses];
 
-export type SearchAccountData = {
+export type SearchTransactionSourceData = {
     body?: never;
     path?: never;
     query?: {
         take?: number;
         skip?: number;
     };
-    url: '/api/financialaccounts';
+    url: '/api/transactionsource';
 };
 
-export type SearchAccountErrors = {
+export type SearchTransactionSourceErrors = {
     /**
      * Not Found
      */
@@ -437,25 +437,25 @@ export type SearchAccountErrors = {
     422: string;
 };
 
-export type SearchAccountError = SearchAccountErrors[keyof SearchAccountErrors];
+export type SearchTransactionSourceError = SearchTransactionSourceErrors[keyof SearchTransactionSourceErrors];
 
-export type SearchAccountResponses = {
+export type SearchTransactionSourceResponses = {
     /**
      * OK
      */
-    200: SearchEntityResponseOfFinancialAccountResponse;
+    200: SearchEntityResponseOfTransactionSourceResponse;
 };
 
-export type SearchAccountResponse = SearchAccountResponses[keyof SearchAccountResponses];
+export type SearchTransactionSourceResponse = SearchTransactionSourceResponses[keyof SearchTransactionSourceResponses];
 
-export type CreateAccountData = {
-    body?: WriteFinancialAccountRequest;
+export type CreateTransactionSourceData = {
+    body?: WriteTransactionSourceRequest;
     path?: never;
     query?: never;
-    url: '/api/financialaccounts';
+    url: '/api/transactionsource';
 };
 
-export type CreateAccountErrors = {
+export type CreateTransactionSourceErrors = {
     /**
      * Not Found
      */
@@ -470,9 +470,9 @@ export type CreateAccountErrors = {
     422: string;
 };
 
-export type CreateAccountError = CreateAccountErrors[keyof CreateAccountErrors];
+export type CreateTransactionSourceError = CreateTransactionSourceErrors[keyof CreateTransactionSourceErrors];
 
-export type CreateAccountResponses = {
+export type CreateTransactionSourceResponses = {
     /**
      * Created
      */
@@ -551,16 +551,16 @@ export type GetApiAutocompleteSpendingcategoryResponses = {
 
 export type GetApiAutocompleteSpendingcategoryResponse = GetApiAutocompleteSpendingcategoryResponses[keyof GetApiAutocompleteSpendingcategoryResponses];
 
-export type GetApiAutocompleteFinancialaccountByIdData = {
+export type GetApiAutocompleteTransactionsourceByIdData = {
     body?: never;
     path: {
         id: number;
     };
     query?: never;
-    url: '/api/autocomplete/financialaccount/{id}';
+    url: '/api/autocomplete/transactionsource/{id}';
 };
 
-export type GetApiAutocompleteFinancialaccountByIdErrors = {
+export type GetApiAutocompleteTransactionsourceByIdErrors = {
     /**
      * Not Found
      */
@@ -575,18 +575,18 @@ export type GetApiAutocompleteFinancialaccountByIdErrors = {
     422: string;
 };
 
-export type GetApiAutocompleteFinancialaccountByIdError = GetApiAutocompleteFinancialaccountByIdErrors[keyof GetApiAutocompleteFinancialaccountByIdErrors];
+export type GetApiAutocompleteTransactionsourceByIdError = GetApiAutocompleteTransactionsourceByIdErrors[keyof GetApiAutocompleteTransactionsourceByIdErrors];
 
-export type GetApiAutocompleteFinancialaccountByIdResponses = {
+export type GetApiAutocompleteTransactionsourceByIdResponses = {
     /**
      * OK
      */
     200: AutocompleteQueryResponse;
 };
 
-export type GetApiAutocompleteFinancialaccountByIdResponse = GetApiAutocompleteFinancialaccountByIdResponses[keyof GetApiAutocompleteFinancialaccountByIdResponses];
+export type GetApiAutocompleteTransactionsourceByIdResponse = GetApiAutocompleteTransactionsourceByIdResponses[keyof GetApiAutocompleteTransactionsourceByIdResponses];
 
-export type GetApiAutocompleteFinancialaccountData = {
+export type GetApiAutocompleteTransactionsourceData = {
     body?: never;
     path?: never;
     query?: {
@@ -594,10 +594,10 @@ export type GetApiAutocompleteFinancialaccountData = {
         take?: number;
         skip?: number;
     };
-    url: '/api/autocomplete/financialaccount';
+    url: '/api/autocomplete/transactionsource';
 };
 
-export type GetApiAutocompleteFinancialaccountErrors = {
+export type GetApiAutocompleteTransactionsourceErrors = {
     /**
      * Not Found
      */
@@ -612,13 +612,13 @@ export type GetApiAutocompleteFinancialaccountErrors = {
     422: string;
 };
 
-export type GetApiAutocompleteFinancialaccountError = GetApiAutocompleteFinancialaccountErrors[keyof GetApiAutocompleteFinancialaccountErrors];
+export type GetApiAutocompleteTransactionsourceError = GetApiAutocompleteTransactionsourceErrors[keyof GetApiAutocompleteTransactionsourceErrors];
 
-export type GetApiAutocompleteFinancialaccountResponses = {
+export type GetApiAutocompleteTransactionsourceResponses = {
     /**
      * OK
      */
     200: Array<AutocompleteQueryResponse>;
 };
 
-export type GetApiAutocompleteFinancialaccountResponse = GetApiAutocompleteFinancialaccountResponses[keyof GetApiAutocompleteFinancialaccountResponses];
+export type GetApiAutocompleteTransactionsourceResponse = GetApiAutocompleteTransactionsourceResponses[keyof GetApiAutocompleteTransactionsourceResponses];

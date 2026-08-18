@@ -30,9 +30,9 @@ export default function Transactions() {
         width: "30%",
       },
       {
-        title: "Account",
-        dataIndex: "financialAccountName",
-        key: "financialAccountName",
+        title: "Source",
+        dataIndex: "transactionSourceName",
+        key: "transactionSourceName",
       },
       {
         title: "Category",

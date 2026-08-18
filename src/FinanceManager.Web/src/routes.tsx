@@ -16,11 +16,11 @@ import Transactions from "./pages/Transactions";
 import Import from "./pages/Import";
 import Budget from "./pages/Budget";
 import Categories from "./pages/Categories";
-import Accounts from "./pages/Accounts";
+import TransactionSources from "./pages/TransactionSources";
 import ImportDefinitions from "./pages/ImportDefinitions";
 import Patterns from "./pages/Patterns";
-import AccountUpdate from "./pages/AccountUpdate";
-import AccountCreate from "./pages/AccountCreate";
+import TransactionSourceUpdate from "./pages/TransactionSourceUpdate";
+import TransactionSourceCreate from "./pages/TransactionSourceCreate";
 
 export const paths = {
   dashboard: "/",
@@ -28,7 +28,7 @@ export const paths = {
   import: "/import",
   categories: "/categories",
   budget: "/budget",
-  accounts: "/accounts",
+  transactionSources: "/sources",
   importDefs: "/importdefs",
   patterns: "/patterns",
   people: "/people",
@@ -100,13 +100,13 @@ export const navEntries: NavEntry[] = [
     element: <Categories />,
   }),
   route({
-    path: paths.accounts,
-    label: "Accounts",
+    path: paths.transactionSources,
+    label: "Sources",
     icon: Landmark,
-    element: <Accounts />,
+    element: <TransactionSources />,
     children: [
-      editFormRoute(<AccountUpdate />),
-      addFormRoute(<AccountCreate />),
+      editFormRoute(<TransactionSourceUpdate />),
+      addFormRoute(<TransactionSourceCreate />),
     ],
   }),
   route({

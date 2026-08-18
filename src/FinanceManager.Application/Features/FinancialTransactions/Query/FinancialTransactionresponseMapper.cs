@@ -13,8 +13,8 @@ internal sealed class FinancialTransactionResponseMapper : IExpressionMapper<Fin
             Amount = source.Amount,
             Date = source.Date,
             Summary = source.Summary,
-            FinancialAccountId = source.FinancialAccountId,
-            FinancialAccountName = source.FinancialAccount.Name,
+            TransactionSourceId = source.TransactionSourceId,
+            TransactionSourceName = source.TransactionSource.Name,
             SpendingCategoryId = source.SpendingCategoryId,
             SpendingCategoryName = source.SpendingCategory.Name
         };
