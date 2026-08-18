@@ -1,4 +1,4 @@
-import EntityEditForm from "@/components/EntityEditForm";
+import EntityEditForm from "@/components/EntityForm/EntityEditForm";
 import type {
   FinancialAccountResponse,
   WriteFinancialAccountRequest,

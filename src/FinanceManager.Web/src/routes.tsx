@@ -20,7 +20,7 @@ import Accounts from "./pages/Accounts";
 import ImportDefinitions from "./pages/ImportDefinitions";
 import Patterns from "./pages/Patterns";
 import AccountEdit from "./pages/AccountEdit";
-import AccountAdd from "./pages/AccountAdd";
+import AccountCreate from "./pages/AccountCreate";
 
 export const paths = {
   dashboard: "/",
@@ -104,7 +104,7 @@ export const navEntries: NavEntry[] = [
     label: "Accounts",
     icon: Landmark,
     element: <Accounts />,
-    children: [editFormRoute(<AccountEdit />), addFormRoute(<AccountAdd />)],
+    children: [editFormRoute(<AccountEdit />), addFormRoute(<AccountCreate />)],
   }),
   route({
     path: paths.importDefs,

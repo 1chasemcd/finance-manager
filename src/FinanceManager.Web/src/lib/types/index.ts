@@ -45,6 +45,17 @@ export type UpdateEntityMutation<TBody> = (
   options?: Partial<Options<UpdateEntityData<TBody>>>,
 ) => UseMutationOptions<void, string, Options<UpdateEntityData<TBody>>>;
 
+export type CreateEntityData<TBody> = {
+  body?: TBody;
+  path?: never;
+  query?: never;
+  url: string;
+};
+
+export type CreateEntityMutation<TBody> = (
+  options?: Partial<Options<CreateEntityData<TBody>>>,
+) => UseMutationOptions<unknown, string, Options<CreateEntityData<TBody>>>;
+
 export type SearchEntityQuery = {
   take?: number;
   skip?: number;
