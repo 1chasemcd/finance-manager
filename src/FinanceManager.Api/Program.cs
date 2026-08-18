@@ -1,6 +1,5 @@
 using FinanceManager.Api.Endpoints;
 using FinanceManager.Application.Abstractions;
-using MicroElements.AspNetCore.OpenApi.FluentValidation;
 using Microsoft.AspNetCore.Http.Json;
 using System.Text.Json.Serialization;
 
@@ -16,11 +15,7 @@ public sealed class Program
             .AddInfrastructureServices()
             .AddApplicationServices();
 
-        builder.Services.AddFluentValidationRulesToOpenApi();
-        builder.Services.AddOpenApi(options =>
-        {
-            options.AddFluentValidationRules();
-        });
+        builder.Services.AddOpenApi();
 
         var allowedOrigins =
             builder.Configuration
