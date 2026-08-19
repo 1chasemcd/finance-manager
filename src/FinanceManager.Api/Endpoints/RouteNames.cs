@@ -25,4 +25,10 @@ static class RouteNames
     public const string CreatePerson = "CreatePerson";
     public const string UpdatePerson = "UpdatePerson";
     public const string DeletePerson = "DeletePerson";
+
+    public const string LookupCategoryPattern = "LookupCategoryPattern";
+    public const string SearchCategoryPattern = "SearchCategoryPattern";
+    public const string CreateCategoryPattern = "CreateCategoryPattern";
+    public const string UpdateCategoryPattern = "UpdateCategoryPattern";
+    public const string DeleteCategoryPattern = "DeleteCategoryPattern";
 }

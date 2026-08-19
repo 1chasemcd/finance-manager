@@ -18,6 +18,9 @@ using FinanceManager.Domain.TransactionSources;
 using FinanceManager.Domain.People;
 using FinanceManager.Application.Features.People.Write;
 using FinanceManager.Application.Features.People.Query;
+using FinanceManager.Domain.CategoryPatterns;
+using FinanceManager.Application.Features.CategoryPatterns.Write;
+using FinanceManager.Application.Features.CategoryPatterns.Query;
 
 #pragma warning disable IDE0130
 namespace Microsoft.Extensions.DependencyInjection;
@@ -69,6 +72,12 @@ public static class DependencyInjection
         builder.Services.AddSearchEntityHandler<Person, PersonResponse>();
         builder.Services.AddDeleteEntityHandler<Person>();
         builder.Services.AddAutocompleteHandler<Person>(x => x.FirstName + " " + x.LastName);
+
+        builder.Services.AddCreateEntityHandler<CategoryPattern, WriteCategoryPatternRequest>();
+        builder.Services.AddUpdateEntityHandler<CategoryPattern, WriteCategoryPatternRequest>();
+        builder.Services.AddLookupEntityHandler<CategoryPattern, CategoryPatternResponse>();
+        builder.Services.AddSearchEntityHandler<CategoryPattern, CategoryPatternResponse>();
+        builder.Services.AddDeleteEntityHandler<CategoryPattern>();
 
         return builder;
     }

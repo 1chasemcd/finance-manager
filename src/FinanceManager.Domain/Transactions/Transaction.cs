@@ -11,7 +11,7 @@ public sealed class Transaction : Entity
     public string Summary { get; private set; } = null!;
     public int TransactionSourceId { get; private set; }
     public TransactionSource TransactionSource { get; private set; } = null!;
-    public int TransactionCategoryId { get; set; }
+    public int TransactionCategoryId { get; private set; }
     public TransactionCategory TransactionCategory { get; private set; } = null!;
 
     private Transaction() { }
