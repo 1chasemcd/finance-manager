@@ -9,10 +9,22 @@ export type AutocompleteQueryResponse = {
     value: string;
 };
 
+export type CategoryPatternResponse = {
+    id: number;
+    pattern: string;
+    transactionCategoryId?: null | number;
+    transactionCategoryName?: null | string;
+};
+
 export type PersonResponse = {
     id: number;
     firstName: string;
     lastName: string;
+};
+
+export type SearchEntityResponseOfCategoryPatternResponse = {
+    results: Array<CategoryPatternResponse>;
+    total: number;
 };
 
 export type SearchEntityResponseOfPersonResponse = {
@@ -57,6 +69,11 @@ export type TransactionSourceResponse = {
     name: string;
     ownerId: number;
     ownerName: string;
+};
+
+export type WriteCategoryPatternRequest = {
+    pattern: string;
+    transactionCategoryId?: null | number;
 };
 
 export type WritePersonRequest = {
@@ -662,6 +679,178 @@ export type CreatePersonErrors = {
 export type CreatePersonError = CreatePersonErrors[keyof CreatePersonErrors];
 
 export type CreatePersonResponses = {
+    /**
+     * Created
+     */
+    201: unknown;
+};
+
+export type DeleteCategoryPatternData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/patterns/{id}';
+};
+
+export type DeleteCategoryPatternErrors = {
+    /**
+     * Not Found
+     */
+    404: string;
+    /**
+     * Conflict
+     */
+    409: string;
+    /**
+     * Unprocessable Entity
+     */
+    422: string;
+};
+
+export type DeleteCategoryPatternError = DeleteCategoryPatternErrors[keyof DeleteCategoryPatternErrors];
+
+export type DeleteCategoryPatternResponses = {
+    /**
+     * No Content
+     */
+    204: void;
+};
+
+export type DeleteCategoryPatternResponse = DeleteCategoryPatternResponses[keyof DeleteCategoryPatternResponses];
+
+export type LookupCategoryPatternData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/patterns/{id}';
+};
+
+export type LookupCategoryPatternErrors = {
+    /**
+     * Not Found
+     */
+    404: string;
+    /**
+     * Conflict
+     */
+    409: string;
+    /**
+     * Unprocessable Entity
+     */
+    422: string;
+};
+
+export type LookupCategoryPatternError = LookupCategoryPatternErrors[keyof LookupCategoryPatternErrors];
+
+export type LookupCategoryPatternResponses = {
+    /**
+     * OK
+     */
+    200: CategoryPatternResponse;
+};
+
+export type LookupCategoryPatternResponse = LookupCategoryPatternResponses[keyof LookupCategoryPatternResponses];
+
+export type UpdateCategoryPatternData = {
+    body?: WriteCategoryPatternRequest;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/patterns/{id}';
+};
+
+export type UpdateCategoryPatternErrors = {
+    /**
+     * Not Found
+     */
+    404: string;
+    /**
+     * Conflict
+     */
+    409: string;
+    /**
+     * Unprocessable Entity
+     */
+    422: string;
+};
+
+export type UpdateCategoryPatternError = UpdateCategoryPatternErrors[keyof UpdateCategoryPatternErrors];
+
+export type UpdateCategoryPatternResponses = {
+    /**
+     * No Content
+     */
+    204: void;
+};
+
+export type UpdateCategoryPatternResponse = UpdateCategoryPatternResponses[keyof UpdateCategoryPatternResponses];
+
+export type SearchCategoryPatternData = {
+    body?: never;
+    path?: never;
+    query?: {
+        take?: number;
+        skip?: number;
+    };
+    url: '/api/patterns';
+};
+
+export type SearchCategoryPatternErrors = {
+    /**
+     * Not Found
+     */
+    404: string;
+    /**
+     * Conflict
+     */
+    409: string;
+    /**
+     * Unprocessable Entity
+     */
+    422: string;
+};
+
+export type SearchCategoryPatternError = SearchCategoryPatternErrors[keyof SearchCategoryPatternErrors];
+
+export type SearchCategoryPatternResponses = {
+    /**
+     * OK
+     */
+    200: SearchEntityResponseOfCategoryPatternResponse;
+};
+
+export type SearchCategoryPatternResponse = SearchCategoryPatternResponses[keyof SearchCategoryPatternResponses];
+
+export type CreateCategoryPatternData = {
+    body?: WriteCategoryPatternRequest;
+    path?: never;
+    query?: never;
+    url: '/api/patterns';
+};
+
+export type CreateCategoryPatternErrors = {
+    /**
+     * Not Found
+     */
+    404: string;
+    /**
+     * Conflict
+     */
+    409: string;
+    /**
+     * Unprocessable Entity
+     */
+    422: string;
+};
+
+export type CreateCategoryPatternError = CreateCategoryPatternErrors[keyof CreateCategoryPatternErrors];
+
+export type CreateCategoryPatternResponses = {
     /**
      * Created
      */

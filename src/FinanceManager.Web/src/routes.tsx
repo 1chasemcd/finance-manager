@@ -16,7 +16,6 @@ import Import from "./pages/Import";
 import TransactionCategories from "./pages/TransactionCategories/TransactionCategories";
 import TransactionSources from "./pages/TransactionSources/TransactionSources";
 import ImportDefinitions from "./pages/ImportDefinitions";
-import Patterns from "./pages/Patterns";
 import TransactionSourceUpdate from "./pages/TransactionSources/TransactionSourceUpdate";
 import TransactionSourceCreate from "./pages/TransactionSources/TransactionSourceCreate";
 import People from "./pages/People/People";
@@ -24,6 +23,9 @@ import PersonUpdate from "./pages/People/PersonUpdate";
 import PersonCreate from "./pages/People/PersonCreate";
 import TransactionCategoryUpdate from "./pages/TransactionCategories/TransactionCategoryUpdate";
 import TransactionCategoryCreate from "./pages/TransactionCategories/TransactionCategoryCreate";
+import CategoryPatternCreate from "./pages/CategoryPatterns/CategoryPatternCreate";
+import CategoryPatternUpdate from "./pages/CategoryPatterns/CategoryPatternUpdate";
+import CategoryPatterns from "./pages/CategoryPatterns/CagegoryPatterns";
 
 export const paths = {
   dashboard: "/",
@@ -119,7 +121,11 @@ export const navEntries: NavEntry[] = [
     path: paths.patterns,
     label: "Patterns",
     icon: Asterisk,
-    element: <Patterns />,
+    element: <CategoryPatterns />,
+    children: [
+      editFormRoute(<CategoryPatternUpdate />),
+      addFormRoute(<CategoryPatternCreate />),
+    ],
   }),
   route({
     path: paths.people,

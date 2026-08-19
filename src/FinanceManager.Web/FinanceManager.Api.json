@@ -1280,7 +1280,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SearchEntityResponseOfPersonResponse"
+                  "$ref": "#/components/schemas/SearchEntityResponseOfCategoryPatternResponse"
                 }
               }
             }
@@ -1859,6 +1859,25 @@
           },
           "lastName": {
             "type": "string"
+          }
+        }
+      },
+      "SearchEntityResponseOfCategoryPatternResponse": {
+        "required": [
+          "results",
+          "total"
+        ],
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryPatternResponse"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
