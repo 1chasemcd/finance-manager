@@ -6,8 +6,11 @@ import {
 import CategoryPatternModifyShared from "./CategoryPatternModifyShared";
 import EntityUpdateForm from "@/components/EntityForm/EntityUpdateForm";
 import type { WriteCategoryPatternRequest } from "@/lib/generated";
+import { Form } from "antd";
 
 export default function CategoryPatternUpdate() {
+  const [form] = Form.useForm<WriteCategoryPatternRequest>();
+
   return (
     <EntityUpdateForm
       title="Edit Category Pattern"
@@ -15,8 +18,9 @@ export default function CategoryPatternUpdate() {
       updateEntityMutation={updateCategoryPatternMutation}
       dataTransform={(x) => x as WriteCategoryPatternRequest}
       toInvalidate={[searchCategoryPatternQueryKey()]}
+      form={form}
     >
-      <CategoryPatternModifyShared />
+      <CategoryPatternModifyShared form={form} />
     </EntityUpdateForm>
   );
 }

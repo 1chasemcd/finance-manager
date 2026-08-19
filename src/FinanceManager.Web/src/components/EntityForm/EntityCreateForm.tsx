@@ -1,4 +1,4 @@
-import { Form } from "antd";
+import { Form, type FormInstance } from "antd";
 import { type ReactElement } from "react";
 import { useMutation, type QueryKey } from "@tanstack/react-query";
 import type { CreateEntityMutation } from "@/lib/types";
@@ -11,6 +11,7 @@ type EntityCreateFormProps<TSave> = {
   title: string;
   toInvalidate?: QueryKey[];
   createEntityMutation: CreateEntityMutation<TSave>;
+  form?: FormInstance<TSave>;
 };
 
 export default function EntityCreateForm<

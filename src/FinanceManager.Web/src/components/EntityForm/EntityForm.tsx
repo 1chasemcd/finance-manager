@@ -1,4 +1,4 @@
-import { App, Button, Card, Flex, Form, Spin } from "antd";
+import { App, Button, Card, Flex, Form, Spin, type FormInstance } from "antd";
 import { useEffect, useState, type ReactElement } from "react";
 import Title from "antd/es/typography/Title";
 import { useQueryClient, type QueryKey } from "@tanstack/react-query";
@@ -14,6 +14,7 @@ type EntityFormProps<TEntity> = {
   loading?: boolean;
   keysToInvalidate?: QueryKey[];
   initialValues?: Partial<TEntity | undefined>;
+  form?: FormInstance<TEntity>;
 };
 
 export default function EntityForm<TEntity extends Record<string, unknown>>({
@@ -23,6 +24,7 @@ export default function EntityForm<TEntity extends Record<string, unknown>>({
   loading,
   keysToInvalidate,
   initialValues,
+  form,
 }: EntityFormProps<TEntity>) {
   const { modal } = App.useApp();
 
@@ -32,7 +34,8 @@ export default function EntityForm<TEntity extends Record<string, unknown>>({
 
   const navigate = useNavigate();
 
-  const [form] = Form.useForm<TEntity>();
+  const [internalForm] = Form.useForm<TEntity>();
+  const formToUse = form ?? internalForm;
 
   const onFinish = async (value: TEntity) => {
     setIsSaving(true);
@@ -51,10 +54,10 @@ export default function EntityForm<TEntity extends Record<string, unknown>>({
 
   useEffect(() => {
     if (initialValues && !initialized) {
-      form.setFieldsValue(initialValues);
+      formToUse.setFieldsValue(initialValues);
       setInitialized(true);
     }
-  }, [initialValues, form, initialized]);
+  }, [initialValues, formToUse, initialized]);
 
   return (
     <Flex vertical justify="space-between" gap="middle">
@@ -74,7 +77,7 @@ export default function EntityForm<TEntity extends Record<string, unknown>>({
           <Form<TEntity>
             id={ENTITY_FORM_ID}
             requiredMark={false}
-            form={form}
+            form={formToUse}
             disabled={loading || isSaving}
             onFinish={onFinish}
             labelCol={{ flex: "120px" }}

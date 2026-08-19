@@ -1,4 +1,4 @@
-import { Form } from "antd";
+import { Form, type FormInstance } from "antd";
 import { type ReactElement } from "react";
 import type { LookupEntityOptions, UpdateEntityMutation } from "@/lib/types";
 import { useMutation, useQuery, type QueryKey } from "@tanstack/react-query";
@@ -14,6 +14,7 @@ type EntityUpdateFormProps<TLookup, TSave> = {
   updateEntityMutation: UpdateEntityMutation<TSave>;
   dataTransform: (data: TLookup) => TSave;
   toInvalidate?: QueryKey[];
+  form?: FormInstance<TSave>;
 };
 
 export default function EntityUpdateForm<
