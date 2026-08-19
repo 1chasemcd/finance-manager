@@ -1,7 +1,7 @@
 import AppAutocomplete from "@/components/AppAutocomplete";
 import type { WriteCategoryPatternRequest } from "@/lib/generated";
 import { transactionCategoryAutocomplete } from "@/utils/autocompleteRequests";
-import { Checkbox, Form, Input, Space } from "antd";
+import { Checkbox, Form, Input } from "antd";
 import { useState } from "react";
 
 export default function CategoryPatternModifyShared() {
