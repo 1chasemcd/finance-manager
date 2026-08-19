@@ -9,6 +9,10 @@ import enUS from "antd/locale/en_US";
 
 const client = new QueryClient();
 
+const validateMessages = {
+  required: "${label} is required",
+};
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ConfigProvider
@@ -18,6 +22,7 @@ createRoot(document.getElementById("root")!).render(
           colorPrimary: purple.primary!,
         },
       }}
+      form={{ validateMessages }}
     >
       <AntdApp>
         <QueryClientProvider client={client}>

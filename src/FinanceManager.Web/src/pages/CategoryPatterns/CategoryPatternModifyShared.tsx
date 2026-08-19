@@ -50,7 +50,7 @@ export default function CategoryPatternModifyShared({
         <Radio.Group onChange={radioChange} value={requireManualSelection}>
           <Flex vertical gap="small">
             <Radio value={true} style={labelStyle}>
-              Require manual category selection for this pattern
+              Require manual category selection for matching transactions
             </Radio>
 
             <Radio
@@ -60,10 +60,11 @@ export default function CategoryPatternModifyShared({
             >
               <Form.Item<WriteCategoryPatternRequest>
                 name="transactionCategoryId"
+                label="Specific"
                 rules={[{ required: !requireManualSelection }]}
               >
                 <AppAutocomplete
-                  placeholder="Match to specific category..."
+                  placeholder="Assign specific category to matches..."
                   disabled={requireManualSelection}
                   requestOptions={transactionCategoryAutocomplete}
                 />
