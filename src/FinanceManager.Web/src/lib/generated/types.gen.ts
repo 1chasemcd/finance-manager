@@ -16,6 +16,17 @@ export type CategoryPatternResponse = {
     transactionCategoryName?: null | string;
 };
 
+export type HttpValidationProblemDetails = {
+    type?: null | string;
+    title?: null | string;
+    status?: null | number;
+    detail?: null | string;
+    instance?: null | string;
+    errors?: {
+        [key: string]: Array<string>;
+    };
+};
+
 export type PersonResponse = {
     id: number;
     firstName: string;
@@ -102,17 +113,9 @@ export type DeleteTransactionCategoryData = {
 
 export type DeleteTransactionCategoryErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type DeleteTransactionCategoryError = DeleteTransactionCategoryErrors[keyof DeleteTransactionCategoryErrors];
@@ -137,17 +140,9 @@ export type LookupTransactionCategoryData = {
 
 export type LookupTransactionCategoryErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type LookupTransactionCategoryError = LookupTransactionCategoryErrors[keyof LookupTransactionCategoryErrors];
@@ -172,17 +167,9 @@ export type UpdateTransactionCategoryData = {
 
 export type UpdateTransactionCategoryErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type UpdateTransactionCategoryError = UpdateTransactionCategoryErrors[keyof UpdateTransactionCategoryErrors];
@@ -208,17 +195,9 @@ export type SearchTransactionCategoryData = {
 
 export type SearchTransactionCategoryErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type SearchTransactionCategoryError = SearchTransactionCategoryErrors[keyof SearchTransactionCategoryErrors];
@@ -241,17 +220,9 @@ export type CreateTransactionCategoryData = {
 
 export type CreateTransactionCategoryErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type CreateTransactionCategoryError = CreateTransactionCategoryErrors[keyof CreateTransactionCategoryErrors];
@@ -274,17 +245,9 @@ export type LookupTransactionData = {
 
 export type LookupTransactionErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type LookupTransactionError = LookupTransactionErrors[keyof LookupTransactionErrors];
@@ -317,17 +280,9 @@ export type SearchTransactionData = {
 
 export type SearchTransactionErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type SearchTransactionError = SearchTransactionErrors[keyof SearchTransactionErrors];
@@ -352,17 +307,9 @@ export type DeleteTransactionSourceData = {
 
 export type DeleteTransactionSourceErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type DeleteTransactionSourceError = DeleteTransactionSourceErrors[keyof DeleteTransactionSourceErrors];
@@ -387,17 +334,9 @@ export type LookupTransactionSourceData = {
 
 export type LookupTransactionSourceErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type LookupTransactionSourceError = LookupTransactionSourceErrors[keyof LookupTransactionSourceErrors];
@@ -422,17 +361,9 @@ export type UpdateTransactionSourceData = {
 
 export type UpdateTransactionSourceErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type UpdateTransactionSourceError = UpdateTransactionSourceErrors[keyof UpdateTransactionSourceErrors];
@@ -458,17 +389,9 @@ export type SearchTransactionSourceData = {
 
 export type SearchTransactionSourceErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type SearchTransactionSourceError = SearchTransactionSourceErrors[keyof SearchTransactionSourceErrors];
@@ -491,17 +414,9 @@ export type CreateTransactionSourceData = {
 
 export type CreateTransactionSourceErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type CreateTransactionSourceError = CreateTransactionSourceErrors[keyof CreateTransactionSourceErrors];
@@ -524,17 +439,9 @@ export type DeletePersonData = {
 
 export type DeletePersonErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type DeletePersonError = DeletePersonErrors[keyof DeletePersonErrors];
@@ -559,17 +466,9 @@ export type LookupPersonData = {
 
 export type LookupPersonErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type LookupPersonError = LookupPersonErrors[keyof LookupPersonErrors];
@@ -594,17 +493,9 @@ export type UpdatePersonData = {
 
 export type UpdatePersonErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type UpdatePersonError = UpdatePersonErrors[keyof UpdatePersonErrors];
@@ -630,17 +521,9 @@ export type SearchPersonData = {
 
 export type SearchPersonErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type SearchPersonError = SearchPersonErrors[keyof SearchPersonErrors];
@@ -663,17 +546,9 @@ export type CreatePersonData = {
 
 export type CreatePersonErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type CreatePersonError = CreatePersonErrors[keyof CreatePersonErrors];
@@ -696,17 +571,9 @@ export type DeleteCategoryPatternData = {
 
 export type DeleteCategoryPatternErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type DeleteCategoryPatternError = DeleteCategoryPatternErrors[keyof DeleteCategoryPatternErrors];
@@ -731,17 +598,9 @@ export type LookupCategoryPatternData = {
 
 export type LookupCategoryPatternErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type LookupCategoryPatternError = LookupCategoryPatternErrors[keyof LookupCategoryPatternErrors];
@@ -766,17 +625,9 @@ export type UpdateCategoryPatternData = {
 
 export type UpdateCategoryPatternErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type UpdateCategoryPatternError = UpdateCategoryPatternErrors[keyof UpdateCategoryPatternErrors];
@@ -802,17 +653,9 @@ export type SearchCategoryPatternData = {
 
 export type SearchCategoryPatternErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type SearchCategoryPatternError = SearchCategoryPatternErrors[keyof SearchCategoryPatternErrors];
@@ -835,17 +678,9 @@ export type CreateCategoryPatternData = {
 
 export type CreateCategoryPatternErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type CreateCategoryPatternError = CreateCategoryPatternErrors[keyof CreateCategoryPatternErrors];
@@ -868,17 +703,9 @@ export type AutocompleteTransactionCategoryByIdData = {
 
 export type AutocompleteTransactionCategoryByIdErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type AutocompleteTransactionCategoryByIdError = AutocompleteTransactionCategoryByIdErrors[keyof AutocompleteTransactionCategoryByIdErrors];
@@ -905,17 +732,9 @@ export type AutocompleteTransactionCategoryData = {
 
 export type AutocompleteTransactionCategoryErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type AutocompleteTransactionCategoryError = AutocompleteTransactionCategoryErrors[keyof AutocompleteTransactionCategoryErrors];
@@ -940,17 +759,9 @@ export type AutocompleteTransactionSourceByIdData = {
 
 export type AutocompleteTransactionSourceByIdErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type AutocompleteTransactionSourceByIdError = AutocompleteTransactionSourceByIdErrors[keyof AutocompleteTransactionSourceByIdErrors];
@@ -977,17 +788,9 @@ export type AutocompleteTransactionSourceData = {
 
 export type AutocompleteTransactionSourceErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type AutocompleteTransactionSourceError = AutocompleteTransactionSourceErrors[keyof AutocompleteTransactionSourceErrors];
@@ -1012,17 +815,9 @@ export type AutocompletePersonByIdData = {
 
 export type AutocompletePersonByIdErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type AutocompletePersonByIdError = AutocompletePersonByIdErrors[keyof AutocompletePersonByIdErrors];
@@ -1049,17 +844,9 @@ export type AutocompletePersonData = {
 
 export type AutocompletePersonErrors = {
     /**
-     * Not Found
+     * Bad Request
      */
-    404: string;
-    /**
-     * Conflict
-     */
-    409: string;
-    /**
-     * Unprocessable Entity
-     */
-    422: string;
+    400: HttpValidationProblemDetails;
 };
 
 export type AutocompletePersonError = AutocompletePersonErrors[keyof AutocompletePersonErrors];

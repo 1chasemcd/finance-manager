@@ -3,7 +3,7 @@ import type {
   UseQueryOptions,
 } from "@tanstack/react-query";
 import type { QueryKey } from "../generated/@tanstack/react-query.gen";
-import type { Options } from "../generated";
+import type { HttpValidationProblemDetails, Options } from "../generated";
 
 export type Entity = {
   id: number;
@@ -21,7 +21,7 @@ export type LookupEntityOptions<TResponse> = (
   options: Options<LookupEntityData>,
 ) => UseQueryOptions<
   TResponse,
-  string,
+  HttpValidationProblemDetails,
   TResponse,
   QueryKey<Options<LookupEntityData>>
 >;
@@ -30,7 +30,11 @@ export type DeleteEntityData = LookupEntityData;
 
 export type DeleteEntityMutation = (
   options?: Partial<Options<DeleteEntityData>>,
-) => UseMutationOptions<void, string, Options<DeleteEntityData>>;
+) => UseMutationOptions<
+  void,
+  HttpValidationProblemDetails,
+  Options<DeleteEntityData>
+>;
 
 export type UpdateEntityData<TBody> = {
   body?: TBody;
@@ -43,7 +47,11 @@ export type UpdateEntityData<TBody> = {
 
 export type UpdateEntityMutation<TBody> = (
   options?: Partial<Options<UpdateEntityData<TBody>>>,
-) => UseMutationOptions<void, string, Options<UpdateEntityData<TBody>>>;
+) => UseMutationOptions<
+  void,
+  HttpValidationProblemDetails,
+  Options<UpdateEntityData<TBody>>
+>;
 
 export type CreateEntityData<TBody> = {
   body?: TBody;
@@ -54,7 +62,11 @@ export type CreateEntityData<TBody> = {
 
 export type CreateEntityMutation<TBody> = (
   options?: Partial<Options<CreateEntityData<TBody>>>,
-) => UseMutationOptions<unknown, string, Options<CreateEntityData<TBody>>>;
+) => UseMutationOptions<
+  unknown,
+  HttpValidationProblemDetails,
+  Options<CreateEntityData<TBody>>
+>;
 
 export type SearchEntityQuery = {
   take?: number;
@@ -76,7 +88,7 @@ export type SearchEntityOptions<
   options?: Options<SearchEntityData<TQuery>>,
 ) => UseQueryOptions<
   TSearchResponse,
-  string,
+  HttpValidationProblemDetails,
   TSearchResponse,
   QueryKey<Options<SearchEntityData<TQuery>>>
 >;

@@ -40,15 +40,13 @@ public class ValidationBehavior<TRequest, TResponse>
             .ToList();
 
         Error? error = null;
-        if (failures.Where(IsValidationFailure) is { } validationFailures && validationFailures.Any())
+        if (failures.Where(IsValidationFailure) is var validationFailures && validationFailures.Any())
             error = Error.Validation(
-                failures.Select(x => new FieldValidationError(x.PropertyName, x.ErrorMessage)));
-
-        if (failures.Where(x => x.ErrorCode == ErrorCodes.CONFLICT) is { } conflicts && conflicts.Any())
-            error = Error.Conflict(failures.First().ErrorMessage);
-
-        if (failures.Where(x => x.ErrorCode == ErrorCodes.NOT_FOUND) is { } notFounds && notFounds.Any())
-            error = Error.NotFound(failures.First().ErrorMessage);
+                validationFailures.Select(x => new FieldValidationError(x.PropertyName, x.ErrorMessage)));
+        else if (failures.Where(x => x.ErrorCode == ErrorCodes.CONFLICT) is var conflicts && conflicts.Any())
+            error = Error.Conflict(conflicts.First().ErrorMessage);
+        else if (failures.Where(x => x.ErrorCode == ErrorCodes.NOT_FOUND) is var notFounds && notFounds.Any())
+            error = Error.NotFound(notFounds.First().ErrorMessage);
 
         if (error is not null)
             return TResponse.CreateErrorResult(error);

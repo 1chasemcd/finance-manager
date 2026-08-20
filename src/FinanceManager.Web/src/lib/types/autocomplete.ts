@@ -1,6 +1,9 @@
 import type { UseQueryOptions } from "@tanstack/react-query";
 import type { Options } from "../generated/client";
-import type { AutocompleteQueryResponse } from "../generated";
+import type {
+  AutocompleteQueryResponse,
+  HttpValidationProblemDetails,
+} from "../generated";
 import type { QueryKey } from "../generated/@tanstack/react-query.gen";
 
 export type AutocompleteData = {
@@ -27,7 +30,7 @@ type AutocompleteOptions = (
   options?: Options<AutocompleteData>,
 ) => UseQueryOptions<
   AutocompleteQueryResponse[],
-  string,
+  HttpValidationProblemDetails,
   AutocompleteQueryResponse[],
   QueryKey<Options<AutocompleteData>>
 >;
@@ -36,7 +39,7 @@ type AutocompleteByIdOptions = (
   options: Options<AutocompleteByIdData>,
 ) => UseQueryOptions<
   AutocompleteQueryResponse,
-  string,
+  HttpValidationProblemDetails,
   AutocompleteQueryResponse,
   QueryKey<Options<AutocompleteByIdData>>
 >;
