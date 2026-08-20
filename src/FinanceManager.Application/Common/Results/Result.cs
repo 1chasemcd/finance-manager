@@ -4,7 +4,12 @@ using FinanceManager.Application.Common.Errors;
 
 namespace FinanceManager.Application.Common.Results;
 
-public record Result
+public interface IResult<TResult>
+{
+    static abstract TResult CreateErrorResult(Error error);
+}
+
+public record Result : IResult<Result>
 {
     [MemberNotNullWhen(false, nameof(Error))]
     public virtual bool IsSuccess => Error is null;
@@ -19,6 +24,8 @@ public record Result
     public static Result Success() => new();
     public static implicit operator Result(Error error) => new(error);
 
+    public static Result CreateErrorResult(Error error) => error;
+
     public Result<TNext> Then<TNext>(Func<Result<TNext>> func)
     {
         if (Error is not null) return Error;
@@ -26,7 +33,7 @@ public record Result
     }
 }
 
-public sealed record Result<T> : Result
+public sealed record Result<T> : Result, IResult<Result<T>>
 {
     [MemberNotNullWhen(true, nameof(Value))]
     public override bool IsSuccess => base.IsSuccess;
@@ -39,6 +46,7 @@ public sealed record Result<T> : Result
     private Result(Error error) : base(error) { }
     public static implicit operator Result<T>(T value) => new(value);
     public static implicit operator Result<T>(Error error) => new(error);
+    public static new Result<T> CreateErrorResult(Error error) => error;
 
     public Result<TNext> Then<TNext>(Func<T, Result<TNext>> func)
     {

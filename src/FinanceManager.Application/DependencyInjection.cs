@@ -37,6 +37,8 @@ public static class DependencyInjection
             cfg.RegisterServicesFromAssembly(assembly);
 
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            if (!builder.Environment.IsProduction())
+                cfg.AddOpenBehavior(typeof(NonResultValidationWarningBehavior<,>));
         });
 
         builder.Services.AddValidatorsFromAssembly(assembly);

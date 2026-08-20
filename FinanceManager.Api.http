@@ -5,30 +5,31 @@ Accept: application/json
 
 ### SPENDING CATEGORIES ###
 
-GET {{host}}/api/spendingcategories/1
+GET {{host}}/api/transactioncategories/1
+Accept: application/json
+
+###
+GET  {{host}}/api/transactioncategories?take=50&skip=0
+Accept: application/json
+
+###
+DELETE  {{host}}/api/transactioncategories/1
 Accept: application/json
 ###
-DELETE  {{host}}/api/spendingcategories/1
-Accept: application/json
-###
-POST {{host}}/api/spendingcategories
+POST {{host}}/api/transactioncategories
 Content-Type: application/json
 
 {
-  "name": "Fun"
+  "name": "Groceries"
 }
 ###
-PUT {{host}}/api/spendingcategories/2
+PUT {{host}}/api/transactioncategories/2
 Content-Type: application/json
 
 {
   "name": "",
   "description": "Food and household items2"
 }
-
-###
-GET  {{host}}/api/spendingcategories?take=1&skip=1
-Accept: application/json
 
 ### TRANSACTION SOURCES ###
 
