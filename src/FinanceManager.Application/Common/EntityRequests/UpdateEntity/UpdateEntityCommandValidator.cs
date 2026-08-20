@@ -13,6 +13,7 @@ public sealed class UpdateEntityCommandValidator<TEntity, TRequest>
         if (requestValidator == null)
             return;
         RuleFor(x => x.Request)
-            .SetValidator(requestValidator);
+            .SetValidator(requestValidator)
+            .OverridePropertyName("");
     }
 }

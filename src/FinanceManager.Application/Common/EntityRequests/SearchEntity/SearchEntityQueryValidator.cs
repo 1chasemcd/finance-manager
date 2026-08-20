@@ -19,6 +19,7 @@ public sealed class SearchEntityQueryValidator<TEntity, TResponse, TFilter>
             return;
         RuleFor(x => x.Filter!)
             .SetValidator(filterValidator)
-            .When(x => x != null);
+            .When(x => x != null)
+            .OverridePropertyName("");
     }
 }
