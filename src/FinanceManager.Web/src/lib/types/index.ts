@@ -3,7 +3,13 @@ import type {
   UseQueryOptions,
 } from "@tanstack/react-query";
 import type { QueryKey } from "../generated/@tanstack/react-query.gen";
-import type { HttpValidationProblemDetails, Options } from "../generated";
+import type {
+  HttpValidationProblemDetails,
+  Options,
+  ProblemDetails,
+} from "../generated";
+
+type ApiError = ProblemDetails | HttpValidationProblemDetails;
 
 export type Entity = {
   id: number;
@@ -21,7 +27,7 @@ export type LookupEntityOptions<TResponse> = (
   options: Options<LookupEntityData>,
 ) => UseQueryOptions<
   TResponse,
-  HttpValidationProblemDetails,
+  ApiError,
   TResponse,
   QueryKey<Options<LookupEntityData>>
 >;
@@ -30,11 +36,7 @@ export type DeleteEntityData = LookupEntityData;
 
 export type DeleteEntityMutation = (
   options?: Partial<Options<DeleteEntityData>>,
-) => UseMutationOptions<
-  void,
-  HttpValidationProblemDetails,
-  Options<DeleteEntityData>
->;
+) => UseMutationOptions<void, ApiError, Options<DeleteEntityData>>;
 
 export type UpdateEntityData<TBody> = {
   body?: TBody;
@@ -47,11 +49,7 @@ export type UpdateEntityData<TBody> = {
 
 export type UpdateEntityMutation<TBody> = (
   options?: Partial<Options<UpdateEntityData<TBody>>>,
-) => UseMutationOptions<
-  void,
-  HttpValidationProblemDetails,
-  Options<UpdateEntityData<TBody>>
->;
+) => UseMutationOptions<void, ApiError, Options<UpdateEntityData<TBody>>>;
 
 export type CreateEntityData<TBody> = {
   body?: TBody;
@@ -62,11 +60,7 @@ export type CreateEntityData<TBody> = {
 
 export type CreateEntityMutation<TBody> = (
   options?: Partial<Options<CreateEntityData<TBody>>>,
-) => UseMutationOptions<
-  unknown,
-  HttpValidationProblemDetails,
-  Options<CreateEntityData<TBody>>
->;
+) => UseMutationOptions<unknown, ApiError, Options<CreateEntityData<TBody>>>;
 
 export type SearchEntityQuery = {
   take?: number;
@@ -88,7 +82,7 @@ export type SearchEntityOptions<
   options?: Options<SearchEntityData<TQuery>>,
 ) => UseQueryOptions<
   TSearchResponse,
-  HttpValidationProblemDetails,
+  ApiError,
   TSearchResponse,
   QueryKey<Options<SearchEntityData<TQuery>>>
 >;

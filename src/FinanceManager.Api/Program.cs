@@ -1,5 +1,6 @@
 using FinanceManager.Api.Endpoints;
 using FinanceManager.Application.Abstractions;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Json;
 using System.Text.Json.Serialization;
 
@@ -41,12 +42,25 @@ public sealed class Program
 
         WebApplication app = builder.Build();
 
-        // if (app.Environment.IsDevelopment())
-        app.MapOpenApi();
+        if (!app.Environment.IsProduction())
+            app.MapOpenApi();
 
         app.UseHttpsRedirection();
         if (allowedOrigins.Length > 0)
             app.UseCors("Frontend");
+
+        app.UseExceptionHandler(errorApp =>
+        {
+            errorApp.Run(async context =>
+            {
+                var exception = context.Features
+                .Get<IExceptionHandlerFeature>()?
+                .Error;
+
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                await Task.CompletedTask;
+            });
+        });
 
         RouteGroupBuilder api = app.MapGroup("/api");
         api.RegisterTransactionCategoryEndpoints();

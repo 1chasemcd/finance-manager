@@ -1,4 +1,5 @@
 using FinanceManager.Application.Abstractions;
+using FinanceManager.Application.Common.Errors;
 using FinanceManager.Domain.CategoryPatterns;
 using FinanceManager.Domain.TransactionCategories;
 using FluentValidation;
@@ -16,8 +17,12 @@ public sealed class WriteCategoryPatternValidator
 
         RuleFor(x => x.Pattern)
             .NotEmpty()
-            .MaximumLength(100)
-            .MustAsync(PatternIsUnique);
+            .MaximumLength(100);
+
+        RuleFor(x => x.Pattern)
+            .MustAsync(PatternIsUnique)
+            .WithErrorCode(ErrorCodes.CONFLICT)
+            .WithMessage("Pattern must be unique.");
 
         RuleFor(x => x.TransactionCategoryId)
             .MustAsync(TransactionCategoryExistsIfSet);

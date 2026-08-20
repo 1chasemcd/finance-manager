@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using FinanceManager.Application.Common.Errors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -6,50 +7,42 @@ namespace FinanceManager.Api.Common;
 
 static class ErrorExtensions
 {
-    public static Results<ValidationProblem, ProblemHttpResult> ToHttpResult(this Error error)
+    public static Results<ValidationProblem, Conflict<ProblemDetails>, NotFound<ProblemDetails>> ToHttpResult(this Error error)
     {
         return error switch
         {
-            ConflictError conflict => TypedResults.Problem(
-                statusCode: StatusCodes.Status409Conflict,
-                title: $"Conflict on {conflict.Resource}",
-                detail: conflict.Message
+            ConflictError conflict => TypedResults.Conflict(new ProblemDetails
+            {
+                Title = "Conflict",
+                Status = StatusCodes.Status409Conflict,
+                Detail = conflict.Message
+            }
             ),
-            NotFoundError notFound => TypedResults.Problem(
-                statusCode: StatusCodes.Status404NotFound,
-                title: $"{notFound.Resource} Not Found",
-                detail: notFound.Message
-            ),
+            NotFoundError notFound => TypedResults.NotFound(new ProblemDetails
+            {
+                Title = "Not Found",
+                Status = StatusCodes.Status404NotFound,
+                Detail = notFound.Message
+            }),
             ValidationError validation => TypedResults.ValidationProblem(
                 validation.FieldValidationErrors
                 .GroupBy(err => err.Field)
                 .ToDictionary(
                     group => group.Key,
                     group => group.Select(err => err.Message).ToArray())),
-            Error => TypedResults.Problem(),
+            Error => throw new UnreachableException($"Unable to handle error result {error.GetType().FullName}"),
         };
     }
 
-    public static Results<TResult, ValidationProblem, ProblemHttpResult> ToHttpResult<TResult>(this Error error)
+    public static Results<TResult, ValidationProblem, Conflict<ProblemDetails>, NotFound<ProblemDetails>> ToHttpResult<TResult>(this Error error)
         where TResult : IResult
     {
         return error.ToHttpResult().Result switch
         {
-            ProblemHttpResult c => c,
             ValidationProblem c => c,
-            _ => TypedResults.Problem()
-        };
-    }
-
-    public static Results<TResult1, TResult2, ValidationProblem, ProblemHttpResult> ToHttpResult<TResult1, TResult2>(this Error error)
-        where TResult1 : IResult
-        where TResult2 : IResult
-    {
-        return error.ToHttpResult().Result switch
-        {
-            ProblemHttpResult c => c,
-            ValidationProblem c => c,
-            _ => TypedResults.Problem()
+            Conflict<ProblemDetails> c => c,
+            NotFound<ProblemDetails> c => c,
+            _ => throw new UnreachableException()
         };
     }
 }

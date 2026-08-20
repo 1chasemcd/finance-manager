@@ -33,6 +33,14 @@ export type PersonResponse = {
     lastName: string;
 };
 
+export type ProblemDetails = {
+    type?: null | string;
+    title?: null | string;
+    status?: null | number;
+    detail?: null | string;
+    instance?: null | string;
+};
+
 export type SearchEntityResponseOfCategoryPatternResponse = {
     results: Array<CategoryPatternResponse>;
     total: number;
@@ -116,6 +124,14 @@ export type DeleteTransactionCategoryErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type DeleteTransactionCategoryError = DeleteTransactionCategoryErrors[keyof DeleteTransactionCategoryErrors];
@@ -143,6 +159,14 @@ export type LookupTransactionCategoryErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type LookupTransactionCategoryError = LookupTransactionCategoryErrors[keyof LookupTransactionCategoryErrors];
@@ -170,6 +194,14 @@ export type UpdateTransactionCategoryErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type UpdateTransactionCategoryError = UpdateTransactionCategoryErrors[keyof UpdateTransactionCategoryErrors];
@@ -198,6 +230,14 @@ export type SearchTransactionCategoryErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type SearchTransactionCategoryError = SearchTransactionCategoryErrors[keyof SearchTransactionCategoryErrors];
@@ -223,6 +263,14 @@ export type CreateTransactionCategoryErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type CreateTransactionCategoryError = CreateTransactionCategoryErrors[keyof CreateTransactionCategoryErrors];
@@ -248,6 +296,14 @@ export type LookupTransactionErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type LookupTransactionError = LookupTransactionErrors[keyof LookupTransactionErrors];
@@ -283,6 +339,14 @@ export type SearchTransactionErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type SearchTransactionError = SearchTransactionErrors[keyof SearchTransactionErrors];
@@ -310,6 +374,14 @@ export type DeleteTransactionSourceErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type DeleteTransactionSourceError = DeleteTransactionSourceErrors[keyof DeleteTransactionSourceErrors];
@@ -337,6 +409,14 @@ export type LookupTransactionSourceErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type LookupTransactionSourceError = LookupTransactionSourceErrors[keyof LookupTransactionSourceErrors];
@@ -364,6 +444,14 @@ export type UpdateTransactionSourceErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type UpdateTransactionSourceError = UpdateTransactionSourceErrors[keyof UpdateTransactionSourceErrors];
@@ -392,6 +480,14 @@ export type SearchTransactionSourceErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type SearchTransactionSourceError = SearchTransactionSourceErrors[keyof SearchTransactionSourceErrors];
@@ -417,6 +513,14 @@ export type CreateTransactionSourceErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type CreateTransactionSourceError = CreateTransactionSourceErrors[keyof CreateTransactionSourceErrors];
@@ -442,6 +546,14 @@ export type DeletePersonErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type DeletePersonError = DeletePersonErrors[keyof DeletePersonErrors];
@@ -469,6 +581,14 @@ export type LookupPersonErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type LookupPersonError = LookupPersonErrors[keyof LookupPersonErrors];
@@ -496,6 +616,14 @@ export type UpdatePersonErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type UpdatePersonError = UpdatePersonErrors[keyof UpdatePersonErrors];
@@ -524,6 +652,14 @@ export type SearchPersonErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type SearchPersonError = SearchPersonErrors[keyof SearchPersonErrors];
@@ -549,6 +685,14 @@ export type CreatePersonErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type CreatePersonError = CreatePersonErrors[keyof CreatePersonErrors];
@@ -574,6 +718,14 @@ export type DeleteCategoryPatternErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type DeleteCategoryPatternError = DeleteCategoryPatternErrors[keyof DeleteCategoryPatternErrors];
@@ -601,6 +753,14 @@ export type LookupCategoryPatternErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type LookupCategoryPatternError = LookupCategoryPatternErrors[keyof LookupCategoryPatternErrors];
@@ -628,6 +788,14 @@ export type UpdateCategoryPatternErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type UpdateCategoryPatternError = UpdateCategoryPatternErrors[keyof UpdateCategoryPatternErrors];
@@ -656,6 +824,14 @@ export type SearchCategoryPatternErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type SearchCategoryPatternError = SearchCategoryPatternErrors[keyof SearchCategoryPatternErrors];
@@ -681,6 +857,14 @@ export type CreateCategoryPatternErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type CreateCategoryPatternError = CreateCategoryPatternErrors[keyof CreateCategoryPatternErrors];
@@ -706,6 +890,14 @@ export type AutocompleteTransactionCategoryByIdErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type AutocompleteTransactionCategoryByIdError = AutocompleteTransactionCategoryByIdErrors[keyof AutocompleteTransactionCategoryByIdErrors];
@@ -735,6 +927,14 @@ export type AutocompleteTransactionCategoryErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type AutocompleteTransactionCategoryError = AutocompleteTransactionCategoryErrors[keyof AutocompleteTransactionCategoryErrors];
@@ -762,6 +962,14 @@ export type AutocompleteTransactionSourceByIdErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type AutocompleteTransactionSourceByIdError = AutocompleteTransactionSourceByIdErrors[keyof AutocompleteTransactionSourceByIdErrors];
@@ -791,6 +999,14 @@ export type AutocompleteTransactionSourceErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type AutocompleteTransactionSourceError = AutocompleteTransactionSourceErrors[keyof AutocompleteTransactionSourceErrors];
@@ -818,6 +1034,14 @@ export type AutocompletePersonByIdErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type AutocompletePersonByIdError = AutocompletePersonByIdErrors[keyof AutocompletePersonByIdErrors];
@@ -847,6 +1071,14 @@ export type AutocompletePersonErrors = {
      * Bad Request
      */
     400: HttpValidationProblemDetails;
+    /**
+     * Not Found
+     */
+    404: ProblemDetails;
+    /**
+     * Conflict
+     */
+    409: ProblemDetails;
 };
 
 export type AutocompletePersonError = AutocompletePersonErrors[keyof AutocompletePersonErrors];

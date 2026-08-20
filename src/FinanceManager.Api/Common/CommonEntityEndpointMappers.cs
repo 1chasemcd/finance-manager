@@ -17,8 +17,7 @@ static class CommonEntityEndpoints
 {
     public static RouteHandlerBuilder MapCreateEntity<TEntity>(
         this IEndpointRouteBuilder endpoints,
-        [StringSyntax("Route")] string pattern = "/",
-        string? createdAt = null)
+        [StringSyntax("Route")] string pattern = "/")
         where TEntity : Entity
     {
         pattern = ValidateRoutePattern(pattern);
@@ -28,7 +27,7 @@ static class CommonEntityEndpoints
             .GetMethod(nameof(MapCreateEntityImpl), BindingFlags.Static | BindingFlags.NonPublic)!
             .GetGenericMethodDefinition().MakeGenericMethod(typeof(TEntity), requestType);
 
-        return (RouteHandlerBuilder)method.Invoke(null, [endpoints, pattern, createdAt])!;
+        return (RouteHandlerBuilder)method.Invoke(null, [endpoints, pattern])!;
     }
 
     public static RouteHandlerBuilder MapUpdateEntity<TEntity>(
@@ -55,7 +54,7 @@ static class CommonEntityEndpoints
         return endpoints.MapDelete($"{pattern}/{{id}}",
             async (int id, ISender sender, CancellationToken cancellationToken)
                 => (await sender.Send(new DeleteEntityCommand<TEntity>(id), cancellationToken)).ToHttpResult()
-        );
+        ).WithName($"Delete{typeof(TEntity).Name}");
     }
 
     public static RouteHandlerBuilder MapLookupEntity<TEntity>(
@@ -100,8 +99,7 @@ static class CommonEntityEndpoints
 
     private static RouteHandlerBuilder MapCreateEntityImpl<TEntity, TRequest>(
         IEndpointRouteBuilder endpoints,
-        string pattern,
-        string? createdAt)
+        string pattern)
         where TEntity : Entity
     {
         return endpoints.MapPost(pattern,
@@ -109,13 +107,11 @@ static class CommonEntityEndpoints
             {
                 var command = new CreateEntityCommand<TEntity, TRequest>(request);
                 var result = await sender.Send(command, cancellationToken);
-                if (!result.IsSuccess) return result.Error.ToHttpResult<Created, CreatedAtRoute>();
+                if (!result.IsSuccess) return result.Error.ToHttpResult<Created>();
 
-                return createdAt is not null
-                    ? TypedResults.CreatedAtRoute(createdAt, new { id = result.Value })
-                    : TypedResults.Created();
+                return TypedResults.Created();
             }
-        );
+        ).WithName($"Create{typeof(TEntity).Name}");
     }
 
     private static RouteHandlerBuilder MapUpdateEntityImpl<TEntity, TRequest>(
@@ -129,7 +125,7 @@ static class CommonEntityEndpoints
                 var command = new UpdateEntityCommand<TEntity, TRequest>(id, request);
                 return (await sender.Send(command, cancellationToken)).ToHttpResult();
             }
-        );
+        ).WithName($"Update{typeof(TEntity).Name}");
     }
 
     private static RouteHandlerBuilder MapLookupEntityImpl<TEntity, TResponse>(
@@ -143,7 +139,7 @@ static class CommonEntityEndpoints
                 var query = new LookupEntityQuery<TEntity, TResponse>(id);
                 return (await sender.Send(query, cancellationToken)).ToHttpResult();
             }
-        );
+        ).WithName($"Lookup{typeof(TEntity).Name}");
     }
 
     private static RouteHandlerBuilder MapSearchEntityImpl<TEntity, TResponse, TFilter>(
@@ -164,7 +160,7 @@ static class CommonEntityEndpoints
                 };
                 return (await sender.Send(query, cancellationToken)).ToHttpResult();
             }
-        );
+        ).WithName($"Search{typeof(TEntity).Name}");
     }
 
     private static RouteHandlerBuilder MapUnfilteredSearchEntityImpl<TEntity, TResponse>(
@@ -183,7 +179,7 @@ static class CommonEntityEndpoints
                 };
                 return (await sender.Send(query, cancellationToken)).ToHttpResult();
             }
-        );
+        ).WithName($"Search{typeof(TEntity).Name}");
     }
 
     private static string ValidateRoutePattern(string pattern)

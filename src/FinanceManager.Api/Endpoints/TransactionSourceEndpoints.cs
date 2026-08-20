@@ -8,10 +8,10 @@ internal static class TransactionSourceEndpoints
     public static void RegisterTransactionSourceEndpoints(this IEndpointRouteBuilder endpoints)
     {
         var group = endpoints.MapGroup("/sources");
-        group.MapLookupEntity<TransactionSource>().WithName(RouteNames.LookupTransactionSource);
-        group.MapSearchEntity<TransactionSource>().WithName(RouteNames.SearchTransactionSource);
-        group.MapCreateEntity<TransactionSource>().WithName(RouteNames.CreateTransactionSource);
-        group.MapUpdateEntity<TransactionSource>().WithName(RouteNames.UpdateTransactionSource);
-        group.MapDeleteEntity<TransactionSource>().WithName(RouteNames.DeleteTransactionSource);
+        group.MapLookupEntity<TransactionSource>();
+        group.MapSearchEntity<TransactionSource>();
+        group.MapCreateEntity<TransactionSource>();
+        group.MapUpdateEntity<TransactionSource>();
+        group.MapDeleteEntity<TransactionSource>();
     }
 }
