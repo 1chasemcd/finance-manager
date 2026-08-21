@@ -16,10 +16,12 @@ public sealed class WriteTransactionSourceValidator : AbstractValidator<WriteTra
         RuleFor(x => x.Name)
             .NotEmpty()
             .MaximumLength(100)
-            .MustAsync(NameIsUnique);
+            .MustAsync(NameIsUnique)
+            .WithMessage("Name must be unique.");
         RuleFor(x => x.OwnerId)
             .NotNull()
-            .MustAsync(OwnerExists);
+            .MustAsync(OwnerExists)
+            .WithMessage("Owner must exist.");
     }
 
     private async Task<bool> NameIsUnique(string name, CancellationToken cancellationToken)

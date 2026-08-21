@@ -21,11 +21,12 @@ public sealed class WriteCategoryPatternValidator
 
         RuleFor(x => x.Pattern)
             .MustAsync(PatternIsUnique)
-            .WithErrorCode(ErrorCodes.CONFLICT)
             .WithMessage("Pattern must be unique.");
 
         RuleFor(x => x.TransactionCategoryId)
-            .MustAsync(TransactionCategoryExistsIfSet);
+            .MustAsync(TransactionCategoryExistsIfSet)
+            .WithMessage("Transaction Category must exist.");
+
     }
 
     private async Task<bool> PatternIsUnique(string pattern, CancellationToken cancellationToken)

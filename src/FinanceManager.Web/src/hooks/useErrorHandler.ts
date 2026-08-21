@@ -6,7 +6,7 @@ import { App, type FormInstance } from "antd";
 import { useCallback } from "react";
 
 const DEFAULT_TITLE = "Error";
-const DEFAULT_CONTENT = "An unexpected problem occurred";
+const DEFAULT_CONTENT = "An unexpected problem occurred.";
 
 export function useFormErrorHandler() {
   const { modal } = App.useApp();

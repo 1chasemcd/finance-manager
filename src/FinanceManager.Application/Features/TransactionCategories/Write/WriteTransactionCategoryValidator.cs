@@ -16,7 +16,8 @@ public sealed class WriteTransactionCategoryValidator
         RuleFor(x => x.Name)
             .NotEmpty()
             .MaximumLength(100)
-            .MustAsync(NameIsUnique);
+            .MustAsync(NameIsUnique)
+            .WithMessage("Name must be unique.");
         RuleFor(x => x.Description)
             .MaximumLength(500);
     }
