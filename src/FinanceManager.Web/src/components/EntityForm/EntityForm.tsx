@@ -1,8 +1,9 @@
-import { App, Button, Card, Flex, Form, Spin, type FormInstance } from "antd";
+import { Button, Card, Flex, Form, Spin, type FormInstance } from "antd";
 import { useEffect, useState, type ReactElement } from "react";
 import Title from "antd/es/typography/Title";
 import { useQueryClient, type QueryKey } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import useFormErrorHandler from "@/hooks/useFormErrorHandler";
 
 const ENTITY_FORM_ID = "entity-form";
 type EntityFormProps<TEntity> = {
@@ -26,7 +27,7 @@ export default function EntityForm<TEntity extends Record<string, unknown>>({
   initialValues,
   form,
 }: EntityFormProps<TEntity>) {
-  const { modal } = App.useApp();
+  const handleFormErrors = useFormErrorHandler();
 
   const queryClient = useQueryClient();
   const [isSaving, setIsSaving] = useState(false);
@@ -41,9 +42,9 @@ export default function EntityForm<TEntity extends Record<string, unknown>>({
     setIsSaving(true);
     try {
       await saveCallback(value);
-    } catch {
+    } catch (error: unknown) {
       setIsSaving(false);
-      modal.error({ title: "Error", content: "Something went wrong." });
+      handleFormErrors(formToUse, error);
       return;
     }
     keysToInvalidate?.map((queryKey) =>

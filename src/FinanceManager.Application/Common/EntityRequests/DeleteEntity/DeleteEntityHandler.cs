@@ -15,7 +15,7 @@ internal sealed class DeleteEntityHandler<TEntity>(
     public async Task<Result> Handle(DeleteEntityCommand<TEntity> command, CancellationToken cancellationToken)
     {
         TEntity? entity = await db.Set<TEntity>().FindAsync([command.Id], cancellationToken);
-        if (entity is null) return Error.NotFound(typeof(TEntity).Name);
+        if (entity is null) return Error.NotFound();
 
         db.Set<TEntity>().Remove(entity);
         await db.SaveChangesAsync(cancellationToken);

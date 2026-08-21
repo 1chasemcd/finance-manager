@@ -15,7 +15,7 @@ internal sealed class UpdateEntityHandler<TEntity, TRequest>(
     public async Task<Result> Handle(UpdateEntityCommand<TEntity, TRequest> command, CancellationToken cancellationToken)
     {
         TEntity? existing = await db.Set<TEntity>().FindAsync([command.Id], cancellationToken);
-        if (existing is null) return Error.NotFound(typeof(TEntity).Name);
+        if (existing is null) return Error.NotFound();
         mapper.Map(command.Request, existing);
         await db.SaveChangesAsync(cancellationToken);
 

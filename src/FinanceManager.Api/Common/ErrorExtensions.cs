@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text.Json;
 using FinanceManager.Application.Common.Errors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,11 @@ namespace FinanceManager.Api.Common;
 
 static class ErrorExtensions
 {
+    private static JsonNamingPolicy? s_propertyNameingPolicy;
+    public static void SetPropertyNamingPolicy(JsonNamingPolicy? propertyNamingPolicy)
+    {
+        s_propertyNameingPolicy = propertyNamingPolicy;
+    }
     public static Results<ValidationProblem, Conflict<ProblemDetails>, NotFound<ProblemDetails>> ToHttpResult(this Error error)
     {
         return error switch
@@ -28,7 +34,7 @@ static class ErrorExtensions
                 validation.FieldValidationErrors
                 .GroupBy(err => err.Field)
                 .ToDictionary(
-                    group => group.Key,
+                    group => s_propertyNameingPolicy?.ConvertName(group.Key) ?? group.Key,
                     group => group.Select(err => err.Message).ToArray())),
             Error => throw new UnreachableException($"Unable to handle error result {error.GetType().FullName}"),
         };

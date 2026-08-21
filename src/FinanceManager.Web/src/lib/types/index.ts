@@ -9,7 +9,7 @@ import type {
   ProblemDetails,
 } from "../generated";
 
-type ApiError = ProblemDetails | HttpValidationProblemDetails;
+export type ApiError = ProblemDetails | HttpValidationProblemDetails;
 
 export type Entity = {
   id: number;

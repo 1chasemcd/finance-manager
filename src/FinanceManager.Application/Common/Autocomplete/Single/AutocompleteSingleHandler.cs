@@ -27,7 +27,7 @@ internal sealed class AutocompleteSingleHandler<TEntity>(
             .SingleOrDefaultAsync(cancellationToken);
 
         if (result == null)
-            return Error.NotFound(typeof(TEntity).Name);
+            return Error.NotFound();
 
         return result;
     }

@@ -22,7 +22,7 @@ internal sealed class LookupEntityHandler<TEntity, TResponse>(
             .SingleOrDefaultAsync(cancellationToken);
 
         if (response is null)
-            return Error.NotFound(typeof(TEntity).Name);
+            return Error.NotFound();
 
         return response;
     }

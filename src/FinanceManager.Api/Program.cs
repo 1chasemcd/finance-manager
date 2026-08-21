@@ -1,7 +1,9 @@
+using FinanceManager.Api.Common;
 using FinanceManager.Api.Endpoints;
 using FinanceManager.Application.Abstractions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.Options;
 using System.Text.Json.Serialization;
 
 namespace FinanceManager.Api;
@@ -41,6 +43,9 @@ public sealed class Program
         });
 
         WebApplication app = builder.Build();
+
+        var jsonOptions = app.Services.GetRequiredService<IOptions<JsonOptions>>();
+        ErrorExtensions.SetPropertyNamingPolicy(jsonOptions.Value.SerializerOptions.PropertyNamingPolicy);
 
         if (!app.Environment.IsProduction())
             app.MapOpenApi();
