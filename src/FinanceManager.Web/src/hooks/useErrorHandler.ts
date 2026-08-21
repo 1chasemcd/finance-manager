@@ -8,31 +8,14 @@ import { useCallback } from "react";
 const DEFAULT_TITLE = "Error";
 const DEFAULT_CONTENT = "An unexpected problem occurred.";
 
-export function useFormErrorHandler() {
+export default function useErrorHandler() {
   const { modal } = App.useApp();
 
   return useCallback(
-    (form: FormInstance, error: unknown) => {
-      let modalError = { title: DEFAULT_TITLE, content: DEFAULT_CONTENT };
-      if (isHttpValidationProblemDetails(error))
-        return handleValidationFormErrors(form, error);
-      if (isProblemDetails(error)) {
-        if (error.title) modalError.title = error.title;
-        if (error.detail) modalError.content = error.detail;
-      }
-      modal.error(modalError);
-    },
-    [modal],
-  );
-}
-
-export function useErrorHandler() {
-  const { modal } = App.useApp();
-
-  return useCallback(
-    (error: unknown) => {
+    (error: unknown, form?: FormInstance) => {
       let modalError = { title: DEFAULT_TITLE, content: DEFAULT_CONTENT };
       if (isHttpValidationProblemDetails(error)) {
+        if (form) return handleValidationFormErrors(form, error);
         if (error.title) modalError.title = error.title;
         if (error.errors) modalError.content = joinFieldValidationErrors(error);
       }

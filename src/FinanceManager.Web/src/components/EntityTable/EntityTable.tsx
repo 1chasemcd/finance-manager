@@ -8,7 +8,7 @@ import Title from "antd/es/typography/Title";
 import { useTableHeight } from "@/hooks/useTableHeight";
 import { Ellipsis } from "lucide-react";
 import type { Entity, SearchResponse } from "@/lib/types";
-import { useErrorHandler } from "@/hooks/useErrorHandler";
+import useErrorHandler from "@/hooks/useErrorHandler";
 
 type ItemType = NonNullable<MenuProps["items"]>[0];
 

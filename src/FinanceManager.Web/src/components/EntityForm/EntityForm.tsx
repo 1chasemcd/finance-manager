@@ -3,7 +3,7 @@ import { useEffect, useState, type ReactElement } from "react";
 import Title from "antd/es/typography/Title";
 import { useQueryClient, type QueryKey } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { useFormErrorHandler } from "@/hooks/useErrorHandler";
+import useErrorHandler from "@/hooks/useErrorHandler";
 
 const ENTITY_FORM_ID = "entity-form";
 type EntityFormProps<TEntity> = {
@@ -27,7 +27,7 @@ export default function EntityForm<TEntity extends Record<string, unknown>>({
   initialValues,
   form,
 }: EntityFormProps<TEntity>) {
-  const handleFormErrors = useFormErrorHandler();
+  const handleFormErrors = useErrorHandler();
 
   const queryClient = useQueryClient();
   const [isSaving, setIsSaving] = useState(false);
@@ -44,7 +44,7 @@ export default function EntityForm<TEntity extends Record<string, unknown>>({
       await saveCallback(value);
     } catch (error: unknown) {
       setIsSaving(false);
-      handleFormErrors(formToUse, error);
+      handleFormErrors(error, formToUse);
       return;
     }
     keysToInvalidate?.map((queryKey) =>
