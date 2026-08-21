@@ -2,12 +2,13 @@ import { type UseQueryResult } from "@tanstack/react-query";
 import { Button, Dropdown, Flex, Table } from "antd";
 import type { MenuProps, TablePaginationConfig } from "antd";
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import type { ColumnsType } from "antd/es/table";
 import Title from "antd/es/typography/Title";
 import { useTableHeight } from "@/hooks/useTableHeight";
 import { Ellipsis } from "lucide-react";
 import type { Entity, SearchResponse } from "@/lib/types";
+import { useErrorHandler } from "@/hooks/useErrorHandler";
 
 type ItemType = NonNullable<MenuProps["items"]>[0];
 
@@ -53,7 +54,12 @@ export default function EntityTable<
 >(props: EntityTableProps<TEntity, TSearchResponse, TPagination>) {
   const contentRef = useRef<HTMLDivElement>(null);
   const tableHeight = useTableHeight(contentRef);
-
+  const handleErrors = useErrorHandler();
+  useEffect(() => {
+    if (props.useQueryResult.error) {
+      handleErrors(props.useQueryResult.error);
+    }
+  }, [props.useQueryResult.error, handleErrors]);
   const columns = useMemo(() => {
     const columns: ColumnsType<TEntity> = props.columns.map((column) => ({
       ...column,

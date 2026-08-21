@@ -3,7 +3,7 @@ import { useEffect, useState, type ReactElement } from "react";
 import Title from "antd/es/typography/Title";
 import { useQueryClient, type QueryKey } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import useFormErrorHandler from "@/hooks/useFormErrorHandler";
+import { useFormErrorHandler } from "@/hooks/useErrorHandler";
 
 const ENTITY_FORM_ID = "entity-form";
 type EntityFormProps<TEntity> = {
