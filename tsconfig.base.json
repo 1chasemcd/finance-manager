@@ -1,0 +1,10 @@
+{
+  "extends": "@tsconfig/strictest/tsconfig.json",
+  "compilerOptions": {
+    "incremental": true,
+    "noEmit": true,
+
+    "noImplicitAny": true,
+    "erasableSyntaxOnly": true
+  }
+}
