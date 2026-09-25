@@ -1,0 +1,26 @@
+{
+  "name": "finance-manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm --parallel -r run dev",
+    "dev:api": "pnpm --filter @finance-manager/api dev",
+    "dev:web": "pnpm --filter @finance-manager/web dev",
+    "build": "pnpm -r run build",
+    "lint": "pnpm -r run lint",
+    "deploy:api": "pnpm --filter @finance-manager/api deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.6.0",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@12.6.0",
+  "type": "module"
+}
