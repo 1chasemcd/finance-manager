@@ -27,16 +27,26 @@ function App() {
         label="Number 1"
         type="number"
         value={number1}
-        onChange={(e) => setNumber1(Number(e.target.value))}
+        onChange={(e) => {
+          setNumber1(Number(e.target.value));
+        }}
       />
       <TextField
         label="Number 2"
         type="number"
         value={number2}
-        onChange={(e) => setNumber2(Number(e.target.value))}
+        onChange={(e) => {
+          setNumber2(Number(e.target.value));
+        }}
       />
       <Button
-        onClick={async () => setResult(await runCalculate(number1, number2))}
+        onClick={() => {
+          runCalculate(number1, number2)
+            .then(setResult)
+            .catch(() => {
+              console.error("Something went wrong");
+            });
+        }}
       >
         Multiply Numbers
       </Button>

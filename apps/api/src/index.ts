@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { Hono, TypedResponse } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { cors } from "hono/cors";
@@ -10,25 +10,16 @@ export const MultiplyRequest = z.object({
 
 type MultiplyRequest = z.infer<typeof MultiplyRequest>;
 
-export const MultiplyResponse = z.object({
-  result: z.int(),
-});
+type MultiplyResponse = TypedResponse<{ result: number }, 200>;
 
 const app = new Hono()
   .use("*", cors({ origin: "http://localhost:5173" }))
-  // .get("/", (c) => {
-  //   return c.status(200);
-  // })
-  .post("/multiply", zValidator("json", MultiplyRequest), async (c) => {
-    const body = await c.req.json<MultiplyRequest>();
+  .post("/multiply", zValidator("json", MultiplyRequest), (c) => {
+    const { number1, number2 } = c.req.valid("json");
 
-    const { number1, number2 } = MultiplyRequest.parse(body);
-
-    const response = MultiplyResponse.parse({
+    return c.json({
       result: number1 * number2,
-    });
-
-    return c.json(response);
+    }) as MultiplyResponse;
   });
 
 export type AppType = typeof app;

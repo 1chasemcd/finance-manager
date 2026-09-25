@@ -28,6 +28,7 @@ export default defineConfig([
       parserOptions: {
         projectService: {
           allowDefaultProject: ["eslint.config.js"],
+          defaultProject: "tsconfig.json",
         },
       },
     },
