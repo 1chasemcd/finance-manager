@@ -2,6 +2,10 @@ import { Hono, TypedResponse } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { cors } from "hono/cors";
+import "dotenv/config";
+import { drizzle } from "drizzle-orm/libsql";
+
+const db = drizzle(process.env.DB_FILE_NAME);
 
 export const MultiplyRequest = z.object({
   number1: z.int(),
