@@ -11,6 +11,7 @@
     "cf-typegen": "wrangler types --env-interface CloudflareBindings"
   },
   "dependencies": {
+    "@finance-manager/result": "workspace:*",
     "@hono/zod-validator": "^0.9.1",
     "@libsql/client": "^0.18.0",
     "dotenv": "^18.0.3",

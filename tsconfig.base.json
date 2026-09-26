@@ -4,7 +4,6 @@
     "incremental": true,
     "noEmit": true,
 
-    "noImplicitAny": true,
-    "erasableSyntaxOnly": true
+    "noImplicitAny": true
   }
 }
