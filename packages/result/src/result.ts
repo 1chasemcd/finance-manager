@@ -13,6 +13,10 @@ class _Result<T, E extends ErrorType> {
     return this._ok ? new Ok(f(this.value as T)) : (this as unknown as Err<E>);
   }
 
+  match<U>(cases: { ok: (x: T) => U; err: (x: E) => U }) {
+    return this._ok ? cases.ok(this.value as T) : cases.err(this.value as E);
+  }
+
   equals(that: unknown): boolean {
     return (
       that instanceof _Result &&

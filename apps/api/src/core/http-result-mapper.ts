@@ -23,7 +23,8 @@ export function mapResult<T extends Object>(result: AppResult<T>): Response;
 export function mapResult<T extends Object | undefined>(
   result: AppResult<T>,
 ): Response | EmptyResponse {
-  if (result.isOk && result.data !== undefined) return [result.data, 200];
-  if (result.isOk) return [null, 204];
-  return mapError(result.error);
+  return result.match<Response | EmptyResponse>({
+    ok: (x) => (x === undefined ? [null, 204] : [x, 200]),
+    err: (x) => mapError(x),
+  });
 }
