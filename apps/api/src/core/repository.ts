@@ -7,7 +7,7 @@ export const SearchRequest = z.object({
 
 export type SearchRequest = z.infer<typeof SearchRequest>;
 
-export interface SearchResult<T> {
+export type SearchResult<T> = {
   result: T[];
   total: number;
-}
+};

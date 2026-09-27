@@ -20,6 +20,9 @@ export default defineConfig([
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
   {
+    rules: {
+      "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+    },
     plugins: {
       "@typescript-eslint": tseslint.plugin,
     },

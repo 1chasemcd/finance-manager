@@ -1,7 +1,7 @@
-export interface ErrorType {
+export type ErrorType = {
   _tag: string;
   [key: string]: unknown;
-}
+};
 
 class _Result<T, E extends ErrorType> {
   protected constructor(
@@ -63,4 +63,4 @@ export class Err<E extends ErrorType> extends _Result<never, E> {
   }
 }
 
-export type Result<T = void, E extends ErrorType = ErrorType> = Ok<T> | Err<E>;
+export type Result<T, E extends ErrorType> = Ok<T> | Err<E>;

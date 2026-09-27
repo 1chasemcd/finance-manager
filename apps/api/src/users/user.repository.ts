@@ -1,9 +1,10 @@
-import { User } from "./user.schemas";
-import { Result } from "@finance-manager/result";
+import { AppResult } from "../core/result";
+import { CreateUser, UpdateUser, User } from "./user.schemas";
 
-export interface UserRepository {
-  lookup(id: number): Promise<Result<User>>;
-  // list(): Promise<Result<User[]>>;
-  // create(request: CreateUser): Promise<Result<User>>;
-  // update(request: UpdateUser): Promise<Result<User>>;
-}
+export type UserRepository = {
+  lookup(id: number): Promise<AppResult<User>>;
+  getall(): Promise<AppResult<User[]>>;
+  create(request: CreateUser): Promise<AppResult<User>>;
+  update(id: number, request: UpdateUser): Promise<AppResult<User>>;
+  delete(id: number): Promise<AppResult>;
+};

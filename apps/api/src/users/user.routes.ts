@@ -1,27 +1,51 @@
-// import { Hono } from "hono";
-// import type { UserService } from "./user.service";
+import { Hono } from "hono";
+import { zValidator } from "@hono/zod-validator";
+import z from "zod";
+import { UserService } from "./user.service";
+import { CreateUser, UpdateUser } from "./user.schemas";
+import { mapResult } from "../core/http-result-mapper";
 
-// export function createUserRoutes(userService: UserService) {
-//   const router = new Hono();
+const idValidator = zValidator(
+  "param",
+  z.object({
+    id: z.coerce.number().int().positive(),
+  }),
+);
 
-//   router.get("/:id", async (c) => {
-//     const id = c.req.param("id");
+export function createUserRoutes(users: UserService) {
+  const router = new Hono()
+    .get("/", async (c) => {
+      const res = await users.getall();
+      const mapped = mapResult(res);
+      return c.json(...mapped);
+    })
+    .post("/", zValidator("json", CreateUser), async (c) => {
+      const body = c.req.valid("json");
+      const res = await users.create(body);
+      if (res.isOk) return c.json(res.data, 201);
+      const mapped = mapResult(res);
+      return c.json(...mapped);
+    })
+    .get("/:id", idValidator, async (c) => {
+      const param = c.req.valid("param");
 
-//     const user = await userService.getUser(id);
+      const res = await users.lookup(param.id);
+      const mapped = mapResult(res);
+      return c.json(...mapped);
+    })
+    .patch("/:id", idValidator, zValidator("json", UpdateUser), async (c) => {
+      const param = c.req.valid("param");
+      const body = c.req.valid("json");
+      const res = await users.update(param.id, body);
+      const mapped = mapResult(res);
+      return c.json(...mapped);
+    })
+    .delete("/:id", idValidator, async (c) => {
+      const param = c.req.valid("param");
+      const res = await users.delete(param.id);
+      const mapped = mapResult(res);
+      return c.body(...mapped);
+    });
 
-//     return c.json(user);
-//   });
-
-//   router.post("/", async (c) => {
-//     const body = await c.req.json<{
-//       email: string;
-//       name: string;
-//     }>();
-
-//     const user = await userService.createUser(body);
-
-//     return c.json(user, 201);
-//   });
-
-//   return router;
-// }
+  return router;
+}
