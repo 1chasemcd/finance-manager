@@ -13,10 +13,10 @@ export function mapResult<T extends Object>(result: AppResult<T>): Response;
 export function mapResult<T extends Object | undefined>(
   result: AppResult<T>,
 ): Response | EmptyResponse {
-  return result.matchTag<Response | EmptyResponse>({
+  return result.match<Response | EmptyResponse>({
     Ok: (x) => (x === undefined ? [null, 204] : [x, 200]),
-    NotFound: (x) => [`${x.resource} not found`, 404],
-    Forbidden: (x) => [x.reason ?? "The requested operation is forbidden", 403],
+    NotFound: (x) => [`${x.resource} not found.`, 404],
+    Forbidden: (x) => [x.reason, 403],
     Validation: (x) => [x.issues, 400],
     Conflict: (x) => [x.message, 409],
   });

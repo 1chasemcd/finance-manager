@@ -26,7 +26,7 @@ class _Result<T, E extends ErrorType> {
     return this._ok ? new Ok(f(this.value as T)) : (this as unknown as Err<E>);
   }
 
-  matchTag<U>(cases: MatchCases<T, E, U> | MatchCasesWithDefault<T, E, U>): U {
+  match<U>(cases: MatchCases<T, E, U> | MatchCasesWithDefault<T, E, U>): U {
     if (this._ok) return cases.Ok(this.value as T);
 
     const error = this.value as E;

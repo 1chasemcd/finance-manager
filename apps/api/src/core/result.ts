@@ -12,7 +12,7 @@ type NotFound = {
 
 type Forbidden = {
   _tag: "Forbidden";
-  reason?: string;
+  reason: string;
 };
 
 type Validation = {
@@ -43,6 +43,14 @@ export const conflict = (message?: string): Err<Conflict> => {
   return new Err({
     _tag: "Conflict",
     message,
+  });
+};
+
+export const forbidden = (reason?: string): Err<Forbidden> => {
+  reason ??= "The requested operation is forbidden.";
+  return new Err({
+    _tag: "Forbidden",
+    reason,
   });
 };
 
