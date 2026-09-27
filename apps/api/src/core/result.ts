@@ -10,11 +10,6 @@ type NotFound = {
   id: number;
 };
 
-type Unauthorized = {
-  _tag: "Unauthorized";
-  reason?: string;
-};
-
 type Forbidden = {
   _tag: "Forbidden";
   reason?: string;
@@ -33,12 +28,7 @@ type Conflict = {
   message: string;
 };
 
-export type AppError =
-  | NotFound
-  | Unauthorized
-  | Forbidden
-  | Validation
-  | Conflict;
+export type AppError = NotFound | Forbidden | Validation | Conflict;
 
 export const notFound = (resource: string, id: number): Err<NotFound> => {
   return new Err({
