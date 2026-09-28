@@ -1,19 +1,11 @@
 import { TextField, Button } from "@mui/material";
-import { api } from "./lib/api";
 import { useState } from "react";
 
 async function runCalculate(
   number1: number,
   number2: number,
 ): Promise<number | null> {
-  const response = await api.multiply.$post({
-    json: {
-      number1,
-      number2,
-    },
-  });
-  if (response.ok) return (await response.json()).result;
-  return null;
+  return await Promise.resolve(number1 * number2);
 }
 
 function App() {

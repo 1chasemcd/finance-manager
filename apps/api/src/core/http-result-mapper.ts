@@ -1,23 +1,61 @@
 import { Err } from "@finance-manager/result";
 import type { AppError, AppResult } from "./result";
-import type { ContentfulStatusCode, StatusCode } from "hono/utils/http-status";
+import type { ClientErrorStatusCode } from "hono/utils/http-status";
+import type { Context, TypedResponse } from "hono";
+import type { JSONParsed, JSONValue } from "hono/utils/types";
 
-type Object = object | string | boolean | number;
-type Response = [Object, ContentfulStatusCode];
-type EmptyResponse = [null, StatusCode];
+type SuccessResponse<T extends JSONValue> = Response &
+  TypedResponse<T, 200, "json">;
 
-export function mapResult(error: Err<AppError>): Response;
-export function mapResult(result: AppResult): EmptyResponse;
-export function mapResult<T extends Object>(result: AppResult<T>): Response;
+type EmptyResponse = Response & TypedResponse<null, 204, "body">;
 
-export function mapResult<T extends Object | undefined>(
+type ErrorResponse = Response &
+  TypedResponse<JSONParsed<string>, ClientErrorStatusCode, "json">;
+
+type MapResponse<T extends JSONValue> =
+  | SuccessResponse<T>
+  | EmptyResponse
+  | ErrorResponse;
+
+// type X = JSONRespond
+// type Json<T extends JSONValue, U extends ContentfulStatusCode> = Context["json"];
+// type SuccessResponse<T extends JSONValue> = ReturnType<
+//   Json<T, Exclude<SuccessStatusCode, ContentlessStatusCode>>
+// >;
+// type ErrorResponse = ReturnType<typeof c.json<string, ClientErrorStatusCode>>;
+// type EmptyResponse = ReturnType<typeof c.body<null, ContentlessStatusCode>>;
+
+// type JSONObject = object | string | boolean | number;
+// type ErrorResponse = [string, ClientErrorStatusCode];
+// type EmptyResponse = [null, ContentlessStatusCode];
+// type SuccessResponse<T extends JSONObject> = [T, SuccessStatusCode];
+
+// type Response<T extends JSONObject> =
+//   | SuccessResponse<T>
+//   | EmptyResponse
+//   | ErrorResponse;
+
+export function mapResult(c: Context, error: Err<AppError>): ErrorResponse;
+export function mapResult(c: Context, result: AppResult): EmptyResponse;
+export function mapResult<T extends JSONValue>(
+  c: Context,
   result: AppResult<T>,
-): Response | EmptyResponse {
-  return result.match<Response | EmptyResponse>({
-    Ok: (x) => (x === undefined ? [null, 204] : [x, 200]),
-    NotFound: (x) => [`${x.resource} not found.`, 404],
-    Forbidden: (x) => [x.reason, 403],
-    Validation: (x) => [x.issues, 400],
-    Conflict: (x) => [x.message, 409],
+): SuccessResponse<T> | ErrorResponse;
+
+export function mapResult<T extends JSONValue>(
+  c: Context,
+  result: AppResult<T | void>,
+): MapResponse<T> {
+  return result.match<MapResponse<T>>({
+    Ok: (x) =>
+      x === undefined
+        ? // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+          (c.body(null, 204) as EmptyResponse)
+        : // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+          (c.json(x, 200) as SuccessResponse<T>),
+    NotFound: (x) => c.json(`${x.resource} not found.`, 404),
+    Forbidden: (x) => c.json(x.reason, 403),
+    Validation: (x) => c.json(x.issues[0]?.path, 400),
+    Conflict: (x) => c.json(x.message, 409),
   });
 }
