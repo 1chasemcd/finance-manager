@@ -1,4 +1,4 @@
-import { Result, ErrorType } from "@finance-manager/result";
+import type { Result, ErrorType } from "@finance-manager/result";
 
 export type AppResult<T = void, E extends ErrorType = AppError> = Result<T, E>;
 

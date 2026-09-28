@@ -1,7 +1,7 @@
-import { drizzle } from "drizzle-orm/libsql";
+import { drizzle } from "drizzle-orm/d1";
 
-export function createDb(databaseUrl: string) {
-  return drizzle(databaseUrl);
+export function createDb(d1: D1Database) {
+  return drizzle(d1);
 }
 
 export type Db = ReturnType<typeof createDb>;

@@ -1,6 +1,6 @@
 import { Err } from "@finance-manager/result";
-import { AppError, AppResult } from "./result";
-import { ContentfulStatusCode, StatusCode } from "hono/utils/http-status";
+import type { AppError, AppResult } from "./result";
+import type { ContentfulStatusCode, StatusCode } from "hono/utils/http-status";
 
 type Object = object | string | boolean | number;
 type Response = [Object, ContentfulStatusCode];

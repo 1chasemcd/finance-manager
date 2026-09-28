@@ -3,7 +3,8 @@ import { users } from "../schema/users";
 import type { Db } from "../client";
 import type { UserRepository } from "../../users/user.repository";
 import type { CreateUser, UpdateUser, User } from "../../users/user.schemas";
-import { AppResult, conflict, notFound } from "../../core/result";
+import type { AppResult } from "../../core/result";
+import { conflict, notFound } from "../../core/result";
 import { ok } from "@finance-manager/result";
 
 export class DrizzleUserRepository implements UserRepository {
@@ -41,7 +42,7 @@ export class DrizzleUserRepository implements UserRepository {
 
   async delete(id: number): Promise<AppResult> {
     const res = await this.db.delete(users).where(eq(users.id, id));
-    if (res.rowsAffected > 0) return ok();
+    if (res.meta.changes > 0) return ok();
     return notFound("user", id);
   }
 }

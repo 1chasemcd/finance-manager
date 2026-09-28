@@ -5,9 +5,10 @@
     "module": "esnext",
     "types": ["node"],
     "moduleResolution": "bundler",
+    "verbatimModuleSyntax": true,
     "lib": ["ESNext"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx"
   },
-  "include": ["src"]
+  "include": ["src", "worker-configuration.d.ts"]
 }

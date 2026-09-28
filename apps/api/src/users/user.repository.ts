@@ -1,4 +1,4 @@
-import { AppResult } from "../core/result";
+import type { AppResult } from "../core/result";
 import { CreateUser, UpdateUser, User } from "./user.schemas";
 
 export type UserRepository = {

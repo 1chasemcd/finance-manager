@@ -1,25 +1,25 @@
-import { Hono } from "hono";
-import { zValidator } from "@hono/zod-validator";
-import { z } from "zod";
-import { cors } from "hono/cors";
-import "dotenv/config";
-export const MultiplyRequest = z.object({
-  number1: z.int(),
-  number2: z.int(),
-});
+/// <reference path="../worker-configuration.d.ts" />
+import { createApp } from "./app";
 
-type MultiplyRequest = z.infer<typeof MultiplyRequest>;
+export type AppType = ReturnType<typeof createApp>;
 
-const app = new Hono()
-  .use("*", cors({ origin: "http://localhost:5173" }))
-  .post("/multiply", zValidator("json", MultiplyRequest), (c) => {
-    const { number1, number2 } = c.req.valid("json");
+const apps = new WeakMap<CloudflareBindings, AppType>();
 
-    return c.json({
-      result: number1 * number2,
-    });
-  });
+function getApp(bindings: CloudflareBindings): AppType {
+  const cached = apps.get(bindings);
+  if (cached) return cached;
 
-export type AppType = typeof app;
+  const app = createApp({ db: bindings.DB });
+  apps.set(bindings, app);
+  return app;
+}
 
-export default { fetch: app.fetch };
+export default {
+  fetch(
+    request: Request,
+    bindings: CloudflareBindings,
+    executionCtx: ExecutionContext,
+  ): Response | Promise<Response> {
+    return getApp(bindings).fetch(request, bindings, executionCtx);
+  },
+};

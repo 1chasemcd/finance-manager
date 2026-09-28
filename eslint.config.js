@@ -15,6 +15,8 @@ export default defineConfig([
     "**/build/",
     "**/dist/",
     "**/.vite/",
+    "**/.wrangler/",
+    "**/worker-configuration.d.ts",
   ]),
   js.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
@@ -38,6 +40,12 @@ export default defineConfig([
   },
 
   {
+    files: ["**/*.d.ts"],
+    rules: {
+      "@typescript-eslint/consistent-type-definitions": "off",
+    },
+  },
+  {
     files: ["apps/web/**/*.{ts,tsx,js,jsx}"],
     extends: [reactHooks.configs.flat.recommended, reactRefresh.configs.vite],
     languageOptions: {
@@ -48,6 +56,9 @@ export default defineConfig([
     files: ["apps/api/**/*.{ts,js}"],
     languageOptions: {
       globals: globals.node,
+    },
+    rules: {
+      "@typescript-eslint/triple-slash-reference": ["error", { path: "always" }],
     },
   },
 ]);

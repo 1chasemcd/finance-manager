@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "api",
   "main": "src/index.ts",
-  "compatibility_date": "2026-09-25"
+  "compatibility_date": "2026-09-25",
   // "compatibility_flags": [
   //   "nodejs_compat"
   // ],
@@ -21,13 +21,15 @@
   //     "bucket_name": "my-bucket"
   //   }
   // ],
-  // "d1_databases": [
-  //   {
-  //     "binding": "MY_DB",
-  //     "database_name": "my-database",
-  //     "database_id": ""
-  //   }
-  // ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "finance-manager",
+      "database_id": "bae0bf5f-0710-4d14-a662-1499913086bb",
+      "migrations_dir": "drizzle",
+      "migrations_pattern": "drizzle/*/migration.sql",
+    },
+  ],
   // "ai": {
   //   "binding": "AI"
   // },
