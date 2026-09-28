@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm --parallel -r run dev",
+    "dev": "pnpm --filter @finance-manager/web dev",
     "dev:api": "pnpm --filter @finance-manager/api dev",
     "dev:web": "pnpm --filter @finance-manager/web dev",
     "build": "pnpm -r run build",
     "lint": "eslint .",
-    "deploy:api": "pnpm --filter @finance-manager/api deploy"
+    "deploy": "pnpm --filter @finance-manager/web deploy"
   },
   "keywords": [],
   "author": "",

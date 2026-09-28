@@ -1,49 +1,72 @@
-import { TextField, Button } from "@mui/material";
-import { useState } from "react";
+import {
+  Alert,
+  CircularProgress,
+  List,
+  ListItemText,
+  ListItem,
+  Box,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import { api } from "./lib/api";
 
-async function runCalculate(
-  number1: number,
-  number2: number,
-): Promise<number | null> {
-  return await Promise.resolve(number1 * number2);
-}
+type User = {
+  id: number;
+  firstName: string;
+  lastName: string;
+};
 
 function App() {
-  const [number1, setNumber1] = useState<number>(0);
-  const [number2, setNumber2] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
+  const [users, setUsers] = useState<User[]>([]);
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await api.users.$get();
 
-  const [result, setResult] = useState<number | null>(null);
+        if (!response.ok) {
+          setError(true);
+          return;
+        }
+
+        const data = await response.json();
+        setUsers(data);
+      } catch {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers().catch(() => {
+      setError(true);
+    });
+  }, []);
   return (
-    <>
-      <TextField
-        label="Number 1"
-        type="number"
-        value={number1}
-        onChange={(e) => {
-          setNumber1(Number(e.target.value));
-        }}
-      />
-      <TextField
-        label="Number 2"
-        type="number"
-        value={number2}
-        onChange={(e) => {
-          setNumber2(Number(e.target.value));
-        }}
-      />
-      <Button
-        onClick={() => {
-          runCalculate(number1, number2)
-            .then(setResult)
-            .catch(() => {
-              console.error("Something went wrong");
-            });
-        }}
-      >
-        Multiply Numbers
-      </Button>
-      <h6>Result is: {result?.toString() ?? ""}</h6>
-    </>
+    <Box sx={{ p: 2 }}>
+      {error && <Alert severity="error">Something went wrong</Alert>}
+      {loading && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "100vh",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
+      {users.length > 0 && (
+        <List>
+          {users.map((user) => (
+            <ListItem key={user.id} divider>
+              <ListItemText primary={`${user.firstName} ${user.lastName}`} />
+            </ListItem>
+          ))}
+        </List>
+      )}
+    </Box>
   );
 }
 
