@@ -13,7 +13,8 @@ const idValidator = zValidator(
 );
 
 export function createUserRoutes(users: UserService) {
-  const router = new Hono()
+  const router = new Hono();
+  return router
     .get("/", async (c) => {
       const res = await users.getall();
       return mapResult(c, res);
@@ -41,6 +42,4 @@ export function createUserRoutes(users: UserService) {
       const res = await users.delete(param.id);
       return mapResult(c, res);
     });
-
-  return router;
 }
