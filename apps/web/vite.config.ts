@@ -12,4 +12,4 @@ export default defineConfig({
       persistState: { path: "../api/.wrangler/state" },
     }),
   ],
-})
+});
