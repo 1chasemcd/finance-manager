@@ -23,7 +23,7 @@ function App() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await api.api.health.$get();
+        const response = await api.health.$get();
 
         if (!response.ok) return;
 
