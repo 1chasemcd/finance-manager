@@ -21,7 +21,7 @@ function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const [healthy, setHealthy] = useState<boolean>(false);
   useEffect(() => {
-    const fetchUsers = async () => {
+    const healthCheck = async () => {
       try {
         const response = await api.health.$get();
 
@@ -34,7 +34,7 @@ function App() {
       }
     };
 
-    fetchUsers().catch(() => {
+    healthCheck().catch(() => {
       return;
     });
   }, []);
