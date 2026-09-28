@@ -9,7 +9,7 @@ function Loading() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        minHeight: "100vh",
+        flex: 1,
       }}
     >
       <CircularProgress />
@@ -39,7 +39,14 @@ function App() {
     });
   }, []);
   return (
-    <Box sx={{ p: 2 }}>
+    <Box
+      sx={{
+        p: 2,
+        minHeight: "100dvh",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       {loading ? (
         <Loading />
       ) : healthy ? (
