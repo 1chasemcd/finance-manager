@@ -17,24 +17,6 @@ type MapResponse<T extends JSONValue> =
   | EmptyResponse
   | ErrorResponse;
 
-// type X = JSONRespond
-// type Json<T extends JSONValue, U extends ContentfulStatusCode> = Context["json"];
-// type SuccessResponse<T extends JSONValue> = ReturnType<
-//   Json<T, Exclude<SuccessStatusCode, ContentlessStatusCode>>
-// >;
-// type ErrorResponse = ReturnType<typeof c.json<string, ClientErrorStatusCode>>;
-// type EmptyResponse = ReturnType<typeof c.body<null, ContentlessStatusCode>>;
-
-// type JSONObject = object | string | boolean | number;
-// type ErrorResponse = [string, ClientErrorStatusCode];
-// type EmptyResponse = [null, ContentlessStatusCode];
-// type SuccessResponse<T extends JSONObject> = [T, SuccessStatusCode];
-
-// type Response<T extends JSONObject> =
-//   | SuccessResponse<T>
-//   | EmptyResponse
-//   | ErrorResponse;
-
 export function mapResult(c: Context, error: Err<AppError>): ErrorResponse;
 export function mapResult(c: Context, result: AppResult): EmptyResponse;
 export function mapResult<T extends JSONValue>(
