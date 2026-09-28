@@ -11,7 +11,7 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "finance-manager",
+      "database_name": "finapp",
       "database_id": "bae0bf5f-0710-4d14-a662-1499913086bb",
       "migrations_dir": "drizzle",
       "migrations_pattern": "drizzle/*/migration.sql",

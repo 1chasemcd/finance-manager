@@ -1,4 +1,4 @@
-import { Err } from "@finance-manager/result";
+import { Err } from "@finapp/result";
 import type { AppError, AppResult } from "../core/result";
 import type { ClientErrorStatusCode } from "hono/utils/http-status";
 import type { Context, TypedResponse } from "hono";
@@ -33,8 +33,7 @@ export function mapResult<T extends JSONValue>(
       x === undefined
         ? // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
           (c.body(null, 204) as EmptyResponse)
-        : // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-          (c.json(x, 200) as SuccessResponse<T>),
+        : (c.json(x, 200) as SuccessResponse<T>),
     NotFound: (x) => c.json(`${x.resource} not found.`, 404),
     Forbidden: (x) => c.json(x.reason, 403),
     Validation: (x) => c.json(x.issues[0]?.path, 400),

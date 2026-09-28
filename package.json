@@ -1,13 +1,13 @@
 {
-  "name": "finance-manager",
+  "name": "finapp",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm --filter @finance-manager/web dev",
+    "dev": "pnpm --filter @finapp/web dev",
     "build": "pnpm -r run build",
     "lint": "eslint .",
-    "deploy": "pnpm --filter @finance-manager/web deploy"
+    "deploy": "pnpm --filter @finapp/web deploy"
   },
   "keywords": [],
   "author": "",

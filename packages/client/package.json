@@ -1,5 +1,5 @@
 {
-  "name": "@finance-manager/client",
+  "name": "@finapp/client",
   "private": true,
   "version": "1.0.0",
   "description": "",
@@ -8,7 +8,7 @@
   },
   "scripts": {},
   "dependencies": {
-    "@finance-manager/api": "workspace:*",
+    "@finapp/api": "workspace:*",
     "hono": "^4.13.9"
   },
   "keywords": [],

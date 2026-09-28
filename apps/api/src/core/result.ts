@@ -1,8 +1,8 @@
-import type { Result, ErrorType } from "@finance-manager/result";
+import type { Result, ErrorType } from "@finapp/result";
 
 export type AppResult<T = void, E extends ErrorType = AppError> = Result<T, E>;
 
-import { Err } from "@finance-manager/result";
+import { Err } from "@finapp/result";
 
 type NotFound = {
   _tag: "NotFound";

@@ -1,5 +1,5 @@
 {
-  "name": "@finance-manager/web",
+  "name": "@finapp/web",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,7 +12,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@finance-manager/client": "workspace:*",
+    "@finapp/client": "workspace:*",
     "@fontsource/roboto": "^5.3.0",
     "@mui/material": "^9.4.0",
     "react": "^19.2.8",

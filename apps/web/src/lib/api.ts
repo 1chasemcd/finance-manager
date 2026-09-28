@@ -1,3 +1,3 @@
-import { createApiClient } from "@finance-manager/client";
+import { createApiClient } from "@finapp/client";
 
 export const api = createApiClient("/").api;

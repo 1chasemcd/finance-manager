@@ -5,7 +5,7 @@ import type { UserRepository } from "../../users/user.repository";
 import type { CreateUser, UpdateUser, User } from "../../users/user.schemas";
 import type { AppResult } from "../../core/result";
 import { conflict, notFound } from "../../core/result";
-import { ok } from "@finance-manager/result";
+import { ok } from "@finapp/result";
 
 export class DrizzleUserRepository implements UserRepository {
   constructor(private readonly db: Db) {}

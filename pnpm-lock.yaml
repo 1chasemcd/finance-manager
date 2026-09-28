@@ -193,7 +193,7 @@ importers:
 
   apps/api:
     dependencies:
-      '@finance-manager/result':
+      '@finapp/result':
         specifier: workspace:*
         version: link:../../packages/result
       '@hono/zod-validator':
@@ -230,7 +230,7 @@ importers:
       '@emotion/styled':
         specifier: ^11.14.1
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@10.2.2))(@types/react@19.3.0)(react@19.3.0)(supports-color@10.2.2)
-      '@finance-manager/client':
+      '@finapp/client':
         specifier: workspace:*
         version: link:../../packages/client
       '@fontsource/roboto':
@@ -270,7 +270,7 @@ importers:
 
   packages/client:
     dependencies:
-      '@finance-manager/api':
+      '@finapp/api':
         specifier: workspace:*
         version: link:../../apps/api
       hono:
