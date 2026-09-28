@@ -8,7 +8,7 @@ import { mapResult } from "../core/http-result-mapper";
 const idValidator = zValidator(
   "param",
   z.object({
-    id: z.number().int().positive(),
+    id: z.coerce.number().int().positive(),
   }),
 );
 
