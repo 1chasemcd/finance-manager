@@ -1,5 +1,5 @@
 import { Err } from "@finance-manager/result";
-import type { AppError, AppResult } from "./result";
+import type { AppError, AppResult } from "../core/result";
 import type { ClientErrorStatusCode } from "hono/utils/http-status";
 import type { Context, TypedResponse } from "hono";
 import type { JSONParsed, JSONValue } from "hono/utils/types";

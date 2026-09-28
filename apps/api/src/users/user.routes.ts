@@ -1,16 +1,9 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
-import z from "zod";
 import { UserService } from "./user.service";
 import { CreateUser, UpdateUser } from "./user.schemas";
-import { mapResult } from "../core/http-result-mapper";
-
-const idValidator = zValidator(
-  "param",
-  z.object({
-    id: z.coerce.number().int().positive(),
-  }),
-);
+import { mapResult } from "../http/result-mapper";
+import { idValidator } from "../http/validators";
 
 export function createUserRoutes(users: UserService) {
   const router = new Hono();
