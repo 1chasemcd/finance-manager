@@ -8,7 +8,6 @@ export default defineConfig({
     react(),
     cloudflare({
       configPath: "../api/wrangler.jsonc",
-      // Reuse the same local D1/KV state as `wrangler dev` in apps/api
       persistState: { path: "../api/.wrangler/state" },
     }),
   ],

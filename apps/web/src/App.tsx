@@ -1,70 +1,51 @@
-import {
-  Alert,
-  CircularProgress,
-  List,
-  ListItemText,
-  ListItem,
-  Box,
-} from "@mui/material";
+import { Alert, CircularProgress, Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import { api } from "./lib/api";
 
-type User = {
-  id: number;
-  firstName: string;
-  lastName: string;
-};
+function Loading() {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+      }}
+    >
+      <CircularProgress />
+    </Box>
+  );
+}
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
-  const [users, setUsers] = useState<User[]>([]);
+  const [healthy, setHealthy] = useState<boolean>(false);
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await api.users.$get();
+        const response = await api.api.health.$get();
 
-        if (!response.ok) {
-          setError(true);
-          return;
-        }
+        if (!response.ok) return;
 
         const data = await response.json();
-        setUsers(data);
-      } catch {
-        setError(true);
+        if (data.status == "ok") setHealthy(true);
       } finally {
         setLoading(false);
       }
     };
 
     fetchUsers().catch(() => {
-      setError(true);
+      return;
     });
   }, []);
   return (
     <Box sx={{ p: 2 }}>
-      {error && <Alert severity="error">Something went wrong</Alert>}
-      {loading && (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            minHeight: "100vh",
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      )}
-      {users.length > 0 && (
-        <List>
-          {users.map((user) => (
-            <ListItem key={user.id} divider>
-              <ListItemText primary={`${user.firstName} ${user.lastName}`} />
-            </ListItem>
-          ))}
-        </List>
+      {loading ? (
+        <Loading />
+      ) : healthy ? (
+        <Alert severity="success">API is running</Alert>
+      ) : (
+        <Alert severity="error">Something went wrong</Alert>
       )}
     </Box>
   );

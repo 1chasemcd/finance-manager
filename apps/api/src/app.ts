@@ -14,5 +14,8 @@ export function createApp(config: AppConfig) {
   const userRepository = new DrizzleUserRepository(db);
   const userService = new UserService(userRepository);
 
-  return new Hono().route("/users", createUserRoutes(userService));
+  return new Hono()
+    .basePath("/api")
+    .get("/health", (c) => c.json({ status: "ok" }))
+    .route("/users", createUserRoutes(userService));
 }
