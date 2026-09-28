@@ -3,24 +3,9 @@
   "name": "api",
   "main": "src/index.ts",
   "compatibility_date": "2026-09-25",
-  // "compatibility_flags": [
-  //   "nodejs_compat"
-  // ],
-  // "vars": {
-  //   "MY_VAR": "my-variable"
-  // },
-  // "kv_namespaces": [
-  //   {
-  //     "binding": "MY_KV_NAMESPACE",
-  //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  //   }
-  // ],
-  // "r2_buckets": [
-  //   {
-  //     "binding": "MY_BUCKET",
-  //     "bucket_name": "my-bucket"
-  //   }
-  // ],
+  "vars": {
+    "CORS_ORIGINS": "http://localhost:5173",
+  },
   "d1_databases": [
     {
       "binding": "DB",
@@ -30,11 +15,4 @@
       "migrations_pattern": "drizzle/*/migration.sql",
     },
   ],
-  // "ai": {
-  //   "binding": "AI"
-  // },
-  // "observability": {
-  //   "enabled": true,
-  //   "head_sampling_rate": 1
-  // }
 }

@@ -9,7 +9,10 @@ function getApp(bindings: CloudflareBindings): AppType {
   const cached = apps.get(bindings);
   if (cached) return cached;
 
-  const app = createApp({ db: bindings.DB });
+  const app = createApp({
+    db: bindings.DB,
+    corsOrigins: bindings.CORS_ORIGINS as string,
+  });
   apps.set(bindings, app);
   return app;
 }
