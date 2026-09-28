@@ -12,7 +12,7 @@
     {
       "binding": "DB",
       "database_name": "finapp",
-      "database_id": "bae0bf5f-0710-4d14-a662-1499913086bb",
+      "database_id": "96d4a652-0084-477d-9b4e-e6b4a3f39250",
       "migrations_dir": "drizzle",
       "migrations_pattern": "drizzle/*/migration.sql",
     },
