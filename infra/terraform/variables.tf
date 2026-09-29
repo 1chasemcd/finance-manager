@@ -1,5 +1,5 @@
 
-variable "account_id" {
+variable "cloudflare_account_id" {
   description = "Cloudflare Account ID"
   type        = string
   sensitive   = true
@@ -8,6 +8,7 @@ variable "account_id" {
 variable "google_idp_client_id" {
   description = "Google IdP Client Id"
   type        = string
+  sensitive   = true
 }
 
 variable "google_idp_client_secret" {

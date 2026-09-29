@@ -7,4 +7,4 @@ terraform apply
 wrangler types --env-interface CloudflareBindings
 tsc -b && vite build
 wrangler deploy --config CLOUDFLARE_VITE_WRANGLER_CONFIG_PATH
-wrangler d1 migrations apply DB --config CLOUDFLARE_VITE_WRANGLER_CONFIG_PATH --local
+wrangler d1 migrations apply DB --config CLOUDFLARE_VITE_WRANGLER_CONFIG_PATH --remote

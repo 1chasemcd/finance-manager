@@ -1,5 +1,5 @@
 resource "cloudflare_zero_trust_access_identity_provider" "google" {
-  account_id = var.account_id
+  account_id = var.cloudflare_account_id
 
   name = "Google"
   type = "google"
@@ -11,7 +11,7 @@ resource "cloudflare_zero_trust_access_identity_provider" "google" {
 
 resource "cloudflare_zero_trust_access_policy" "allowed_emails_policy" {
   name = "Allowed Emails"
-  account_id = var.account_id
+  account_id = var.cloudflare_account_id
   decision = "allow"
   include = [
     for email in var.allowed_emails : {
@@ -23,7 +23,7 @@ resource "cloudflare_zero_trust_access_policy" "allowed_emails_policy" {
 }
 
 resource "cloudflare_zero_trust_access_application" "app" {
-  account_id = var.account_id
+  account_id = var.cloudflare_account_id
 
   name   = "finapp"
   type   = "self_hosted"

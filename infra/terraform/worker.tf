@@ -1,5 +1,5 @@
 resource "cloudflare_worker" "app" {
-  account_id = var.account_id
+  account_id = var.cloudflare_account_id
   name       = var.worker_name
 
   observability = {
@@ -19,7 +19,7 @@ resource "cloudflare_worker" "app" {
 }
 
 resource "cloudflare_worker_version" "bootstrap" {
-  account_id         = var.account_id
+  account_id         = var.cloudflare_account_id
   worker_id          = cloudflare_worker.app.id
   main_module        = "index.js"
   compatibility_date = "2026-09-25"
@@ -43,7 +43,7 @@ resource "cloudflare_worker_version" "bootstrap" {
 }
 
 resource "cloudflare_workers_deployment" "bootstrap" {
-  account_id  = var.account_id
+  account_id  = var.cloudflare_account_id
   script_name = cloudflare_worker.app.name
   strategy    = "percentage"
 
