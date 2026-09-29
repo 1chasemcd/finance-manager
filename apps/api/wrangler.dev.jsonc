@@ -3,6 +3,7 @@
   "name": "dev",
   "main": "src/index.ts",
   "compatibility_date": "2026-09-25",
+  "preview_urls": false,
   "assets": {
     "directory": "../web/dist/client",
     "binding": "ASSETS",

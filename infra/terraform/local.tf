@@ -1,4 +1,4 @@
-resource "local_file" "wrangler_config_api" {
+resource "local_file" "wrangler_config" {
   filename = "${path.module}/../../apps/api/wrangler.jsonc"
 
   content = templatefile("${path.module}/wrangler.jsonc.tftpl", {
@@ -6,9 +6,4 @@ resource "local_file" "wrangler_config_api" {
     db_name     = cloudflare_d1_database.db.name
     db_id       = cloudflare_d1_database.db.id
   })
-}
-
-resource "local_file" "wrangler_config_web" {
-  filename = "${path.module}/../../apps/web/wrangler.jsonc"
-  content = local_file.wrangler_config_api.content
 }
