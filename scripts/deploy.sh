@@ -21,4 +21,4 @@ pnpm lint
 CLOUDFLARE_VITE_WRANGLER_CONFIG_PATH=../api/wrangler.jsonc pnpm --filter @finapp/web exec vite build
 
 pnpm --filter @finapp/web exec wrangler deploy 
-pnpm --filter @finapp/api exec wrangler d1 migrations apply DB --remote --yes
+pnpm --filter @finapp/api exec wrangler d1 migrations apply DB --remote
