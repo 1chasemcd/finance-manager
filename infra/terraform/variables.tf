@@ -19,13 +19,13 @@ variable "google_idp_client_secret" {
 
 variable "worker_name" {
   description = "Worker Name"
-  type        =  string
+  type        = string
   default     = "finapp"
 }
 
 variable "db_name" {
   description = "D1 Database Name"
-  type        =  string
+  type        = string
   default     = "finapp-db"
 }
 

@@ -10,9 +10,9 @@ resource "cloudflare_zero_trust_access_identity_provider" "google" {
 }
 
 resource "cloudflare_zero_trust_access_policy" "allowed_emails_policy" {
-  name = "Allowed Emails"
+  name       = "Allowed Emails"
   account_id = var.cloudflare_account_id
-  decision = "allow"
+  decision   = "allow"
   include = [
     for email in var.allowed_emails : {
       email = {
@@ -25,21 +25,21 @@ resource "cloudflare_zero_trust_access_policy" "allowed_emails_policy" {
 resource "cloudflare_zero_trust_access_application" "app" {
   account_id = var.cloudflare_account_id
 
-  name   = "finapp"
-  type   = "self_hosted"
+  name = var.worker_name
+  type = "self_hosted"
 
-  allowed_idps = [ cloudflare_zero_trust_access_identity_provider.google.id ]
+  allowed_idps = [cloudflare_zero_trust_access_identity_provider.google.id]
 
   auto_redirect_to_identity = true
 
-  destinations = [ {
-    type = "worker"
+  destinations = [{
+    type      = "worker"
     worker_id = cloudflare_worker.app.id
-  } ]
+  }]
 
   policies = [
     {
-      id = cloudflare_zero_trust_access_policy.allowed_emails_policy.id,
+      id         = cloudflare_zero_trust_access_policy.allowed_emails_policy.id,
       precedence = 1
     }
   ]
