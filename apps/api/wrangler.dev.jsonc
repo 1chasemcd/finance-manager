@@ -1,20 +1,19 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "finapp",
+  "name": "dev",
   "main": "src/index.ts",
   "compatibility_date": "2026-09-25",
   "assets": {
     "directory": "../web/dist/client",
     "binding": "ASSETS",
-    "not_found_handling": "single-page-application"
+    "not_found_handling": "single-page-application",
   },
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "finapp-db",
-      "database_id": "5a975896-4c37-43fd-abba-471198466876",
+      "database_name": "dev-db",
       "migrations_dir": "drizzle",
-      "migrations_pattern": "drizzle/*/migration.sql"
-    }
-  ]
+      "migrations_pattern": "drizzle/*/migration.sql",
+    },
+  ],
 }
