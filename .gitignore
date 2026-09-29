@@ -30,6 +30,10 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# terraform
+.terraform/
+terraform.tfstate*
+
 # misc
 .DS_Store
 *.tsbuildinfo
