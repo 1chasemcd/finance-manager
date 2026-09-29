@@ -24,14 +24,12 @@ export default defineConfig([
     rules: {
       "@typescript-eslint/consistent-type-definitions": ["error", "type"],
     },
-    plugins: {
-      "@typescript-eslint": tseslint.plugin,
-    },
     languageOptions: {
-      parser: tseslint.parser,
+      parserOptions: {
+        projectService: true,
+      },
     },
   },
-
   {
     files: ["**/*.d.ts"],
     rules: {
@@ -43,54 +41,12 @@ export default defineConfig([
     extends: [reactHooks.configs.flat.recommended, reactRefresh.configs.vite],
     languageOptions: {
       globals: globals.browser,
-      parser: tseslint.parser,
-      parserOptions: {
-        projectService: {
-          defaultProject: "apps/web/tsconfig.json",
-        },
-      },
     },
   },
   {
-    files: ["apps/api/**/*.{ts,js}"],
+    files: ["apps/api/**/*.{ts,js}", "packages/{client,result}/**/*.{ts,js}"],
     languageOptions: {
       globals: globals.node,
-      parser: tseslint.parser,
-      parserOptions: {
-        projectService: {
-          defaultProject: "apps/api/tsconfig.json",
-        },
-      },
-    },
-    rules: {
-      "@typescript-eslint/triple-slash-reference": [
-        "error",
-        { path: "always" },
-      ],
-    },
-  },
-  {
-    files: ["packages/client/**/*.{ts,js}"],
-    languageOptions: {
-      globals: globals.node,
-      parser: tseslint.parser,
-      parserOptions: {
-        projectService: {
-          defaultProject: "packages/client/tsconfig.json",
-        },
-      },
-    },
-  },
-  {
-    files: ["packages/result/**/*.{ts,js}"],
-    languageOptions: {
-      globals: globals.node,
-      parser: tseslint.parser,
-      parserOptions: {
-        projectService: {
-          defaultProject: "packages/result/tsconfig.json",
-        },
-      },
     },
   },
 ]);
