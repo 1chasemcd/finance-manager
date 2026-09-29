@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "finapp",
+  "name": "${worker_name}",
   "main": "src/index.ts",
   "compatibility_date": "2026-09-25",
   "assets": {
@@ -11,8 +11,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "finapp-db",
-      "database_id": "5a975896-4c37-43fd-abba-471198466876",
+      "database_name": "${db_name}",
+      "database_id": "${db_id}",
       "migrations_dir": "drizzle",
       "migrations_pattern": "drizzle/*/migration.sql"
     }
