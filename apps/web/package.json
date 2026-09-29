@@ -4,10 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "deploy": "pnpm build && wrangler deploy",
-    "preview": "vite preview"
+    "dev": "CLOUDFLARE_VITE_WRANGLER_CONFIG_PATH=\"../api/wrangler.dev.jsonc\" vite dev",
+    "preview": "CLOUDFLARE_VITE_WRANGLER_CONFIG_PATH=\"../api/wrangler.dev.jsonc\" vite preview"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
