@@ -33,7 +33,8 @@ export function mapResult<T extends JSONValue>(
       x === undefined
         ? // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
           (c.body(null, 204) as EmptyResponse)
-        : (c.json(x, 200) as SuccessResponse<T>),
+        : // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+          (c.json(x, 200) as SuccessResponse<T>),
     NotFound: (x) => c.json(`${x.resource} not found.`, 404),
     Forbidden: (x) => c.json(x.reason, 403),
     Validation: (x) => c.json(x.issues[0]?.path, 400),

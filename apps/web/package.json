@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "CLOUDFLARE_VITE_WRANGLER_CONFIG_PATH=\"../api/wrangler.dev.jsonc\" vite dev",
-    "preview": "CLOUDFLARE_VITE_WRANGLER_CONFIG_PATH=\"../api/wrangler.dev.jsonc\" vite preview"
+    "preview": "CLOUDFLARE_VITE_WRANGLER_CONFIG_PATH=\"../api/wrangler.dev.jsonc\" vite build && vite preview"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

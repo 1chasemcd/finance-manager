@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm --filter @finapp/web dev",
-    "build": "pnpm -r run build",
-    "lint": "eslint .",
-    "deploy": "pnpm --filter @finapp/web deploy"
+    "preview": "pnpm --filter @finapp/web preview",
+    "typecheck": "tsc -b apps/* packages/*",
+    "lint": "eslint ."
   },
   "keywords": [],
   "author": "",

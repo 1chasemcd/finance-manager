@@ -1,5 +1,3 @@
-// @ts-check
-
 import js from "@eslint/js";
 import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
@@ -17,6 +15,7 @@ export default defineConfig([
     "**/.vite/",
     "**/.wrangler/",
     "**/worker-configuration.d.ts",
+    "eslint.config.js",
   ]),
   js.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
@@ -30,12 +29,6 @@ export default defineConfig([
     },
     languageOptions: {
       parser: tseslint.parser,
-      parserOptions: {
-        projectService: {
-          allowDefaultProject: ["eslint.config.js"],
-          defaultProject: "tsconfig.json",
-        },
-      },
     },
   },
 
@@ -50,15 +43,54 @@ export default defineConfig([
     extends: [reactHooks.configs.flat.recommended, reactRefresh.configs.vite],
     languageOptions: {
       globals: globals.browser,
+      parser: tseslint.parser,
+      parserOptions: {
+        projectService: {
+          defaultProject: "apps/web/tsconfig.json",
+        },
+      },
     },
   },
   {
     files: ["apps/api/**/*.{ts,js}"],
     languageOptions: {
       globals: globals.node,
+      parser: tseslint.parser,
+      parserOptions: {
+        projectService: {
+          defaultProject: "apps/api/tsconfig.json",
+        },
+      },
     },
     rules: {
-      "@typescript-eslint/triple-slash-reference": ["error", { path: "always" }],
+      "@typescript-eslint/triple-slash-reference": [
+        "error",
+        { path: "always" },
+      ],
+    },
+  },
+  {
+    files: ["packages/client/**/*.{ts,js}"],
+    languageOptions: {
+      globals: globals.node,
+      parser: tseslint.parser,
+      parserOptions: {
+        projectService: {
+          defaultProject: "packages/client/tsconfig.json",
+        },
+      },
+    },
+  },
+  {
+    files: ["packages/result/**/*.{ts,js}"],
+    languageOptions: {
+      globals: globals.node,
+      parser: tseslint.parser,
+      parserOptions: {
+        projectService: {
+          defaultProject: "packages/result/tsconfig.json",
+        },
+      },
     },
   },
 ]);
