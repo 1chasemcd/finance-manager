@@ -1,4 +1,4 @@
-output "worker_id" {
+output "worker_name" {
   description = "The Worker name"
   value       = cloudflare_worker.app.name
 }

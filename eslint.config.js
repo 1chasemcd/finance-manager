@@ -18,9 +18,12 @@ export default defineConfig([
     "eslint.config.js",
   ]),
   js.configs.recommended,
-  ...tseslint.configs.strictTypeChecked,
-  ...tseslint.configs.stylisticTypeChecked,
   {
+    files: ["**/*.{ts,tsx,mts,cts}"],
+    extends: [
+      ...tseslint.configs.strictTypeChecked,
+      ...tseslint.configs.stylisticTypeChecked,
+    ],
     rules: {
       "@typescript-eslint/consistent-type-definitions": ["error", "type"],
     },
@@ -44,9 +47,12 @@ export default defineConfig([
     },
   },
   {
-    files: ["apps/api/**/*.{ts,js}", "packages/{client,result}/**/*.{ts,js}"],
+    files: ["apps/api/**/*.{ts,js}", "scripts/**/*.{js,mjs,cjs}"],
     languageOptions: {
       globals: globals.node,
     },
+  },
+  {
+    files: ["packages/{client,result}/**/*.{ts,js}"],
   },
 ]);
