@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm --filter @finapp/web dev",
-    "preview": "pnpm --filter @finapp/web preview",
+    "dev": "pnpm -r --parallel dev",
     "typecheck": "tsc -b apps/* packages/*",
     "lint": "eslint ."
   },
