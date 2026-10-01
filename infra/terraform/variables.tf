@@ -29,6 +29,18 @@ variable "db_name" {
   default     = "finapp-db"
 }
 
+variable "domain_name" {
+  description = "Cloudflare zone apex serving the app"
+  type        = string
+  default     = "mcdnld.cc"
+}
+
+variable "app_subdomain" {
+  description = "Subdomain the app is served from"
+  type        = string
+  default     = "finapp"
+}
+
 variable "allowed_emails" {
   description = "Allowed Email Addresses"
   type        = set(string)

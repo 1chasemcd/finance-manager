@@ -12,3 +12,8 @@ output "db_name" {
   description = "The D1 database name"
   value       = cloudflare_d1_database.db.name
 }
+
+output "app_url" {
+  description = "The public URL of the app"
+  value       = "https://${local.app_hostname}"
+}
