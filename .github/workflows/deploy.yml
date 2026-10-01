@@ -42,7 +42,7 @@ jobs:
       - name: Terraform Init and Apply
         run: |
           terraform init -input=false
-          terraform apply -input=false
+          terraform apply -input=false -auto-approve
           terraform output -json > "$RUNNER_TEMP/outputs.json"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
