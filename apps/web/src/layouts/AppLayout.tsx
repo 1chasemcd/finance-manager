@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import { Outlet } from "react-router";
-import AppSider from "../components/AppSider/AppSider";
+import AppDrawer from "../components/AppDrawer/AppDrawer";
 
 export default function AppLayout() {
   return (
@@ -11,7 +11,7 @@ export default function AppLayout() {
         overflow: "hidden",
       }}
     >
-      <AppSider />
+      <AppDrawer />
 
       <Box
         component="main"
