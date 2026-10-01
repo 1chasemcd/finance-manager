@@ -38,4 +38,3 @@ terraform.tfstate*
 .DS_Store
 *.tsbuildinfo
 *.local
-worker-configuration.d.ts
