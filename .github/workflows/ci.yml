@@ -9,6 +9,9 @@ jobs:
   checks:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -19,5 +22,23 @@ jobs:
           runtime: node@lts
           cache: true
 
-      - name: Run CI
-        run: ./scripts/checks.sh
+      - name: Setup terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Validate terraform
+        working-directory: ./infra/terraform
+        run: |
+          terraform fmt -check -recursive
+          terraform init -backend=false
+          terraform validate
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Build
+        run: |
+          pnpm --dir ./apps/web run build
+          pnpm --dir ./apps/api wrangler deploy --dry-run --name ci

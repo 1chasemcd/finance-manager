@@ -5,14 +5,57 @@ on:
     branches:
       - main
 
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
 jobs:
+  tf-plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    environment: production-readonly
+
+    defaults:
+      run:
+        working-directory: ./infra/terraform
+
+    permissions:
+      contents: read
+
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      TF_VAR_cloudflare_account_id: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+      TF_VAR_google_idp_client_id: ${{ secrets.GOOGLE_IDP_CLIENT_ID }}
+      TF_VAR_google_idp_client_secret: ${{ secrets.GOOGLE_IDP_CLIENT_SECRET }}
+      TF_VAR_allowed_emails: ${{ vars.ALLOWED_EMAILS }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init -input=false
+
+      - name: Terraform Plan
+        run: terraform plan -input=false -out=tfplan
+
+      - name: Show Plan
+        run: terraform show -no-color tfplan
+
   deploy:
+    name: Deploy
     runs-on: ubuntu-latest
     environment: production
+    needs: tf-plan
 
-    concurrency:
-      group: production-deploy
-      cancel-in-progress: false
+    defaults:
+      run:
+        working-directory: ./infra/terraform
 
     permissions:
       contents: read
@@ -39,5 +82,27 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Run Deploy
-        run: ./scripts/deploy.sh
+      - name: Terraform Init
+        run: terraform init -input=false
+
+      - name: Terraform Apply
+        run: terraform apply -input=false
+
+      - name: Collect Outputs
+        run: terraform output -json > "$RUNNER_TEMP/outputs.json"
+
+      - name: Build web
+        working-directory: ./apps/web
+        run: pnpm run build
+
+      - name: Configure Wrangler
+        working-directory: ./scripts
+        run: cat $RUNNER_TEMP/outputs.json | ./configure-wrangler.mjs
+
+      - name: Migrate db
+        working-directory: ./apps/api
+        run: pnpm run db:migrate:remote
+
+      - name: Deploy Wrangler
+        working-directory: ./apps/api
+        run: pnpm run deploy
