@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "./AppSider.css";
 import {
   Box,
   Divider,
@@ -44,6 +43,10 @@ export default function AppSider() {
       variant="permanent"
       sx={{
         whiteSpace: "nowrap",
+        "& .MuiDrawer-paper": {
+          position: "relative",
+          transition: "width 0.3s ease",
+        },
       }}
     >
       <Box
@@ -56,7 +59,7 @@ export default function AppSider() {
       >
         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: 36 }}>
           <Logo
-            size={20}
+            size={22}
             style={{
               background: "purple",
               color: "white",
@@ -68,9 +71,11 @@ export default function AppSider() {
         <Typography
           variant="h6"
           sx={{
+            display: "grid",
+            gridTemplateColumns: collapsed ? "minmax(0, 0fr)" : "minmax(0, 1fr)",
             overflow: "hidden",
             opacity: collapsed ? 0 : 1,
-            width: collapsed ? 0 : "auto",
+            transition: "grid-template-columns 0.3s ease, opacity 0.3s ease",
           }}
         >
           Finance Manager
@@ -81,7 +86,7 @@ export default function AppSider() {
 
       <List>
         {menuItems.map((item) => (
-          <ListItemButton key={item.label} sx={{}}>
+          <ListItemButton key={item.label}>
             <ListItemIcon
               sx={{
                 justifyContent: "center",
@@ -93,9 +98,11 @@ export default function AppSider() {
             <ListItemText
               primary={item.label}
               sx={{
+                display: "grid",
+                gridTemplateColumns: collapsed ? "minmax(0, 0fr)" : "minmax(0, 1fr)",
                 overflow: "hidden",
                 opacity: collapsed ? 0 : 1,
-                width: collapsed ? 0 : "auto",
+                transition: "grid-template-columns 0.3s ease, opacity 0.3s ease",
               }}
             />
           </ListItemButton>
