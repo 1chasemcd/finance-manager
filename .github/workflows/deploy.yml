@@ -67,4 +67,7 @@ jobs:
 
       - name: Deploy Wrangler
         working-directory: ./apps/api
-        run: pnpm wrangler deploy --message "Deploy #${{ github.run_number }} by ${{ github.actor }}" --tag "${{ github.sha }}"
+        env:
+          DEPLOY_MESSAGE: "Deploy #${{ github.run_number }} by ${{ github.actor }}"
+        run: |
+          pnpm wrangler deploy --message "$DEPLOY_MESSAGE" --tag "${{ github.sha }}"
