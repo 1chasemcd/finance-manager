@@ -37,6 +37,9 @@ jobs:
       - name: Format Check
         run: pnpm run format:check
 
+      - name: Test
+        run: pnpm run test
+
       - name: Build
         run: |
           pnpm --dir ./apps/web run build
