@@ -55,6 +55,9 @@ jobs:
 
     if: github.event.pull_request.head.repo.full_name == github.repository
 
+    outputs:
+      plan_has_changes: ${{ steps.plan.outputs.plan_has_changes }}
+
     defaults:
       run:
         working-directory: ./infra/terraform
@@ -71,13 +74,31 @@ jobs:
         with:
           terraform_wrapper: false
 
-      - name: Terraform Validate and Plan
+      - name: Terraform Validate
         run: |
           terraform fmt -check -recursive
           terraform init -input=false
           terraform validate
-          terraform plan -input=false -out "$RUNNER_TEMP/plan.tfplan"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          set +e
+          terraform plan -input=false -detailed-exitcode -out "$RUNNER_TEMP/plan.tfplan"
+          plan_exit=$?
+          set -e
+          if [ "$plan_exit" -eq 1 ]; then
+            exit 1
+          fi
           terraform show -no-color "$RUNNER_TEMP/plan.tfplan" > "$RUNNER_TEMP/plan.txt"
+          if [ "$plan_exit" -eq 2 ]; then
+            echo "plan_has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "plan_has_changes=false" >> "$GITHUB_OUTPUT"
+          fi
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
@@ -91,3 +112,30 @@ jobs:
         if: always()
         working-directory: ./scripts
         run: ./build-tf-summary.mjs "$RUNNER_TEMP/plan.txt" >> "$GITHUB_STEP_SUMMARY"
+
+  auto-approve:
+    name: Auto Approve
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    needs:
+      - validate-code
+      - validate-tf
+
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      needs.validate-tf.outputs.plan_has_changes == 'false'
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Approve Pull Request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: >-
+          gh pr review "$PR_NUMBER" --approve
+          --body "All checks passed and the Terraform plan contains no changes."
