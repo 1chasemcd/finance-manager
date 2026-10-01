@@ -50,7 +50,7 @@ function App() {
       {loading ? (
         <Loading />
       ) : healthy ? (
-        <Alert severity="success">App is running</Alert>
+        <Alert severity="success">The app is running</Alert>
       ) : (
         <Alert severity="error">Something went wrong</Alert>
       )}
