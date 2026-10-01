@@ -27,6 +27,10 @@ jobs:
         with:
           runtime: node@lts
           cache: true
+          require-lockfile: true
+
+      - name: Audit Production Dependencies
+        run: pnpm audit --prod
 
       - name: Typecheck
         run: pnpm run typecheck
@@ -39,6 +43,25 @@ jobs:
 
       - name: Test
         run: pnpm run test
+
+      - name: Check Drizzle Migrations Are Up to Date
+        run: |
+          pnpm --dir ./apps/api run db:generate
+          if [ -n "$(git status --porcelain -- apps/api/drizzle)" ]; then
+            echo "::error::Schema changed but migrations were not regenerated. Run 'pnpm --dir ./apps/api db:generate' and commit the result."
+            git status --porcelain -- apps/api/drizzle
+            git diff -- apps/api/drizzle
+            exit 1
+          fi
+
+      - name: Check Wrangler Types Are Up to Date
+        run: |
+          pnpm --dir ./apps/api run cf-typegen
+          if [ -n "$(git status --porcelain -- apps/api/worker-configuration.d.ts)" ]; then
+            echo "::error::worker-configuration.d.ts is stale. Run 'pnpm --dir ./apps/api cf-typegen' and commit the result."
+            git diff -- apps/api/worker-configuration.d.ts
+            exit 1
+          fi
 
       - name: Build
         run: |

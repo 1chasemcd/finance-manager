@@ -35,6 +35,7 @@ jobs:
         with:
           runtime: node@lts
           cache: true
+          require-lockfile: true
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v4
