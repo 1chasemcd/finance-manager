@@ -80,6 +80,7 @@ jobs:
         run: |
           terraform init -input=false
           terraform apply -input=false
+          terraform output -json > "$RUNNER_TEMP/outputs.json"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -87,9 +88,6 @@ jobs:
           TF_VAR_google_idp_client_id: ${{ secrets.GOOGLE_IDP_CLIENT_ID }}
           TF_VAR_google_idp_client_secret: ${{ secrets.GOOGLE_IDP_CLIENT_SECRET }}
           TF_VAR_allowed_emails: ${{ vars.ALLOWED_EMAILS }}
-
-      - name: Collect Outputs
-        run: terraform output -json > "$RUNNER_TEMP/outputs.json"
 
       - name: Build web
         working-directory: ./apps/web
