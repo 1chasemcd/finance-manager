@@ -4,18 +4,13 @@ import type { ClientErrorStatusCode } from "hono/utils/http-status";
 import type { Context, TypedResponse } from "hono";
 import type { JSONParsed, JSONValue } from "hono/utils/types";
 
-type SuccessResponse<T extends JSONValue> = Response &
-  TypedResponse<T, 200, "json">;
+type SuccessResponse<T extends JSONValue> = Response & TypedResponse<T, 200, "json">;
 
 type EmptyResponse = Response & TypedResponse<null, 204, "body">;
 
-type ErrorResponse = Response &
-  TypedResponse<JSONParsed<string>, ClientErrorStatusCode, "json">;
+type ErrorResponse = Response & TypedResponse<JSONParsed<string>, ClientErrorStatusCode, "json">;
 
-type MapResponse<T extends JSONValue> =
-  | SuccessResponse<T>
-  | EmptyResponse
-  | ErrorResponse;
+type MapResponse<T extends JSONValue> = SuccessResponse<T> | EmptyResponse | ErrorResponse;
 
 export function mapResult(c: Context, error: Err<AppError>): ErrorResponse;
 export function mapResult(c: Context, result: AppResult): EmptyResponse;

@@ -35,6 +35,7 @@ jobs:
         with:
           runtime: node@lts
           cache: true
+          require-lockfile: true
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v4
@@ -60,10 +61,10 @@ jobs:
         working-directory: ./scripts
         run: cat $RUNNER_TEMP/outputs.json | ./configure-wrangler.mjs
 
-      - name: Migrate db
+      - name: Migrate Database
         working-directory: ./apps/api
         run: pnpm wrangler d1 migrations apply DB --remote
 
       - name: Deploy Wrangler
         working-directory: ./apps/api
-        run: pnpm wrangler deploy --message "Deploy \#${{ github.run_number }} by ${{ github.actor }}" --tag "${{ github.sha }}"
+        run: pnpm wrangler deploy --message "Deploy #${{ github.run_number }} by ${{ github.actor }}" --tag "${{ github.sha }}"

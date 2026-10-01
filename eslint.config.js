@@ -20,10 +20,7 @@ export default defineConfig([
   js.configs.recommended,
   {
     files: ["**/*.{ts,tsx,mts,cts}"],
-    extends: [
-      ...tseslint.configs.strictTypeChecked,
-      ...tseslint.configs.stylisticTypeChecked,
-    ],
+    extends: [...tseslint.configs.strictTypeChecked, ...tseslint.configs.stylisticTypeChecked],
     rules: {
       "@typescript-eslint/consistent-type-definitions": ["error", "type"],
     },

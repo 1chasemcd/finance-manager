@@ -1,0 +1,26 @@
+# deps / build output
+node_modules/
+dist/
+dist-ssr/
+build/
+.vite/
+.wrangler/
+*.tsbuildinfo
+
+# generated
+worker-configuration.d.ts
+apps/api/drizzle/
+
+# lockfiles
+pnpm-lock.yaml
+
+# terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# misc
+*.local
+.env
+.env.*
+.dev.vars

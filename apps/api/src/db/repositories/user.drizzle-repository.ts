@@ -11,11 +11,7 @@ export class DrizzleUserRepository implements UserRepository {
   constructor(private readonly db: Db) {}
 
   async lookup(id: number): Promise<AppResult<User>> {
-    const [ent] = await this.db
-      .select()
-      .from(users)
-      .where(eq(users.id, id))
-      .limit(1);
+    const [ent] = await this.db.select().from(users).where(eq(users.id, id)).limit(1);
     if (ent) return ok(ent);
     return notFound("user", id);
   }
@@ -31,11 +27,7 @@ export class DrizzleUserRepository implements UserRepository {
   }
 
   async update(id: number, request: UpdateUser): Promise<AppResult<User>> {
-    const [updated] = await this.db
-      .update(users)
-      .set(request)
-      .where(eq(users.id, id))
-      .returning();
+    const [updated] = await this.db.update(users).set(request).where(eq(users.id, id)).returning();
     if (!updated) return notFound("user", id);
     return ok(updated);
   }
