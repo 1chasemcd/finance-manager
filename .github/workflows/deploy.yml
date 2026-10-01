@@ -10,48 +10,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  tf-plan:
-    name: Terraform Plan
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    environment: production-readonly
-
-    defaults:
-      run:
-        working-directory: ./infra/terraform
-
-    permissions:
-      contents: read
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v4
-
-      - name: Terraform Init and Plan
-        run: |
-          terraform init -input=false
-          terraform plan -input=false -out=tfplan
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          TF_VAR_cloudflare_account_id: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
-          TF_VAR_google_idp_client_id: ${{ secrets.GOOGLE_IDP_CLIENT_ID }}
-          TF_VAR_google_idp_client_secret: ${{ secrets.GOOGLE_IDP_CLIENT_SECRET }}
-          TF_VAR_allowed_emails: ${{ vars.ALLOWED_EMAILS }}
-
-      - name: Show Plan
-        run: terraform show -no-color tfplan
-
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: production
-    needs: tf-plan
 
     defaults:
       run:
