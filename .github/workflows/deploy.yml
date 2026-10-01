@@ -62,8 +62,8 @@ jobs:
 
       - name: Migrate db
         working-directory: ./apps/api
-        run: pnpm run db:migrate:remote
+        run: pnpm wrangler d1 migrations apply DB --remote
 
       - name: Deploy Wrangler
         working-directory: ./apps/api
-        run: pnpm run deploy
+        run: pnpm wrangler deploy --message "Deploy \#${{ github.run_number }} by ${{ github.actor }}" --tag "${{ github.sha }}"
