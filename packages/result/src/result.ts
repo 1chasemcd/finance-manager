@@ -30,20 +30,14 @@ class _Result<T, E extends ErrorType> {
     if (this._ok) return cases.Ok(this.value as T);
 
     const error = this.value as E;
-    let errorHandler = cases[error._tag as keyof typeof cases] as
-      | ((error: E) => U)
-      | undefined;
+    let errorHandler = cases[error._tag as keyof typeof cases] as ((error: E) => U) | undefined;
     errorHandler ??= "Default" in cases ? cases.Default : undefined;
     if (!errorHandler) throw new Error(`Unhandled error tag: ${error._tag}`);
     return errorHandler(error);
   }
 
   equals(that: unknown): boolean {
-    return (
-      that instanceof _Result &&
-      this._ok === that._ok &&
-      this.value === that.value
-    );
+    return that instanceof _Result && this._ok === that._ok && this.value === that.value;
   }
 
   toJSON() {

@@ -34,6 +34,9 @@ jobs:
       - name: Lint
         run: pnpm run lint
 
+      - name: Format Check
+        run: pnpm run format:check
+
       - name: Build
         run: |
           pnpm --dir ./apps/web run build
