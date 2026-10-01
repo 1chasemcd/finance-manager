@@ -81,19 +81,7 @@ jobs:
           TF_VAR_google_idp_client_secret: ${{ secrets.GOOGLE_IDP_CLIENT_SECRET }}
           TF_VAR_allowed_emails: ${{ vars.ALLOWED_EMAILS }}
 
-      - name: Publish plan to step summary
+      - name: Build Step Summary
         if: always()
-        env:
-          PLAN_STATUS: ${{ job.status }}
-        run: |
-          {
-            echo "## Terraform Plan ($PLAN_STATUS)"
-            echo
-            echo '```terraform'
-            if [ -f "$RUNNER_TEMP/plan.txt" ]; then
-              cat "$RUNNER_TEMP/plan.txt"
-            else
-              echo "no plan output — see the workflow log for details"
-            fi
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
+        working-directory: ./scripts
+        run: ./build-tf-summary.mjs "$RUNNER_TEMP/plan.txt" >> "$GITHUB_STEP_SUMMARY"

@@ -60,7 +60,7 @@ jobs:
         working-directory: ./scripts
         run: cat $RUNNER_TEMP/outputs.json | ./configure-wrangler.mjs
 
-      - name: Migrate db
+      - name: Migrate Database
         working-directory: ./apps/api
         run: pnpm wrangler d1 migrations apply DB --remote
 
