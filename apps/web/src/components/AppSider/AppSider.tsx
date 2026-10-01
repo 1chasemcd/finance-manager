@@ -45,7 +45,6 @@ export default function AppSider() {
         whiteSpace: "nowrap",
         "& .MuiDrawer-paper": {
           position: "relative",
-          transition: "width 0.3s ease",
         },
       }}
     >
