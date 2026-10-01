@@ -66,13 +66,12 @@ jobs:
           terraform_wrapper: false
 
       - name: Terraform Validate and Plan
-        shell: bash
         run: |
           terraform fmt -check -recursive
           terraform init -input=false
           terraform validate
-          set -o pipefail
-          terraform plan -input=false -no-color 2>&1 | tee "$RUNNER_TEMP/plan.txt"
+          terraform plan -input=false -out "$RUNNER_TEMP/plan.tfplan"
+          terraform show -no-color "$RUNNER_TEMP/plan.tfplan" > "$RUNNER_TEMP/plan.txt"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
