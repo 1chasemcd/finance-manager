@@ -34,13 +34,13 @@ export const paths = {
   notFound: "*",
 };
 
-type RouteEntry = {
+interface RouteEntry {
   type: "route";
   path: string;
   label: string;
   Icon: React.ComponentType<SvgIconProps>;
   Component: React.ComponentType;
-};
+}
 
 function route(entry: Omit<RouteEntry, "type">): RouteEntry {
   return { ...entry, type: "route" };

@@ -4,29 +4,29 @@ export type AppResult<T = void, E extends ErrorType = AppError> = Result<T, E>;
 
 import { Err } from "@finapp/result";
 
-type NotFound = {
+interface NotFound {
   _tag: "NotFound";
   resource: string;
   id: number;
-};
+}
 
-type Forbidden = {
+interface Forbidden {
   _tag: "Forbidden";
   reason: string;
-};
+}
 
-type Validation = {
+interface Validation {
   _tag: "Validation";
   issues: {
     path: string;
     message: string;
   }[];
-};
+}
 
-type Conflict = {
+interface Conflict {
   _tag: "Conflict";
   message: string;
-};
+}
 
 export type AppError = NotFound | Forbidden | Validation | Conflict;
 

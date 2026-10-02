@@ -21,9 +21,6 @@ export default defineConfig([
   {
     files: ["**/*.{ts,tsx,mts,cts}"],
     extends: [...tseslint.configs.strictTypeChecked, ...tseslint.configs.stylisticTypeChecked],
-    rules: {
-      "@typescript-eslint/consistent-type-definitions": ["error", "type"],
-    },
     languageOptions: {
       parserOptions: {
         projectService: true,

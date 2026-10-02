@@ -1,7 +1,6 @@
-export type ErrorType = {
+export interface ErrorType {
   _tag: string;
-  [key: string]: unknown;
-};
+}
 
 type MatchCases<T, E extends ErrorType, U> = {
   Ok: (data: T) => U;

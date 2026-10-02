@@ -17,12 +17,12 @@ import { NavLink } from "react-router";
 import { Logo } from "../Logo";
 import { navEntries } from "../../routes";
 
-type AppDrawerContentProps = {
+interface AppDrawerContentProps {
   collapsed: boolean;
   isMobile: boolean;
   onCollapseToggle: () => void;
   onNavigate: () => void;
-};
+}
 
 const collapsibleLabelSx = (collapsed: boolean): SxProps<Theme> => ({
   display: "grid",
