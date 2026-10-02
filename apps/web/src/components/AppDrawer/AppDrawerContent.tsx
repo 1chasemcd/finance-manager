@@ -9,10 +9,13 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import { alpha } from "@mui/material/styles";
+import { NavLink } from "react-router";
 import { Logo } from "../Logo";
-import { navItems } from "./navItems";
+import { navEntries } from "../../routes";
 
 type AppDrawerContentProps = {
   collapsed: boolean;
@@ -29,12 +32,25 @@ const collapsibleLabelSx = (collapsed: boolean): SxProps<Theme> => ({
   transition: "grid-template-columns 0.3s ease, opacity 0.3s ease",
 });
 
+const navItemSx = (theme: Theme) => ({
+  "&.active": {
+    color: "primary.main",
+    fontWeight: 600,
+    bgcolor: alpha(theme.palette.primary.main, 0.12),
+    "& .MuiListItemIcon-root": { color: "primary.main" },
+    "&:hover, &:focus-visible": {
+      bgcolor: alpha(theme.palette.primary.main, 0.2),
+    },
+  },
+});
+
 export function AppDrawerContent({
   collapsed,
   isMobile,
   onCollapseToggle,
   onNavigate,
 }: AppDrawerContentProps) {
+  const theme = useTheme();
   const labelSx = collapsibleLabelSx(collapsed);
 
   return (
@@ -44,8 +60,8 @@ export function AppDrawerContent({
           <Logo
             size={22}
             style={{
-              background: "purple",
-              color: "white",
+              backgroundColor: theme.palette.primary.main,
+              color: theme.palette.primary.contrastText,
               borderRadius: 4,
               boxSizing: "border-box",
             }}
@@ -59,8 +75,14 @@ export function AppDrawerContent({
       <Divider />
 
       <List>
-        {navItems.map(({ label, icon: Icon }) => (
-          <ListItemButton key={label} onClick={isMobile ? onNavigate : undefined}>
+        {navEntries.map(({ path, label, Icon: Icon }) => (
+          <ListItemButton
+            key={path}
+            component={NavLink}
+            to={path}
+            onClick={isMobile ? onNavigate : undefined}
+            sx={navItemSx}
+          >
             <ListItemIcon sx={{ justifyContent: "center" }}>
               <Icon />
             </ListItemIcon>
