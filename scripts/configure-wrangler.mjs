@@ -12,6 +12,8 @@ const wrangler = path.join(root, "apps/api/wrangler.jsonc");
 const config = parse(fs.readFileSync(wrangler, "utf8"));
 
 config.name = terraformOutput.worker_name.value;
+config.vars.POLICY_AUD = terraformOutput.access_app_aud_tag.value;
+config.vars.TEAM_DOMAIN = terraformOutput.zt_team_domain.value;
 config.d1_databases[0].database_name = terraformOutput.db_name.value;
 config.d1_databases[0].database_id = terraformOutput.db_id.value;
 

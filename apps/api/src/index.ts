@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
-/// <reference path="../worker-configuration.d.ts" />
+/// <reference path="./types/worker-configuration.d.ts" />
 import { createApp } from "./app";
 
 export type AppType = ReturnType<typeof createApp>;
