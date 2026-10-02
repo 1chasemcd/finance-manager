@@ -1,13 +1,12 @@
-import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { UserService } from "./user.service";
 import { CreateUser, UpdateUser } from "./user.schemas";
 import { mapResult } from "../http/result-mapper";
 import { idValidator } from "../http/validators";
+import router from "../http/router";
 
 export function createUserRoutes(users: UserService) {
-  const router = new Hono();
-  return router
+  return router()
     .get("/", async (c) => {
       const res = await users.getall();
       return mapResult(c, res);
