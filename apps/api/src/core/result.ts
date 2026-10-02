@@ -4,18 +4,23 @@ export type AppResult<T = void, E extends ErrorType = AppError> = Result<T, E>;
 
 import { Err } from "@finapp/result";
 
-interface NotFound {
+export interface NotFound {
   _tag: "NotFound";
   resource: string;
   id: number;
 }
 
-interface Forbidden {
-  _tag: "Forbidden";
-  reason: string;
+export interface Unauthorized {
+  _tag: "Unauthorized";
+  message: string;
 }
 
-interface Validation {
+export interface Forbidden {
+  _tag: "Forbidden";
+  message: string;
+}
+
+export interface Validation {
   _tag: "Validation";
   issues: {
     path: string;
@@ -23,12 +28,12 @@ interface Validation {
   }[];
 }
 
-interface Conflict {
+export interface Conflict {
   _tag: "Conflict";
   message: string;
 }
 
-export type AppError = NotFound | Forbidden | Validation | Conflict;
+export type AppError = NotFound | Unauthorized | Forbidden | Validation | Conflict;
 
 export const notFound = (resource: string, id: number): Err<NotFound> => {
   return new Err({
@@ -46,11 +51,19 @@ export const conflict = (message?: string): Err<Conflict> => {
   });
 };
 
-export const forbidden = (reason?: string): Err<Forbidden> => {
-  reason ??= "The requested operation is forbidden.";
+export const unauthorized = (message?: string): Err<Unauthorized> => {
+  message ??= "Authentication required or invalid credentials.";
+  return new Err({
+    _tag: "Unauthorized",
+    message,
+  });
+};
+
+export const forbidden = (message?: string): Err<Forbidden> => {
+  message ??= "The requested operation is forbidden.";
   return new Err({
     _tag: "Forbidden",
-    reason,
+    message,
   });
 };
 

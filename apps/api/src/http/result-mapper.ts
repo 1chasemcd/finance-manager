@@ -30,9 +30,10 @@ export function mapResult<T extends JSONValue>(
           (c.body(null, 204) as EmptyResponse)
         : // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
           (c.json(x, 200) as SuccessResponse<T>),
-    NotFound: (x) => c.json(`${x.resource} not found.`, 404),
-    Forbidden: (x) => c.json(x.reason, 403),
     Validation: (x) => c.json(x.issues[0]?.path, 400),
+    Unauthorized: (x) => c.json(x.message, 401),
+    Forbidden: (x) => c.json(x.message, 403),
+    NotFound: (x) => c.json(`${x.resource} not found.`, 404),
     Conflict: (x) => c.json(x.message, 409),
   });
 }
