@@ -8,10 +8,12 @@ interface Env {
   TEAM_DOMAIN: string;
 }
 
-export async function validateJwt(
+type AppJWTPayload = JWTPayload & { email: string };
+
+export async function getJwtPayload(
   token: string | undefined,
   env: Env,
-): Promise<Result<JWTPayload, Unauthorized>> {
+): Promise<Result<AppJWTPayload, Unauthorized>> {
   if (!token) return unauthorized();
   const issuer = `https://${env.TEAM_DOMAIN}`;
 
@@ -24,7 +26,7 @@ export async function validateJwt(
       audience: env.POLICY_AUD,
     });
 
-    return ok(payload);
+    return ok(payload as AppJWTPayload);
   } catch {
     return unauthorized();
   }
