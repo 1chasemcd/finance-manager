@@ -3,12 +3,22 @@ import * as schema from "./schema";
 
 export const relations = defineRelations(schema, (r) => ({
   users: {
-    account: r.one.accounts({
-      from: r.users.accountId,
-      to: r.accounts.id,
+    group: r.one.groups({
+      from: r.users.groupId,
+      to: r.groups.id,
     }),
   },
-  accounts: {
+  groups: {
     members: r.many.users(),
+  },
+  groupInvites: {
+    group: r.one.groups({
+      from: r.groupInvites.groupId,
+      to: r.groups.id,
+    }),
+    user: r.one.users({
+      from: r.groupInvites.userId,
+      to: r.users.id,
+    }),
   },
 }));

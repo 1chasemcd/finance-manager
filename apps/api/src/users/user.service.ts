@@ -2,12 +2,12 @@ import { type Result } from "@finapp/result";
 import type { UserRepository } from "./user.repository";
 import type { OnboardUserInput, User } from "./user.types";
 import type { NotFound, Conflict } from "../core/result";
-import type { AccountRepository } from "../accounts/account.repository";
+import type { GroupRepository } from "../groups/group.repository";
 
 export class UserService {
   constructor(
     private readonly users: UserRepository,
-    private readonly accounts: AccountRepository,
+    private readonly groups: GroupRepository,
   ) {}
 
   getUser(subject: string): Promise<Result<User, NotFound>> {
@@ -15,7 +15,7 @@ export class UserService {
   }
 
   async onboardUser(input: OnboardUserInput): Promise<Result<User, Conflict>> {
-    const account = await this.accounts.createAccount();
+    const group = await this.groups.createGroup();
     const [firstName = "", lastName = ""] = input.name.split(" ");
 
     return this.users.createUser({
@@ -23,7 +23,7 @@ export class UserService {
       firstName,
       lastName,
       subject: input.subject,
-      accountId: account.id,
+      groupId: group.id,
     });
   }
 }

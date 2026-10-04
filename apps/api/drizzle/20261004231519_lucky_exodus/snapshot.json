@@ -1,13 +1,17 @@
 {
   "version": "7",
   "dialect": "sqlite",
-  "id": "88988308-21ad-4bb1-8f3d-9699dc3713d2",
+  "id": "2aced1f7-8a2b-45d9-a24d-3ffffe25df8b",
   "prevIds": [
     "b9275864-d43e-47ac-a2f8-a576a4e3daaa"
   ],
   "ddl": [
     {
-      "name": "accounts",
+      "name": "group_invites",
+      "entityType": "tables"
+    },
+    {
+      "name": "groups",
       "entityType": "tables"
     },
     {
@@ -22,7 +26,57 @@
       "generated": null,
       "name": "id",
       "entityType": "columns",
-      "table": "accounts"
+      "table": "group_invites"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "public_id",
+      "entityType": "columns",
+      "table": "group_invites"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "group_id",
+      "entityType": "columns",
+      "table": "group_invites"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "user_id",
+      "entityType": "columns",
+      "table": "group_invites"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "group_invites"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "groups"
     },
     {
       "type": "integer",
@@ -80,22 +134,52 @@
       "autoincrement": false,
       "default": null,
       "generated": null,
-      "name": "account_id",
+      "name": "group_id",
       "entityType": "columns",
       "table": "users"
     },
     {
       "columns": [
-        "account_id"
+        "group_id"
       ],
-      "tableTo": "accounts",
+      "tableTo": "groups",
       "columnsTo": [
         "id"
       ],
       "onUpdate": "NO ACTION",
       "onDelete": "NO ACTION",
       "nameExplicit": false,
-      "name": "fk_users_account_id_accounts_id_fk",
+      "name": "fk_group_invites_group_id_groups_id_fk",
+      "entityType": "fks",
+      "table": "group_invites"
+    },
+    {
+      "columns": [
+        "user_id"
+      ],
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_group_invites_user_id_users_id_fk",
+      "entityType": "fks",
+      "table": "group_invites"
+    },
+    {
+      "columns": [
+        "group_id"
+      ],
+      "tableTo": "groups",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_users_group_id_groups_id_fk",
       "entityType": "fks",
       "table": "users"
     },
@@ -104,8 +188,17 @@
         "id"
       ],
       "nameExplicit": false,
-      "name": "accounts_pk",
-      "table": "accounts",
+      "name": "group_invites_pk",
+      "table": "group_invites",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "groups_pk",
+      "table": "groups",
       "entityType": "pks"
     },
     {
@@ -116,6 +209,15 @@
       "name": "users_pk",
       "table": "users",
       "entityType": "pks"
+    },
+    {
+      "columns": [
+        "public_id"
+      ],
+      "nameExplicit": false,
+      "name": "group_invites_public_id_unique",
+      "entityType": "uniques",
+      "table": "group_invites"
     },
     {
       "columns": [

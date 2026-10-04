@@ -35,11 +35,11 @@ export interface Conflict {
 
 export type AppError = NotFound | Unauthorized | Forbidden | Validation | Conflict;
 
-export const notFound = (resource: string, id: string): Err<NotFound> => {
+export const notFound = (resource: string, id: string | number): Err<NotFound> => {
   return new Err({
     _tag: "NotFound",
     resource,
-    id,
+    id: id.toString(),
   });
 };
 

@@ -1,7 +1,9 @@
 import { integer, snakeCase, text } from "drizzle-orm/sqlite-core";
 import { id } from "./columns";
+import { sql } from "drizzle-orm";
+import { randomUUID } from "crypto";
 
-export const accounts = snakeCase.table("accounts", {
+export const groups = snakeCase.table("groups", {
   id,
 });
 
@@ -11,7 +13,24 @@ export const users = snakeCase.table("users", {
   email: text().notNull().unique(),
   firstName: text().notNull(),
   lastName: text().notNull(),
-  accountId: integer()
+  groupId: integer()
     .notNull()
-    .references(() => accounts.id),
+    .references(() => groups.id),
+});
+
+export const groupInvites = snakeCase.table("group_invites", {
+  id,
+  publicId: text()
+    .$defaultFn(() => randomUUID())
+    .notNull()
+    .unique(),
+  groupId: integer()
+    .notNull()
+    .references(() => groups.id),
+  userId: integer()
+    .notNull()
+    .references(() => users.id),
+  createdAt: integer({ mode: "timestamp" })
+    .notNull()
+    .default(sql`(unixepoch())`),
 });

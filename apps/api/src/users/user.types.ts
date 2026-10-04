@@ -10,7 +10,11 @@ export interface User {
   firstName: string;
   lastName: string;
   subject: string;
-  accountId: number;
+  groupId: number;
 }
 
 export type CreateUserInput = Omit<User, "id">;
+
+export interface UpdateUserInput {
+  groupId?: number;
+}

@@ -2,13 +2,16 @@ interface AccountInfoUser {
   firstName: string;
   lastName: string;
   email: string;
-  currentUser?: true | undefined;
+}
+
+interface GroupInvite {
+  inviteId: string;
+  groupMembers: AccountInfoUser[];
+  createdAt: Date;
 }
 
 export interface AccountInfoResponse {
-  members: AccountInfoUser[];
-}
-
-export interface Account {
-  id: number;
+  me: AccountInfoUser;
+  groupMembers: AccountInfoUser[];
+  pendingInvite?: GroupInvite;
 }
