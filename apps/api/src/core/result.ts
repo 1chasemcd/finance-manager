@@ -7,7 +7,7 @@ import { Err } from "@finapp/result";
 export interface NotFound {
   _tag: "NotFound";
   resource: string;
-  id: number;
+  id: string;
 }
 
 export interface Unauthorized {
@@ -35,7 +35,7 @@ export interface Conflict {
 
 export type AppError = NotFound | Unauthorized | Forbidden | Validation | Conflict;
 
-export const notFound = (resource: string, id: number): Err<NotFound> => {
+export const notFound = (resource: string, id: string): Err<NotFound> => {
   return new Err({
     _tag: "NotFound",
     resource,

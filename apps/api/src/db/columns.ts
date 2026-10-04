@@ -1,3 +1,3 @@
-import { int } from "drizzle-orm/sqlite-core";
+import { integer } from "drizzle-orm/sqlite-core";
 
-export const id = int().primaryKey({ autoIncrement: true });
+export const id = integer().primaryKey({ autoIncrement: true });

@@ -18,6 +18,6 @@
   ],
   "vars": {
     "POLICY_AUD": "daa9462a331f6fef1eebb5e8842dc10e745eec06d0d8fe0775f001433867b741",
-    "TEAM_DOMAIN": "mcdnld.cloudflareaccess.com",
+    "TEAM_DOMAIN": "https://mcdnld.cloudflareaccess.com",
   },
 }

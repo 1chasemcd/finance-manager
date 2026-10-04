@@ -1,26 +1,29 @@
+import { type Result } from "@finapp/result";
 import type { UserRepository } from "./user.repository";
-import { CreateUser, UpdateUser } from "./user.schemas";
+import type { OnboardUserInput, User } from "./user.types";
+import type { NotFound, Conflict } from "../core/result";
+import type { AccountRepository } from "../accounts/account.repository";
 
 export class UserService {
-  constructor(private readonly users: UserRepository) {}
+  constructor(
+    private readonly users: UserRepository,
+    private readonly accounts: AccountRepository,
+  ) {}
 
-  async getall() {
-    return this.users.getall();
+  getUser(subject: string): Promise<Result<User, NotFound>> {
+    return this.users.findBySubject(subject);
   }
 
-  async lookup(id: number) {
-    return this.users.lookup(id);
-  }
+  async onboardUser(input: OnboardUserInput): Promise<Result<User, Conflict>> {
+    const account = await this.accounts.createAccount();
+    const [firstName = "", lastName = ""] = input.name.split(" ");
 
-  async create(user: CreateUser) {
-    return this.users.create(user);
-  }
-
-  async update(id: number, user: UpdateUser) {
-    return this.users.update(id, user);
-  }
-
-  async delete(id: number) {
-    return this.users.delete(id);
+    return this.users.createUser({
+      email: input.email,
+      firstName,
+      lastName,
+      subject: input.subject,
+      accountId: account.id,
+    });
   }
 }

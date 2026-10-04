@@ -1,33 +1,33 @@
-import { ok, type Result } from "@finapp/result";
+import { ok, err, type Result } from "@finapp/result";
 import type { JWTPayload } from "hono/utils/jwt/types";
 import { jwtVerify, createRemoteJWKSet, type RemoteJWKSet } from "jose";
-import { unauthorized, type Unauthorized } from "../core/result";
 
 interface Env {
   POLICY_AUD: string;
   TEAM_DOMAIN: string;
 }
 
-type AppJWTPayload = JWTPayload & { email: string };
+interface Unauthorized {
+  _tag: "Unauthorized";
+}
+
+type AppJWTPayload = JWTPayload & { sub: string };
 
 export async function getJwtPayload(
-  token: string | undefined,
+  token: string,
   env: Env,
 ): Promise<Result<AppJWTPayload, Unauthorized>> {
-  if (!token) return unauthorized();
-  const issuer = `https://${env.TEAM_DOMAIN}`;
-
   try {
-    const url = new URL(`${issuer}/cdn-cgi/access/certs`);
+    const url = new URL(`${env.TEAM_DOMAIN}/cdn-cgi/access/certs`);
     const JWKS: RemoteJWKSet = createRemoteJWKSet(url);
 
     const { payload } = await jwtVerify(token, JWKS, {
-      issuer,
+      issuer: env.TEAM_DOMAIN,
       audience: env.POLICY_AUD,
     });
 
     return ok(payload as AppJWTPayload);
   } catch {
-    return unauthorized();
+    return err("Unauthorized");
   }
 }
