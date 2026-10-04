@@ -27,9 +27,9 @@ export function createApp(config: AppConfig) {
   const authMiddleware = authMiddlewareFactory(getRequestContext, userService);
 
   return router()
-    .use("*", (_, next) => runWithRequestContext(next))
-    .use("*", authMiddleware)
     .basePath("/api")
+    .use("*", (_, next) => runWithRequestContext(next))
     .get("/health", (c) => c.json({ status: "ok" }))
+    .use("*", authMiddleware)
     .route("/account", createAccountRoutes(accountService));
 }

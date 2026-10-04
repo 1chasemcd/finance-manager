@@ -13,13 +13,15 @@ interface Unauthorized {
 
 type AppJWTPayload = JWTPayload & { sub: string };
 
+let JWKS: RemoteJWKSet | undefined;
+
 export async function getJwtPayload(
   token: string,
   env: Env,
 ): Promise<Result<AppJWTPayload, Unauthorized>> {
   try {
     const url = new URL(`${env.TEAM_DOMAIN}/cdn-cgi/access/certs`);
-    const JWKS: RemoteJWKSet = createRemoteJWKSet(url);
+    JWKS ??= createRemoteJWKSet(url);
 
     const { payload } = await jwtVerify(token, JWKS, {
       issuer: env.TEAM_DOMAIN,

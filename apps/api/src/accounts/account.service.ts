@@ -15,7 +15,7 @@ export class AccountService {
     return {
       members: members.map((m) => ({
         firstName: m.firstName,
-        lastName: m.firstName,
+        lastName: m.lastName,
         email: m.email,
         currentUser: m.id === user.id ? true : undefined,
       })),
