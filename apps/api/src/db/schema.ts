@@ -1,6 +1,9 @@
 import { integer, snakeCase, text } from "drizzle-orm/sqlite-core";
-import { id } from "../columns";
-import { accounts } from "./accounts";
+import { id } from "./columns";
+
+export const accounts = snakeCase.table("accounts", {
+  id,
+});
 
 export const users = snakeCase.table("users", {
   id,

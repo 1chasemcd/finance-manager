@@ -1,5 +1,5 @@
 import { eq, or } from "drizzle-orm";
-import { users } from "../schema/users";
+import { users } from "../schema";
 import type { Db } from "../client";
 import type { UserRepository } from "../../users/user.repository";
 import type { CreateUserInput, User } from "../../users/user.types";

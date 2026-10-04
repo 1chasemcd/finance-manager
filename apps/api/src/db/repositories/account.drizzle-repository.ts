@@ -2,7 +2,7 @@ import type { Db } from "../client";
 import { invariant } from "@finapp/result";
 import type { AccountRepository } from "../../accounts/account.repository";
 import type { Account } from "../../accounts/account.types";
-import { accounts } from "../schema/accounts";
+import { accounts } from "../schema";
 
 export class DrizzleAccountRepository implements AccountRepository {
   constructor(private readonly db: Db) {}
