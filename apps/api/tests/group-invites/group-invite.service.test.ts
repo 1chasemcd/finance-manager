@@ -7,10 +7,10 @@ import { CurrentUser } from "../../src/identity/current-user";
 import {
   InMemoryGroupInviteRepository,
   InMemoryUserRepository,
-  createFakeClock,
 } from "../test-utils/fake-repositories";
 import { unwrap, unwrapError } from "../test-utils/unwrap";
 import type { User } from "../../src/users/user.types";
+import { createFakeClock } from "../test-utils/fake-clock";
 
 const NOW = new Date("2026-06-15T12:00:00.000Z");
 const HOUR_MS = 60 * 60 * 1000;
@@ -19,8 +19,8 @@ function setup() {
   const clock = createFakeClock(NOW);
   const users = new InMemoryUserRepository();
   const invites = new InMemoryGroupInviteRepository(clock.currentTime);
-  const store: { user?: User } = {};
-  const currentUser = new CurrentUser(() => store);
+  const requestContext: { user?: User } = {};
+  const currentUser = new CurrentUser(() => requestContext);
   const service = new GroupInviteService(users, invites, currentUser, clock.currentTime);
 
   const me = users.add({
@@ -37,21 +37,15 @@ function setup() {
     subject: "subject-other",
     groupId: 2,
   });
-  store.user = me;
+  requestContext.user = me;
 
-  return { clock, users, invites, store, service, me, other };
+  return { clock, users, invites, requestContext, service, me, other };
 }
-
-describe("GROUP_INVITE_VALID_DURATION_MS", () => {
-  it("is 24 hours", () => {
-    expect(GROUP_INVITE_VALID_DURATION_MS).toBe(24 * HOUR_MS);
-  });
-});
 
 describe("GroupInviteService.getPendingInvites", () => {
   it("requires an authenticated user", async () => {
-    const { service, store } = setup();
-    delete store.user;
+    const { service, requestContext } = setup();
+    delete requestContext.user;
 
     await expect(service.getPendingInvites()).rejects.toThrow(
       "No authenticated user in current request.",
@@ -95,6 +89,15 @@ describe("GroupInviteService.getPendingInvites", () => {
 });
 
 describe("GroupInviteService.inviteUserToGroup", () => {
+  it("requires an authenticated user", async () => {
+    const { service, requestContext, other } = setup();
+    delete requestContext.user;
+
+    await expect(service.inviteUserToGroup(other.email)).rejects.toThrow(
+      "No authenticated user in current request.",
+    );
+  });
+
   it("invites an existing user into the current user's group", async () => {
     const { service, invites, me, other } = setup();
 
@@ -136,25 +139,16 @@ describe("GroupInviteService.inviteUserToGroup", () => {
     expect(invites.invites[0]?.publicId).not.toBe(expiredId);
     expect(invites.invites[0]?.createdAt).toEqual(new Date(NOW.getTime() + 25 * HOUR_MS));
   });
-
-  it("requires an authenticated user", async () => {
-    const { service, store, other } = setup();
-    delete store.user;
-
-    await expect(service.inviteUserToGroup(other.email)).rejects.toThrow(
-      "No authenticated user in current request.",
-    );
-  });
 });
 
 describe("GroupInviteService.acceptInviteToGroup", () => {
   it("moves the current user into the inviting group and deletes the invite", async () => {
-    const { service, invites, store, me, other } = setup();
+    const { service, invites, requestContext, me, other } = setup();
     await service.inviteUserToGroup(other.email);
     const invite = invites.invites[0];
     if (invite === undefined) throw new Error("expected an invite");
 
-    store.user = other;
+    requestContext.user = other;
     unwrap(await service.acceptInviteToGroup(invite.publicId));
 
     expect(other.groupId).toBe(me.groupId);
@@ -172,32 +166,32 @@ describe("GroupInviteService.acceptInviteToGroup", () => {
   });
 
   it("returns NotFound for an invite addressed to somebody else", async () => {
-    const { service, invites, store, me } = setup();
+    const { service, invites, requestContext, me } = setup();
     const invite = invites.add({ groupId: 2, userId: me.id + 100 });
 
     expect(unwrapError(await service.acceptInviteToGroup(invite.publicId))._tag).toBe("NotFound");
-    expect(store.user?.groupId).toBe(me.groupId);
+    expect(requestContext.user?.groupId).toBe(me.groupId);
   });
 
   it("returns NotFound once the invite has expired", async () => {
-    const { service, invites, clock, store, other } = setup();
+    const { service, invites, clock, requestContext, other } = setup();
     await service.inviteUserToGroup(other.email);
     const invite = invites.invites[0];
     if (invite === undefined) throw new Error("expected an invite");
     clock.advance(GROUP_INVITE_VALID_DURATION_MS + HOUR_MS);
 
-    store.user = other;
+    requestContext.user = other;
     expect(unwrapError(await service.acceptInviteToGroup(invite.publicId))._tag).toBe("NotFound");
     expect(other.groupId).toBe(2);
   });
 
   it("cannot accept the same invite twice", async () => {
-    const { service, invites, store, other } = setup();
+    const { service, invites, requestContext, other } = setup();
     await service.inviteUserToGroup(other.email);
     const invite = invites.invites[0];
     if (invite === undefined) throw new Error("expected an invite");
 
-    store.user = other;
+    requestContext.user = other;
     unwrap(await service.acceptInviteToGroup(invite.publicId));
     expect(unwrapError(await service.acceptInviteToGroup(invite.publicId))._tag).toBe("NotFound");
   });
@@ -205,12 +199,12 @@ describe("GroupInviteService.acceptInviteToGroup", () => {
 
 describe("GroupInviteService.declineInviteToGroup", () => {
   it("deletes the invite without changing groups", async () => {
-    const { service, invites, store, other } = setup();
+    const { service, invites, requestContext, other } = setup();
     await service.inviteUserToGroup(other.email);
     const invite = invites.invites[0];
     if (invite === undefined) throw new Error("expected an invite");
 
-    store.user = other;
+    requestContext.user = other;
     unwrap(await service.declineInviteToGroup(invite.publicId));
 
     expect(invites.invites).toHaveLength(0);

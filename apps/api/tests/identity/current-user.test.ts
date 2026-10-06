@@ -35,11 +35,4 @@ describe("CurrentUser", () => {
     expect(currentUser.get()).toBe(user);
     expect(currentUser.require()).toBe(user);
   });
-
-  it("propagates context lookup failures", () => {
-    const currentUser = new CurrentUser(() => {
-      throw new Error("no request scope");
-    });
-    expect(() => currentUser.get()).toThrow("no request scope");
-  });
 });

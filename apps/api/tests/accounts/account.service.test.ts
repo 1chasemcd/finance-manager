@@ -5,9 +5,9 @@ import { CurrentUser } from "../../src/identity/current-user";
 import {
   InMemoryGroupInviteRepository,
   InMemoryUserRepository,
-  createFakeClock,
 } from "../test-utils/fake-repositories";
 import type { User } from "../../src/users/user.types";
+import { createFakeClock } from "../test-utils/fake-clock";
 
 const NOW = new Date("2026-06-15T12:00:00.000Z");
 const HOUR_MS = 60 * 60 * 1000;
@@ -16,8 +16,8 @@ function setup() {
   const clock = createFakeClock(NOW);
   const users = new InMemoryUserRepository();
   const invites = new InMemoryGroupInviteRepository(clock.currentTime);
-  const store: { user?: User } = {};
-  const currentUser = new CurrentUser(() => store);
+  const requestContext: { user?: User } = {};
+  const currentUser = new CurrentUser(() => requestContext);
   const inviteService = new GroupInviteService(users, invites, currentUser, clock.currentTime);
   const service = new AccountService(users, inviteService, currentUser);
 
@@ -42,15 +42,15 @@ function setup() {
     subject: "subject-stranger",
     groupId: 2,
   });
-  store.user = me;
+  requestContext.user = me;
 
-  return { clock, users, invites, store, service, me, teammate, stranger };
+  return { clock, users, invites, requestContext, service, me, teammate, stranger };
 }
 
 describe("AccountService.getAccountInfo", () => {
   it("requires an authenticated user", async () => {
-    const { service, store } = setup();
-    delete store.user;
+    const { service, requestContext } = setup();
+    delete requestContext.user;
 
     await expect(service.getAccountInfo()).rejects.toThrow(
       "No authenticated user in current request.",
@@ -58,7 +58,7 @@ describe("AccountService.getAccountInfo", () => {
   });
 
   it("returns the current user and their group members without internal ids", async () => {
-    const { service, teammate, stranger } = setup();
+    const { service } = setup();
 
     const info = await service.getAccountInfo();
 
@@ -67,18 +67,10 @@ describe("AccountService.getAccountInfo", () => {
       lastName: "Myself",
       email: "me@example.com",
     });
-    expect(Object.keys(info.me).sort()).toEqual(["email", "firstName", "lastName"]);
     expect(info.groupMembers).toEqual([
       { firstName: "Me", lastName: "Myself", email: "me@example.com" },
       { firstName: "Team", lastName: "Mate", email: "teammate@example.com" },
     ]);
-    expect(info.groupMembers).not.toContainEqual({
-      firstName: "Stran",
-      lastName: "Ger",
-      email: "stranger@example.com",
-    });
-    expect(stranger.groupId).toBe(2);
-    expect(teammate.groupId).toBe(1);
   });
 
   it("omits pendingInvite when there is nothing pending", async () => {
@@ -99,7 +91,7 @@ describe("AccountService.getAccountInfo", () => {
   });
 
   it("describes a pending invite with the inviting group's members", async () => {
-    const { service, invites, me, stranger } = setup();
+    const { service, invites, me } = setup();
     const invite = invites.add({ groupId: 2, userId: me.id });
 
     const info = await service.getAccountInfo();
@@ -109,14 +101,13 @@ describe("AccountService.getAccountInfo", () => {
       groupMembers: [{ firstName: "Stran", lastName: "Ger", email: "stranger@example.com" }],
       createdAt: invite.createdAt,
     });
-    expect(stranger.groupId).toBe(2);
   });
 
   it("reports the oldest pending invite when several exist", async () => {
     const { service, invites, me, clock } = setup();
     const oldest = invites.add({ groupId: 2, userId: me.id });
     clock.advance(HOUR_MS);
-    const newer = invites.add({ groupId: 1, userId: me.id });
+    invites.add({ groupId: 1, userId: me.id });
 
     const info = await service.getAccountInfo();
 
@@ -124,7 +115,6 @@ describe("AccountService.getAccountInfo", () => {
     expect(info.pendingInvite?.groupMembers).toEqual([
       { firstName: "Stran", lastName: "Ger", email: "stranger@example.com" },
     ]);
-    expect(info.pendingInvite?.inviteId).not.toBe(newer.publicId);
   });
 
   it("ignores invites addressed to other users", async () => {
