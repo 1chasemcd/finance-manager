@@ -1,13 +1,13 @@
 import { randomUUID } from "node:crypto";
 import { ok, type Result } from "@finapp/result";
-import { conflict, notFound, type Conflict, type NotFound } from "../core/result";
-import type { CurrentTime } from "../core/current-time";
-import type { GroupInviteRepository } from "../group-invites/group-invite.repository";
-import type { GroupInvite } from "../group-invites/group-invites.types";
-import type { GroupRepository } from "../groups/group.repository";
-import type { Group } from "../groups/group.types";
-import type { CreateUserInput, UpdateUserInput, User } from "../users/user.types";
-import type { UserRepository } from "../users/user.repository";
+import { conflict, notFound, type Conflict, type NotFound } from "../../src/core/errors";
+import type { CurrentTime } from "../../src/types/current-time";
+import type { GroupInviteRepository } from "../../src/group-invites/group-invite.repository";
+import type { GroupInvite } from "../../src/group-invites/group-invites.types";
+import type { GroupRepository } from "../../src/groups/group.repository";
+import type { Group } from "../../src/groups/group.types";
+import type { CreateUserInput, UpdateUserInput, User } from "../../src/users/user.types";
+import type { UserRepository } from "../../src/users/user.repository";
 
 export class InMemoryUserRepository implements UserRepository {
   readonly users: User[] = [];

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { getRequestContext, runWithRequestContext } from "./request-context";
-import type { User } from "../users/user.types";
+import { getRequestContext, runWithRequestContext } from "../../src/core/request-context";
+import type { User } from "../../src/users/user.types";
 
 const user: User = {
   id: 1,

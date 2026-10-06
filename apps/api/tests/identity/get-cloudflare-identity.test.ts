@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getCloudflareIdentity } from "./get-cloudflare-identity";
-import { unwrap, unwrapError } from "../test-support/unwrap";
+import { getCloudflareIdentity } from "../../src/identity/get-cloudflare-identity";
+import { unwrap, unwrapError } from "../test-utils/unwrap";
 
 const TEAM_DOMAIN = "https://team.example.test";
 const env = { TEAM_DOMAIN };

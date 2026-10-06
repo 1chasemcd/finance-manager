@@ -1,13 +1,13 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import worker from "./index";
-import { createTestDatabase, type TestDatabase } from "./test-support/fake-d1";
-import { applyMigrations } from "./test-support/migrations";
+import worker from "../src/index";
+import { createTestDatabase, type TestDatabase } from "./test-utils/fake-d1";
+import { applyMigrations } from "./test-utils/migrations";
 import {
   CloudflareAccessMock,
   createTestJwtIssuer,
   type IdentityResponse,
   type TestJwtIssuer,
-} from "./test-support/jwt";
+} from "./test-utils/jwt";
 
 const TEAM_DOMAIN = "https://team.example.test";
 const POLICY_AUD = "policy-aud-123";

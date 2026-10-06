@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { AccountService } from "./account.service";
-import { GroupInviteService } from "../group-invites/group-invite.service";
-import { CurrentUser } from "../identity/current-user";
+import { AccountService } from "../../src/accounts/account.service";
+import { GroupInviteService } from "../../src/group-invites/group-invite.service";
+import { CurrentUser } from "../../src/identity/current-user";
 import {
   InMemoryGroupInviteRepository,
   InMemoryUserRepository,
   createFakeClock,
-} from "../test-support/fake-repositories";
-import type { User } from "../users/user.types";
+} from "../test-utils/fake-repositories";
+import type { User } from "../../src/users/user.types";
 
 const NOW = new Date("2026-06-15T12:00:00.000Z");
 const HOUR_MS = 60 * 60 * 1000;

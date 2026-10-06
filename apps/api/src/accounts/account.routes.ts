@@ -1,4 +1,4 @@
-import router from "../http/router";
+import router from "../core/router";
 import type { AccountService } from "./account.service";
 
 export function createAccountRoutes(account: AccountService) {

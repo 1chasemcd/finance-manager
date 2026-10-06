@@ -1,5 +1,5 @@
 import type { Result } from "@finapp/result";
-import type { NotFound, Conflict } from "../core/result";
+import type { NotFound, Conflict } from "../core/errors";
 import type { CreateUserInput, UpdateUserInput, User } from "./user.types";
 
 export interface UserRepository {

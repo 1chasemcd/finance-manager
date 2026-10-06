@@ -1,15 +1,12 @@
 import { err, ok } from "@finapp/result";
 import { Hono } from "hono";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { authMiddlewareFactory } from "./auth";
-import { getJwtPayload } from "../../identity/get-jwt-payload";
-import { getCloudflareIdentity } from "../../identity/get-cloudflare-identity";
-import { getRequestContext, runWithRequestContext } from "../../core/request-context";
-import { UserService } from "../../users/user.service";
-import {
-  InMemoryGroupRepository,
-  InMemoryUserRepository,
-} from "../../test-support/fake-repositories";
+import { authMiddlewareFactory } from "../../src/middleware/auth";
+import { getJwtPayload } from "../../src/identity/get-jwt-payload";
+import { getCloudflareIdentity } from "../../src/identity/get-cloudflare-identity";
+import { getRequestContext, runWithRequestContext } from "../../src/core/request-context";
+import { UserService } from "../../src/users/user.service";
+import { InMemoryGroupRepository, InMemoryUserRepository } from "../test-utils/fake-repositories";
 
 vi.mock("../../identity/get-jwt-payload", () => ({ getJwtPayload: vi.fn() }));
 vi.mock("../../identity/get-cloudflare-identity", () => ({

@@ -1,15 +1,15 @@
 import { createDb } from "./db/client";
-import { UserDrizzleRepository } from "./db/repositories/user.drizzle-repository";
+import { UserDrizzleRepository } from "./users/user.drizzle-repository";
 import { UserService } from "./users/user.service";
-import router from "./http/router";
+import router from "./core/router";
 import { getRequestContext, runWithRequestContext } from "./core/request-context";
 import { createAccountRoutes } from "./accounts/account.routes";
 import { AccountService } from "./accounts/account.service";
 import { CurrentUser } from "./identity/current-user";
-import { authMiddlewareFactory } from "./http/middleware/auth";
-import { GroupDrizzleRepository } from "./db/repositories/group.drizzle-repository";
+import { authMiddlewareFactory } from "./middleware/auth";
+import { GroupDrizzleRepository } from "./groups/group.drizzle-repository";
 import { GroupInviteService } from "./group-invites/group-invite.service";
-import { GroupInviteDrizzleRepository } from "./db/repositories/group-invite.drizzle-repository";
+import { GroupInviteDrizzleRepository } from "./group-invites/group-invite.drizzle-repository";
 import { createGroupInviteRoutes } from "./group-invites/group-invite.routes";
 
 export interface AppConfig {

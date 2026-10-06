@@ -1,5 +1,5 @@
 import { integer, snakeCase, text } from "drizzle-orm/sqlite-core";
-import { id } from "./columns";
+import { id } from "./utils";
 import { sql } from "drizzle-orm";
 import { randomUUID } from "crypto";
 

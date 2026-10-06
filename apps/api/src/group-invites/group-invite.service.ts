@@ -2,8 +2,8 @@ import { ok, type Result } from "@finapp/result";
 import type { CurrentUser } from "../identity/current-user";
 import type { UserRepository } from "../users/user.repository";
 import type { GroupInviteRepository } from "./group-invite.repository";
-import { notFound, type NotFound } from "../core/result";
-import type { CurrentTime } from "../core/current-time";
+import { notFound, type NotFound } from "../core/errors";
+import type { CurrentTime } from "../types/current-time";
 import type { GroupInvite } from "./group-invites.types";
 
 export const GROUP_INVITE_VALID_DURATION_MS = 24 * 60 * 60 * 1000;

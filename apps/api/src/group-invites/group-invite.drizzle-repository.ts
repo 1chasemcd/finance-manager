@@ -1,9 +1,9 @@
 import { ok, type Result } from "@finapp/result";
-import { conflict, notFound, type Conflict, type NotFound } from "../../core/result";
-import type { GroupInvite } from "../../group-invites/group-invites.types";
-import type { GroupInviteRepository } from "../../group-invites/group-invite.repository";
-import type { Db } from "../client";
-import { groupInvites } from "../schema";
+import { conflict, notFound, type Conflict, type NotFound } from "../core/errors";
+import type { GroupInvite } from "./group-invites.types";
+import type { GroupInviteRepository } from "./group-invite.repository";
+import type { Db } from "../db/client";
+import { groupInvites } from "../db/schema";
 import { and, eq, lt } from "drizzle-orm";
 
 export class GroupInviteDrizzleRepository implements GroupInviteRepository {

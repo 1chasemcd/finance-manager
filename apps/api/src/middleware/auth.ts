@@ -1,8 +1,8 @@
 import type { MiddlewareHandler } from "hono";
-import { getJwtPayload } from "../../identity/get-jwt-payload";
-import type { UserService } from "../../users/user.service";
-import { getCloudflareIdentity } from "../../identity/get-cloudflare-identity";
-import type { GetRequestContext } from "../../core/request-context";
+import { getJwtPayload } from "../identity/get-jwt-payload";
+import type { UserService } from "../users/user.service";
+import { getCloudflareIdentity } from "../identity/get-cloudflare-identity";
+import type { GetRequestContext } from "../core/request-context";
 
 const CF_ACCESS_JWT_ASSERTION = "Cf-Access-Jwt-Assertion";
 

@@ -1,5 +1,5 @@
 import { zValidator } from "@hono/zod-validator";
-import router from "../http/router";
+import router from "../core/router";
 import type { GroupInviteService } from "./group-invite.service";
 import { InviteUserSchema } from "./group-invites.types";
 
