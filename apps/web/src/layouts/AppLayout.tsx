@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import { Outlet } from "react-router";
 import AppDrawer from "../components/AppDrawer/AppDrawer";
+import AppHeader from "../components/AppHeader";
 
 export default function AppLayout() {
   return (
@@ -19,10 +20,12 @@ export default function AppLayout() {
           flex: 1,
           minWidth: 0,
           overflow: "auto",
-          p: 2,
         }}
       >
-        <Outlet />
+        <AppHeader />
+        <Box sx={{ px: 2 }}>
+          <Outlet />
+        </Box>
       </Box>
     </Box>
   );

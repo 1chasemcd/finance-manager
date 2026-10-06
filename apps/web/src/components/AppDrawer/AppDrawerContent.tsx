@@ -8,7 +8,6 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Typography,
   useTheme,
 } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
@@ -55,21 +54,24 @@ export function AppDrawerContent({
 
   return (
     <>
-      <Box sx={{ display: "flex", alignItems: "center", minHeight: 64, px: 2 }}>
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: 36 }}>
-          <Logo
-            size={22}
-            style={{
-              backgroundColor: theme.palette.primary.main,
-              color: theme.palette.primary.contrastText,
-              borderRadius: 4,
-              boxSizing: "border-box",
-            }}
-          />
-        </Box>
-        <Typography variant="h6" sx={labelSx}>
-          Finance Manager
-        </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: 64,
+          px: 2,
+        }}
+      >
+        <Logo
+          size={36}
+          style={{
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.primary.contrastText,
+            borderRadius: 4,
+            boxSizing: "border-box",
+          }}
+        />
       </Box>
 
       <Divider />

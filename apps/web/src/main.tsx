@@ -8,6 +8,8 @@ import { createRoot } from "react-dom/client";
 import CssBaseline from "@mui/material/CssBaseline";
 import { RouterProvider } from "react-router";
 import { router } from "./routes.ts";
+import { ThemeProvider } from "@mui/material";
+import { theme } from "./theme.ts";
 
 const rootElement = document.getElementById("root");
 
@@ -15,8 +17,10 @@ if (!rootElement) throw new Error("Root element not found");
 
 createRoot(rootElement).render(
   <StrictMode>
-    <CssBaseline>
-      <RouterProvider router={router} />
-    </CssBaseline>
+    <ThemeProvider theme={theme}>
+      <CssBaseline>
+        <RouterProvider router={router} />
+      </CssBaseline>
+    </ThemeProvider>
   </StrictMode>,
 );
