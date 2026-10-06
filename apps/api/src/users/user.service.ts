@@ -16,7 +16,7 @@ export class UserService {
 
   async onboardUser(input: OnboardUserInput): Promise<Result<User, Conflict>> {
     const group = await this.groups.createGroup();
-    const [firstName = "", lastName = ""] = input.name.split(" ");
+    const { firstName, lastName } = splitName(input.name);
 
     return this.users.createUser({
       email: input.email,
@@ -26,4 +26,16 @@ export class UserService {
       groupId: group.id,
     });
   }
+}
+
+function splitName(name: string): { firstName: string; lastName: string } {
+  const trimmed = name.trim();
+  const separator = trimmed.indexOf(" ");
+
+  if (separator === -1) return { firstName: trimmed, lastName: "" };
+
+  return {
+    firstName: trimmed.slice(0, separator),
+    lastName: trimmed.slice(separator + 1).trim(),
+  };
 }

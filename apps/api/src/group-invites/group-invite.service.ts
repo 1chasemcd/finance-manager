@@ -27,6 +27,9 @@ export class GroupInviteService {
 
   async inviteUserToGroup(emailOfUserToInvite: string): Promise<void> {
     const groupId = this.currentUser.require().groupId;
+
+    await this.groupInvites.deleteInvitesOlderThan(this.getOldestValidInviteDate());
+
     const user = await this.users.findByEmail(emailOfUserToInvite);
     if (user.isErr) return; // fail silently if user not found
 

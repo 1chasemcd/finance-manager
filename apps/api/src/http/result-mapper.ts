@@ -2,13 +2,13 @@ import { Err } from "@finapp/result";
 import type { AppError, AppResult } from "../core/result";
 import type { ClientErrorStatusCode } from "hono/utils/http-status";
 import type { Context, TypedResponse } from "hono";
-import type { JSONParsed, JSONValue } from "hono/utils/types";
+import type { JSONValue } from "hono/utils/types";
 
 type SuccessResponse<T extends JSONValue> = Response & TypedResponse<T, 200, "json">;
 
 type EmptyResponse = Response & TypedResponse<null, 204, "body">;
 
-type ErrorResponse = Response & TypedResponse<JSONParsed<string>, ClientErrorStatusCode, "json">;
+type ErrorResponse = Response & TypedResponse<JSONValue, ClientErrorStatusCode, "json">;
 
 type MapResponse<T extends JSONValue> = SuccessResponse<T> | EmptyResponse | ErrorResponse;
 
@@ -30,7 +30,7 @@ export function mapResult<T extends JSONValue>(
           (c.body(null, 204) as EmptyResponse)
         : // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
           (c.json(x, 200) as SuccessResponse<T>),
-    Validation: (x) => c.json(x.issues[0]?.path, 400),
+    Validation: (x) => c.json(x.issues, 400),
     Unauthorized: (x) => c.json(x.message, 401),
     Forbidden: (x) => c.json(x.message, 403),
     NotFound: (x) => c.json(`${x.resource} not found.`, 404),

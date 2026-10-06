@@ -1,4 +1,5 @@
-import { Err, ErrorType, Ok, Result } from "./result";
+import { Err, Ok } from "./result";
+import type { ErrorType, Result } from "./result";
 
 export function ok<T>(data: T): Ok<T>;
 export function ok(): Ok<void>;
