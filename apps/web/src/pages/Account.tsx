@@ -21,6 +21,7 @@ import {
   TextField,
 } from "@mui/material";
 import PageSection from "../components/PageSection";
+import { usePageHeader } from "../lib/pageHeader";
 import { useState } from "react";
 import React from "react";
 
@@ -171,6 +172,10 @@ function useSendInviteDialog(): [() => void, React.JSX.Element] {
 function Account() {
   const [openAcceptInviteDialog, AcceptInviteDialog] = useAcceptInviteDialog();
   const [openSendInviteDialog, SendInviteDialog] = useSendInviteDialog();
+
+  usePageHeader({
+    title: "Account",
+  });
 
   return (
     <React.Fragment>

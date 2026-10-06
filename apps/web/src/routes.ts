@@ -112,9 +112,7 @@ export const router = createBrowserRouter([
   {
     path: "/",
     Component: AppLayout,
-    children: [
-      ...navEntries.map(transformRouteEntry),
-      { path: paths.notFound, Component: NotFound },
-    ],
+    children: [...navEntries.map(transformRouteEntry)],
   },
+  { path: paths.notFound, Component: NotFound },
 ]);
