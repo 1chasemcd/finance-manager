@@ -8,8 +8,8 @@ import { getRequestContext, runWithRequestContext } from "../../src/core/request
 import { UserService } from "../../src/users/user.service";
 import { InMemoryGroupRepository, InMemoryUserRepository } from "../test-utils/fake-repositories";
 
-vi.mock("../../identity/get-jwt-payload", () => ({ getJwtPayload: vi.fn() }));
-vi.mock("../../identity/get-cloudflare-identity", () => ({
+vi.mock("../../src/identity/get-jwt-payload", () => ({ getJwtPayload: vi.fn() }));
+vi.mock("../../src/identity/get-cloudflare-identity", () => ({
   getCloudflareIdentity: vi.fn(),
 }));
 
