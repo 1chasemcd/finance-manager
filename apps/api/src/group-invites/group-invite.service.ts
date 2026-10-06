@@ -30,7 +30,7 @@ export class GroupInviteService {
 
     await this.groupInvites.deleteInvitesOlderThan(this.getOldestValidInviteDate());
 
-    const user = await this.users.findByEmail(emailOfUserToInvite);
+    const user = await this.users.getByEmail(emailOfUserToInvite);
     if (user.isErr) return; // fail silently if user not found
 
     await this.groupInvites.createInvite(groupId, user.data.id);

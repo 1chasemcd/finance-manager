@@ -41,15 +41,15 @@ async function seedUser(): Promise<User> {
   );
 }
 
-describe("UserDrizzleRepository.findBySubject", () => {
+describe("UserDrizzleRepository.getBySubject", () => {
   it("returns the user with that subject", async () => {
     const created = await seedUser();
 
-    expect(unwrap(await users.findBySubject(created.subject))).toEqual(created);
+    expect(unwrap(await users.getBySubject(created.subject))).toEqual(created);
   });
 
   it("returns NotFound for an unknown subject", async () => {
-    expect(unwrapError(await users.findBySubject("missing"))).toEqual({
+    expect(unwrapError(await users.getBySubject("missing"))).toEqual({
       _tag: "NotFound",
       resource: "user",
       id: "missing",
@@ -57,15 +57,15 @@ describe("UserDrizzleRepository.findBySubject", () => {
   });
 });
 
-describe("UserDrizzleRepository.findByEmail", () => {
+describe("UserDrizzleRepository.getByEmail", () => {
   it("returns the user with that email", async () => {
     const created = await seedUser();
 
-    expect(unwrap(await users.findByEmail(created.email))).toEqual(created);
+    expect(unwrap(await users.getByEmail(created.email))).toEqual(created);
   });
 
   it("returns NotFound for an unknown email", async () => {
-    expect(unwrapError(await users.findByEmail("missing@example.com"))).toEqual({
+    expect(unwrapError(await users.getByEmail("missing@example.com"))).toEqual({
       _tag: "NotFound",
       resource: "user",
       id: "missing@example.com",
@@ -73,20 +73,20 @@ describe("UserDrizzleRepository.findByEmail", () => {
   });
 });
 
-describe("UserDrizzleRepository.findByGroup", () => {
+describe("UserDrizzleRepository.getByGroup", () => {
   it("returns only the members of the group", async () => {
     const first = await seedUser();
     const second = await seedUser();
     expect(second.groupId).not.toBe(first.groupId);
 
-    const members = await users.findByGroup(first.groupId);
+    const members = await users.getByGroup(first.groupId);
 
     expect(members).toHaveLength(1);
     expect(members[0]?.subject).toBe(first.subject);
   });
 
   it("returns an empty list for an unknown group", async () => {
-    expect(await users.findByGroup(999)).toEqual([]);
+    expect(await users.getByGroup(999)).toEqual([]);
   });
 });
 
@@ -104,8 +104,8 @@ describe("UserDrizzleRepository.createUser", () => {
     );
 
     expect(created.id).toBeGreaterThan(0);
-    expect(unwrap(await users.findBySubject("subject-1"))).toEqual(created);
-    expect(unwrap(await users.findByEmail("jane@example.com"))).toEqual(created);
+    expect(unwrap(await users.getBySubject("subject-1"))).toEqual(created);
+    expect(unwrap(await users.getByEmail("jane@example.com"))).toEqual(created);
   });
 
   it("returns Conflict when the email is already taken", async () => {
@@ -129,7 +129,7 @@ describe("UserDrizzleRepository.createUser", () => {
     });
 
     expect(unwrapError(result)._tag).toBe("Conflict");
-    expect(await users.findByGroup(group.id)).toHaveLength(1);
+    expect(await users.getByGroup(group.id)).toHaveLength(1);
   });
 
   it("returns Conflict when the subject is already taken", async () => {
@@ -153,7 +153,7 @@ describe("UserDrizzleRepository.createUser", () => {
     });
 
     expect(unwrapError(result)._tag).toBe("Conflict");
-    expect(await users.findByGroup(group.id)).toHaveLength(1);
+    expect(await users.getByGroup(group.id)).toHaveLength(1);
   });
 });
 
@@ -174,7 +174,7 @@ describe("UserDrizzleRepository.updateUser", () => {
     const updated = unwrap(await users.updateUser(created.id, { groupId: target.id }));
 
     expect(updated).toEqual({ ...created, groupId: target.id });
-    expect(unwrap(await users.findBySubject(created.subject)).groupId).toBe(target.id);
+    expect(unwrap(await users.getBySubject(created.subject)).groupId).toBe(target.id);
   });
 
   it("returns NotFound for an unknown id", async () => {

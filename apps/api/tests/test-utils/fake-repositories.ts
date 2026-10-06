@@ -13,15 +13,15 @@ export class InMemoryUserRepository implements UserRepository {
   readonly users: User[] = [];
   private nextId = 1;
 
-  findBySubject(subject: string): Promise<Result<User, NotFound>> {
+  getBySubject(subject: string): Promise<Result<User, NotFound>> {
     return Promise.resolve(this.find((user) => user.subject === subject, subject));
   }
 
-  findByEmail(email: string): Promise<Result<User, NotFound>> {
+  getByEmail(email: string): Promise<Result<User, NotFound>> {
     return Promise.resolve(this.find((user) => user.email === email, email));
   }
 
-  findByGroup(groupId: number): Promise<User[]> {
+  getByGroup(groupId: number): Promise<User[]> {
     return Promise.resolve(this.users.filter((user) => user.groupId === groupId));
   }
 

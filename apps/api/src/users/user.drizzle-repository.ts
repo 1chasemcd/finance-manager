@@ -9,19 +9,19 @@ import { invariant, ok, type Result } from "@finapp/result";
 
 export class UserDrizzleRepository implements UserRepository {
   constructor(private readonly db: Db) {}
-  async findBySubject(subject: string): Promise<Result<User, NotFound>> {
+  async getBySubject(subject: string): Promise<Result<User, NotFound>> {
     const [ent] = await this.db.select().from(users).where(eq(users.subject, subject)).limit(1);
     if (ent) return ok(ent);
     return notFound("user", subject);
   }
 
-  async findByEmail(email: string): Promise<Result<User, NotFound>> {
+  async getByEmail(email: string): Promise<Result<User, NotFound>> {
     const [ent] = await this.db.select().from(users).where(eq(users.email, email)).limit(1);
     if (ent) return ok(ent);
     return notFound("user", email);
   }
 
-  findByGroup(groupId: number): Promise<User[]> {
+  getByGroup(groupId: number): Promise<User[]> {
     return this.db.select().from(users).where(eq(users.groupId, groupId));
   }
   async createUser(input: CreateUserInput): Promise<Result<User, Conflict>> {

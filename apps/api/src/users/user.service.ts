@@ -11,7 +11,7 @@ export class UserService {
   ) {}
 
   getUser(subject: string): Promise<Result<User, NotFound>> {
-    return this.users.findBySubject(subject);
+    return this.users.getBySubject(subject);
   }
 
   async onboardUser(input: OnboardUserInput): Promise<Result<User, Conflict>> {
