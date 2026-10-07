@@ -3,6 +3,7 @@ import {
   AlertTitle,
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -24,19 +25,14 @@ import PageSection from "../components/PageSection";
 import { usePageHeader } from "../lib/pageHeader";
 import { useState } from "react";
 import React from "react";
-
-const groupMembers = [
-  {
-    name: "Chase McDonald (me)",
-    email: "1chasemcd@gmail.com",
-  },
-  {
-    name: "Hannah McDonald",
-    email: "hannah.mcd26@gmail.com",
-  },
-];
-
-const hasPendingInvite = false as boolean;
+import {
+  useAcceptInvite,
+  useAccountInfo,
+  useDeclineInvite,
+  useSendInvite,
+  type AccountUser,
+  type PendingInvite,
+} from "../lib/account";
 
 function AccountField({ label, value }: { label: string; value: string }) {
   return (
@@ -55,7 +51,7 @@ function AccountField({ label, value }: { label: string; value: string }) {
   );
 }
 
-function GroupTable() {
+function GroupTable({ members, meEmail }: { members: AccountUser[]; meEmail: string }) {
   return (
     <TableContainer component={Paper} variant="outlined">
       <Table sx={{ minWidth: 400 }} aria-label="group members table">
@@ -66,10 +62,11 @@ function GroupTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {groupMembers.map((row) => (
+          {members.map((row) => (
             <TableRow key={row.email} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
               <TableCell component="th" scope="row">
-                {row.name}
+                {row.firstName} {row.lastName}
+                {row.email === meEmail ? " (me)" : ""}
               </TableCell>
               <TableCell>{row.email}</TableCell>
             </TableRow>
@@ -80,34 +77,70 @@ function GroupTable() {
   );
 }
 
-function useAcceptInviteDialog(): [() => void, React.JSX.Element] {
-  const [open, setOpen] = useState(false);
+function inviteDescription(invite: PendingInvite | undefined): string {
+  const members = invite?.groupMembers ?? [];
+  const [first, ...rest] = members;
+  if (!first) return "You have been invited to join another group. Would you like to accept?";
+  const names =
+    rest.length > 0
+      ? `'${first.firstName} ${first.lastName}' and ${rest.length.toString()} others`
+      : `'${first.firstName} ${first.lastName}'`;
+  return `You have been invited to join a group with ${names}. Would you like to accept the invitation?`;
+}
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
+function useAcceptInviteDialog(invite: PendingInvite | undefined): [() => void, React.JSX.Element] {
+  const [open, setOpen] = useState(false);
+  const acceptInvite = useAcceptInvite();
+  const declineInvite = useDeclineInvite();
+
+  const inviteId = invite?.inviteId;
+  const pending = acceptInvite.isPending || declineInvite.isPending;
+  const failed = acceptInvite.isError || declineInvite.isError;
 
   const handleClose = () => {
     setOpen(false);
+    acceptInvite.reset();
+    declineInvite.reset();
   };
+
+  const handleOpen = () => {
+    if (inviteId) setOpen(true);
+  };
+
+  const handleAccept = () => {
+    if (!inviteId) return;
+    acceptInvite.mutate(inviteId, { onSuccess: handleClose });
+  };
+
+  const handleDecline = () => {
+    if (!inviteId) return;
+    declineInvite.mutate(inviteId, { onSuccess: handleClose });
+  };
+
   return [
     handleOpen,
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open && inviteId !== undefined} onClose={handleClose}>
       <DialogTitle>Manage Group Invitation</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          You have been invited to join a group with 'Megan Rhude' and 2 others. Would you like to
-          accept the invitation?
-        </DialogContentText>
+        <DialogContentText>{inviteDescription(invite)}</DialogContentText>
         <Alert severity="warning" sx={{ marginTop: 2 }}>
           <AlertTitle>Data Loss Warning</AlertTitle>
           You will be removed from your current group when you join a new one. If you are the only
           member of your current group, it will be deleted.
         </Alert>
+        {failed && (
+          <Alert severity="error" sx={{ marginTop: 2 }}>
+            The invitation could not be processed. Please try again.
+          </Alert>
+        )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Decline</Button>
-        <Button onClick={handleClose}>Accept</Button>
+        <Button onClick={handleDecline} disabled={pending}>
+          Decline
+        </Button>
+        <Button onClick={handleAccept} disabled={pending}>
+          Accept
+        </Button>
       </DialogActions>
     </Dialog>,
   ];
@@ -115,7 +148,11 @@ function useAcceptInviteDialog(): [() => void, React.JSX.Element] {
 
 function useSendInviteDialog(): [() => void, React.JSX.Element] {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState<{
+    message: string;
+    severity: "success" | "error";
+  } | null>(null);
+  const sendInvite = useSendInvite();
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -123,16 +160,29 @@ function useSendInviteDialog(): [() => void, React.JSX.Element] {
 
   const handleDialogClose = () => {
     setDialogOpen(false);
+    sendInvite.reset();
   };
 
   const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
+    setSnackbar(null);
   };
+
   const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSnackbarOpen(true);
-    handleDialogClose();
+    const email = new FormData(event.currentTarget).get("email");
+    if (typeof email !== "string" || email.length === 0) return;
+
+    sendInvite.mutate(email, {
+      onSuccess: () => {
+        handleDialogClose();
+        setSnackbar({ message: "Invitation sent", severity: "success" });
+      },
+      onError: () => {
+        setSnackbar({ message: "The invitation could not be sent", severity: "error" });
+      },
+    });
   };
+
   return [
     handleDialogOpen,
     <>
@@ -159,37 +209,71 @@ function useSendInviteDialog(): [() => void, React.JSX.Element] {
 
         <DialogActions>
           <Button onClick={handleDialogClose}>Cancel</Button>
-          <Button type="submit" form="subscription-form">
+          <Button type="submit" form="subscription-form" disabled={sendInvite.isPending}>
             Send Invite
           </Button>
         </DialogActions>
       </Dialog>
-      <Snackbar open={snackbarOpen} onClose={handleSnackbarClose} message="Invitation processed" />
+      <Snackbar open={snackbar !== null} onClose={handleSnackbarClose}>
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbar?.severity ?? "info"}
+          variant="filled"
+        >
+          {snackbar?.message}
+        </Alert>
+      </Snackbar>
     </>,
   ];
 }
 
 function Account() {
-  const [openAcceptInviteDialog, AcceptInviteDialog] = useAcceptInviteDialog();
+  const { data, isPending, isError, refetch } = useAccountInfo();
+  const [openAcceptInviteDialog, AcceptInviteDialog] = useAcceptInviteDialog(data?.pendingInvite);
   const [openSendInviteDialog, SendInviteDialog] = useSendInviteDialog();
 
   usePageHeader({
     title: "Account",
   });
 
+  if (isPending) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Alert
+        severity="error"
+        action={
+          <Button color="inherit" size="small" onClick={() => void refetch()}>
+            Retry
+          </Button>
+        }
+      >
+        Failed to load account information.
+      </Alert>
+    );
+  }
+
+  const { me, groupMembers, pendingInvite } = data;
+
   return (
     <React.Fragment>
       <Stack spacing={2} sx={{ width: "100%" }}>
         <PageSection title="Personal Info">
           <Grid container spacing={2}>
-            <AccountField label="First Name" value="Chase" />
-            <AccountField label="Last Name" value="McDonald" />
-            <AccountField label="Email" value="1chasemcd@gmail.com" />
+            <AccountField label="First Name" value={me.firstName} />
+            <AccountField label="Last Name" value={me.lastName} />
+            <AccountField label="Email" value={me.email} />
           </Grid>
         </PageSection>
 
         <PageSection title="Group Members">
-          {hasPendingInvite ? (
+          {pendingInvite ? (
             <Alert
               severity="info"
               action={
@@ -215,7 +299,7 @@ function Account() {
             </Box>
           )}
 
-          <GroupTable />
+          <GroupTable members={groupMembers} meEmail={me.email} />
         </PageSection>
       </Stack>
       {AcceptInviteDialog}

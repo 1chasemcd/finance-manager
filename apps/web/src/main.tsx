@@ -10,6 +10,8 @@ import { RouterProvider } from "react-router";
 import { router } from "./routes.ts";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./theme.ts";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./lib/queryClient.ts";
 
 const rootElement = document.getElementById("root");
 
@@ -19,7 +21,9 @@ createRoot(rootElement).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline>
-        <RouterProvider router={router} />
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
       </CssBaseline>
     </ThemeProvider>
   </StrictMode>,
