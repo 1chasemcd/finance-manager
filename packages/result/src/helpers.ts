@@ -1,5 +1,5 @@
 import { Err, Ok } from "./result";
-import type { ErrorType, Result } from "./result";
+import type { Result } from "./result";
 
 export function ok<T>(data: T): Ok<T>;
 export function ok(): Ok<void>;
@@ -20,16 +20,13 @@ export function err(
   });
 }
 
-export function invariant<T, E extends ErrorType>(
-  result: Result<T, E>,
-  message?: string,
-): asserts result is Ok<T>;
+export function invariant<T, E>(result: Result<T, E>, message?: string): asserts result is Ok<T>;
 export function invariant(condition: unknown, message: string): asserts condition;
 export function invariant(value: unknown, message?: string) {
   if (isResult(value) && value.isErr) throw new Error(message ?? value.toString());
   if (!value) throw new Error(message);
 }
 
-export function isResult<T, E extends ErrorType>(value: unknown): value is Result<T, E> {
+export function isResult<T, E>(value: unknown): value is Result<T, E> {
   return value instanceof Ok || value instanceof Err;
 }

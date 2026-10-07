@@ -3,16 +3,6 @@ import { applyMigrations } from "./migrations";
 
 export type SqlParam = null | number | bigint | string | Uint8Array;
 
-// interface FakeStatement {
-//   readonly sql: string;
-//   readonly params: SqlParam[];
-//   bind(...values: unknown[]): FakeStatement;
-//   run<T = Record<string, unknown>>(): Promise<D1Result<T>>;
-//   all<T = Record<string, unknown>>(): Promise<D1Result<T>>;
-//   first<T>(columnName?: string): Promise<T | null>;
-//   raw(options?: { columnNames?: boolean }): Promise<unknown[]>;
-// }
-
 function toSqlParam(value: unknown): SqlParam {
   if (value === undefined || value === null) return null;
   if (typeof value === "string" || typeof value === "number" || typeof value === "bigint") {

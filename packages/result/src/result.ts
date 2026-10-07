@@ -1,21 +1,4 @@
-export interface ErrorType {
-  _tag: string;
-}
-
-type MatchCases<T, E extends ErrorType, U> = {
-  Ok: (data: T) => U;
-} & {
-  [K in E["_tag"]]: (error: Extract<E, { _tag: K }>) => U;
-};
-
-type MatchCasesWithDefault<T, E extends ErrorType, U> = {
-  Ok: (data: T) => U;
-  Default: (error: E) => U;
-} & Partial<{
-  [K in E["_tag"]]: (error: Extract<E, { _tag: K }>) => U;
-}>;
-
-class _Result<T, E extends ErrorType> {
+class _Result<T, E> {
   protected constructor(
     protected readonly _ok: boolean,
     protected readonly value: T | E,
@@ -23,16 +6,6 @@ class _Result<T, E extends ErrorType> {
 
   map<U>(f: (value: T) => U): Result<U, E> {
     return this._ok ? new Ok(f(this.value as T)) : (this as unknown as Err<E>);
-  }
-
-  match<U>(cases: MatchCases<T, E, U> | MatchCasesWithDefault<T, E, U>): U {
-    if (this._ok) return cases.Ok(this.value as T);
-
-    const error = this.value as E;
-    let errorHandler = cases[error._tag as keyof typeof cases] as ((error: E) => U) | undefined;
-    errorHandler ??= "Default" in cases ? cases.Default : undefined;
-    if (!errorHandler) throw new Error(`Unhandled error tag: ${error._tag}`);
-    return errorHandler(error);
   }
 
   equals(that: unknown): boolean {
@@ -68,7 +41,7 @@ export class Ok<T> extends _Result<T, never> {
   }
 }
 
-export class Err<E extends ErrorType> extends _Result<never, E> {
+export class Err<E> extends _Result<never, E> {
   readonly isOk = false as const;
   readonly isErr = true as const;
 
@@ -81,4 +54,4 @@ export class Err<E extends ErrorType> extends _Result<never, E> {
   }
 }
 
-export type Result<T, E extends ErrorType = ErrorType> = Ok<T> | Err<E>;
+export type Result<T, E> = Ok<T> | Err<E>;
