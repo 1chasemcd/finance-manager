@@ -1,31 +1,17 @@
 import { DatabaseSync } from "node:sqlite";
+import { applyMigrations } from "./migrations";
 
 export type SqlParam = null | number | bigint | string | Uint8Array;
 
-interface FakeD1Result {
-  readonly success: true;
-  readonly results: Record<string, unknown>[];
-  readonly meta: {
-    readonly changes: number;
-    readonly last_row_id: number;
-    readonly duration: number;
-    readonly rows_read: number;
-    readonly rows_written: number;
-    readonly changed_db: boolean;
-    readonly size_after: number;
-    readonly tables_scanned: number;
-  };
-}
-
-interface FakeStatement {
-  readonly sql: string;
-  readonly params: SqlParam[];
-  bind(...values: unknown[]): FakeStatement;
-  run(): Promise<FakeD1Result>;
-  all(): Promise<FakeD1Result>;
-  first(columnName?: string): Promise<unknown>;
-  raw(options?: { columnNames?: boolean }): Promise<unknown[]>;
-}
+// interface FakeStatement {
+//   readonly sql: string;
+//   readonly params: SqlParam[];
+//   bind(...values: unknown[]): FakeStatement;
+//   run<T = Record<string, unknown>>(): Promise<D1Result<T>>;
+//   all<T = Record<string, unknown>>(): Promise<D1Result<T>>;
+//   first<T>(columnName?: string): Promise<T | null>;
+//   raw(options?: { columnNames?: boolean }): Promise<unknown[]>;
+// }
 
 function toSqlParam(value: unknown): SqlParam {
   if (value === undefined || value === null) return null;
@@ -40,7 +26,7 @@ function returnsRows(sql: string): boolean {
   return /^\s*(?:select|with|pragma|explain|values)\b/i.test(sql);
 }
 
-function meta(changes: number, lastRowId: number): FakeD1Result["meta"] {
+function meta(changes: number, lastRowId: number): D1Result["meta"] {
   return {
     changes,
     last_row_id: lastRowId,
@@ -53,19 +39,23 @@ function meta(changes: number, lastRowId: number): FakeD1Result["meta"] {
   };
 }
 
-function createStatement(database: DatabaseSync, sql: string, params: SqlParam[]): FakeStatement {
+function createStatement(
+  database: DatabaseSync,
+  sql: string,
+  params: SqlParam[],
+): D1PreparedStatement {
   const stmt = database.prepare(sql);
 
   return {
     sql,
     params,
-    bind(...values: unknown[]): FakeStatement {
+    bind(...values: unknown[]): D1PreparedStatement {
       return createStatement(database, sql, values.map(toSqlParam));
     },
-    run(): Promise<FakeD1Result> {
+    run<T = Record<string, unknown>>(): Promise<D1Result<T>> {
       if (returnsRows(sql)) {
         const rows = stmt.all(...params);
-        return Promise.resolve({ success: true, results: rows, meta: meta(0, 0) });
+        return Promise.resolve({ success: true, results: rows as T[], meta: meta(0, 0) });
       }
       const info = stmt.run(...params);
       return Promise.resolve({
@@ -74,9 +64,9 @@ function createStatement(database: DatabaseSync, sql: string, params: SqlParam[]
         meta: meta(Number(info.changes), Number(info.lastInsertRowid)),
       });
     },
-    all(): Promise<FakeD1Result> {
+    all<T = Record<string, unknown>>(): Promise<D1Result<T>> {
       const rows = stmt.all(...params);
-      return Promise.resolve({ success: true, results: rows, meta: meta(0, 0) });
+      return Promise.resolve({ success: true, results: rows as T[], meta: meta(0, 0) });
     },
     first(columnName?: string): Promise<unknown> {
       const row = stmt.get(...params);
@@ -84,16 +74,22 @@ function createStatement(database: DatabaseSync, sql: string, params: SqlParam[]
       if (columnName === undefined) return Promise.resolve(row);
       return Promise.resolve(row[columnName] ?? null);
     },
-    raw(options?: { columnNames?: boolean }): Promise<unknown[]> {
+    raw<T = unknown[]>(options?: {
+      columnNames?: boolean;
+    }): Promise<T[]> | Promise<[string[], ...T[]]> {
       const rows = stmt.all(...params);
       const arrays = rows.map((row) => Object.values(row));
-      if (options?.columnNames === true) {
+      if (options?.columnNames) {
         const first = rows[0];
-        return Promise.resolve([first === undefined ? [] : Object.keys(first), ...arrays]);
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+        return Promise.resolve([
+          first === undefined ? [] : Object.keys(first),
+          ...(arrays as T[]),
+        ]) as Promise<[string[], ...T[]]>;
       }
-      return Promise.resolve(arrays);
+      return Promise.resolve(arrays as T[]);
     },
-  };
+  } as D1PreparedStatement;
 }
 
 export interface TestDatabase {
@@ -107,13 +103,14 @@ export interface TestDatabase {
 export function createTestDatabase(): TestDatabase {
   const database = new DatabaseSync(":memory:");
   database.exec("PRAGMA foreign_keys = ON");
+  applyMigrations(database);
 
   const d1 = {
-    prepare(query: string): FakeStatement {
+    prepare(query: string): D1PreparedStatement {
       return createStatement(database, query, []);
     },
-    async batch(statements: FakeStatement[]): Promise<FakeD1Result[]> {
-      const results: FakeD1Result[] = [];
+    async batch<T = unknown>(statements: D1PreparedStatement[]): Promise<D1Result<T>[]> {
+      const results: D1Result<T>[] = [];
       for (const statement of statements) {
         results.push(await statement.run());
       }

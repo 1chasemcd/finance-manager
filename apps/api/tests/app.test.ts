@@ -1,7 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import worker from "../src/index";
 import { createTestDatabase, type TestDatabase } from "./test-utils/fake-d1";
-import { applyMigrations } from "./test-utils/migrations";
 import {
   CloudflareAccessMock,
   createTestJwtIssuer,
@@ -51,7 +50,6 @@ const executionContext = {
 
 beforeAll(async () => {
   database = createTestDatabase();
-  applyMigrations(database);
   issuer = await createTestJwtIssuer(TEAM_DOMAIN, POLICY_AUD);
   access = new CloudflareAccessMock(TEAM_DOMAIN, issuer.jwks);
   vi.stubGlobal("fetch", access.fetch);
@@ -216,7 +214,6 @@ describe("authentication", () => {
 
   it("keeps each set of bindings pointed at its own database", async () => {
     const otherDatabase = createTestDatabase();
-    applyMigrations(otherDatabase);
     const otherEnv = {
       DB: otherDatabase.d1,
       POLICY_AUD,
