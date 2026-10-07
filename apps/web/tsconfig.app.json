@@ -14,6 +14,6 @@
     "moduleDetection": "force",
     "jsx": "react-jsx"
   },
-  "include": ["src"],
+  "include": ["src", "tests"],
   "references": [{ "path": "../api" }]
 }

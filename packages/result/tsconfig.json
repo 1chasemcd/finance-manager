@@ -6,5 +6,5 @@
     "moduleResolution": "bundler",
     "lib": ["ESNext"]
   },
-  "include": ["src"]
+  "include": ["src", "tests", "./*.ts"]
 }
