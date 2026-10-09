@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
 import { Outlet } from "react-router";
-import AppDrawer from "../components/AppDrawer/AppDrawer";
-import PageHeader from "../components/PageHeader/PageHeader";
-import PageHeaderProvider from "../components/PageHeader/PageHeaderProvider";
+import AppDrawer from "@/components/AppDrawer/AppDrawer";
+import PageHeader from "@/components/PageHeader/PageHeader";
+import PageHeaderProvider from "@/components/PageHeader/PageHeaderProvider";
 
 export default function AppLayout() {
   return (

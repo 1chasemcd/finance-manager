@@ -1,11 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { createDb, type Db } from "../../src/db/client";
-import { GroupDrizzleRepository } from "../../src/groups/group.drizzle-repository";
-import { GroupInviteDrizzleRepository } from "../../src/group-invites/group-invite.drizzle-repository";
-import { UserDrizzleRepository } from "../../src/users/user.drizzle-repository";
+import { createDb, type Db } from "@/db/client";
+import { GroupDrizzleRepository } from "@/groups/group.drizzle-repository";
+import { GroupInviteDrizzleRepository } from "@/group-invites/group-invite.drizzle-repository";
+import { UserDrizzleRepository } from "@/users/user.drizzle-repository";
 import { createTestDatabase, type TestDatabase } from "../test-utils/fake-d1";
 import { unwrap, unwrapError } from "../test-utils/unwrap";
-import type { User } from "../../src/users/user.types";
+import type { User } from "@/users/user.types";
 
 const HOUR_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * HOUR_MS;

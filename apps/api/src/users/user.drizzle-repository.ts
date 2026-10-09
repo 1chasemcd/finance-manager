@@ -1,10 +1,10 @@
 import { eq, or } from "drizzle-orm";
-import { users } from "../db/schema";
-import type { Db } from "../db/client";
+import { users } from "@/db/schema";
+import type { Db } from "@/db/client";
 import type { UserRepository } from "./user.repository";
 import type { CreateUserInput, UpdateUserInput, User } from "./user.types";
-import type { NotFound, Conflict } from "../core/errors";
-import { conflict, notFound } from "../core/errors";
+import type { NotFound, Conflict } from "@/core/errors";
+import { conflict, notFound } from "@/core/errors";
 import { invariant, ok, type Result } from "@finapp/result";
 
 export class UserDrizzleRepository implements UserRepository {

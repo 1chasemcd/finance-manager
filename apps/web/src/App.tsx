@@ -1,6 +1,6 @@
 import { Alert, CircularProgress, Box } from "@mui/material";
 import { useEffect, useState } from "react";
-import { api } from "./lib/api";
+import { api } from "@/lib/api";
 
 function Loading() {
   return (

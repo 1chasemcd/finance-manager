@@ -1,4 +1,4 @@
-import { usePageHeader } from "../lib/pageHeader";
+import { usePageHeader } from "@/lib/pageHeader";
 
 function ImportBatch() {
   usePageHeader({ title: "Import Batch" });

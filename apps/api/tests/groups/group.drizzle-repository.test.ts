@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { createDb, type Db } from "../../src/db/client";
-import { GroupDrizzleRepository } from "../../src/groups/group.drizzle-repository";
+import { createDb, type Db } from "@/db/client";
+import { GroupDrizzleRepository } from "@/groups/group.drizzle-repository";
 import { createTestDatabase, type TestDatabase } from "../test-utils/fake-d1";
 
 let database: TestDatabase;

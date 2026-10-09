@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./types/worker-configuration.d.ts" />
-import { createApp } from "./app";
-import type { CloudflareEnv } from "./types/cloudflare-env";
+import { createApp } from "@/app";
+import type { CloudflareEnv } from "@/types/cloudflare-env";
 
 export type AppType = ReturnType<typeof createApp>;
 

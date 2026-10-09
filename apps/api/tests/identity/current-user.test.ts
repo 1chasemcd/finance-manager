@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { CurrentUser } from "../../src/identity/current-user";
-import type { User } from "../../src/users/user.types";
+import { CurrentUser } from "@/identity/current-user";
+import type { User } from "@/users/user.types";
 
 const user: User = {
   id: 3,

@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from "node:async_hooks";
-import type { User } from "../users/user.types";
+import type { User } from "@/users/user.types";
 
 interface RequestContext {
   user?: User;

@@ -1,8 +1,8 @@
 import { type Result } from "@finapp/result";
 import type { UserRepository } from "./user.repository";
 import type { OnboardUserInput, User } from "./user.types";
-import type { NotFound, Conflict } from "../core/errors";
-import type { GroupRepository } from "../groups/group.repository";
+import type { NotFound, Conflict } from "@/core/errors";
+import type { GroupRepository } from "@/groups/group.repository";
 
 export class UserService {
   constructor(

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { UserService } from "../../src/users/user.service";
+import { UserService } from "@/users/user.service";
 import { InMemoryGroupRepository, InMemoryUserRepository } from "../test-utils/fake-repositories";
 import { unwrap, unwrapError } from "../test-utils/unwrap";
 

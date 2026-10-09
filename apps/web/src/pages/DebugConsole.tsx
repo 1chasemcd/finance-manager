@@ -1,7 +1,7 @@
 import { TextField } from "@mui/material";
-import { usePageHeader } from "../lib/pageHeader";
+import { usePageHeader } from "@/lib/pageHeader";
 import { useState } from "react";
-import { setDevUserSub } from "../lib/devUserHeader";
+import { setDevUserSub } from "@/lib/devUserHeader";
 
 function DebugConsole() {
   usePageHeader({ title: "Debug Console" });

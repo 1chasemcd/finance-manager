@@ -14,7 +14,10 @@
     "verbatimModuleSyntax": true,
     "lib": ["ESNext"],
     "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
+    "jsxImportSource": "hono/jsx",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src", "./*.ts", "tests"]
 }

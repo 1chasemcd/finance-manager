@@ -1,6 +1,6 @@
 import type { MiddlewareHandler } from "hono";
-import type { UserService } from "../users/user.service";
-import type { GetRequestContext } from "../core/request-context";
+import type { UserService } from "@/users/user.service";
+import type { GetRequestContext } from "@/core/request-context";
 import { randomInt } from "crypto";
 
 const DEV_USER_SUB = "Dev-User-Sub";

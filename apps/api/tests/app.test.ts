@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import worker from "../src/index";
+import worker from "@/index";
 import { createTestDatabase, type TestDatabase } from "./test-utils/fake-d1";
 import {
   CloudflareAccessMock,
@@ -7,7 +7,7 @@ import {
   type IdentityResponse,
   type TestJwtIssuer,
 } from "./test-utils/jwt";
-import type { CloudflareEnv } from "../src/types/cloudflare-env";
+import type { CloudflareEnv } from "@/types/cloudflare-env";
 
 const TEAM_DOMAIN = "https://team.example.test";
 const POLICY_AUD = "policy-aud-123";

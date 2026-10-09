@@ -1,18 +1,18 @@
-import { createDb } from "./db/client";
-import { UserDrizzleRepository } from "./users/user.drizzle-repository";
-import { UserService } from "./users/user.service";
-import router from "./core/router";
-import { getRequestContext, runWithRequestContext } from "./core/request-context";
-import { createAccountRoutes } from "./accounts/account.routes";
-import { AccountService } from "./accounts/account.service";
-import { CurrentUser } from "./identity/current-user";
-import { authMiddlewareFactory } from "./middleware/auth";
-import { GroupDrizzleRepository } from "./groups/group.drizzle-repository";
-import { GroupInviteService } from "./group-invites/group-invite.service";
-import { GroupInviteDrizzleRepository } from "./group-invites/group-invite.drizzle-repository";
-import { createGroupInviteRoutes } from "./group-invites/group-invite.routes";
-import type { CloudflareEnv } from "./types/cloudflare-env";
-import { authMiddlewareFactoryDev } from "./middleware/auth-dev";
+import { createDb } from "@/db/client";
+import { UserDrizzleRepository } from "@/users/user.drizzle-repository";
+import { UserService } from "@/users/user.service";
+import router from "@/core/router";
+import { getRequestContext, runWithRequestContext } from "@/core/request-context";
+import { createAccountRoutes } from "@/accounts/account.routes";
+import { AccountService } from "@/accounts/account.service";
+import { CurrentUser } from "@/identity/current-user";
+import { authMiddlewareFactory } from "@/middleware/auth";
+import { GroupDrizzleRepository } from "@/groups/group.drizzle-repository";
+import { GroupInviteService } from "@/group-invites/group-invite.service";
+import { GroupInviteDrizzleRepository } from "@/group-invites/group-invite.drizzle-repository";
+import { createGroupInviteRoutes } from "@/group-invites/group-invite.routes";
+import type { CloudflareEnv } from "@/types/cloudflare-env";
+import { authMiddlewareFactoryDev } from "@/middleware/auth-dev";
 
 export function createApp(env: CloudflareEnv) {
   const db = createDb(env.DB);

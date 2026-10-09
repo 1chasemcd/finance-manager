@@ -1,5 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
-import { usePageHeaderConfig } from "../../lib/pageHeader";
+import { usePageHeaderConfig } from "@/lib/pageHeader";
 
 export default function PageHeader() {
   const config = usePageHeaderConfig();

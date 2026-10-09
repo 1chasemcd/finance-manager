@@ -13,8 +13,8 @@ import {
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { alpha } from "@mui/material/styles";
 import { NavLink } from "react-router";
-import { Logo } from "../Logo";
-import { navEntries } from "../../routes";
+import { Logo } from "@/components/Logo";
+import { navEntries } from "@/routes";
 
 interface AppDrawerContentProps {
   collapsed: boolean;

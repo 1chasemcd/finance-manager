@@ -1,5 +1,5 @@
 import { createBrowserRouter, type RouteObject } from "react-router";
-import AppLayout from "./layouts/AppLayout";
+import AppLayout from "@/layouts/AppLayout";
 import { type SvgIconProps } from "@mui/material/SvgIcon";
 import {
   AccountBalance,
@@ -13,16 +13,16 @@ import {
   Terminal,
 } from "@mui/icons-material";
 import type React from "react";
-import FileFormats from "./pages/FileFormats";
-import Sources from "./pages/Sources";
-import Dashboard from "./pages/Dashboard";
-import Transactions from "./pages/Transactions";
-import ImportBatch from "./pages/ImportBatch";
-import Categories from "./pages/Categories";
-import CategoryRules from "./pages/CategoryRules";
-import Account from "./pages/Account";
-import NotFound from "./pages/NotFound";
-import DebugConsole from "./pages/DebugConsole";
+import FileFormats from "@/pages/FileFormats";
+import Sources from "@/pages/Sources";
+import Dashboard from "@/pages/Dashboard";
+import Transactions from "@/pages/Transactions";
+import ImportBatch from "@/pages/ImportBatch";
+import Categories from "@/pages/Categories";
+import CategoryRules from "@/pages/CategoryRules";
+import Account from "@/pages/Account";
+import NotFound from "@/pages/NotFound";
+import DebugConsole from "@/pages/DebugConsole";
 
 export const paths = {
   dashboard: "/",

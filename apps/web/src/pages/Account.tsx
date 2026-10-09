@@ -21,8 +21,8 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
-import PageSection from "../components/PageSection";
-import { usePageHeader } from "../lib/pageHeader";
+import PageSection from "@/components/PageSection";
+import { usePageHeader } from "@/lib/pageHeader";
 import { useState } from "react";
 import React from "react";
 import {
@@ -32,7 +32,7 @@ import {
   useSendInvite,
   type AccountUser,
   type PendingInvite,
-} from "../lib/account";
+} from "@/lib/account";
 
 function AccountField({ label, value }: { label: string; value: string }) {
   return (

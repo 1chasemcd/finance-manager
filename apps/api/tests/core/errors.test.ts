@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { conflict, forbidden, invalid, notFound, unauthorized } from "../../src/core/errors";
+import { conflict, forbidden, invalid, notFound, unauthorized } from "@/core/errors";
 
 describe("notFound", () => {
   it("wraps the resource and id", () => {

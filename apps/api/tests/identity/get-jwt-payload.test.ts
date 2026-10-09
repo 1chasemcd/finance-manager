@@ -1,5 +1,5 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import { getJwtPayload } from "../../src/identity/get-jwt-payload";
+import { getJwtPayload } from "@/identity/get-jwt-payload";
 import { CloudflareAccessMock, createTestJwtIssuer, type TestJwtIssuer } from "../test-utils/jwt";
 import { unwrap, unwrapError } from "../test-utils/unwrap";
 
@@ -82,7 +82,7 @@ describe("getJwtPayload", () => {
       "fetch",
       vi.fn(async () => Promise.reject(new Error("jwks down"))),
     );
-    const freshGetJwtPayload = (await import("../../src/identity/get-jwt-payload")).getJwtPayload;
+    const freshGetJwtPayload = (await import("@/identity/get-jwt-payload")).getJwtPayload;
     const token = await issuer.signToken({ sub: "user-1" });
 
     expect(unwrapError(await freshGetJwtPayload(token, env))).toEqual({

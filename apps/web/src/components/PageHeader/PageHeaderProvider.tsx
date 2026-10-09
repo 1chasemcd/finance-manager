@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { PageHeaderContext, createPageHeaderStore } from "../../lib/pageHeader";
+import { PageHeaderContext, createPageHeaderStore } from "@/lib/pageHeader";
 
 interface PageHeaderProviderProps {
   children: ReactNode;

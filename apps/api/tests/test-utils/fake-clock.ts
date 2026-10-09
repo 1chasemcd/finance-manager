@@ -1,4 +1,4 @@
-import type { CurrentTime } from "../../src/types/current-time";
+import type { CurrentTime } from "@/types/current-time";
 
 export interface FakeClock {
   readonly currentTime: CurrentTime;
