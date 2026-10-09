@@ -7,6 +7,7 @@ import { getCloudflareIdentity } from "../../src/identity/get-cloudflare-identit
 import { getRequestContext, runWithRequestContext } from "../../src/core/request-context";
 import { UserService } from "../../src/users/user.service";
 import { InMemoryGroupRepository, InMemoryUserRepository } from "../test-utils/fake-repositories";
+import type { CloudflareEnv } from "../../src/types/cloudflare-env";
 
 vi.mock("../../src/identity/get-jwt-payload", () => ({ getJwtPayload: vi.fn() }));
 vi.mock("../../src/identity/get-cloudflare-identity", () => ({
@@ -16,7 +17,7 @@ vi.mock("../../src/identity/get-cloudflare-identity", () => ({
 const env = {
   POLICY_AUD: "policy-aud",
   TEAM_DOMAIN: "https://team.example.test",
-} as unknown as CloudflareBindings;
+} as unknown as CloudflareEnv;
 
 function setup() {
   const users = new InMemoryUserRepository();
@@ -24,7 +25,7 @@ function setup() {
   const userService = new UserService(users, groups);
   const state = { handled: false };
 
-  const app = new Hono<{ Bindings: CloudflareBindings }>()
+  const app = new Hono<{ Bindings: CloudflareEnv }>()
     .use("*", (_, next) => runWithRequestContext(next))
     .use("*", authMiddlewareFactory(getRequestContext, userService))
     .get("/protected", (c) => {

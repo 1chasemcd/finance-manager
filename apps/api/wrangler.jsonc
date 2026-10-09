@@ -9,15 +9,33 @@
     "not_found_handling": "single-page-application",
     "run_worker_first": ["/api/*"],
   },
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "migrations_dir": "drizzle",
-      "migrations_pattern": "drizzle/*/migration.sql",
+
+  "env": {
+    "dev": {
+      "vars": {
+        "ENVIRONMENT": "dev",
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "migrations_dir": "drizzle",
+          "migrations_pattern": "drizzle/*/migration.sql",
+        },
+      ],
     },
-  ],
-  "vars": {
-    "POLICY_AUD": "daa9462a331f6fef1eebb5e8842dc10e745eec06d0d8fe0775f001433867b741",
-    "TEAM_DOMAIN": "https://mcdnld.cloudflareaccess.com",
+    "prod": {
+      "vars": {
+        "ENVIRONMENT": "prod",
+        "POLICY_AUD": "daa9462a331f6fef1eebb5e8842dc10e745eec06d0d8fe0775f001433867b741",
+        "TEAM_DOMAIN": "https://mcdnld.cloudflareaccess.com",
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "migrations_dir": "drizzle",
+          "migrations_pattern": "drizzle/*/migration.sql",
+        },
+      ],
+    },
   },
 }

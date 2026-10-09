@@ -63,11 +63,11 @@ jobs:
 
       - name: Migrate Database
         working-directory: ./apps/api
-        run: pnpm wrangler d1 migrations apply DB --remote
+        run: pnpm wrangler d1 migrations apply DB --remote --env prod
 
       - name: Deploy Wrangler
         working-directory: ./apps/api
         env:
           DEPLOY_MESSAGE: "Deploy #${{ github.run_number }} by ${{ github.actor }}"
         run: |
-          pnpm wrangler deploy --message "$DEPLOY_MESSAGE" --tag "${{ github.sha }}"
+          pnpm wrangler deploy --env prod --message "$DEPLOY_MESSAGE" --tag "${{ github.sha }}"

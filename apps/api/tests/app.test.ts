@@ -7,6 +7,7 @@ import {
   type IdentityResponse,
   type TestJwtIssuer,
 } from "./test-utils/jwt";
+import type { CloudflareEnv } from "../src/types/cloudflare-env";
 
 const TEAM_DOMAIN = "https://team.example.test";
 const POLICY_AUD = "policy-aud-123";
@@ -36,7 +37,7 @@ interface RequestOptions {
 let database: TestDatabase;
 let access: CloudflareAccessMock;
 let issuer: TestJwtIssuer;
-let env: CloudflareBindings;
+let env: CloudflareEnv;
 
 const executionContext = {
   waitUntil(promise: Promise<unknown>): void {
@@ -57,7 +58,7 @@ beforeAll(async () => {
     DB: database.d1,
     POLICY_AUD,
     TEAM_DOMAIN,
-  } as unknown as CloudflareBindings;
+  } as unknown as CloudflareEnv;
 });
 
 afterAll(() => {
@@ -218,7 +219,7 @@ describe("authentication", () => {
       DB: otherDatabase.d1,
       POLICY_AUD,
       TEAM_DOMAIN,
-    } as unknown as CloudflareBindings;
+    } as unknown as CloudflareEnv;
 
     try {
       const token = await login("multi-tenant", {
