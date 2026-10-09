@@ -34,16 +34,16 @@ export function createApp(env: CloudflareEnv) {
   const accountService = new AccountService(userRepository, groupInviteService, currentUser);
   const userService = new UserService(userRepository, groupRepository);
 
-  const authMiddleware = authMiddlewareFactory(getRequestContext, userService);
-  const authMiddlewareDev = authMiddlewareFactoryDev(getRequestContext, userService);
-
   const app = router()
     .basePath("/api")
     .use("*", (_, next) => runWithRequestContext(next))
     .get("/health", (c) => c.json({ status: "ok" }));
 
-  if (env.ENVIRONMENT === "dev") app.use("*", authMiddlewareDev);
-  else app.use("*", authMiddleware);
+  if (__ENVIRONMENT__ === "dev") {
+    app.use("*", authMiddlewareFactoryDev(getRequestContext, userService));
+  } else {
+    app.use("*", authMiddlewareFactory(getRequestContext, userService));
+  }
 
   return app
     .route("/account", createAccountRoutes(accountService))

@@ -3,6 +3,7 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-09-25",
   "preview_urls": false,
+  "define": { "__ENVIRONMENT__": "\"prod\"" },
   "assets": {
     "directory": "../web/dist",
     "binding": "ASSETS",
@@ -12,8 +13,8 @@
 
   "env": {
     "dev": {
-      "vars": {
-        "ENVIRONMENT": "dev",
+      "define": {
+        "__ENVIRONMENT__": "\"dev\"",
       },
       "d1_databases": [
         {
@@ -25,10 +26,13 @@
     },
     "prod": {
       "vars": {
-        "ENVIRONMENT": "prod",
         "POLICY_AUD": "",
         "TEAM_DOMAIN": "",
       },
+      "define": {
+        "__ENVIRONMENT__": "\"prod\"",
+      },
+      "minify": true,
       "d1_databases": [
         {
           "binding": "DB",

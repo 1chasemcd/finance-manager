@@ -118,6 +118,19 @@ describe("authentication", () => {
     expect((await api("/api/account")).status).toBe(401);
   });
 
+  it("ignores the dev user header outside development", async () => {
+    const response = await worker.fetch(
+      new Request("http://test.local/api/account", {
+        headers: { "Dev-User-Sub": "intruder" },
+      }),
+      env,
+      executionContext,
+    );
+
+    expect(response.status).toBe(401);
+    expect(usersWithSubject("intruder")).toBe(0);
+  });
+
   it("rejects malformed tokens", async () => {
     expect((await api("/api/account", { token: "not-a-jwt" })).status).toBe(401);
   });
