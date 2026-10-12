@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, vi } from "vitest";
+import { afterEach, beforeEach, vi } from "vitest";
 import worker from "@/index";
 import { createTestDatabase, type TestDatabase } from "./fake-d1";
 import {
@@ -51,7 +51,7 @@ export function createAppHarness(): AppHarness {
   let issuer: TestJwtIssuer;
   let env: CloudflareEnv;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     testDatabase = createTestDatabase();
     issuer = await createTestJwtIssuer(TEAM_DOMAIN, POLICY_AUD);
     access = new CloudflareAccessMock(TEAM_DOMAIN, issuer.jwks);
@@ -59,7 +59,7 @@ export function createAppHarness(): AppHarness {
     env = createEnv(testDatabase);
   });
 
-  afterAll(() => {
+  afterEach(() => {
     vi.unstubAllGlobals();
     testDatabase.close();
   });
