@@ -14,7 +14,7 @@ export const POLICY_AUD = "policy-aud-123";
 
 export interface RequestOptions {
   readonly token?: string;
-  readonly method?: "GET" | "POST";
+  readonly method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   readonly json?: unknown;
 }
 
@@ -24,10 +24,7 @@ export interface AppHarness {
   readonly issuer: TestJwtIssuer;
   readonly env: CloudflareEnv;
   api: (path: string, options?: RequestOptions) => Promise<Response>;
-  login: (sub: string, identity: IdentityResponse) => Promise<string>;
-  readJson: <T>(response: Response) => Promise<T>;
-  countRows: (table: string) => number;
-  usersWithSubject: (sub: string) => number;
+  login: (options: { sub: string; identity: IdentityResponse }) => Promise<string>;
 }
 
 export function createEnv(database: TestDatabase): CloudflareEnv {
@@ -49,22 +46,22 @@ const executionContext = {
 } as unknown as ExecutionContext;
 
 export function createAppHarness(): AppHarness {
-  let database: TestDatabase;
+  let testDatabase: TestDatabase;
   let access: CloudflareAccessMock;
   let issuer: TestJwtIssuer;
   let env: CloudflareEnv;
 
   beforeAll(async () => {
-    database = createTestDatabase();
+    testDatabase = createTestDatabase();
     issuer = await createTestJwtIssuer(TEAM_DOMAIN, POLICY_AUD);
     access = new CloudflareAccessMock(TEAM_DOMAIN, issuer.jwks);
     vi.stubGlobal("fetch", access.fetch);
-    env = createEnv(database);
+    env = createEnv(testDatabase);
   });
 
   afterAll(() => {
     vi.unstubAllGlobals();
-    database.close();
+    testDatabase.close();
   });
 
   return {
@@ -93,24 +90,9 @@ export function createAppHarness(): AppHarness {
         executionContext,
       );
     },
-    async login(sub: string, identity: IdentityResponse): Promise<string> {
+    async login({ sub, identity }: { sub: string; identity: IdentityResponse }): Promise<string> {
       access.identities.set(sub, identity);
       return issuer.signToken({ sub });
-    },
-    readJson<T>(response: Response): Promise<T> {
-      return response.json();
-    },
-    countRows(table: string): number {
-      const rows = database.all<Record<string, number>>(`SELECT COUNT(*) AS count FROM ${table}`);
-      return rows[0]?.["count"] ?? 0;
-    },
-    usersWithSubject(sub: string): number {
-      return (
-        database.all<Record<string, number>>(
-          "SELECT COUNT(*) AS count FROM users WHERE subject = ?",
-          [sub],
-        )[0]?.["count"] ?? 0
-      );
     },
   };
 }

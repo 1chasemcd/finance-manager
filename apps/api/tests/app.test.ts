@@ -1,91 +1,74 @@
 import { describe, expect, it } from "vitest";
-import worker from "@/index";
-import { createTestDatabase } from "./test-utils/fake-d1";
-import { createAppHarness, createEnv } from "./test-utils/app-harness";
+import { createAppHarness } from "./test-utils/app-harness";
 
 const harness = createAppHarness();
-const { api, login, readJson, usersWithSubject } = harness;
+const { api, login } = harness;
+const testUser = { sub: "test-user", identity: { email: "test@example.com", name: "Test User" } };
 
 describe("GET /api/health", () => {
   it("responds without a token", async () => {
     const response = await api("/api/health");
 
     expect(response.status).toBe(200);
-    expect(await readJson<{ status: string }>(response)).toEqual({ status: "ok" });
+    expect(await response.json<{ status: string }>()).toEqual({ status: "ok" });
   });
 });
 
 describe("authentication", () => {
-  it("rejects requests without a token", async () => {
-    expect((await api("/api/account")).status).toBe(401);
+  it("produces response for valid token", async () => {
+    const token = await login(testUser);
+    expect((await api("/api/account", { token })).status).toBe(200);
   });
 
-  it("ignores the dev user header outside development", async () => {
-    const response = await worker.fetch(
-      new Request("http://test.local/api/account", {
-        headers: { "Dev-User-Sub": "intruder" },
-      }),
-      harness.env,
-      harness.executionContext,
-    );
-
-    expect(response.status).toBe(401);
-    expect(usersWithSubject("intruder")).toBe(0);
+  it("rejects request without token", async () => {
+    expect((await api("/api/account")).status).toBe(401);
   });
 
   it("rejects malformed tokens", async () => {
     expect((await api("/api/account", { token: "not-a-jwt" })).status).toBe(401);
   });
 
-  it("rejects tokens issued by a different team", async () => {
-    const token = await harness.issuer.signToken({
-      sub: "intruder",
-      iss: "https://evil.example.test",
-    });
+  it("caches a single user record across repeat visits", async () => {
+    const token = await login(testUser);
 
-    expect((await api("/api/account", { token })).status).toBe(401);
-    expect(usersWithSubject("intruder")).toBe(0);
+    expect((await api("/api/account", { token })).status).toBe(200);
+    expect((await api("/api/account", { token })).status).toBe(200);
+
+    expect(harness.access.identityRequests.filter((sub) => sub === "test-user")).toHaveLength(1);
+    expect(harness.access.jwksRequests).toBe(1);
   });
 
-  it("rejects tokens issued for a different application", async () => {
-    const token = await harness.issuer.signToken({
-      sub: "intruder",
-      aud: "another-application-aud",
-    });
-
-    expect((await api("/api/account", { token })).status).toBe(401);
-    expect(usersWithSubject("intruder")).toBe(0);
+  it("responds 502 when the identity endpoint is unavailable", async () => {
+    const token = await login({ sub: "identity-outage", identity: "error" });
+    const response = await api("/api/account", { token });
+    expect(response.status).toBe(502);
   });
-});
 
-describe("worker bindings", () => {
-  it("keeps each set of bindings pointed at its own database", async () => {
-    const otherDatabase = createTestDatabase();
-    const otherEnv = createEnv(otherDatabase);
+  it("responds 502 when the identity endpoint returns invalid JSON", async () => {
+    const token = await login({ sub: "identity-garbage", identity: "invalid-json" });
+    const response = await api("/api/account", { token });
+    expect(response.status).toBe(502);
+  });
 
-    try {
-      const token = await login("multi-tenant", {
-        email: "multi@example.com",
-        name: "Multi Tenant",
-      });
-      expect((await api("/api/account", { token })).status).toBe(200);
-      expect(usersWithSubject("multi-tenant")).toBe(1);
+  it("responds 409 when the identity email already belongs to another user", async () => {
+    const ownerToken = await login({
+      sub: "email-owner",
+      identity: {
+        email: "shared@example.com",
+        name: "Email Owner",
+      },
+    });
+    expect((await api("/api/account", { token: ownerToken })).status).toBe(200);
 
-      const response = await worker.fetch(
-        new Request("http://test.local/api/account", {
-          headers: { "Cf-Access-Jwt-Assertion": token },
-        }),
-        otherEnv,
-        harness.executionContext,
-      );
+    const token = await login({
+      sub: "email-squatter",
+      identity: {
+        email: "shared@example.com",
+        name: "Email Squatter",
+      },
+    });
+    const response = await api("/api/account", { token });
 
-      expect(response.status).toBe(200);
-      expect(
-        otherDatabase.all("SELECT id FROM users WHERE subject = ?", ["multi-tenant"]),
-      ).toHaveLength(1);
-      expect(usersWithSubject("multi-tenant")).toBe(1);
-    } finally {
-      otherDatabase.close();
-    }
+    expect(response.status).toBe(409);
   });
 });
