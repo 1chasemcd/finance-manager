@@ -49,6 +49,11 @@ export class CloudflareAccessMock {
     private readonly jwks: { keys: JWK[] },
   ) {}
 
+  reset = () => {
+    this.identities.clear();
+    this.identityRequests.length = 0;
+  };
+
   readonly fetch = (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
     const url = toUrl(input);
 

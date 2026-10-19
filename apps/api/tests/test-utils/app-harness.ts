@@ -12,6 +12,9 @@ import type { CloudflareEnv } from "@/types/cloudflare-env";
 export const TEAM_DOMAIN = "https://team.example.test";
 export const POLICY_AUD = "policy-aud-123";
 
+const issuer = await createTestJwtIssuer(TEAM_DOMAIN, POLICY_AUD);
+const access = new CloudflareAccessMock(TEAM_DOMAIN, issuer.jwks);
+
 export interface RequestOptions {
   readonly token?: string;
   readonly method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -47,22 +50,35 @@ const executionContext = {
 
 export function createAppHarness(): AppHarness {
   let testDatabase: TestDatabase;
-  let access: CloudflareAccessMock;
-  let issuer: TestJwtIssuer;
   let env: CloudflareEnv;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     testDatabase = createTestDatabase();
-    issuer = await createTestJwtIssuer(TEAM_DOMAIN, POLICY_AUD);
-    access = new CloudflareAccessMock(TEAM_DOMAIN, issuer.jwks);
-    vi.stubGlobal("fetch", access.fetch);
     env = createEnv(testDatabase);
+    access.reset();
+    vi.stubGlobal("fetch", access.fetch);
   });
 
   afterEach(() => {
     vi.unstubAllGlobals();
     testDatabase.close();
   });
+
+  async function api(path: string, options: RequestOptions = {}): Promise<Response> {
+    const headers = new Headers();
+    if (options.token !== undefined) headers.set("Cf-Access-Jwt-Assertion", options.token);
+    if (options.json !== undefined) headers.set("Content-Type", "application/json");
+
+    return worker.fetch(
+      new Request(`http://test.local${path}`, {
+        method: options.method ?? "GET",
+        headers,
+        ...(options.json === undefined ? {} : { body: JSON.stringify(options.json) }),
+      }),
+      env,
+      executionContext,
+    );
+  }
 
   return {
     executionContext,
@@ -75,24 +91,18 @@ export function createAppHarness(): AppHarness {
     get env() {
       return env;
     },
-    async api(path: string, options: RequestOptions = {}): Promise<Response> {
-      const headers = new Headers();
-      if (options.token !== undefined) headers.set("Cf-Access-Jwt-Assertion", options.token);
-      if (options.json !== undefined) headers.set("Content-Type", "application/json");
-
-      return worker.fetch(
-        new Request(`http://test.local${path}`, {
-          method: options.method ?? "GET",
-          headers,
-          ...(options.json === undefined ? {} : { body: JSON.stringify(options.json) }),
-        }),
-        env,
-        executionContext,
-      );
-    },
-    async login({ sub, identity }: { sub: string; identity: IdentityResponse }): Promise<string> {
+    api,
+    login: async ({
+      sub,
+      identity,
+    }: {
+      sub: string;
+      identity: IdentityResponse;
+    }): Promise<string> => {
       access.identities.set(sub, identity);
-      return issuer.signToken({ sub });
+      const token = await issuer.signToken({ sub });
+      await api("/api/account", { token });
+      return token;
     },
   };
 }
