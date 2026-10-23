@@ -1,21 +1,20 @@
-import { Hono } from "hono";
-import { createDb } from "./db/client";
-import { DrizzleUserRepository } from "./db/repositories/user.drizzle-repository";
-import { UserService } from "./users/user.service";
-import { createUserRoutes } from "./users/user.routes";
+import router from "@/core/router";
+import { createRequestContextMiddleware } from "@/core/request-context";
+import { createAccountRoutes } from "@/accounts/account.routes";
+import { createAuthMiddleware } from "@/middleware/auth";
+import { type Container } from "./container";
+import { createDevMiddleware } from "./middleware/dev";
 
-export type AppConfig = {
-  readonly db: D1Database;
-};
-
-export function createApp(config: AppConfig) {
-  const db = createDb(config.db);
-
-  const userRepository = new DrizzleUserRepository(db);
-  const userService = new UserService(userRepository);
-
-  return new Hono()
+export function createApp(container: Container) {
+  const baseApp = router()
     .basePath("/api")
-    .get("/health", (c) => c.json({ status: "ok" }))
-    .route("/users", createUserRoutes(userService));
+    .use("*", createRequestContextMiddleware())
+    .get("/health", (c) => c.json({ status: "ok" }));
+
+  const app =
+    __ENVIRONMENT__ === "dev"
+      ? baseApp.use("*", createDevMiddleware(container))
+      : baseApp.use("*", createAuthMiddleware(container));
+
+  return app.route("/account", createAccountRoutes(container));
 }

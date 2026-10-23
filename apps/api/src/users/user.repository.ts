@@ -1,10 +1,11 @@
-import type { AppResult } from "../core/result";
-import { CreateUser, UpdateUser, User } from "./user.schemas";
+import type { Result } from "@finapp/result";
+import type { NotFound, Conflict } from "@/core/errors";
+import type { CreateUserInput, UpdateUserInput, User } from "./user.types";
 
-export type UserRepository = {
-  lookup(id: number): Promise<AppResult<User>>;
-  getall(): Promise<AppResult<User[]>>;
-  create(request: CreateUser): Promise<AppResult<User>>;
-  update(id: number, request: UpdateUser): Promise<AppResult<User>>;
-  delete(id: number): Promise<AppResult>;
-};
+export interface UserRepository {
+  getBySubject(subject: string): Promise<Result<User, NotFound>>;
+  getByEmail(email: string): Promise<Result<User, NotFound>>;
+  getByGroup(groupId: number): Promise<User[]>;
+  createUser(input: CreateUserInput): Promise<Result<User, Conflict>>;
+  updateUser(id: number, input: UpdateUserInput): Promise<Result<User, NotFound>>;
+}

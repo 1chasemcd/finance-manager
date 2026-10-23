@@ -1,7 +1,8 @@
 import { drizzle } from "drizzle-orm/d1";
+import { relations } from "./relations";
 
 export function createDb(d1: D1Database) {
-  return drizzle(d1);
+  return drizzle(d1, { relations: relations });
 }
 
 export type Db = ReturnType<typeof createDb>;

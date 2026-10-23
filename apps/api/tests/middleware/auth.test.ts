@@ -1,0 +1,149 @@
+import { err, ok } from "@finapp/result";
+import { Hono } from "hono";
+import { describe, expect, it, vi } from "vitest";
+import { createAuthMiddleware } from "@/middleware/auth";
+import { UserService } from "@/users/user.service";
+import { InMemoryGroupRepository, InMemoryUserRepository } from "../test-utils/fake-repositories";
+import type { CloudflareEnv } from "@/types/cloudflare-env";
+import { createRequestContextMiddleware, requestContext } from "@/core/request-context";
+
+const env = {
+  POLICY_AUD: "policy-aud",
+  TEAM_DOMAIN: "https://team.example.test",
+} as unknown as CloudflareEnv;
+
+function setup() {
+  const users = new InMemoryUserRepository();
+  const groups = new InMemoryGroupRepository();
+  const userService = new UserService(users, groups);
+  const jwtVerifyFn = vi.fn();
+  const getIdentityFn = vi.fn();
+  const state = { handled: false };
+
+  const app = new Hono<{ Bindings: CloudflareEnv }>()
+    .use("*", createRequestContextMiddleware())
+    .use(
+      "*",
+      createAuthMiddleware({
+        requestContext,
+        userService,
+        identityService: {
+          jwtVerify: jwtVerifyFn,
+          getIdentity: getIdentityFn,
+        },
+      }),
+    )
+    .get("/protected", (c) => {
+      state.handled = true;
+      return c.json({ user: requestContext().user ?? null });
+    });
+
+  return {
+    users,
+    groups,
+    state,
+    jwtVerifyFn,
+    getIdentityFn,
+    request: async (token?: string): Promise<Response> => {
+      const headers = token === undefined ? {} : { "Cf-Access-Jwt-Assertion": token };
+      return await app.request("/protected", { headers }, env);
+    },
+  };
+}
+
+describe("authMiddleware", () => {
+  it("rejects requests without a JWT assertion", async () => {
+    const { request, state, jwtVerifyFn } = setup();
+    const response = await request();
+
+    expect(response.status).toBe(401);
+    expect(state.handled).toBe(false);
+    expect(jwtVerifyFn).not.toHaveBeenCalled();
+  });
+
+  it("rejects requests with an invalid JWT", async () => {
+    const { request, state, jwtVerifyFn, getIdentityFn } = setup();
+    jwtVerifyFn.mockResolvedValue(err("Unauthorized"));
+
+    const response = await request("bad-token");
+
+    expect(response.status).toBe(401);
+    expect(state.handled).toBe(false);
+    expect(getIdentityFn).not.toHaveBeenCalled();
+  });
+
+  it("loads an existing user without calling the identity endpoint", async () => {
+    const { request, users, groups, state, jwtVerifyFn, getIdentityFn } = setup();
+    const seeded = users.add({
+      email: "jane@example.com",
+      firstName: "Jane",
+      lastName: "Doe",
+      subject: "subject-1",
+      groupId: 4,
+    });
+    jwtVerifyFn.mockResolvedValue(ok({ sub: "subject-1" }));
+
+    const response = await request("good-token");
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ user: seeded });
+    expect(getIdentityFn).not.toHaveBeenCalled();
+    expect(users.users).toHaveLength(1);
+    expect(groups.groups).toHaveLength(0);
+    expect(state.handled).toBe(true);
+  });
+
+  it("onboards an unknown subject using the identity profile", async () => {
+    const { request, users, groups, jwtVerifyFn, getIdentityFn } = setup();
+    jwtVerifyFn.mockResolvedValue(ok({ sub: "subject-new" }));
+    getIdentityFn.mockResolvedValue(ok({ email: "jane@example.com", name: "Jane Marie Doe" }));
+
+    const response = await request("good-token");
+
+    expect(response.status).toBe(200);
+    expect(getIdentityFn).toHaveBeenCalledWith("good-token", env);
+    expect(users.users).toHaveLength(1);
+    expect(users.users[0]).toMatchObject({
+      subject: "subject-new",
+      email: "jane@example.com",
+      firstName: "Jane",
+      lastName: "Marie Doe",
+    });
+    expect(groups.groups).toHaveLength(1);
+    expect(users.users[0]?.groupId).toBe(groups.groups[0]?.id);
+
+    const body = await response.json<{ user: { id: number } | null }>();
+    expect(body.user?.id).toBe(users.users[0]?.id);
+  });
+
+  it("responds 502 when the identity endpoint fails", async () => {
+    const { request, users, state, jwtVerifyFn, getIdentityFn } = setup();
+
+    jwtVerifyFn.mockResolvedValue(ok({ sub: "subject-new" }));
+    getIdentityFn.mockResolvedValue(err("BadGateway"));
+
+    const response = await request("good-token");
+
+    expect(response.status).toBe(502);
+    expect(users.users).toHaveLength(0);
+    expect(state.handled).toBe(false);
+  });
+
+  it("responds 409 instead of failing when onboarding hits a conflict", async () => {
+    const { request, users, jwtVerifyFn, getIdentityFn } = setup();
+    users.add({
+      email: "taken@example.com",
+      firstName: "Already",
+      lastName: "There",
+      subject: "other-subject",
+      groupId: 1,
+    });
+    jwtVerifyFn.mockResolvedValue(ok({ sub: "subject-new" }));
+    getIdentityFn.mockResolvedValue(ok({ email: "taken@example.com", name: "New Person" }));
+
+    const response = await request("good-token");
+
+    expect(response.status).toBe(409);
+    expect(users.users).toHaveLength(1);
+  });
+});

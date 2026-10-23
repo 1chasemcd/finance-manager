@@ -47,7 +47,11 @@ jobs:
       - name: Build
         run: |
           pnpm --dir ./apps/web run build
-          pnpm --dir ./apps/api wrangler deploy --dry-run --name ci
+          pnpm --dir ./apps/api wrangler deploy --env prod --dry-run --outdir "$RUNNER_TEMP/prod-bundle"
+          if grep -q "createDevMiddleware" "$RUNNER_TEMP/prod-bundle/index.js"; then
+            echo "::error::Development auth middleware leaked into the prod bundle"
+            exit 1
+          fi
 
   validate-tf:
     name: Validate Terraform

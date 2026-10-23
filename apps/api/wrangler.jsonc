@@ -1,19 +1,50 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "finapp",
   "main": "src/index.ts",
   "compatibility_date": "2026-09-25",
   "preview_urls": false,
+  "define": {
+    "__ENVIRONMENT__": "\"dev\"",
+  },
   "assets": {
     "directory": "../web/dist",
     "binding": "ASSETS",
     "not_found_handling": "single-page-application",
     "run_worker_first": ["/api/*"],
   },
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "migrations_dir": "drizzle",
-      "migrations_pattern": "drizzle/*/migration.sql",
+  "env": {
+    "dev": {
+      "vars": {
+        "DEV_USER": "",
+      },
+      "define": {
+        "__ENVIRONMENT__": "\"dev\"",
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "migrations_dir": "drizzle",
+          "migrations_pattern": "drizzle/*/migration.sql",
+        },
+      ],
     },
-  ],
+    "prod": {
+      "vars": {
+        "POLICY_AUD": "",
+        "TEAM_DOMAIN": "",
+      },
+      "define": {
+        "__ENVIRONMENT__": "\"prod\"",
+      },
+      "minify": true,
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "migrations_dir": "drizzle",
+          "migrations_pattern": "drizzle/*/migration.sql",
+        },
+      ],
+    },
+  },
 }

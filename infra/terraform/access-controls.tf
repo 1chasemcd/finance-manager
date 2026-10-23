@@ -1,3 +1,7 @@
+data "cloudflare_zero_trust_organization" "team" {
+  account_id = var.cloudflare_account_id
+}
+
 resource "cloudflare_zero_trust_access_identity_provider" "google" {
   account_id = var.cloudflare_account_id
 

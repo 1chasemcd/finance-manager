@@ -1,26 +1,41 @@
+import { type Result } from "@finapp/result";
 import type { UserRepository } from "./user.repository";
-import { CreateUser, UpdateUser } from "./user.schemas";
+import type { OnboardUserInput, User } from "./user.types";
+import type { NotFound, Conflict } from "@/core/errors";
+import type { GroupRepository } from "@/groups/group.repository";
 
 export class UserService {
-  constructor(private readonly users: UserRepository) {}
+  constructor(
+    private readonly users: UserRepository,
+    private readonly groups: GroupRepository,
+  ) {}
 
-  async getall() {
-    return this.users.getall();
+  getUser(subject: string): Promise<Result<User, NotFound>> {
+    return this.users.getBySubject(subject);
   }
 
-  async lookup(id: number) {
-    return this.users.lookup(id);
-  }
+  async onboardUser(input: OnboardUserInput): Promise<Result<User, Conflict>> {
+    const group = await this.groups.createGroup();
+    const { firstName, lastName } = splitName(input.name);
 
-  async create(user: CreateUser) {
-    return this.users.create(user);
+    return this.users.createUser({
+      email: input.email,
+      firstName,
+      lastName,
+      subject: input.subject,
+      groupId: group.id,
+    });
   }
+}
 
-  async update(id: number, user: UpdateUser) {
-    return this.users.update(id, user);
-  }
+function splitName(name: string): { firstName: string; lastName: string } {
+  const trimmed = name.trim();
+  const separator = trimmed.indexOf(" ");
 
-  async delete(id: number) {
-    return this.users.delete(id);
-  }
+  if (separator === -1) return { firstName: trimmed, lastName: "" };
+
+  return {
+    firstName: trimmed.slice(0, separator),
+    lastName: trimmed.slice(separator + 1).trim(),
+  };
 }
