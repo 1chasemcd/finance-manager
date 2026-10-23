@@ -16,7 +16,7 @@ if (!prod) throw new Error("wrangler.jsonc is missing env.prod");
 if (!prod.vars) throw new Error("wrangler.jsonc is missing env.prod.vars");
 if (!prod.d1_databases?.[0]) throw new Error("wrangler.jsonc is missing env.prod.d1_databases");
 
-config.name = terraformOutput.worker_name.value;
+prod.name = terraformOutput.worker_name.value;
 prod.vars.POLICY_AUD = terraformOutput.access_app_aud_tag.value;
 prod.vars.TEAM_DOMAIN = formatDomain(terraformOutput.zt_team_domain.value);
 prod.d1_databases[0].database_name = terraformOutput.db_name.value;
