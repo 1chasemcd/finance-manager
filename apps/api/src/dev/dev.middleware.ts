@@ -12,9 +12,13 @@ export function createDevMiddleware({
   requestContext,
   userService,
 }: DevMiddlewareDeps): MiddlewareHandler<{ Bindings: Cloudflare.DevEnv }> {
-  setupUsersInBackground(userService);
-
+  let setupStatus: "pending" | "done" | "not_done" = "not_done";
   return async (c, next) => {
+    if (setupStatus === "not_done") {
+      setupStatus = "pending";
+      await setupUsers(userService);
+      setupStatus = "done";
+    }
     const context = requestContext();
     const subject = c.env.DEV_USER;
 
@@ -29,22 +33,12 @@ export function createDevMiddleware({
   };
 }
 
-function setupUsersInBackground(userService: UserService) {
+async function setupUsers(userService: UserService) {
   const entries = Object.entries(devUsers);
-
-  function setupUserAndInitiateNext(userIndex: number) {
-    const entry = entries.at(userIndex);
-    if (!entry) return;
-    const [subject, identity] = entry;
-    userService
-      .onboardUser({ subject, ...identity })
-      .catch(() => {
-        // TODO log errors
-      })
-      .finally(() => {
-        setupUserAndInitiateNext(userIndex + 1);
-      });
-  }
-
-  setupUserAndInitiateNext(0);
+  for (const [subject, identity] of entries)
+    try {
+      await userService.onboardUser({ subject, ...identity });
+    } catch {
+      // TODO log
+    }
 }

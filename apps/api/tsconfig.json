@@ -20,5 +20,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "./*.ts", "tests"]
+  "include": ["src", "src/dev-users.json", "./*.ts", "tests"]
 }
