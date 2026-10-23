@@ -4,7 +4,7 @@ import { createAccountRoutes } from "@/accounts/account.routes";
 import { createAuthMiddleware } from "@/middleware/auth";
 import { createGroupInviteRoutes } from "@/group-invites/group-invite.routes";
 import { type Container } from "./container";
-import { createDevMiddleware } from "./dev/dev.middleware";
+import { createDevMiddleware } from "./middleware/dev";
 
 export function createApp(container: Container) {
   const baseApp = router()
