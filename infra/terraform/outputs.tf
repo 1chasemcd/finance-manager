@@ -25,5 +25,5 @@ output "access_app_aud_tag" {
 
 output "zt_team_domain" {
   description = "The team domain of the cloudflare zero trust organization"
-  value       = cloudflare_zero_trust_organization.team.auth_domain
+  value       = data.cloudflare_zero_trust_organization.team.auth_domain
 }
