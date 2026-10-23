@@ -2,7 +2,6 @@ import router from "@/core/router";
 import { createRequestContextMiddleware } from "@/core/request-context";
 import { createAccountRoutes } from "@/accounts/account.routes";
 import { createAuthMiddleware } from "@/middleware/auth";
-import { createGroupInviteRoutes } from "@/group-invites/group-invite.routes";
 import { type Container } from "./container";
 import { createDevMiddleware } from "./middleware/dev";
 
@@ -17,7 +16,5 @@ export function createApp(container: Container) {
       ? baseApp.use("*", createDevMiddleware(container))
       : baseApp.use("*", createAuthMiddleware(container));
 
-  return app
-    .route("/account", createAccountRoutes(container))
-    .route("/invite", createGroupInviteRoutes(container));
+  return app.route("/account", createAccountRoutes(container));
 }

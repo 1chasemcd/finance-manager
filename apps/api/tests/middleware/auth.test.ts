@@ -7,11 +7,6 @@ import { InMemoryGroupRepository, InMemoryUserRepository } from "../test-utils/f
 import type { CloudflareEnv } from "@/types/cloudflare-env";
 import { createRequestContextMiddleware, requestContext } from "@/core/request-context";
 
-vi.mock("@/identity/get-jwt-payload", () => ({ getJwtPayload: vi.fn() }));
-vi.mock("@/identity/get-cloudflare-identity", () => ({
-  getCloudflareIdentity: vi.fn(),
-}));
-
 const env = {
   POLICY_AUD: "policy-aud",
   TEAM_DOMAIN: "https://team.example.test",

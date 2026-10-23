@@ -5,7 +5,7 @@ const harness = await createAppHarness();
 const { api, login } = harness;
 const testUser = { email: "test@example.com", name: "Test User" };
 
-describe("GET /api/health", () => {
+describe("/api/health", () => {
   it("responds without a token", async () => {
     const response = await api("/api/health");
 
