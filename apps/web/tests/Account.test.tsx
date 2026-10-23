@@ -79,7 +79,7 @@ describe("Account page", () => {
     const user = userEvent.setup();
     const { calls } = stubFetch({
       "GET /api/account": () => jsonResponse(accountResponse()),
-      "POST /api/invite": () => jsonResponse(null, 204),
+      "POST /api/account/invite": () => jsonResponse(null, 204),
     });
 
     renderWithProviders(<Account />);
@@ -100,7 +100,7 @@ describe("Account page", () => {
     expect(await screen.findByText("Invitation sent")).toBeInTheDocument();
 
     const inviteCall = calls.find(
-      (call) => call.method === "POST" && call.url.endsWith("/api/invite"),
+      (call) => call.method === "POST" && call.url.endsWith("/api/account/invite"),
     );
     expect(inviteCall).toBeDefined();
     const body: unknown = JSON.parse(inviteCall?.body ?? "null");
@@ -113,7 +113,7 @@ describe("Account page", () => {
     const user = userEvent.setup();
     stubFetch({
       "GET /api/account": () => jsonResponse(accountResponse()),
-      "POST /api/invite": () => jsonResponse({}, 409),
+      "POST /api/account/invite": () => jsonResponse({}, 409),
     });
 
     renderWithProviders(<Account />);
@@ -131,7 +131,7 @@ describe("Account page", () => {
     const user = userEvent.setup();
     const { calls } = stubFetch({
       "GET /api/account": () => jsonResponse(accountResponse({ pendingInvite })),
-      "POST /api/invite/invite-123/accept": () => jsonResponse(null, 204),
+      "POST /api/account/invite/invite-123/accept": () => jsonResponse(null, 204),
     });
 
     renderWithProviders(<Account />);
@@ -157,7 +157,8 @@ describe("Account page", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
     expect(
       calls.some(
-        (call) => call.method === "POST" && call.url.endsWith("/api/invite/invite-123/accept"),
+        (call) =>
+          call.method === "POST" && call.url.endsWith("/api/account/invite/invite-123/accept"),
       ),
     ).toBe(true);
   });
@@ -166,7 +167,7 @@ describe("Account page", () => {
     const user = userEvent.setup();
     const { calls } = stubFetch({
       "GET /api/account": () => jsonResponse(accountResponse({ pendingInvite })),
-      "POST /api/invite/invite-123/decline": () => jsonResponse(null, 204),
+      "POST /api/account/invite/invite-123/decline": () => jsonResponse(null, 204),
     });
 
     renderWithProviders(<Account />);
@@ -179,7 +180,8 @@ describe("Account page", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
     expect(
       calls.some(
-        (call) => call.method === "POST" && call.url.endsWith("/api/invite/invite-123/decline"),
+        (call) =>
+          call.method === "POST" && call.url.endsWith("/api/account/invite/invite-123/decline"),
       ),
     ).toBe(true);
   });
