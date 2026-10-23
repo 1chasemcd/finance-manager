@@ -1,6 +1,6 @@
 import type { MiddlewareHandler } from "hono";
 import type { UserService } from "@/users/user.service";
-import type { GetRequestContext } from "@/core/request-context";
+import type { RequestContext } from "@/core/request-context";
 import { randomInt } from "crypto";
 
 const DEV_USER_SUB = "Dev-User-Sub";
@@ -24,7 +24,7 @@ export async function getRandomUser(): Promise<RandomIdentity> {
   };
 }
 export function authMiddlewareFactoryDev(
-  requestContext: GetRequestContext,
+  requestContext: RequestContext,
   userService: UserService,
 ): MiddlewareHandler<{ Bindings: Cloudflare.DevEnv }> {
   return async (c, next) => {

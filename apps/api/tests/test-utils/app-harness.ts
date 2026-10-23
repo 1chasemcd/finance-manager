@@ -1,42 +1,13 @@
-import { afterEach, beforeEach, vi } from "vitest";
-import worker from "@/index";
+import { afterEach, beforeEach } from "vitest";
 import { createTestDatabase, type TestDatabase } from "./fake-d1";
-import {
-  CloudflareAccessMock,
-  createTestJwtIssuer,
-  type IdentityResponse,
-  type TestJwtIssuer,
-} from "./jwt";
+import { createCloudflareAccessMock, createTestJwtIssuer } from "./jwt";
 import type { CloudflareEnv } from "@/types/cloudflare-env";
+import { createFetchMock, type FetchMock } from "./fetch-mock";
+import { createApp } from "@/app";
+import { createContainer, type Container } from "@/container";
 
 export const TEAM_DOMAIN = "https://team.example.test";
 export const POLICY_AUD = "policy-aud-123";
-
-const issuer = await createTestJwtIssuer(TEAM_DOMAIN, POLICY_AUD);
-const access = new CloudflareAccessMock(TEAM_DOMAIN, issuer.jwks);
-
-export interface RequestOptions {
-  readonly token?: string;
-  readonly method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-  readonly json?: unknown;
-}
-
-export interface AppHarness {
-  readonly executionContext: ExecutionContext;
-  readonly access: CloudflareAccessMock;
-  readonly issuer: TestJwtIssuer;
-  readonly env: CloudflareEnv;
-  api: (path: string, options?: RequestOptions) => Promise<Response>;
-  login: (options: { sub: string; identity: IdentityResponse }) => Promise<string>;
-}
-
-export function createEnv(database: TestDatabase): CloudflareEnv {
-  return {
-    DB: database.d1,
-    POLICY_AUD,
-    TEAM_DOMAIN,
-  } as unknown as CloudflareEnv;
-}
 
 const executionContext = {
   waitUntil(promise: Promise<unknown>): void {
@@ -48,19 +19,47 @@ const executionContext = {
   props: {},
 } as unknown as ExecutionContext;
 
-export function createAppHarness(): AppHarness {
+export interface RequestOptions {
+  readonly token?: string;
+  readonly method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  readonly json?: unknown;
+}
+
+export interface AppHarness {
+  api: (path: string, options?: RequestOptions) => Promise<Response>;
+  login: (identity: CloudflareAccessIdentity) => Promise<string>;
+  fetchMock: FetchMock;
+}
+
+function createEnv(database: TestDatabase): CloudflareEnv {
+  return {
+    DB: database.d1,
+    POLICY_AUD,
+    TEAM_DOMAIN,
+  } as unknown as CloudflareEnv;
+}
+
+export async function createAppHarness(): Promise<AppHarness> {
+  const issuer = await createTestJwtIssuer(TEAM_DOMAIN, POLICY_AUD);
+  const access = createCloudflareAccessMock(issuer);
+  const fetchMock = createFetchMock();
+
   let testDatabase: TestDatabase;
   let env: CloudflareEnv;
+  let container: Container;
 
   beforeEach(() => {
+    access.reset();
+    fetchMock.reset();
+
     testDatabase = createTestDatabase();
     env = createEnv(testDatabase);
-    access.reset();
-    vi.stubGlobal("fetch", access.fetch);
+    container = createContainer({ ...env, handleFetch: fetchMock.handleFetch });
+    fetchMock.register(`${TEAM_DOMAIN}/cdn-cgi/access/certs`, access.certs);
+    fetchMock.register(`${TEAM_DOMAIN}/cdn-cgi/access/get-identity`, access.getIdentity);
   });
 
   afterEach(() => {
-    vi.unstubAllGlobals();
     testDatabase.close();
   });
 
@@ -69,7 +68,7 @@ export function createAppHarness(): AppHarness {
     if (options.token !== undefined) headers.set("Cf-Access-Jwt-Assertion", options.token);
     if (options.json !== undefined) headers.set("Content-Type", "application/json");
 
-    return worker.fetch(
+    return createApp(container).fetch(
       new Request(`http://test.local${path}`, {
         method: options.method ?? "GET",
         headers,
@@ -81,28 +80,14 @@ export function createAppHarness(): AppHarness {
   }
 
   return {
-    executionContext,
-    get access() {
-      return access;
-    },
-    get issuer() {
-      return issuer;
-    },
-    get env() {
-      return env;
-    },
     api,
-    login: async ({
-      sub,
-      identity,
-    }: {
-      sub: string;
-      identity: IdentityResponse;
-    }): Promise<string> => {
-      access.identities.set(sub, identity);
+    login: async (identity: CloudflareAccessIdentity): Promise<string> => {
+      const sub = crypto.randomUUID();
       const token = await issuer.signToken({ sub });
+      access.setupIdentity(sub, identity);
       await api("/api/account", { token });
       return token;
     },
+    fetchMock,
   };
 }

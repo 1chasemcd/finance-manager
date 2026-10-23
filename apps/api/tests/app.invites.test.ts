@@ -2,24 +2,12 @@ import { describe, expect, it } from "vitest";
 import { createAppHarness } from "./test-utils/app-harness";
 import type { AccountInfoResponse } from "@/accounts/account.types";
 
-const harness = createAppHarness();
+const harness = await createAppHarness();
 const { api, login } = harness;
 
-const alice = {
-  sub: "alice",
-  identity: { email: "alice@example.com", name: "Alice Smith" },
-};
-const bob = {
-  sub: "bob",
-  identity: { email: "bob@example.com", name: "Bob Jones" },
-};
-const carol = {
-  sub: "carol",
-  identity: {
-    email: "carol@example.com",
-    name: "Carol Danvers",
-  },
-};
+const alice = { email: "alice@example.com", name: "Alice Smith" };
+const bob = { email: "bob@example.com", name: "Bob Jones" };
+const carol = { email: "carol@example.com", name: "Carol Danvers" };
 
 describe("group invites", () => {
   it("rejects an invite payload that is not a valid email", async () => {

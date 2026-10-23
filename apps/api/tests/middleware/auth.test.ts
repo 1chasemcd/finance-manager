@@ -1,13 +1,11 @@
 import { err, ok } from "@finapp/result";
 import { Hono } from "hono";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { authMiddlewareFactory } from "@/middleware/auth";
-import { getJwtPayload } from "@/identity/get-jwt-payload";
-import { getCloudflareIdentity } from "@/identity/get-cloudflare-identity";
-import { getRequestContext, runWithRequestContext } from "@/core/request-context";
+import { describe, expect, it, vi } from "vitest";
+import { createAuthMiddleware } from "@/middleware/auth";
 import { UserService } from "@/users/user.service";
 import { InMemoryGroupRepository, InMemoryUserRepository } from "../test-utils/fake-repositories";
 import type { CloudflareEnv } from "@/types/cloudflare-env";
+import { createRequestContextMiddleware, requestContext } from "@/core/request-context";
 
 vi.mock("@/identity/get-jwt-payload", () => ({ getJwtPayload: vi.fn() }));
 vi.mock("@/identity/get-cloudflare-identity", () => ({
@@ -23,20 +21,34 @@ function setup() {
   const users = new InMemoryUserRepository();
   const groups = new InMemoryGroupRepository();
   const userService = new UserService(users, groups);
+  const jwtVerifyFn = vi.fn();
+  const getIdentityFn = vi.fn();
   const state = { handled: false };
 
   const app = new Hono<{ Bindings: CloudflareEnv }>()
-    .use("*", (_, next) => runWithRequestContext(next))
-    .use("*", authMiddlewareFactory(getRequestContext, userService))
+    .use("*", createRequestContextMiddleware())
+    .use(
+      "*",
+      createAuthMiddleware({
+        requestContext,
+        userService,
+        identityService: {
+          jwtVerify: jwtVerifyFn,
+          getIdentity: getIdentityFn,
+        },
+      }),
+    )
     .get("/protected", (c) => {
       state.handled = true;
-      return c.json({ user: getRequestContext().user ?? null });
+      return c.json({ user: requestContext().user ?? null });
     });
 
   return {
     users,
     groups,
     state,
+    jwtVerifyFn,
+    getIdentityFn,
     request: async (token?: string): Promise<Response> => {
       const headers = token === undefined ? {} : { "Cf-Access-Jwt-Assertion": token };
       return await app.request("/protected", { headers }, env);
@@ -44,34 +56,29 @@ function setup() {
   };
 }
 
-beforeEach(() => {
-  vi.resetAllMocks();
-});
-
 describe("authMiddleware", () => {
   it("rejects requests without a JWT assertion", async () => {
-    const { request, state } = setup();
-
+    const { request, state, jwtVerifyFn } = setup();
     const response = await request();
 
     expect(response.status).toBe(401);
     expect(state.handled).toBe(false);
-    expect(getJwtPayload).not.toHaveBeenCalled();
+    expect(jwtVerifyFn).not.toHaveBeenCalled();
   });
 
   it("rejects requests with an invalid JWT", async () => {
-    vi.mocked(getJwtPayload).mockResolvedValue(err("Unauthorized"));
-    const { request, state } = setup();
+    const { request, state, jwtVerifyFn, getIdentityFn } = setup();
+    jwtVerifyFn.mockResolvedValue(err("Unauthorized"));
 
     const response = await request("bad-token");
 
     expect(response.status).toBe(401);
     expect(state.handled).toBe(false);
-    expect(getCloudflareIdentity).not.toHaveBeenCalled();
+    expect(getIdentityFn).not.toHaveBeenCalled();
   });
 
   it("loads an existing user without calling the identity endpoint", async () => {
-    const { request, users, groups, state } = setup();
+    const { request, users, groups, state, jwtVerifyFn, getIdentityFn } = setup();
     const seeded = users.add({
       email: "jane@example.com",
       firstName: "Jane",
@@ -79,29 +86,27 @@ describe("authMiddleware", () => {
       subject: "subject-1",
       groupId: 4,
     });
-    vi.mocked(getJwtPayload).mockResolvedValue(ok({ sub: "subject-1" }));
+    jwtVerifyFn.mockResolvedValue(ok({ sub: "subject-1" }));
 
     const response = await request("good-token");
 
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ user: seeded });
-    expect(getCloudflareIdentity).not.toHaveBeenCalled();
+    expect(getIdentityFn).not.toHaveBeenCalled();
     expect(users.users).toHaveLength(1);
     expect(groups.groups).toHaveLength(0);
     expect(state.handled).toBe(true);
   });
 
   it("onboards an unknown subject using the identity profile", async () => {
-    const { request, users, groups } = setup();
-    vi.mocked(getJwtPayload).mockResolvedValue(ok({ sub: "subject-new" }));
-    vi.mocked(getCloudflareIdentity).mockResolvedValue(
-      ok({ email: "jane@example.com", name: "Jane Marie Doe" }),
-    );
+    const { request, users, groups, jwtVerifyFn, getIdentityFn } = setup();
+    jwtVerifyFn.mockResolvedValue(ok({ sub: "subject-new" }));
+    getIdentityFn.mockResolvedValue(ok({ email: "jane@example.com", name: "Jane Marie Doe" }));
 
     const response = await request("good-token");
 
     expect(response.status).toBe(200);
-    expect(getCloudflareIdentity).toHaveBeenCalledWith("good-token", env);
+    expect(getIdentityFn).toHaveBeenCalledWith("good-token", env);
     expect(users.users).toHaveLength(1);
     expect(users.users[0]).toMatchObject({
       subject: "subject-new",
@@ -117,9 +122,10 @@ describe("authMiddleware", () => {
   });
 
   it("responds 502 when the identity endpoint fails", async () => {
-    vi.mocked(getJwtPayload).mockResolvedValue(ok({ sub: "subject-new" }));
-    vi.mocked(getCloudflareIdentity).mockResolvedValue(err("BadGateway"));
-    const { request, users, state } = setup();
+    const { request, users, state, jwtVerifyFn, getIdentityFn } = setup();
+
+    jwtVerifyFn.mockResolvedValue(ok({ sub: "subject-new" }));
+    getIdentityFn.mockResolvedValue(err("BadGateway"));
 
     const response = await request("good-token");
 
@@ -129,7 +135,7 @@ describe("authMiddleware", () => {
   });
 
   it("responds 409 instead of failing when onboarding hits a conflict", async () => {
-    const { request, users } = setup();
+    const { request, users, jwtVerifyFn, getIdentityFn } = setup();
     users.add({
       email: "taken@example.com",
       firstName: "Already",
@@ -137,10 +143,8 @@ describe("authMiddleware", () => {
       subject: "other-subject",
       groupId: 1,
     });
-    vi.mocked(getJwtPayload).mockResolvedValue(ok({ sub: "subject-new" }));
-    vi.mocked(getCloudflareIdentity).mockResolvedValue(
-      ok({ email: "taken@example.com", name: "New Person" }),
-    );
+    jwtVerifyFn.mockResolvedValue(ok({ sub: "subject-new" }));
+    getIdentityFn.mockResolvedValue(ok({ email: "taken@example.com", name: "New Person" }));
 
     const response = await request("good-token");
 

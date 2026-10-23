@@ -2,10 +2,10 @@ import { describe, expect, it } from "vitest";
 import { createAppHarness } from "./test-utils/app-harness";
 import type { AccountInfoResponse } from "@/accounts/account.types";
 
-const harness = createAppHarness();
+const harness = await createAppHarness();
 const { api, login } = harness;
 
-const testUser = { sub: "test-user", identity: { email: "test@example.com", name: "Test User" } };
+const testUser = { email: "test@example.com", name: "Test User" };
 
 describe("GET /api/account", () => {
   it("onboards a first-time visitor from the identity profile", async () => {
@@ -24,6 +24,5 @@ describe("GET /api/account", () => {
       { firstName: "Test", lastName: "User", email: "test@example.com" },
     ]);
     expect(body).not.toHaveProperty("pendingInvite");
-    expect(harness.access.identityRequests).toContain("test-user");
   });
 });

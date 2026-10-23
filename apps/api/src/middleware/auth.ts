@@ -1,19 +1,25 @@
 import type { MiddlewareHandler } from "hono";
-import { getJwtPayload } from "@/identity/get-jwt-payload";
 import type { UserService } from "@/users/user.service";
-import { getCloudflareIdentity } from "@/identity/get-cloudflare-identity";
-import type { GetRequestContext } from "@/core/request-context";
+import type { RequestContext } from "@/core/request-context";
+import { type IdentityService } from "@/identity/cloudflare-identity.service";
 
 const CF_ACCESS_JWT_ASSERTION = "Cf-Access-Jwt-Assertion";
 
-export function authMiddlewareFactory(
-  requestContext: GetRequestContext,
-  userService: UserService,
-): MiddlewareHandler<{ Bindings: Cloudflare.ProdEnv }> {
+interface AuthMiddlewareDeps {
+  requestContext: RequestContext;
+  userService: UserService;
+  identityService: IdentityService;
+}
+
+export function createAuthMiddleware({
+  requestContext,
+  userService,
+  identityService,
+}: AuthMiddlewareDeps): MiddlewareHandler<{ Bindings: Cloudflare.ProdEnv }> {
   return async (c, next) => {
     const jwt = c.req.header(CF_ACCESS_JWT_ASSERTION);
     if (!jwt) return c.body(null, 401);
-    const payload = await getJwtPayload(jwt, c.env);
+    const payload = await identityService.jwtVerify(jwt, c.env);
     if (payload.isErr) return c.body(null, 401);
 
     const context = requestContext();
@@ -24,7 +30,7 @@ export function authMiddlewareFactory(
       return next();
     }
 
-    const cfIdentity = await getCloudflareIdentity(jwt, c.env);
+    const cfIdentity = await identityService.getIdentity(jwt, c.env);
     if (cfIdentity.isErr) return c.body(null, 502);
     if (!cfIdentity.data.email) return c.body(null, 401);
 

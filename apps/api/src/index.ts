@@ -2,6 +2,7 @@
 /// <reference path="./types/worker-configuration.d.ts" />
 import { createApp } from "@/app";
 import type { CloudflareEnv } from "@/types/cloudflare-env";
+import { createContainer } from "./container";
 
 export type AppType = ReturnType<typeof createApp>;
 
@@ -11,7 +12,9 @@ function getApp(env: CloudflareEnv): AppType {
   const cached = apps.get(env);
   if (cached) return cached;
 
-  const app = createApp(env);
+  const container = createContainer(env);
+  const app = createApp(container);
+
   apps.set(env, app);
   return app;
 }

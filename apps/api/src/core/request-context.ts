@@ -1,23 +1,27 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 import type { User } from "@/users/user.types";
+import type { MiddlewareHandler } from "hono";
 
-interface RequestContext {
+interface RequestContextData {
   user?: User;
 }
 
-export type GetRequestContext = () => RequestContext;
+const requestStore = new AsyncLocalStorage<RequestContextData>();
 
-const requestStore = new AsyncLocalStorage<RequestContext>();
-
-export const getRequestContext: GetRequestContext = () => {
+export function requestContext() {
   const store = requestStore.getStore();
   if (store === undefined)
     throw Error("Attempted to use request context outside of a request scope.");
   return store;
-};
-
-export function runWithRequestContext(callback: () => Promise<void>): Promise<void> {
-  return requestStore.run({}, async () => {
-    await callback();
-  });
 }
+
+export function createRequestContextMiddleware(): MiddlewareHandler<{
+  Bindings: Cloudflare.ProdEnv;
+}> {
+  return (_, next) =>
+    requestStore.run({}, async () => {
+      await next();
+    });
+}
+
+export type RequestContext = typeof requestContext;
