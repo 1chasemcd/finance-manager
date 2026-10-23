@@ -45,8 +45,6 @@ export function createContainer({
   const identityService: IdentityService = new CloudflareIdentityService(handleFetch);
 
   return {
-    currentTime,
-    handleFetch,
     requestContext,
     groupInviteService,
     accountService,

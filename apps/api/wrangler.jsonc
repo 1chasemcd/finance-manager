@@ -12,8 +12,7 @@
   "env": {
     "dev": {
       "vars": {
-        "POLICY_AUD": "",
-        "TEAM_DOMAIN": "",
+        "DEV_USER": "",
       },
       "define": {
         "__ENVIRONMENT__": "\"dev\"",

@@ -10,7 +10,6 @@ import {
   People,
   Payments,
   Rule,
-  Terminal,
 } from "@mui/icons-material";
 import type React from "react";
 import FileFormats from "@/pages/FileFormats";
@@ -22,7 +21,6 @@ import Categories from "@/pages/Categories";
 import CategoryRules from "@/pages/CategoryRules";
 import Account from "@/pages/Account";
 import NotFound from "@/pages/NotFound";
-import DebugConsole from "@/pages/DebugConsole";
 
 export const paths = {
   dashboard: "/",
@@ -98,16 +96,6 @@ export const navEntries: RouteEntry[] = [
     Icon: People,
     Component: Account,
   }),
-  ...(import.meta.env.DEV
-    ? [
-        route({
-          path: paths.debugConsole,
-          label: "Debug Console",
-          Icon: Terminal,
-          Component: DebugConsole,
-        }),
-      ]
-    : []),
 ];
 
 function transformRouteEntry(entry: RouteEntry): RouteObject {

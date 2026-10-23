@@ -1,6 +1,7 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 import type { User } from "@/users/user.types";
 import type { MiddlewareHandler } from "hono";
+import type { CloudflareEnv } from "@/types/cloudflare-env";
 
 interface RequestContextData {
   user?: User;
@@ -16,7 +17,7 @@ export function requestContext() {
 }
 
 export function createRequestContextMiddleware(): MiddlewareHandler<{
-  Bindings: Cloudflare.ProdEnv;
+  Bindings: CloudflareEnv;
 }> {
   return (_, next) =>
     requestStore.run({}, async () => {
