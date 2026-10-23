@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { createAppHarness, TEAM_DOMAIN } from "./test-utils/app-harness";
 
-const { api, login, fetchMock } = await createAppHarness();
+const harness = await createAppHarness();
+const { api, login } = harness;
 const testUser = { email: "test@example.com", name: "Test User" };
 
 describe("GET /api/health", () => {
@@ -33,12 +34,15 @@ describe("authentication", () => {
     expect((await api("/api/account", { token })).status).toBe(200);
     expect((await api("/api/account", { token })).status).toBe(200);
 
-    // expect(harness.access.identityRequests.filter((sub) => sub === "test-user")).toHaveLength(1);
-    // expect(harness.access.jwksRequests).toBe(1);
+    expect(
+      harness.fetchMock.requests.filter((r) => r.url.endsWith("/cdn-cgi/access/get-identity")),
+    ).toHaveLength(1);
   });
 
   it("responds 502 when the identity endpoint is unavailable", async () => {
-    fetchMock.register(`${TEAM_DOMAIN}/cdn-cgi/access/get-identity`, () => Response.error());
+    harness.fetchMock.register(`${TEAM_DOMAIN}/cdn-cgi/access/get-identity`, () =>
+      Response.error(),
+    );
 
     const token = await login({ sub: "identity-outage", identity: "error" });
     const response = await api("/api/account", { token });
@@ -46,7 +50,7 @@ describe("authentication", () => {
   });
 
   it("responds 502 when the identity endpoint returns invalid JSON", async () => {
-    fetchMock.register(
+    harness.fetchMock.register(
       `${TEAM_DOMAIN}/cdn-cgi/access/get-identity`,
       () => new Response("not json"),
     );
