@@ -79,15 +79,17 @@ export async function createAppHarness(): Promise<AppHarness> {
     );
   }
 
+  async function login(identity: CloudflareAccessIdentity): Promise<string> {
+    const sub = crypto.randomUUID();
+    const token = await issuer.signToken({ sub });
+    access.setupIdentity(sub, identity);
+    await api("/api/account", { token });
+    return token;
+  }
+
   return {
     api,
-    login: async (identity: CloudflareAccessIdentity): Promise<string> => {
-      const sub = crypto.randomUUID();
-      const token = await issuer.signToken({ sub });
-      access.setupIdentity(sub, identity);
-      await api("/api/account", { token });
-      return token;
-    },
+    login,
     fetchMock,
   };
 }

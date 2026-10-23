@@ -2,8 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createAppHarness } from "../test-utils/app-harness";
 import type { AccountInfoResponse } from "@/accounts/account.types";
 
-const harness = await createAppHarness();
-const { api, login } = harness;
+const { api, login } = await createAppHarness();
 
 const testUser = { email: "test@example.com", name: "Test User" };
 
