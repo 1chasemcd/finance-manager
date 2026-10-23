@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createAppHarness } from "./test-utils/app-harness";
+import { createAppHarness } from "../test-utils/app-harness";
 import type { AccountInfoResponse } from "@/accounts/account.types";
 
 const harness = await createAppHarness();
