@@ -21,7 +21,7 @@ type ContainerDeps = CloudflareEnv & {
 };
 
 export function createContainer({
-  handleFetch = fetch,
+  handleFetch = fetch.bind(globalThis),
   currentTime = () => new Date(),
   ...env
 }: ContainerDeps) {
