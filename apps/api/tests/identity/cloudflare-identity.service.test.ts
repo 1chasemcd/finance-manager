@@ -3,6 +3,7 @@ import { unwrap, unwrapError } from "../test-utils/unwrap";
 import { CloudflareIdentityService } from "@/identity/cloudflare-identity.service";
 import { createCloudflareAccessMock, createTestJwtIssuer } from "../test-utils/jwt";
 import { createFetchMock } from "../test-utils/fetch-mock";
+import { createFakeLogger } from "../test-utils/fake-logger";
 
 const TEAM_DOMAIN = "https://team.example.test";
 const POLICY_AUD = "policy-aud-123";
@@ -16,7 +17,7 @@ async function setup() {
   const getIdentityFn = vi.fn(access.getIdentity);
   fetchMock.register(`${TEAM_DOMAIN}/cdn-cgi/access/certs`, certsFn);
   fetchMock.register(`${TEAM_DOMAIN}/cdn-cgi/access/get-identity`, getIdentityFn);
-  const identity = new CloudflareIdentityService(fetchMock.handleFetch);
+  const identity = new CloudflareIdentityService(fetchMock.handleFetch, createFakeLogger());
 
   return {
     issuer,

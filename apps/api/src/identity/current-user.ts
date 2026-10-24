@@ -1,12 +1,12 @@
 import { invariant } from "@finapp/result";
-import { type RequestContext } from "@/core/request-context";
+import { type RequestContext } from "@/middleware/request-context";
 import type { User } from "@/users/user.types";
 
 export class CurrentUser {
   constructor(private readonly requestContext: RequestContext) {}
 
   get(): User | undefined {
-    return this.requestContext().user;
+    return this.requestContext()?.user;
   }
 
   require(): User {

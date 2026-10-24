@@ -1,7 +1,8 @@
 import type { MiddlewareHandler } from "hono";
 import type { UserService } from "@/users/user.service";
-import type { RequestContext } from "@/core/request-context";
+import type { RequestContext } from "@/middleware/request-context";
 import { type IdentityService } from "@/identity/cloudflare-identity.service";
+import { invariant } from "@finapp/result";
 
 const CF_ACCESS_JWT_ASSERTION = "Cf-Access-Jwt-Assertion";
 
@@ -23,6 +24,8 @@ export function createAuthMiddleware({
     if (payload.isErr) return c.body(null, 401);
 
     const context = requestContext();
+    invariant(context, "No request context.");
+
     const user = await userService.getUser(payload.data.sub);
 
     if (user.isOk) {
