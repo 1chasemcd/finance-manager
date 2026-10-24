@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { CurrentUser } from "@/identity/current-user";
+import type { RequestContextData } from "@/middleware/request-context";
 import type { User } from "@/users/user.types";
 
 const user: User = {
@@ -11,8 +12,8 @@ const user: User = {
   groupId: 9,
 };
 
-function createCurrentUser(): { currentUser: CurrentUser; store: { user?: User } } {
-  const store: { user?: User } = {};
+function createCurrentUser(): { currentUser: CurrentUser; store: RequestContextData } {
+  const store: RequestContextData = { requestId: "test", method: "GET", path: "/" };
   return { currentUser: new CurrentUser(() => store), store };
 }
 

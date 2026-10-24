@@ -69,7 +69,13 @@ export class CloudflareIdentityService implements IdentityService {
         },
       });
 
-      if (!response.ok) return err("BadGateway");
+      if (!response.ok) {
+        this.logger.error("Cloudflare identity endpoint error response", {
+          status: response.status,
+          response: await response.text(),
+        });
+        return err("BadGateway");
+      }
 
       const data = await response.json();
       return ok(data as CloudflareAccessIdentity);
