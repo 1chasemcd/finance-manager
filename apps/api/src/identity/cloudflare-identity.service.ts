@@ -1,3 +1,4 @@
+import type { Logger } from "@/core/logger";
 import { err, ok, type Result } from "@finapp/result";
 import {
   createRemoteJWKSet,
@@ -29,7 +30,10 @@ export interface IdentityService {
 
 export class CloudflareIdentityService implements IdentityService {
   private jwks: RemoteJWKSet | undefined;
-  constructor(private readonly handleFetch: typeof fetch) {}
+  constructor(
+    private readonly handleFetch: typeof fetch,
+    private readonly logger: Logger,
+  ) {}
 
   async jwtVerify(token: string, env: Env): Promise<Result<AppJWTPayload, Unauthorized>> {
     try {
@@ -42,7 +46,10 @@ export class CloudflareIdentityService implements IdentityService {
       });
 
       return ok(payload as AppJWTPayload);
-    } catch {
+    } catch (e) {
+      this.logger.warn("JWT verification failure", {
+        error: e instanceof Error ? e.message : String(e),
+      });
       return err("Unauthorized");
     }
   }
@@ -53,26 +60,23 @@ export class CloudflareIdentityService implements IdentityService {
   ): Promise<Result<CloudflareAccessIdentity, BadGateway>> {
     const url = `${env.TEAM_DOMAIN}/cdn-cgi/access/get-identity`;
 
-    let response: Response;
-
     try {
-      response = await this.handleFetch(url, {
+      const response = await this.handleFetch(url, {
         method: "GET",
         headers: {
           Cookie: `CF_Authorization=${token}`,
           Accept: "application/json",
         },
       });
-    } catch {
-      return err("BadGateway");
-    }
 
-    if (!response.ok) return err("BadGateway");
+      if (!response.ok) return err("BadGateway");
 
-    try {
       const data = await response.json();
       return ok(data as CloudflareAccessIdentity);
-    } catch {
+    } catch (e) {
+      this.logger.error("Cloudflare identity endpoint failure", {
+        error: e instanceof Error ? e.message : String(e),
+      });
       return err("BadGateway");
     }
   }
