@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { requestContext, createRequestContextMiddleware } from "@/core/request-context";
+import { requestContext, createRequestContextMiddleware } from "@/middleware/request-context";
 import type { User } from "@/users/user.types";
 import type { Context } from "hono";
 import type { CloudflareEnv } from "@/types/cloudflare-env";
@@ -14,7 +14,7 @@ const user: User = {
 };
 
 async function runWithRequestContext(callback: () => Promise<void>) {
-  const c = {} as unknown as Context<
+  const c = { req: { method: "get", path: "/api/health" } } as unknown as Context<
     {
       Bindings: CloudflareEnv;
     },
@@ -26,14 +26,15 @@ async function runWithRequestContext(callback: () => Promise<void>) {
 
 describe("getRequestContext", () => {
   it("throws outside of a request scope", () => {
-    expect(() => {
-      requestContext();
-    }).toThrow("Attempted to use request context outside of a request scope.");
+    expect(requestContext()).toBeUndefined();
   });
 
   it("returns the store inside a request scope", async () => {
     await runWithRequestContext(() => {
-      expect(requestContext()).toEqual({});
+      expect(requestContext()?.requestId).toBeTruthy();
+      expect(requestContext()?.method).toEqual("get");
+      expect(requestContext()?.path).toEqual("/api/health");
+
       return Promise.resolve();
     });
   });
@@ -41,12 +42,13 @@ describe("getRequestContext", () => {
   it("shares mutations with nested async calls", async () => {
     await runWithRequestContext(async () => {
       const context = requestContext();
+      if (!context) expect.fail();
       context.user = user;
 
       await Promise.resolve();
       await Promise.resolve();
 
-      expect(requestContext().user).toEqual(user);
+      expect(requestContext()?.user).toEqual(user);
       expect(requestContext()).toBe(context);
     });
   });
@@ -56,13 +58,15 @@ describe("getRequestContext", () => {
 
     await Promise.all([
       runWithRequestContext(async () => {
-        requestContext().user = user;
+        const context = requestContext();
+        if (!context) expect.fail();
+        context.user = user;
         await Promise.resolve();
-        seen.push(requestContext().user);
+        seen.push(requestContext()?.user);
       }),
       runWithRequestContext(async () => {
         await Promise.resolve();
-        seen.push(requestContext().user);
+        seen.push(requestContext()?.user);
       }),
     ]);
 
@@ -71,13 +75,13 @@ describe("getRequestContext", () => {
 
   it("leaves no store behind after completion", async () => {
     await runWithRequestContext(() => {
-      requestContext().user = user;
+      const context = requestContext();
+      if (!context) expect.fail();
+      context.user = user;
       return Promise.resolve();
     });
 
-    expect(() => {
-      requestContext();
-    }).toThrow("Attempted to use request context outside of a request scope.");
+    expect(requestContext()).toBeUndefined();
   });
 
   it("propagates failures from the callback", async () => {

@@ -3,6 +3,7 @@ import { unwrap, unwrapError } from "../test-utils/unwrap";
 import { CloudflareIdentityService } from "@/identity/cloudflare-identity.service";
 import { createCloudflareAccessMock, createTestJwtIssuer } from "../test-utils/jwt";
 import { createFetchMock } from "../test-utils/fetch-mock";
+import { createFakeLogger, type FakeLogger } from "../test-utils/fake-logger";
 
 const TEAM_DOMAIN = "https://team.example.test";
 const POLICY_AUD = "policy-aud-123";
@@ -16,7 +17,8 @@ async function setup() {
   const getIdentityFn = vi.fn(access.getIdentity);
   fetchMock.register(`${TEAM_DOMAIN}/cdn-cgi/access/certs`, certsFn);
   fetchMock.register(`${TEAM_DOMAIN}/cdn-cgi/access/get-identity`, getIdentityFn);
-  const identity = new CloudflareIdentityService(fetchMock.handleFetch);
+  const logger: FakeLogger = createFakeLogger();
+  const identity = new CloudflareIdentityService(fetchMock.handleFetch, logger);
 
   return {
     issuer,
@@ -24,6 +26,8 @@ async function setup() {
     certsFn,
     getIdentityFn,
     identity,
+    fetchMock,
+    logger,
   };
 }
 
@@ -57,6 +61,54 @@ describe("CloudflareIdentityService.getIdentity", () => {
     expect(result).toEqual({
       _tag: "BadGateway",
     });
+  });
+
+  it("logs an error when the identity endpoint returns invalid JSON", async () => {
+    const { identity, fetchMock, logger } = await setup();
+    fetchMock.register(`${TEAM_DOMAIN}/cdn-cgi/access/get-identity`, () => new Response("nope"));
+
+    const result = unwrapError(await identity.getIdentity("some-token", env));
+    expect(result).toEqual({ _tag: "BadGateway" });
+    expect(logger.calls).toEqual([
+      expect.objectContaining({
+        level: "error",
+        message: "Cloudflare identity endpoint failure",
+      }),
+    ]);
+  });
+
+  it("logs an error when the identity endpoint fetch fails", async () => {
+    const { identity, fetchMock, logger } = await setup();
+    fetchMock.register(`${TEAM_DOMAIN}/cdn-cgi/access/get-identity`, () => {
+      throw new TypeError("fetch failed");
+    });
+
+    const result = unwrapError(await identity.getIdentity("some-token", env));
+    expect(result).toEqual({ _tag: "BadGateway" });
+    expect(logger.calls).toEqual([
+      expect.objectContaining({
+        level: "error",
+        message: "Cloudflare identity endpoint failure",
+        context: { error: "fetch failed" },
+      }),
+    ]);
+  });
+
+  it("logs when the identity endpoint returns a non-ok response", async () => {
+    const { identity, fetchMock, logger } = await setup();
+    fetchMock.register(
+      `${TEAM_DOMAIN}/cdn-cgi/access/get-identity`,
+      () => new Response("not found", { status: 404 }),
+    );
+
+    const result = unwrapError(await identity.getIdentity("some-token", env));
+    expect(result).toEqual({ _tag: "BadGateway" });
+    expect(logger.calls).toEqual([
+      expect.objectContaining({
+        level: "error",
+        message: "Cloudflare identity endpoint error response",
+      }),
+    ]);
   });
 });
 
@@ -125,5 +177,25 @@ describe("CloudflareIdentityService.jwtVerify", () => {
     const token = await rogueIssuer.signToken({ sub: "user-1" });
 
     expect(unwrapError(await identity.jwtVerify(token, env))).toEqual({ _tag: "Unauthorized" });
+  });
+
+  it("logs a warning when verification fails", async () => {
+    const { identity, logger } = await setup();
+
+    unwrapError(await identity.jwtVerify("not-a-jwt", env));
+
+    expect(logger.calls).toHaveLength(1);
+    expect(logger.calls[0]?.level).toBe("warn");
+    expect(logger.calls[0]?.message).toBe("JWT verification failure");
+    expect(logger.calls[0]?.context["error"]).toBeTypeOf("string");
+  });
+
+  it("does not log when verification succeeds", async () => {
+    const { issuer, identity, logger } = await setup();
+
+    const token = await issuer.signToken({ sub: "user-1" });
+    unwrap(await identity.jwtVerify(token, env));
+
+    expect(logger.calls).toHaveLength(0);
   });
 });

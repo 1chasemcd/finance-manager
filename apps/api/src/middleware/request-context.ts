@@ -3,26 +3,27 @@ import type { User } from "@/users/user.types";
 import type { MiddlewareHandler } from "hono";
 import type { CloudflareEnv } from "@/types/cloudflare-env";
 
-interface RequestContextData {
+export interface RequestContextData {
   user?: User;
+  requestId: string;
+  method: string;
+  path: string;
 }
 
 const requestStore = new AsyncLocalStorage<RequestContextData>();
 
-export function requestContext() {
-  const store = requestStore.getStore();
-  if (store === undefined)
-    throw Error("Attempted to use request context outside of a request scope.");
-  return store;
-}
+export const requestContext = () => requestStore.getStore();
 
 export function createRequestContextMiddleware(): MiddlewareHandler<{
   Bindings: CloudflareEnv;
 }> {
-  return (_, next) =>
-    requestStore.run({}, async () => {
+  return (c, next) => {
+    const requestId = crypto.randomUUID();
+    const { method, path } = c.req;
+    return requestStore.run({ requestId, method, path }, async () => {
       await next();
     });
+  };
 }
 
 export type RequestContext = typeof requestContext;

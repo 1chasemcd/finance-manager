@@ -9,7 +9,7 @@ import {
   InMemoryUserRepository,
 } from "../test-utils/fake-repositories";
 import { unwrap, unwrapError } from "../test-utils/unwrap";
-import type { User } from "@/users/user.types";
+import type { RequestContextData } from "@/middleware/request-context";
 import { createFakeClock } from "../test-utils/fake-clock";
 
 const NOW = new Date("2026-06-15T12:00:00.000Z");
@@ -19,7 +19,11 @@ function setup() {
   const clock = createFakeClock(NOW);
   const users = new InMemoryUserRepository();
   const invites = new InMemoryGroupInviteRepository(clock.currentTime);
-  const requestContext: { user?: User } = {};
+  const requestContext: RequestContextData = {
+    requestId: "test",
+    method: "GET",
+    path: "/api/group-invites",
+  };
   const currentUser = new CurrentUser(() => requestContext);
   const service = new GroupInviteService(users, invites, currentUser, clock.currentTime);
 

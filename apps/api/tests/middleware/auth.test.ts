@@ -5,7 +5,7 @@ import { createAuthMiddleware } from "@/middleware/auth";
 import { UserService } from "@/users/user.service";
 import { InMemoryGroupRepository, InMemoryUserRepository } from "../test-utils/fake-repositories";
 import type { CloudflareEnv } from "@/types/cloudflare-env";
-import { createRequestContextMiddleware, requestContext } from "@/core/request-context";
+import { createRequestContextMiddleware, requestContext } from "@/middleware/request-context";
 
 const env = {
   POLICY_AUD: "policy-aud",
@@ -35,7 +35,7 @@ function setup() {
     )
     .get("/protected", (c) => {
       state.handled = true;
-      return c.json({ user: requestContext().user ?? null });
+      return c.json({ user: requestContext()?.user ?? null });
     });
 
   return {
