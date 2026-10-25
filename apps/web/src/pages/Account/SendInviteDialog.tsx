@@ -1,4 +1,5 @@
 import { useSendInvite } from "@/lib/account";
+import { inviteUserSchema } from "@finapp/schema";
 import {
   Dialog,
   DialogTitle,
@@ -12,14 +13,29 @@ import {
   Alert,
 } from "@mui/material";
 import { useState } from "react";
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+type InviteUserRequestData = z.infer<typeof inviteUserSchema>;
 
 export function useSendInviteDialog(): [() => void, React.JSX.Element] {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [snackbar, setSnackbar] = useState<{
+    open: boolean;
     message: string;
     severity: "success" | "error";
-  } | null>(null);
+  }>({ open: false, message: "", severity: "success" });
   const sendInvite = useSendInvite();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    ...form
+  } = useForm<InviteUserRequestData>({
+    resolver: zodResolver(inviteUserSchema),
+  });
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -27,25 +43,22 @@ export function useSendInviteDialog(): [() => void, React.JSX.Element] {
 
   const handleDialogClose = () => {
     setDialogOpen(false);
+    form.reset();
     sendInvite.reset();
   };
 
   const handleSnackbarClose = () => {
-    setSnackbar(null);
+    setSnackbar({ ...snackbar, open: false });
   };
 
-  const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const email = new FormData(event.currentTarget).get("email");
-    if (typeof email !== "string" || email.length === 0) return;
-
-    sendInvite.mutate(email, {
+  const onSubmit = (data: InviteUserRequestData) => {
+    sendInvite.mutate(data, {
       onSuccess: () => {
         handleDialogClose();
-        setSnackbar({ message: "Invitation sent", severity: "success" });
+        setSnackbar({ open: true, message: "Invitation sent", severity: "success" });
       },
       onError: () => {
-        setSnackbar({ message: "The invitation could not be sent", severity: "error" });
+        setSnackbar({ open: true, message: "The invitation could not be sent", severity: "error" });
       },
     });
   };
@@ -61,12 +74,16 @@ export function useSendInviteDialog(): [() => void, React.JSX.Element] {
           </DialogContentText>
         </DialogContent>
         <Box sx={{ mx: 3 }}>
-          <form onSubmit={handleSubmit} id="subscription-form">
+          <form
+            onSubmit={(event) => void handleSubmit(onSubmit)(event)}
+            id="send-invite-form"
+            noValidate
+          >
             <TextField
               autoFocus
-              required
-              id="name"
-              name="email"
+              {...register("email")}
+              error={!!errors.email}
+              helperText={errors.email?.message ?? " "}
               label="Email Address"
               type="email"
               fullWidth
@@ -76,18 +93,14 @@ export function useSendInviteDialog(): [() => void, React.JSX.Element] {
 
         <DialogActions>
           <Button onClick={handleDialogClose}>Cancel</Button>
-          <Button type="submit" form="subscription-form" disabled={sendInvite.isPending}>
+          <Button type="submit" form="send-invite-form" disabled={sendInvite.isPending}>
             Send Invite
           </Button>
         </DialogActions>
       </Dialog>
-      <Snackbar open={snackbar !== null} onClose={handleSnackbarClose}>
-        <Alert
-          onClose={handleSnackbarClose}
-          severity={snackbar?.severity ?? "info"}
-          variant="filled"
-        >
-          {snackbar?.message}
+      <Snackbar open={snackbar.open} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity={snackbar.severity} variant="filled">
+          {snackbar.message}
         </Alert>
       </Snackbar>
     </>,

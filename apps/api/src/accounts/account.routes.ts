@@ -2,7 +2,7 @@ import router from "@/core/router";
 import type { AccountService } from "./account.service";
 import { zValidator } from "@hono/zod-validator";
 import type { GroupInviteService } from "@/group-invites/group-invite.service";
-import { InviteUserSchema } from "@/group-invites/group-invites.types";
+import { inviteUserSchema } from "@finapp/schema";
 
 interface AccountRouteDeps {
   accountService: AccountService;
@@ -15,7 +15,7 @@ export function createAccountRoutes({ accountService, groupInviteService }: Acco
       const info = await accountService.getAccountInfo();
       return c.json(info, 200);
     })
-    .post("/invite", zValidator("json", InviteUserSchema), async (c) => {
+    .post("/invite", zValidator("json", inviteUserSchema), async (c) => {
       const email = c.req.valid("json").email;
       await groupInviteService.inviteUserToGroup(email);
       return c.body(null, 204);

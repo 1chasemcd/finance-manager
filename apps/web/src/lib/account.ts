@@ -1,5 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "./api";
+import type z from "zod";
+import type { inviteUserSchema } from "@finapp/schema";
+
+type InviteUserRequestData = z.infer<typeof inviteUserSchema>;
 
 type AccountResponse = Awaited<ReturnType<typeof api.account.$get>>;
 
@@ -32,8 +36,8 @@ function useInvalidateAccountInfo() {
 export function useSendInvite() {
   const invalidateAccountInfo = useInvalidateAccountInfo();
   return useMutation({
-    mutationFn: async (email: string) => {
-      const res = await api.account.invite.$post({ json: { email } });
+    mutationFn: async (request: InviteUserRequestData) => {
+      const res = await api.account.invite.$post({ json: request });
       ensureOk(res);
     },
     onSuccess: invalidateAccountInfo,
