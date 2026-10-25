@@ -50,7 +50,7 @@ export function AppDrawerContent({
   onNavigate,
 }: AppDrawerContentProps) {
   const theme = useTheme();
-  const labelSx = collapsibleLabelSx(collapsed);
+  const labelSx = collapsibleLabelSx(isMobile ? false : collapsed);
 
   return (
     <>
@@ -59,7 +59,7 @@ export function AppDrawerContent({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          minHeight: 64,
+          minHeight: 56,
           px: 2,
         }}
       >
