@@ -4,7 +4,7 @@ interface AccountInfoUser {
   email: string;
 }
 
-interface GroupInvite {
+interface PendingInvite {
   inviteId: string;
   groupMembers: AccountInfoUser[];
   createdAt: Date;
@@ -13,5 +13,5 @@ interface GroupInvite {
 export interface AccountInfoResponse {
   me: AccountInfoUser;
   groupMembers: AccountInfoUser[];
-  pendingInvite?: GroupInvite;
+  pendingInvite?: PendingInvite;
 }

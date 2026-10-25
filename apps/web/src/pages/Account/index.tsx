@@ -30,6 +30,7 @@ function AccountField({ label, value }: { label: string; value: string }) {
           input: {
             readOnly: true,
           },
+          inputLabel: { shrink: true },
         }}
         value={value}
         fullWidth
