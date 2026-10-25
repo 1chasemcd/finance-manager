@@ -13,7 +13,7 @@ const user: User = {
 };
 
 function createCurrentUser(): { currentUser: CurrentUser; store: RequestContextData } {
-  const store: RequestContextData = { requestId: "test", method: "GET", path: "/" };
+  const store = {};
   return { currentUser: new CurrentUser(() => store), store };
 }
 

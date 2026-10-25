@@ -28,7 +28,7 @@ export function createContainer({
   const db = createDb(env.DB);
 
   const currentUser = new CurrentUser(requestContext);
-  const logger = createLogger(requestContext, "LOG_LEVEL" in env ? env.LOG_LEVEL : "info");
+  const logger = createLogger("LOG_LEVEL" in env ? env.LOG_LEVEL : "info");
 
   const userRepository = new UserDrizzleRepository(db);
   const groupRepository = new GroupDrizzleRepository(db);
