@@ -41,8 +41,8 @@
     },
     "prod": {
       "vars": {
-        "POLICY_AUD": "",
-        "TEAM_DOMAIN": "",
+        "POLICY_AUD": "daa9462a331f6fef1eebb5e8842dc10e745eec06d0d8fe0775f001433867b741",
+        "TEAM_DOMAIN": "https://mcdnld.cloudflareaccess.com",
         "LOG_LEVEL": "info",
       },
       "define": {
@@ -54,6 +54,8 @@
           "binding": "DB",
           "migrations_dir": "drizzle",
           "migrations_pattern": "drizzle/*/migration.sql",
+          "database_id": "9f099c2f-69a2-45f4-ba3d-69fe5febd79d",
+          "database_name": "finapp-db",
         },
       ],
     },
