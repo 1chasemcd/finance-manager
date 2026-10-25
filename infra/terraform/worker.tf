@@ -2,16 +2,6 @@ resource "cloudflare_worker" "app" {
   account_id = var.cloudflare_account_id
   name       = var.worker_name
 
-  observability = {
-    enabled = false
-    logs = {
-      enabled = false
-    }
-    traces = {
-      enabled = false
-    }
-  }
-
   subdomain = {
     enabled          = true
     previews_enabled = false
