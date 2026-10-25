@@ -19,11 +19,7 @@ function setup() {
   const clock = createFakeClock(NOW);
   const users = new InMemoryUserRepository();
   const invites = new InMemoryGroupInviteRepository(clock.currentTime);
-  const requestContext: RequestContextData = {
-    requestId: "test",
-    method: "GET",
-    path: "/api/group-invites",
-  };
+  const requestContext: RequestContextData = {};
   const currentUser = new CurrentUser(() => requestContext);
   const service = new GroupInviteService(users, invites, currentUser, clock.currentTime);
 

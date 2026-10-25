@@ -1,5 +1,3 @@
-import type { RequestContext } from "@/middleware/request-context";
-
 export type LogContext = Record<string, unknown>;
 
 export interface Logger {
@@ -18,17 +16,12 @@ const priorities: Record<LogLevel, number> = {
   error: 4,
 };
 
-export function createLogger(requestContext: RequestContext, minLevel: LogLevel = "info"): Logger {
+export function createLogger(minLevel: LogLevel = "info"): Logger {
   function write(level: LogLevel, message: string, context: LogContext = {}) {
     if (priorities[level] < priorities[minLevel]) return;
 
-    const baseContext = requestContext();
-
     const entry = {
-      timestamp: new Date().toISOString(),
-      level,
       message,
-      ...baseContext,
       ...context,
     };
 

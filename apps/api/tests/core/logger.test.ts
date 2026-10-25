@@ -1,7 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createLogger } from "@/core/logger";
-import type { RequestContextData } from "@/middleware/request-context";
-import type { User } from "@/users/user.types";
 
 interface LogEntry {
   readonly timestamp: string;
@@ -9,15 +7,6 @@ interface LogEntry {
   readonly message: string;
   readonly [key: string]: unknown;
 }
-
-const user: User = {
-  id: 1,
-  email: "jane@example.com",
-  firstName: "Jane",
-  lastName: "Doe",
-  subject: "subject-1",
-  groupId: 7,
-};
 
 describe("createLogger", () => {
   let captured: LogEntry[];
@@ -44,7 +33,7 @@ describe("createLogger", () => {
   });
 
   it("writes each level to its matching console method", () => {
-    const logger = createLogger(() => undefined, "debug");
+    const logger = createLogger("debug");
 
     logger.debug("debug message");
     logger.info("info message");
@@ -64,7 +53,7 @@ describe("createLogger", () => {
   });
 
   it("drops entries below the minimum level, defaulting to info", () => {
-    const logger = createLogger(() => undefined);
+    const logger = createLogger();
 
     logger.debug("hidden");
     logger.info("visible");
@@ -74,7 +63,7 @@ describe("createLogger", () => {
   });
 
   it("honors a custom minimum level", () => {
-    const logger = createLogger(() => undefined, "warn");
+    const logger = createLogger("warn");
 
     logger.debug("hidden");
     logger.info("hidden");
@@ -87,66 +76,17 @@ describe("createLogger", () => {
     expect(errorSpy).toHaveBeenCalledOnce();
   });
 
-  it("stamps entries with a timestamp, level, and message", () => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date("2026-01-02T03:04:05.000Z"));
-
-    const logger = createLogger(() => undefined);
-    logger.info("hello");
-
-    expect(captured).toEqual([
-      { timestamp: "2026-01-02T03:04:05.000Z", level: "info", message: "hello" },
-    ]);
-  });
-
   it("merges the request context into the entry", () => {
-    const context: RequestContextData = {
-      requestId: "req-1",
-      method: "GET",
-      path: "/api/health",
-      user,
+    const context = {
+      additionalInfo: "more info",
     };
-    const logger = createLogger(() => context);
+    const logger = createLogger();
 
-    logger.info("hello");
+    logger.info("hello", context);
 
     expect(captured[0]).toMatchObject({
-      level: "info",
       message: "hello",
-      requestId: "req-1",
-      method: "GET",
-      path: "/api/health",
-      user,
+      additionalInfo: "more info",
     });
-  });
-
-  it("prefers per-call context over the request context", () => {
-    const context: RequestContextData = {
-      requestId: "req-1",
-      method: "GET",
-      path: "/api/health",
-    };
-    const logger = createLogger(() => context);
-
-    logger.warn("hello", { requestId: "override", extra: true });
-
-    expect(captured[0]).toMatchObject({
-      level: "warn",
-      message: "hello",
-      requestId: "override",
-      method: "GET",
-      path: "/api/health",
-      extra: true,
-    });
-  });
-
-  it("logs without request context when outside a request scope", () => {
-    const logger = createLogger(() => undefined);
-
-    expect(() => {
-      logger.error("no context");
-    }).not.toThrow();
-    expect(captured).toHaveLength(1);
-    expect(captured[0]).toMatchObject({ level: "error", message: "no context" });
   });
 });

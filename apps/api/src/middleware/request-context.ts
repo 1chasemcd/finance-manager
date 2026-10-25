@@ -5,9 +5,6 @@ import type { CloudflareEnv } from "@/types/cloudflare-env";
 
 export interface RequestContextData {
   user?: User;
-  requestId: string;
-  method: string;
-  path: string;
 }
 
 const requestStore = new AsyncLocalStorage<RequestContextData>();
@@ -17,10 +14,8 @@ export const requestContext = () => requestStore.getStore();
 export function createRequestContextMiddleware(): MiddlewareHandler<{
   Bindings: CloudflareEnv;
 }> {
-  return (c, next) => {
-    const requestId = crypto.randomUUID();
-    const { method, path } = c.req;
-    return requestStore.run({ requestId, method, path }, async () => {
+  return (_, next) => {
+    return requestStore.run({}, async () => {
       await next();
     });
   };

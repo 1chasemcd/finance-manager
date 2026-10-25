@@ -29,16 +29,6 @@ describe("getRequestContext", () => {
     expect(requestContext()).toBeUndefined();
   });
 
-  it("returns the store inside a request scope", async () => {
-    await runWithRequestContext(() => {
-      expect(requestContext()?.requestId).toBeTruthy();
-      expect(requestContext()?.method).toEqual("get");
-      expect(requestContext()?.path).toEqual("/api/health");
-
-      return Promise.resolve();
-    });
-  });
-
   it("shares mutations with nested async calls", async () => {
     await runWithRequestContext(async () => {
       const context = requestContext();
