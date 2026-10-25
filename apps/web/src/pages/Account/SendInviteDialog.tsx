@@ -14,8 +14,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import z from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useAppForm } from "@/lib/appForm";
 
 type InviteUserRequestData = z.infer<typeof inviteUserSchema>;
 
@@ -28,13 +27,8 @@ export function useSendInviteDialog(): [() => void, React.JSX.Element] {
   }>({ open: false, message: "", severity: "success" });
   const sendInvite = useSendInvite();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    ...form
-  } = useForm<InviteUserRequestData>({
-    resolver: zodResolver(inviteUserSchema),
+  const { register, handleSubmit, ...form } = useAppForm<InviteUserRequestData>({
+    schema: inviteUserSchema,
   });
 
   const handleDialogOpen = () => {
@@ -70,7 +64,7 @@ export function useSendInviteDialog(): [() => void, React.JSX.Element] {
         <DialogTitle>Send Invitation</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Specify the email address of the user you would like to invite to your group.
+            Provide the email address of the user you would like to invite to your group.
           </DialogContentText>
         </DialogContent>
         <Box sx={{ mx: 3 }}>
@@ -79,15 +73,7 @@ export function useSendInviteDialog(): [() => void, React.JSX.Element] {
             id="send-invite-form"
             noValidate
           >
-            <TextField
-              autoFocus
-              {...register("email")}
-              error={!!errors.email}
-              helperText={errors.email?.message ?? " "}
-              label="Email Address"
-              type="email"
-              fullWidth
-            />
+            <TextField {...register("email")} autoFocus type="email" fullWidth />
           </form>
         </Box>
 
