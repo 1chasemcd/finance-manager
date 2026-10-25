@@ -9,7 +9,9 @@
     "test": "pnpm -r run test",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "build": "pnpm --filter @finapp/web build",
+    "deploy": "pnpm --filter @finapp/api db:migrate:prod && pnpm --filter @finapp/api deploy"
   },
   "keywords": [],
   "author": "",
