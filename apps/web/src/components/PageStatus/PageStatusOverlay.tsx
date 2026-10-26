@@ -16,9 +16,8 @@ export default function PageStatusOverlay() {
       <Box
         sx={(theme) => ({
           position: "absolute",
-          marginTop: "57px",
           inset: 0,
-          zIndex: theme.zIndex.modal,
+          zIndex: theme.zIndex.drawer - 1,
           backgroundColor: alpha(theme.palette.background.default, 0.4),
           display: "flex",
           alignItems: "center",

@@ -23,21 +23,21 @@ export default function AppLayout() {
           }}
         >
           <AppDrawer ref={drawerRef} />
-
           <Box
             component="main"
             sx={{
               flex: 1,
+              display: "flex",
               minWidth: 0,
-              overflow: "hidden",
-              position: "relative",
             }}
           >
             <PageHeader openDrawerCallback={() => drawerRef.current?.setCollapsed(true)} />
-            <Box sx={{ p: 2, marginTop: "56px" }}>
+            <Box
+              sx={{ p: 2, flex: 1, marginTop: "57px", position: "relative", overflowY: "scroll" }}
+            >
               <Outlet />
+              <PageStatusOverlay />
             </Box>
-            <PageStatusOverlay />
           </Box>
         </Box>
       </PageHeaderProvider>

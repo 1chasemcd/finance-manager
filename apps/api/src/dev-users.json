@@ -1,10 +1,10 @@
 {
   "alice": {
     "email": "alice@example.com",
-    "name": "Alice"
+    "name": "Alice Example"
   },
   "bob": {
     "email": "bob@example.com",
-    "name": "Bob"
+    "name": "Bob Example"
   }
 }
