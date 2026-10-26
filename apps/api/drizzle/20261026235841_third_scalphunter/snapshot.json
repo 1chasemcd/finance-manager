@@ -1,7 +1,7 @@
 {
   "version": "7",
   "dialect": "sqlite",
-  "id": "7384ce9e-3294-4b21-938d-985af44e06c6",
+  "id": "116ced40-5d38-4701-998b-178d97e4651f",
   "prevIds": [
     "2aced1f7-8a2b-45d9-a24d-3ffffe25df8b"
   ],
@@ -64,6 +64,16 @@
       "autoincrement": false,
       "default": null,
       "generated": null,
+      "name": "public_id",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
       "name": "name",
       "entityType": "columns",
       "table": "categories"
@@ -114,6 +124,16 @@
       "autoincrement": false,
       "default": null,
       "generated": null,
+      "name": "public_id",
+      "entityType": "columns",
+      "table": "category_rules"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
       "name": "pattern",
       "entityType": "columns",
       "table": "category_rules"
@@ -145,6 +165,16 @@
       "default": null,
       "generated": null,
       "name": "group_id",
+      "entityType": "columns",
+      "table": "file_formats"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "public_id",
       "entityType": "columns",
       "table": "file_formats"
     },
@@ -314,6 +344,16 @@
       "autoincrement": false,
       "default": null,
       "generated": null,
+      "name": "public_id",
+      "entityType": "columns",
+      "table": "sources"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
       "name": "name",
       "entityType": "columns",
       "table": "sources"
@@ -375,6 +415,16 @@
       "default": null,
       "generated": null,
       "name": "group_id",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "public_id",
       "entityType": "columns",
       "table": "transactions"
     },
@@ -842,9 +892,54 @@
         "public_id"
       ],
       "nameExplicit": false,
+      "name": "categories_public_id_unique",
+      "entityType": "uniques",
+      "table": "categories"
+    },
+    {
+      "columns": [
+        "public_id"
+      ],
+      "nameExplicit": false,
+      "name": "category_rules_public_id_unique",
+      "entityType": "uniques",
+      "table": "category_rules"
+    },
+    {
+      "columns": [
+        "public_id"
+      ],
+      "nameExplicit": false,
+      "name": "file_formats_public_id_unique",
+      "entityType": "uniques",
+      "table": "file_formats"
+    },
+    {
+      "columns": [
+        "public_id"
+      ],
+      "nameExplicit": false,
       "name": "group_invites_public_id_unique",
       "entityType": "uniques",
       "table": "group_invites"
+    },
+    {
+      "columns": [
+        "public_id"
+      ],
+      "nameExplicit": false,
+      "name": "sources_public_id_unique",
+      "entityType": "uniques",
+      "table": "sources"
+    },
+    {
+      "columns": [
+        "public_id"
+      ],
+      "nameExplicit": false,
+      "name": "transactions_public_id_unique",
+      "entityType": "uniques",
+      "table": "transactions"
     },
     {
       "columns": [

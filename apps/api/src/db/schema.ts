@@ -1,7 +1,6 @@
 import { foreignKey, integer, snakeCase, text, uniqueIndex } from "drizzle-orm/sqlite-core";
-import { id, groupId } from "./utils";
+import { id, groupId, publicId } from "./utils";
 import { sql } from "drizzle-orm";
-import { randomUUID } from "crypto";
 
 const table = snakeCase.table;
 
@@ -25,10 +24,7 @@ export const users = table(
 export const groupInvites = table("group_invites", {
   ...id(),
   ...groupId(),
-  publicId: text()
-    .$defaultFn(() => randomUUID())
-    .notNull()
-    .unique(),
+  ...publicId(),
   userId: integer()
     .notNull()
     .references(() => users.id),
@@ -42,6 +38,7 @@ export const fileFormats = table(
   {
     ...id(),
     ...groupId(),
+    ...publicId(),
     name: text().notNull(),
 
     skipRows: integer().notNull(),
@@ -62,6 +59,7 @@ export const sources = table(
   {
     ...id(),
     ...groupId(),
+    ...publicId(),
     name: text().notNull(),
     description: text(),
     archived: integer({ mode: "boolean" }).notNull().default(false),
@@ -88,6 +86,7 @@ export const categories = table(
   {
     ...id(),
     ...groupId(),
+    ...publicId(),
     name: text().notNull(),
     description: text(),
     archived: integer({ mode: "boolean" }).notNull().default(false),
@@ -101,6 +100,7 @@ export const transactions = table(
   {
     ...id(),
     ...groupId(),
+    ...publicId(),
     date: integer({ mode: "timestamp" }).notNull(),
     amount: integer().notNull(),
     summary: text(),
@@ -127,6 +127,7 @@ export const categoryRules = table(
   {
     ...id(),
     ...groupId(),
+    ...publicId(),
     pattern: text().notNull(),
     categoryId: integer(),
   },

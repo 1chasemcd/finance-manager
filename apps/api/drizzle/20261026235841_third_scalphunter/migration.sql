@@ -1,6 +1,7 @@
 CREATE TABLE `categories` (
 	`id` integer PRIMARY KEY AUTOINCREMENT,
 	`group_id` integer NOT NULL,
+	`public_id` text NOT NULL UNIQUE,
 	`name` text NOT NULL,
 	`description` text,
 	`archived` integer DEFAULT false NOT NULL,
@@ -10,6 +11,7 @@ CREATE TABLE `categories` (
 CREATE TABLE `category_rules` (
 	`id` integer PRIMARY KEY AUTOINCREMENT,
 	`group_id` integer NOT NULL,
+	`public_id` text NOT NULL UNIQUE,
 	`pattern` text NOT NULL,
 	`category_id` integer,
 	CONSTRAINT `fk_category_rules_group_id_groups_id_fk` FOREIGN KEY (`group_id`) REFERENCES `groups`(`id`),
@@ -19,6 +21,7 @@ CREATE TABLE `category_rules` (
 CREATE TABLE `file_formats` (
 	`id` integer PRIMARY KEY AUTOINCREMENT,
 	`group_id` integer NOT NULL,
+	`public_id` text NOT NULL UNIQUE,
 	`name` text NOT NULL,
 	`skip_rows` integer NOT NULL,
 	`row_pattern` text,
@@ -33,6 +36,7 @@ CREATE TABLE `file_formats` (
 CREATE TABLE `sources` (
 	`id` integer PRIMARY KEY AUTOINCREMENT,
 	`group_id` integer NOT NULL,
+	`public_id` text NOT NULL UNIQUE,
 	`name` text NOT NULL,
 	`description` text,
 	`archived` integer DEFAULT false NOT NULL,
@@ -46,6 +50,7 @@ CREATE TABLE `sources` (
 CREATE TABLE `transactions` (
 	`id` integer PRIMARY KEY AUTOINCREMENT,
 	`group_id` integer NOT NULL,
+	`public_id` text NOT NULL UNIQUE,
 	`date` integer NOT NULL,
 	`amount` integer NOT NULL,
 	`summary` text,
