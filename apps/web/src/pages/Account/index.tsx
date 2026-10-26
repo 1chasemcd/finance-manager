@@ -113,13 +113,19 @@ export default function Account() {
             <Box
               sx={{
                 display: "flex",
-                alignItems: "center",
+                flexDirection: { xs: "column", sm: "row" },
+                alignItems: { xs: "flex-start", sm: "center" },
                 justifyContent: "space-between",
                 marginBottom: 2,
               }}
             >
               Invite users to your group to manage your finances together.
-              <Button onClick={openSendInviteDialog}>Send an Invite</Button>
+              <Button
+                sx={{ alignSelf: { xs: "flex-end", sm: "auto" } }}
+                onClick={openSendInviteDialog}
+              >
+                Send an Invite
+              </Button>
             </Box>
           )}
 
