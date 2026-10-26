@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { api } from "./api";
+import { api } from ".";
 import type z from "zod";
 import type { inviteUserSchema } from "@finapp/schema";
 

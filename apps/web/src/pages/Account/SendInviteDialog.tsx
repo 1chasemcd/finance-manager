@@ -1,4 +1,4 @@
-import { useSendInvite } from "@/lib/account";
+import { useSendInvite } from "@/lib/api/account";
 import { inviteUserSchema } from "@finapp/schema";
 import {
   Dialog,

@@ -1,4 +1,4 @@
-import { useAcceptInvite, useDeclineInvite, type PendingInvite } from "@/lib/account";
+import { useAcceptInvite, useDeclineInvite, type PendingInvite } from "@/lib/api/account";
 import {
   Alert,
   AlertTitle,
