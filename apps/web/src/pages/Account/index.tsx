@@ -16,7 +16,7 @@ import {
 import PageSection from "@/components/PageSection";
 import { usePageHeader } from "@/lib/pageHeader";
 import React, { useEffect } from "react";
-import { useAccountInfo, type AccountUser } from "@/lib/account";
+import { useAccountInfo, type AccountUser } from "@/lib/api/account";
 import { useAcceptInviteDialog } from "./AcceptInviteDialog";
 import { useSendInviteDialog } from "./SendInviteDialog";
 import { usePageStatus } from "@/lib/pageStatus";

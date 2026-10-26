@@ -1,4 +1,4 @@
-import { useImperativeHandle, useState } from "react";
+import { useEffect, useImperativeHandle, useState } from "react";
 import { Drawer, useMediaQuery, useTheme } from "@mui/material";
 import { AppDrawerContent } from "./AppDrawerContent";
 
@@ -11,7 +11,14 @@ interface AppDrawerProps {
 }
 
 export default function AppDrawer({ ref }: AppDrawerProps) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => {
+    return localStorage.getItem("drawer-collapsed") === "true";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("drawer-collapsed", String(collapsed));
+  }, [collapsed]);
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
