@@ -2,7 +2,6 @@ import {
   Alert,
   Box,
   Button,
-  CircularProgress,
   Grid,
   Paper,
   Stack,
@@ -16,10 +15,13 @@ import {
 } from "@mui/material";
 import PageSection from "@/components/PageSection";
 import { usePageHeader } from "@/lib/pageHeader";
-import React from "react";
+import React, { useEffect } from "react";
 import { useAccountInfo, type AccountUser } from "@/lib/account";
 import { useAcceptInviteDialog } from "./AcceptInviteDialog";
 import { useSendInviteDialog } from "./SendInviteDialog";
+import { usePageStatus } from "@/lib/pageStatus";
+
+const emptyUser = { firstName: "", lastName: "", email: "" };
 
 function AccountField({ label, value }: { label: string; value: string }) {
   return (
@@ -42,7 +44,7 @@ function AccountField({ label, value }: { label: string; value: string }) {
 function GroupTable({ members, meEmail }: { members: AccountUser[]; meEmail: string }) {
   return (
     <TableContainer component={Paper} variant="outlined">
-      <Table sx={{ minWidth: 400 }} aria-label="group members table">
+      <Table aria-label="group members table">
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
@@ -51,10 +53,10 @@ function GroupTable({ members, meEmail }: { members: AccountUser[]; meEmail: str
         </TableHead>
         <TableBody>
           {members.map((row) => (
-            <TableRow key={row.email} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+            <TableRow key={row.email} sx={{ "&:last-child > *": { borderBottom: 0 } }}>
               <TableCell component="th" scope="row">
                 {row.firstName} {row.lastName}
-                {row.email === meEmail ? " (me)" : ""}
+                {row.email === meEmail && meEmail != "" ? " (me)" : ""}
               </TableCell>
               <TableCell>{row.email}</TableCell>
             </TableRow>
@@ -66,38 +68,22 @@ function GroupTable({ members, meEmail }: { members: AccountUser[]; meEmail: str
 }
 
 export default function Account() {
-  const { data, isPending, isError, refetch } = useAccountInfo();
+  const { resetStatus, setLoadingStatus, setErrorStatus } = usePageStatus();
+  const { data, isPending, isError } = useAccountInfo();
   const [openAcceptInviteDialog, AcceptInviteDialog] = useAcceptInviteDialog(data?.pendingInvite);
   const [openSendInviteDialog, SendInviteDialog] = useSendInviteDialog();
 
-  usePageHeader({
-    title: "Account",
-  });
+  usePageHeader({ title: "Account" });
+  useEffect(() => {
+    if (isPending) setLoadingStatus();
+    else if (isError) setErrorStatus();
+    else resetStatus();
+  }, [isPending, isError, resetStatus, setLoadingStatus, setErrorStatus]);
 
-  if (isPending) {
-    return (
-      <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  if (isError) {
-    return (
-      <Alert
-        severity="error"
-        action={
-          <Button color="inherit" size="small" onClick={() => void refetch()}>
-            Retry
-          </Button>
-        }
-      >
-        Failed to load account information.
-      </Alert>
-    );
-  }
-
-  const { me, groupMembers, pendingInvite } = data;
+  const { me, groupMembers, pendingInvite } = data ?? {
+    me: emptyUser,
+    groupMembers: [emptyUser],
+  };
 
   return (
     <React.Fragment>

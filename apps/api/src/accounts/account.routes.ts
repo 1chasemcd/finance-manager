@@ -13,6 +13,7 @@ export function createAccountRoutes({ accountService, groupInviteService }: Acco
   return router()
     .get("/", async (c) => {
       const info = await accountService.getAccountInfo();
+      throw Error();
       return c.json(info, 200);
     })
     .post("/invite", zValidator("json", inviteUserSchema), async (c) => {
