@@ -19,9 +19,6 @@ jobs:
     permissions:
       contents: read
 
-    env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -40,10 +37,13 @@ jobs:
       - name: Migrate db
         working-directory: ./apps/api
         run: pnpm db:migrate:prod
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Deploy app
-        working-directory: ./apps/api
-        env:
-          DEPLOY_MESSAGE: "Deploy #${{ github.run_number }} by ${{ github.actor }}"
-        run: |
-          pnpm deploy -- --message "$DEPLOY_MESSAGE" --tag "${{ github.sha }}"
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --env prod
+          workingDirectory: ./apps/api
