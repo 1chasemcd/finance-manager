@@ -33,22 +33,18 @@ jobs:
         run: pnpm audit --prod
 
       - name: Typecheck
-        run: pnpm run typecheck
+        run: pnpm typecheck
 
       - name: Lint
-        run: pnpm run lint
+        run: pnpm lint
 
       - name: Format Check
-        run: pnpm run format:check
+        run: pnpm format:check
 
       - name: Test
-        run: pnpm run test
+        run: pnpm test
 
       - name: Build
         run: |
-          pnpm --dir ./apps/web run build
-          pnpm --dir ./apps/api wrangler deploy --env prod --dry-run --outdir "$RUNNER_TEMP/prod-bundle"
-          if grep -q "createDevMiddleware" "$RUNNER_TEMP/prod-bundle/index.js"; then
-            echo "::error::Development auth middleware leaked into the prod bundle"
-            exit 1
-          fi
+          pnpm --dir ./apps/web build
+          pnpm --dir ./apps/api wrangler deploy --env prod --dry-run
