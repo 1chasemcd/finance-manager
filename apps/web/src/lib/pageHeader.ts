@@ -1,8 +1,8 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useId,
-  useLayoutEffect,
   useSyncExternalStore,
   type ReactNode,
 } from "react";
@@ -73,7 +73,7 @@ export function usePageHeader(config: PageHeaderConfig): void {
   const store = usePageHeaderStore();
   const ownerId = useId();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     store.set(ownerId, config);
     return () => {
       store.clear(ownerId);
