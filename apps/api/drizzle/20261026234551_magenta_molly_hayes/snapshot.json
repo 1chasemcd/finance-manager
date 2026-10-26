@@ -1,0 +1,869 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "id": "7384ce9e-3294-4b21-938d-985af44e06c6",
+  "prevIds": [
+    "2aced1f7-8a2b-45d9-a24d-3ffffe25df8b"
+  ],
+  "ddl": [
+    {
+      "name": "categories",
+      "entityType": "tables"
+    },
+    {
+      "name": "category_rules",
+      "entityType": "tables"
+    },
+    {
+      "name": "file_formats",
+      "entityType": "tables"
+    },
+    {
+      "name": "group_invites",
+      "entityType": "tables"
+    },
+    {
+      "name": "groups",
+      "entityType": "tables"
+    },
+    {
+      "name": "sources",
+      "entityType": "tables"
+    },
+    {
+      "name": "transactions",
+      "entityType": "tables"
+    },
+    {
+      "name": "users",
+      "entityType": "tables"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "group_id",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "description",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "archived",
+      "entityType": "columns",
+      "table": "categories"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "category_rules"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "group_id",
+      "entityType": "columns",
+      "table": "category_rules"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "pattern",
+      "entityType": "columns",
+      "table": "category_rules"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "category_id",
+      "entityType": "columns",
+      "table": "category_rules"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "file_formats"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "group_id",
+      "entityType": "columns",
+      "table": "file_formats"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "file_formats"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "skip_rows",
+      "entityType": "columns",
+      "table": "file_formats"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "row_pattern",
+      "entityType": "columns",
+      "table": "file_formats"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "date_index",
+      "entityType": "columns",
+      "table": "file_formats"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "summary_index",
+      "entityType": "columns",
+      "table": "file_formats"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "amount_index",
+      "entityType": "columns",
+      "table": "file_formats"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "date_format",
+      "entityType": "columns",
+      "table": "file_formats"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "positive_is_spending",
+      "entityType": "columns",
+      "table": "file_formats"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "group_invites"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "group_id",
+      "entityType": "columns",
+      "table": "group_invites"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "public_id",
+      "entityType": "columns",
+      "table": "group_invites"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "user_id",
+      "entityType": "columns",
+      "table": "group_invites"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "(unixepoch())",
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "group_invites"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "groups"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "sources"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "group_id",
+      "entityType": "columns",
+      "table": "sources"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "sources"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "description",
+      "entityType": "columns",
+      "table": "sources"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "archived",
+      "entityType": "columns",
+      "table": "sources"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "owner_id",
+      "entityType": "columns",
+      "table": "sources"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "file_format_id",
+      "entityType": "columns",
+      "table": "sources"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "group_id",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "date",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "amount",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "summary",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "category_id",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "source_id",
+      "entityType": "columns",
+      "table": "transactions"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "users"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "group_id",
+      "entityType": "columns",
+      "table": "users"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "subject",
+      "entityType": "columns",
+      "table": "users"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "email",
+      "entityType": "columns",
+      "table": "users"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "first_name",
+      "entityType": "columns",
+      "table": "users"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "last_name",
+      "entityType": "columns",
+      "table": "users"
+    },
+    {
+      "columns": [
+        "group_id"
+      ],
+      "tableTo": "groups",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_categories_group_id_groups_id_fk",
+      "entityType": "fks",
+      "table": "categories"
+    },
+    {
+      "columns": [
+        "group_id"
+      ],
+      "tableTo": "groups",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_category_rules_group_id_groups_id_fk",
+      "entityType": "fks",
+      "table": "category_rules"
+    },
+    {
+      "columns": [
+        "category_id",
+        "group_id"
+      ],
+      "tableTo": "categories",
+      "columnsTo": [
+        "id",
+        "group_id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": true,
+      "name": "category_rules_category_group_fk",
+      "entityType": "fks",
+      "table": "category_rules"
+    },
+    {
+      "columns": [
+        "group_id"
+      ],
+      "tableTo": "groups",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_file_formats_group_id_groups_id_fk",
+      "entityType": "fks",
+      "table": "file_formats"
+    },
+    {
+      "columns": [
+        "group_id"
+      ],
+      "tableTo": "groups",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_group_invites_group_id_groups_id_fk",
+      "entityType": "fks",
+      "table": "group_invites"
+    },
+    {
+      "columns": [
+        "user_id"
+      ],
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_group_invites_user_id_users_id_fk",
+      "entityType": "fks",
+      "table": "group_invites"
+    },
+    {
+      "columns": [
+        "group_id"
+      ],
+      "tableTo": "groups",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_sources_group_id_groups_id_fk",
+      "entityType": "fks",
+      "table": "sources"
+    },
+    {
+      "columns": [
+        "owner_id",
+        "group_id"
+      ],
+      "tableTo": "users",
+      "columnsTo": [
+        "id",
+        "group_id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": true,
+      "name": "sources_owner_group_fk",
+      "entityType": "fks",
+      "table": "sources"
+    },
+    {
+      "columns": [
+        "owner_id",
+        "group_id"
+      ],
+      "tableTo": "file_formats",
+      "columnsTo": [
+        "id",
+        "group_id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": true,
+      "name": "sources_file_format_group_fk",
+      "entityType": "fks",
+      "table": "sources"
+    },
+    {
+      "columns": [
+        "group_id"
+      ],
+      "tableTo": "groups",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_transactions_group_id_groups_id_fk",
+      "entityType": "fks",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        "source_id",
+        "group_id"
+      ],
+      "tableTo": "sources",
+      "columnsTo": [
+        "id",
+        "group_id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": true,
+      "name": "transactions_source_group_fk",
+      "entityType": "fks",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        "category_id",
+        "group_id"
+      ],
+      "tableTo": "categories",
+      "columnsTo": [
+        "id",
+        "group_id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": true,
+      "name": "transactions_category_group_fk",
+      "entityType": "fks",
+      "table": "transactions"
+    },
+    {
+      "columns": [
+        "group_id"
+      ],
+      "tableTo": "groups",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_users_group_id_groups_id_fk",
+      "entityType": "fks",
+      "table": "users"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "categories_pk",
+      "table": "categories",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "category_rules_pk",
+      "table": "category_rules",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "file_formats_pk",
+      "table": "file_formats",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "group_invites_pk",
+      "table": "group_invites",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "groups_pk",
+      "table": "groups",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "sources_pk",
+      "table": "sources",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "transactions_pk",
+      "table": "transactions",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "users_pk",
+      "table": "users",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        {
+          "value": "id",
+          "isExpression": false
+        },
+        {
+          "value": "group_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "categories_id_group_id_uq",
+      "entityType": "indexes",
+      "table": "categories"
+    },
+    {
+      "columns": [
+        {
+          "value": "id",
+          "isExpression": false
+        },
+        {
+          "value": "group_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "file_formats_id_group_id_uq",
+      "entityType": "indexes",
+      "table": "file_formats"
+    },
+    {
+      "columns": [
+        {
+          "value": "id",
+          "isExpression": false
+        },
+        {
+          "value": "group_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "sources_id_group_id_uq",
+      "entityType": "indexes",
+      "table": "sources"
+    },
+    {
+      "columns": [
+        {
+          "value": "id",
+          "isExpression": false
+        },
+        {
+          "value": "group_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "users_id_group_id_uq",
+      "entityType": "indexes",
+      "table": "users"
+    },
+    {
+      "columns": [
+        "public_id"
+      ],
+      "nameExplicit": false,
+      "name": "group_invites_public_id_unique",
+      "entityType": "uniques",
+      "table": "group_invites"
+    },
+    {
+      "columns": [
+        "subject"
+      ],
+      "nameExplicit": false,
+      "name": "users_subject_unique",
+      "entityType": "uniques",
+      "table": "users"
+    },
+    {
+      "columns": [
+        "email"
+      ],
+      "nameExplicit": false,
+      "name": "users_email_unique",
+      "entityType": "uniques",
+      "table": "users"
+    }
+  ],
+  "renames": []
+}
