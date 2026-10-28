@@ -1,4 +1,4 @@
-import { eq, or } from "drizzle-orm";
+import { eq, or, and } from "drizzle-orm";
 import { users } from "@/db/schema";
 import type { Db } from "@/db/client";
 import type { UserRepository } from "./user.repository";
@@ -24,6 +24,17 @@ export class UserDrizzleRepository implements UserRepository {
   getByGroup(groupId: number): Promise<User[]> {
     return this.db.select().from(users).where(eq(users.groupId, groupId));
   }
+
+  async getByGroupAndEmail(groupId: number, email: string): Promise<Result<User, NotFound>> {
+    const [ent] = await this.db
+      .select()
+      .from(users)
+      .where(and(eq(users.email, email), eq(users.groupId, groupId)))
+      .limit(1);
+    if (ent) return ok(ent);
+    return notFound("user", email);
+  }
+
   async createUser(input: CreateUserInput): Promise<Result<User, Conflict>> {
     const [existing] = await this.db
       .select({ id: users.id })

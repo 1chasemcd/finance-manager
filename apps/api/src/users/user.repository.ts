@@ -6,6 +6,7 @@ export interface UserRepository {
   getBySubject(subject: string): Promise<Result<User, NotFound>>;
   getByEmail(email: string): Promise<Result<User, NotFound>>;
   getByGroup(groupId: number): Promise<User[]>;
+  getByGroupAndEmail(groupId: number, email: string): Promise<Result<User, NotFound>>;
   createUser(input: CreateUserInput): Promise<Result<User, Conflict>>;
   updateUser(id: number, input: UpdateUserInput): Promise<Result<User, NotFound>>;
 }

@@ -72,3 +72,13 @@ export const conflict = (message?: string): Err<Conflict> => {
     message,
   });
 };
+
+export interface CreateError {
+  _tag: "CreateError";
+}
+export interface UpdateError {
+  _tag: "UpdateError";
+}
+export interface DeleteError {
+  _tag: "DeleteError";
+}
