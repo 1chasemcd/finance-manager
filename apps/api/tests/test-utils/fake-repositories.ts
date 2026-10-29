@@ -25,6 +25,12 @@ export class InMemoryUserRepository implements UserRepository {
     return Promise.resolve(this.users.filter((user) => user.groupId === groupId));
   }
 
+  getByGroupAndEmail(groupId: number, email: string): Promise<Result<User, NotFound>> {
+    return Promise.resolve(
+      this.find((user) => user.groupId === groupId && user.email === email, email),
+    );
+  }
+
   createUser(input: CreateUserInput): Promise<Result<User, Conflict>> {
     const existing = this.users.find(
       (user) => user.email === input.email || user.subject === input.subject,

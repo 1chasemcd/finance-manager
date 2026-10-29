@@ -3,9 +3,8 @@ import type { CreateSourceInput, Source, UpdateSourceInput } from "./source.type
 import type { CreateError, DeleteError, UpdateError } from "@/core/errors";
 
 export interface SourceRepository {
-  getByPublicId(groupId: number, publicId: string): Promise<Source | null>;
-  getByName(groupId: number, name: string): Promise<Source | null>;
-  getall(groupId: number): Promise<Source[]>;
+  byPublicId(groupId: number, publicId: string): Promise<Source | null>;
+  all(groupId: number): Promise<Source[]>;
   create(groupId: number, input: CreateSourceInput): Promise<Result<Source, CreateError>>;
   update(
     groupId: number,

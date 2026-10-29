@@ -9,47 +9,33 @@ import type { CreateError, DeleteError, UpdateError } from "@/core/errors";
 export class SourceDrizzleRepository implements SourceRepository {
   constructor(private readonly db: Db) {}
 
-  async getByPublicId(groupId: number, publicId: string): Promise<Source | null> {
+  async byPublicId(groupId: number, publicId: string): Promise<Source | null> {
     const [result] = await this.selectSources()
       .where(and(eq(sources.groupId, groupId), eq(sources.publicId, publicId)))
       .limit(1);
     return result ?? null;
   }
-  async getByName(groupId: number, name: string): Promise<Source | null> {
-    const [result] = await this.selectSources()
-      .where(and(eq(sources.groupId, groupId), eq(sources.name, name)))
-      .limit(1);
-    return result ?? null;
-  }
-  getall(groupId: number): Promise<Source[]> {
+
+  all(groupId: number): Promise<Source[]> {
     return this.selectSources().where(eq(sources.groupId, groupId));
   }
   async create(groupId: number, input: CreateSourceInput): Promise<Result<Source, CreateError>> {
+    const { name, description = null, fileFormatPublicId = null, ownerEmail } = input;
+
+    const ownerId = sql`(select ${users.id} from ${users}
+      where ${users.groupId} = ${groupId} 
+      and ${users.email} = ${ownerEmail})`;
+    const fileFormatId = sql`(select ${fileFormats.id} from ${fileFormats} 
+      where ${fileFormats.groupId} = ${groupId} 
+      and ${fileFormats.publicId} = ${fileFormatPublicId})`;
+
     const [newRow] = await this.db
       .insert(sources)
-      .select(
-        this.db
-          .select({
-            groupId: sql<string>`${groupId}`.as("groupId"),
-            name: sql<string>`${input.name}`.as("name"),
-            description: sql<string>`${input.description}`.as("description"),
-            ownerId: users.id,
-            fileFormatId: fileFormats.id,
-          })
-          .from(users)
-          .where(and(eq(users.groupId, groupId), eq(users.email, input.ownerEmail)))
-          .innerJoin(
-            fileFormats,
-            and(
-              eq(fileFormats.groupId, groupId),
-              eq(fileFormats.publicId, input.fileFormatPublicId),
-            ),
-          ),
-      )
-      .returning(this.columns());
+      .values({ groupId, name, description, ownerId, fileFormatId })
+      .returning({ publicId: sources.publicId });
 
     if (!newRow) return err("CreateError");
-    return ok(newRow);
+    return ok({ ...newRow, name, description, ownerEmail, fileFormatPublicId, archived: false });
   }
   async update(
     groupId: number,
@@ -60,9 +46,13 @@ export class SourceDrizzleRepository implements SourceRepository {
     let fileFormatId: SQL<number> | undefined;
 
     if (ownerEmail)
-      ownerId = sql`select ${users.id} from ${users} where ${users.groupId} = ${groupId} and ${users.email} = ${ownerEmail}`;
+      ownerId = sql`select ${users.id} from ${users} 
+        where ${users.groupId} = ${groupId} 
+        and ${users.email} = ${ownerEmail}`;
     if (fileFormatPublicId)
-      fileFormatId = sql`select ${fileFormats.id} from ${fileFormats} where ${fileFormats.groupId} = ${groupId} ${fileFormats.publicId} = ${fileFormatPublicId}`;
+      fileFormatId = sql`select ${fileFormats.id} from ${fileFormats} 
+        where ${fileFormats.groupId} = ${groupId} 
+        and ${fileFormats.publicId} = ${fileFormatPublicId}`;
 
     const response = await this.db
       .update(sources)
@@ -100,7 +90,7 @@ export class SourceDrizzleRepository implements SourceRepository {
       description: sources.description,
       archived: sources.archived,
       ownerEmail: users.email,
-      fileFormatPublicId: fileFormats.publicId,
+      fileFormatPublicId: fileFormats.publicId.as("fileFormatPublicId"),
     };
   }
 

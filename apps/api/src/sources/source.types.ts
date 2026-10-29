@@ -4,14 +4,14 @@ export interface Source {
   description: string | null;
   archived: boolean;
   ownerEmail: string;
-  fileFormatPublicId: string;
+  fileFormatPublicId: string | null;
 }
 
 export interface CreateSourceInput {
   name: string;
-  description: string;
+  description?: string | null;
   ownerEmail: string;
-  fileFormatPublicId: string;
+  fileFormatPublicId?: string | null;
 }
 
 export type UpdateSourceInput = Partial<CreateSourceInput & { archived: boolean }>;

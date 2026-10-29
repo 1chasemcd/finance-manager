@@ -19,12 +19,12 @@ export class SourceService {
 
   async getall(): Promise<Source[]> {
     const currentUser = this.currentUser.require();
-    return this.sources.getall(currentUser.groupId);
+    return this.sources.all(currentUser.groupId);
   }
 
   async get(publicId: string): Promise<Result<Source, NotFound>> {
     const currentUser = this.currentUser.require();
-    const result = await this.sources.getByPublicId(currentUser.groupId, publicId);
+    const result = await this.sources.byPublicId(currentUser.groupId, publicId);
     if (result) return ok(result);
     return notFound("source", publicId);
   }
@@ -47,7 +47,7 @@ export class SourceService {
     const result = await this.sources.delete(currentUser.groupId, publicId);
     if (result.isOk) return ok();
 
-    const existing = await this.sources.getByPublicId(currentUser.groupId, publicId);
+    const existing = await this.sources.byPublicId(currentUser.groupId, publicId);
     if (!existing) return notFound("source", publicId);
     return conflict();
   }

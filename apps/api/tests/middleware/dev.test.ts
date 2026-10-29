@@ -51,7 +51,7 @@ describe("devMiddleware", () => {
       subject: "alice",
       email: "alice@example.com",
       firstName: "Alice",
-      lastName: "",
+      lastName: "Example",
     });
     expect(users.users.map((user) => user.subject).sort()).toEqual(["alice", "bob"]);
     expect(logger.calls).toHaveLength(0);
