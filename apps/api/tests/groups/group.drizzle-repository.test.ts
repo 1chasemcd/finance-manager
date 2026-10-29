@@ -17,17 +17,17 @@ afterEach(() => {
   database.close();
 });
 
-describe("GroupDrizzleRepository.createGroup", () => {
+describe("GroupDrizzleRepository.create", () => {
   it("inserts a group and returns it", async () => {
-    const group = await groups.createGroup();
+    const group = await groups.create();
 
     expect(group.id).toBeGreaterThan(0);
     expect(database.all("SELECT id FROM groups")).toEqual([{ id: group.id }]);
   });
 
   it("assigns a new id to every group", async () => {
-    const first = await groups.createGroup();
-    const second = await groups.createGroup();
+    const first = await groups.create();
+    const second = await groups.create();
 
     expect(second.id).not.toBe(first.id);
     expect(database.all("SELECT id FROM groups ORDER BY id")).toEqual([

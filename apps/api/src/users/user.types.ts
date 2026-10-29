@@ -1,9 +1,3 @@
-export interface OnboardUserInput {
-  email: string;
-  name: string;
-  subject: string;
-}
-
 export interface User {
   id: number;
   email: string;

@@ -1,33 +1,28 @@
-import { ok, type Result } from "@finapp/result";
-import { conflict, notFound, type Conflict, type NotFound } from "@/core/errors";
+import { err, ok, type Result } from "@finapp/result";
+import { type CreateError, type DeleteError } from "@/core/errors";
 import type { GroupInvite } from "./group-invites.types";
 import type { GroupInviteRepository } from "./group-invite.repository";
 import type { Db } from "@/db/client";
 import { groupInvites } from "@/db/schema";
-import { and, eq, lt } from "drizzle-orm";
+import { eq, lt } from "drizzle-orm";
 
 export class GroupInviteDrizzleRepository implements GroupInviteRepository {
   constructor(private readonly db: Db) {}
 
-  async createInvite(groupId: number, userId: number): Promise<Result<void, Conflict>> {
-    const existing = await this.db
-      .select({ id: groupInvites.id })
-      .from(groupInvites)
-      .where(and(eq(groupInvites.groupId, groupId), eq(groupInvites.userId, userId)));
-    if (existing.length > 0) return conflict();
-
-    await this.db.insert(groupInvites).values({ groupId, userId });
-    return ok();
+  async create(groupId: number, userId: number): Promise<Result<GroupInvite, CreateError>> {
+    const [newRow] = await this.db.insert(groupInvites).values({ groupId, userId }).returning();
+    if (!newRow) return err("CreateError");
+    return ok(newRow);
   }
-  async getInvitesByUser(userId: number): Promise<GroupInvite[]> {
+  async byUser(userId: number): Promise<GroupInvite[]> {
     return await this.db.select().from(groupInvites).where(eq(groupInvites.userId, userId));
   }
-  async deleteInvite(id: number): Promise<Result<void, NotFound>> {
+  async delete(id: number): Promise<Result<void, DeleteError>> {
     const res = await this.db.delete(groupInvites).where(eq(groupInvites.id, id));
-    if (res.meta.changes !== 1) return notFound("groupInvite", id);
+    if (res.meta.changes !== 1) return err("DeleteError");
     return ok();
   }
-  async deleteInvitesOlderThan(oldestDate: Date): Promise<void> {
-    await this.db.delete(groupInvites).where(lt(groupInvites.createdAt, oldestDate));
+  async deleteExpired(expirationDate: Date): Promise<void> {
+    await this.db.delete(groupInvites).where(lt(groupInvites.createdAt, expirationDate));
   }
 }

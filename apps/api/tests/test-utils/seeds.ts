@@ -11,12 +11,12 @@ export function createDataSeeds(repos: RepositoryContainer) {
     counter = 0;
   });
   const seeds = {
-    seedGroup: () => repos.groups.createGroup(),
+    seedGroup: () => repos.groups.create(),
     seedUser: async (data: { group?: Group } = {}) => {
       data.group ??= await seeds.seedGroup();
       const index = String(counter++);
       return unwrap(
-        await repos.users.createUser({
+        await repos.users.create({
           email: `user-${index}@example.com`,
           firstName: "First",
           lastName: "Last",
@@ -28,7 +28,7 @@ export function createDataSeeds(repos: RepositoryContainer) {
     seedGroupInvite: async (data: { group?: Group; user?: User } = {}) => {
       data.group ??= await seeds.seedGroup();
       data.user ??= await seeds.seedUser();
-      unwrap(await repos.groupInvites.createInvite(data.group.id, data.user.id));
+      unwrap(await repos.groupInvites.create(data.group.id, data.user.id));
     },
     seedFileFormat: async (data: { group?: Group } = {}) => {
       data.group ??= await seeds.seedGroup();

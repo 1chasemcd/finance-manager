@@ -18,7 +18,7 @@ export class GroupInviteService {
 
   async getPendingInvites(): Promise<GroupInvite[]> {
     const user = this.currentUser.require();
-    const invites = await this.groupInvites.getInvitesByUser(user.id);
+    const invites = await this.groupInvites.byUser(user.id);
 
     const oldestDate = this.getOldestValidInviteDate();
 
@@ -28,12 +28,12 @@ export class GroupInviteService {
   async inviteUserToGroup(emailOfUserToInvite: string): Promise<void> {
     const groupId = this.currentUser.require().groupId;
 
-    await this.groupInvites.deleteInvitesOlderThan(this.getOldestValidInviteDate());
+    await this.groupInvites.deleteExpired(this.getOldestValidInviteDate());
 
-    const user = await this.users.getByEmail(emailOfUserToInvite);
-    if (user.isErr) return; // fail silently if user not found
+    const user = await this.users.byEmail(emailOfUserToInvite);
+    if (!user) return; // fail silently if user not found
 
-    await this.groupInvites.createInvite(groupId, user.data.id);
+    await this.groupInvites.create(groupId, user.id);
   }
 
   async acceptInviteToGroup(invitePublicId: string): Promise<Result<void, NotFound>> {
@@ -41,8 +41,8 @@ export class GroupInviteService {
     if (invite.isErr) return invite;
 
     const userId = this.currentUser.require().id;
-    await this.users.updateUser(userId, { groupId: invite.data.groupId });
-    await this.groupInvites.deleteInvite(invite.data.id);
+    await this.users.update(userId, { groupId: invite.data.groupId });
+    await this.groupInvites.delete(invite.data.id);
     return ok();
   }
 
@@ -50,12 +50,12 @@ export class GroupInviteService {
     const invite = await this.getInviteByPublicId(invitePublicId);
     if (invite.isErr) return invite;
 
-    await this.groupInvites.deleteInvite(invite.data.id);
+    await this.groupInvites.delete(invite.data.id);
     return ok();
   }
 
   async cleanupExpiredInvites(): Promise<void> {
-    await this.groupInvites.deleteInvitesOlderThan(this.getOldestValidInviteDate());
+    await this.groupInvites.deleteExpired(this.getOldestValidInviteDate());
   }
 
   private getOldestValidInviteDate(): Date {

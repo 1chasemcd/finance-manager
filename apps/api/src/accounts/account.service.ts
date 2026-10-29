@@ -13,7 +13,7 @@ export class AccountService {
 
   async getAccountInfo(): Promise<AccountInfoResponse> {
     const user = this.currentUser.require();
-    const members = (await this.users.getByGroup(user.groupId)).map((m) => this.mapUser(m));
+    const members = (await this.users.byGroup(user.groupId)).map((m) => this.mapUser(m));
 
     const res: AccountInfoResponse = {
       me: this.mapUser(user),
@@ -28,7 +28,7 @@ export class AccountService {
       current.createdAt < oldest.createdAt ? current : oldest,
     );
 
-    const inviteMembers = (await this.users.getByGroup(oldest.groupId)).map((m) => this.mapUser(m));
+    const inviteMembers = (await this.users.byGroup(oldest.groupId)).map((m) => this.mapUser(m));
 
     res.pendingInvite = {
       inviteId: oldest.publicId,

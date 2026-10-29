@@ -68,8 +68,7 @@ export class SourceDrizzleRepository implements SourceRepository {
           ownerId ? exists(ownerId) : undefined,
           fileFormatId ? exists(fileFormatId) : undefined,
         ),
-      )
-      .limit(1);
+      );
 
     if (response.meta.changes != 1) return err("UpdateError");
     return ok();
@@ -77,8 +76,7 @@ export class SourceDrizzleRepository implements SourceRepository {
   async delete(groupId: number, publicId: string): Promise<Result<void, DeleteError>> {
     const response = await this.db
       .delete(sources)
-      .where(and(eq(sources.groupId, groupId), eq(sources.publicId, publicId)))
-      .limit(1);
+      .where(and(eq(sources.groupId, groupId), eq(sources.publicId, publicId)));
     if (response.meta.changes != 1) return err("DeleteError");
     return ok();
   }

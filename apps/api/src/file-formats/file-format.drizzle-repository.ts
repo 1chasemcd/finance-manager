@@ -37,21 +37,18 @@ export class FileFormatDrizzleRepository implements FileFormatRepository {
     groupId: number,
     publicId: string,
     input: UpdateFileFormatInput,
-  ): Promise<Result<FileFormat, UpdateError>> {
-    const [updatedRow] = await this.db
+  ): Promise<Result<void, UpdateError>> {
+    const response = await this.db
       .update(fileFormats)
       .set({ groupId, ...input })
-      .where(and(eq(fileFormats.groupId, groupId), eq(fileFormats.publicId, publicId)))
-      .returning(this.columns());
-
-    if (!updatedRow) return err("UpdateError");
-    return ok(updatedRow);
+      .where(and(eq(fileFormats.groupId, groupId), eq(fileFormats.publicId, publicId)));
+    if (response.meta.changes != 1) return err("UpdateError");
+    return ok();
   }
   async delete(groupId: number, publicId: string): Promise<Result<void, DeleteError>> {
     const response = await this.db
       .delete(fileFormats)
-      .where(and(eq(fileFormats.groupId, groupId), eq(fileFormats.publicId, publicId)))
-      .limit(1);
+      .where(and(eq(fileFormats.groupId, groupId), eq(fileFormats.publicId, publicId)));
     if (response.meta.changes != 1) return err("DeleteError");
     return ok();
   }

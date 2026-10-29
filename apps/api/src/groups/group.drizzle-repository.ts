@@ -6,10 +6,9 @@ import { groups } from "@/db/schema";
 
 export class GroupDrizzleRepository implements GroupRepository {
   constructor(private readonly db: Db) {}
-  async createGroup(): Promise<Group> {
+  async create(): Promise<Group> {
     const [newRow] = await this.db.insert(groups).values({}).returning();
     invariant(newRow, "Expected new group to be created.");
-
     return newRow;
   }
 }

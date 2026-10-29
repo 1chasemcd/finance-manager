@@ -1,12 +1,12 @@
 import type { Result } from "@finapp/result";
-import type { NotFound, Conflict } from "@/core/errors";
 import type { CreateUserInput, UpdateUserInput, User } from "./user.types";
+import type { CreateError, UpdateError } from "@/core/errors";
 
 export interface UserRepository {
-  getBySubject(subject: string): Promise<Result<User, NotFound>>;
-  getByEmail(email: string): Promise<Result<User, NotFound>>;
-  getByGroup(groupId: number): Promise<User[]>;
-  getByGroupAndEmail(groupId: number, email: string): Promise<Result<User, NotFound>>;
-  createUser(input: CreateUserInput): Promise<Result<User, Conflict>>;
-  updateUser(id: number, input: UpdateUserInput): Promise<Result<User, NotFound>>;
+  bySubject(subject: string): Promise<User | null>;
+  byEmail(email: string): Promise<User | null>;
+  byGroup(groupId: number): Promise<User[]>;
+  byGroupAndEmail(groupId: number, email: string): Promise<User | null>;
+  create(input: CreateUserInput): Promise<Result<User, CreateError>>;
+  update(id: number, input: UpdateUserInput): Promise<Result<void, UpdateError>>;
 }

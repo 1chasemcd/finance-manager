@@ -10,6 +10,6 @@ export interface FileFormatRepository {
     groupId: number,
     publicId: string,
     input: UpdateFileFormatInput,
-  ): Promise<Result<FileFormat, UpdateError>>;
+  ): Promise<Result<void, UpdateError>>;
   delete(groupId: number, publicId: string): Promise<Result<void, DeleteError>>;
 }

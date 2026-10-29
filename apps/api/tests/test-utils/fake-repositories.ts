@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
-import { ok, type Result } from "@finapp/result";
-import { conflict, notFound, type Conflict, type NotFound } from "@/core/errors";
+import { err, ok, type Result } from "@finapp/result";
+import { type CreateError, type DeleteError, type UpdateError } from "@/core/errors";
 import type { CurrentTime } from "@/types/current-time";
 import type { GroupInviteRepository } from "@/group-invites/group-invite.repository";
 import type { GroupInvite } from "@/group-invites/group-invites.types";
@@ -13,39 +13,37 @@ export class InMemoryUserRepository implements UserRepository {
   readonly users: User[] = [];
   private nextId = 1;
 
-  getBySubject(subject: string): Promise<Result<User, NotFound>> {
-    return Promise.resolve(this.find((user) => user.subject === subject, subject));
+  bySubject(subject: string): Promise<User | null> {
+    return Promise.resolve(this.find((user) => user.subject === subject));
   }
 
-  getByEmail(email: string): Promise<Result<User, NotFound>> {
-    return Promise.resolve(this.find((user) => user.email === email, email));
+  byEmail(email: string): Promise<User | null> {
+    return Promise.resolve(this.find((user) => user.email === email));
   }
 
-  getByGroup(groupId: number): Promise<User[]> {
+  byGroup(groupId: number): Promise<User[]> {
     return Promise.resolve(this.users.filter((user) => user.groupId === groupId));
   }
 
-  getByGroupAndEmail(groupId: number, email: string): Promise<Result<User, NotFound>> {
-    return Promise.resolve(
-      this.find((user) => user.groupId === groupId && user.email === email, email),
-    );
+  byGroupAndEmail(groupId: number, email: string): Promise<User | null> {
+    return Promise.resolve(this.find((user) => user.groupId === groupId && user.email === email));
   }
 
-  createUser(input: CreateUserInput): Promise<Result<User, Conflict>> {
+  create(input: CreateUserInput): Promise<Result<User, CreateError>> {
     const existing = this.users.find(
       (user) => user.email === input.email || user.subject === input.subject,
     );
-    if (existing !== undefined) return Promise.resolve(conflict());
+    if (existing !== undefined) return Promise.resolve(err("CreateError"));
 
     return Promise.resolve(ok(this.add(input)));
   }
 
-  updateUser(id: number, input: UpdateUserInput): Promise<Result<User, NotFound>> {
+  update(id: number, input: UpdateUserInput): Promise<Result<void, UpdateError>> {
     const user = this.users.find((candidate) => candidate.id === id);
-    if (user === undefined) return Promise.resolve(notFound("user", id));
+    if (user === undefined) return Promise.resolve(err("UpdateError"));
 
     if (input.groupId !== undefined) user.groupId = input.groupId;
-    return Promise.resolve(ok({ ...user }));
+    return Promise.resolve(ok());
   }
 
   add(input: Omit<User, "id">): User {
@@ -55,10 +53,8 @@ export class InMemoryUserRepository implements UserRepository {
     return user;
   }
 
-  private find(predicate: (user: User) => boolean, subject: string): Result<User, NotFound> {
-    const user = this.users.find(predicate);
-    if (user === undefined) return notFound("user", subject);
-    return ok(user);
+  private find(predicate: (user: User) => boolean): User | null {
+    return this.users.find(predicate) ?? null;
   }
 }
 
@@ -66,7 +62,7 @@ export class InMemoryGroupRepository implements GroupRepository {
   readonly groups: Group[] = [];
   private nextId = 1;
 
-  createGroup(): Promise<Group> {
+  create(): Promise<Group> {
     const group: Group = { id: this.nextId };
     this.nextId += 1;
     this.groups.push(group);
@@ -83,35 +79,36 @@ export class InMemoryGroupInviteRepository implements GroupInviteRepository {
     this.currentTime = currentTime;
   }
 
-  createInvite(groupId: number, userId: number): Promise<Result<void, Conflict>> {
+  create(groupId: number, userId: number): Promise<Result<GroupInvite, CreateError>> {
     const existing = this.invites.find(
       (invite) => invite.groupId === groupId && invite.userId === userId,
     );
-    if (existing !== undefined) return Promise.resolve(conflict());
+    if (existing !== undefined) return Promise.resolve(err("CreateError"));
 
-    this.invites.push({
+    const newRow = {
       id: this.nextId,
       publicId: randomUUID(),
       groupId,
       userId,
       createdAt: this.currentTime(),
-    });
+    };
+    this.invites.push(newRow);
     this.nextId += 1;
-    return Promise.resolve(ok());
+    return Promise.resolve(ok(newRow));
   }
 
-  getInvitesByUser(userId: number): Promise<GroupInvite[]> {
+  byUser(userId: number): Promise<GroupInvite[]> {
     return Promise.resolve(this.invites.filter((invite) => invite.userId === userId));
   }
 
-  deleteInvite(id: number): Promise<Result<void, NotFound>> {
+  delete(id: number): Promise<Result<void, DeleteError>> {
     const index = this.invites.findIndex((invite) => invite.id === id);
-    if (index === -1) return Promise.resolve(notFound("groupInvite", id));
+    if (index === -1) return Promise.resolve(err("DeleteError"));
     this.invites.splice(index, 1);
     return Promise.resolve(ok());
   }
 
-  deleteInvitesOlderThan(oldestDate: Date): Promise<void> {
+  deleteExpired(oldestDate: Date): Promise<void> {
     const remaining = this.invites.filter((invite) => invite.createdAt >= oldestDate);
     this.invites.splice(0, this.invites.length, ...remaining);
     return Promise.resolve();
