@@ -1,4 +1,4 @@
-import { foreignKey, integer, snakeCase, text, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { foreignKey, integer, snakeCase, text, unique } from "drizzle-orm/sqlite-core";
 import { id, groupId, publicId } from "./utils";
 import { sql } from "drizzle-orm";
 
@@ -18,20 +18,24 @@ export const users = table(
     firstName: text().notNull(),
     lastName: text().notNull(),
   },
-  (table) => [uniqueIndex("users_id_group_id_uq").on(table.id, table.groupId)],
+  (table) => [unique("users_group_id_uq").on(table.groupId, table.id)],
 );
 
-export const groupInvites = table("group_invites", {
-  ...id(),
-  ...groupId(),
-  ...publicId(),
-  userId: integer()
-    .notNull()
-    .references(() => users.id),
-  createdAt: integer({ mode: "timestamp" })
-    .notNull()
-    .default(sql`(unixepoch())`),
-});
+export const groupInvites = table(
+  "group_invites",
+  {
+    ...id(),
+    ...groupId(),
+    ...publicId(),
+    userId: integer()
+      .notNull()
+      .references(() => users.id),
+    createdAt: integer({ mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
+  },
+  (table) => [unique("group_invites_group_user_uq").on(table.groupId, table.userId)],
+);
 
 export const fileFormats = table(
   "file_formats",
@@ -51,7 +55,10 @@ export const fileFormats = table(
     dateFormat: text(),
     positiveIsSpending: integer({ mode: "boolean" }).notNull(),
   },
-  (table) => [uniqueIndex("file_formats_id_group_id_uq").on(table.id, table.groupId)],
+  (table) => [
+    unique("file_formats_group_id_uq").on(table.groupId, table.id),
+    unique("file_formats_group_name_uq").on(table.groupId, table.name),
+  ],
 );
 
 export const sources = table(
@@ -67,16 +74,17 @@ export const sources = table(
     fileFormatId: integer(),
   },
   (table) => [
-    uniqueIndex("sources_id_group_id_uq").on(table.id, table.groupId),
+    unique("sources_group_id_uq").on(table.groupId, table.id),
+    unique("sources_group_name_uq").on(table.groupId, table.name),
     foreignKey({
-      name: "sources_owner_group_fk",
-      columns: [table.ownerId, table.groupId],
-      foreignColumns: [users.id, users.groupId],
+      name: "sources_group_owner_fk",
+      columns: [table.groupId, table.ownerId],
+      foreignColumns: [users.groupId, users.id],
     }),
     foreignKey({
-      name: "sources_file_format_group_fk",
-      columns: [table.ownerId, table.groupId],
-      foreignColumns: [fileFormats.id, fileFormats.groupId],
+      name: "sources_group_file_format_fk",
+      columns: [table.groupId, table.fileFormatId],
+      foreignColumns: [fileFormats.groupId, fileFormats.id],
     }),
   ],
 );
@@ -92,7 +100,10 @@ export const categories = table(
     archived: integer({ mode: "boolean" }).notNull().default(false),
   },
 
-  (table) => [uniqueIndex("categories_id_group_id_uq").on(table.id, table.groupId)],
+  (table) => [
+    unique("categories_group_id_uq").on(table.groupId, table.id),
+    unique("categories_group_name_uq").on(table.groupId, table.name),
+  ],
 );
 
 export const transactions = table(
@@ -109,15 +120,15 @@ export const transactions = table(
   },
   (table) => [
     foreignKey({
-      name: "transactions_source_group_fk",
-      columns: [table.sourceId, table.groupId],
-      foreignColumns: [sources.id, sources.groupId],
+      name: "transactions_group_source_fk",
+      columns: [table.groupId, table.sourceId],
+      foreignColumns: [sources.groupId, sources.id],
     }),
 
     foreignKey({
-      name: "transactions_category_group_fk",
-      columns: [table.categoryId, table.groupId],
-      foreignColumns: [categories.id, categories.groupId],
+      name: "transactions_group_category_fk",
+      columns: [table.groupId, table.categoryId],
+      foreignColumns: [categories.groupId, categories.id],
     }),
   ],
 );
@@ -132,10 +143,11 @@ export const categoryRules = table(
     categoryId: integer(),
   },
   (table) => [
+    unique("category_rules_group_pattern_uq").on(table.groupId, table.pattern),
     foreignKey({
-      name: "category_rules_category_group_fk",
-      columns: [table.categoryId, table.groupId],
-      foreignColumns: [categories.id, categories.groupId],
+      name: "category_rules_group_category_fk",
+      columns: [table.groupId, table.categoryId],
+      foreignColumns: [categories.groupId, categories.id],
     }),
   ],
 );
