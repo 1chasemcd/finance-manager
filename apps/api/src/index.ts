@@ -1,28 +1,9 @@
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference
-/// <reference path="./types/worker-configuration.d.ts" />
-import { createApp } from "@/app";
-import type { CloudflareEnv } from "@/types/cloudflare-env";
-import { createContainer } from "./container";
-
-export type AppType = ReturnType<typeof createApp>;
-
-const apps = new WeakMap<CloudflareEnv, AppType>();
-
-function getApp(env: CloudflareEnv): AppType {
-  const cached = apps.get(env);
-  if (cached) return cached;
-
-  const container = createContainer(env);
-  const app = createApp(container);
-
-  apps.set(env, app);
-  return app;
-}
+import { getApp } from "@/app";
 
 export default {
   fetch(
     request: Request,
-    env: CloudflareEnv,
+    env: Cloudflare.Env,
     executionCtx: ExecutionContext,
   ): Response | Promise<Response> {
     return getApp(env).fetch(request, env, executionCtx);

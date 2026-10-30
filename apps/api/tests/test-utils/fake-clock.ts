@@ -1,7 +1,5 @@
-import type { CurrentTime } from "@/types/current-time";
-
 export interface FakeClock {
-  readonly currentTime: CurrentTime;
+  readonly currentTime: () => Date;
   advance(ms: number): void;
 }
 

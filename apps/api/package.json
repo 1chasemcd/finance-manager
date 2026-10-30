@@ -3,12 +3,15 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./client": {
+      "types": "./dist/src/app-type.d.ts"
+    }
   },
   "scripts": {
     "dev": "mkdir -p ../web/dist && wrangler dev --env dev",
     "test": "vitest run",
-    "cf-typegen": "wrangler types ./src/types/worker-configuration.d.ts",
+    "cf-typegen": "wrangler types",
     "db:generate": "drizzle-kit generate",
     "db:reset:local": "rm -rf .wrangler/state && pnpm run db:migrate:local",
     "db:migrate:local": "wrangler d1 migrations apply DB --local --env dev",
@@ -16,6 +19,7 @@
     "deploy": "wrangler deploy --env prod"
   },
   "dependencies": {
+    "@cloudflare/vitest-plugin": "^1.4.9",
     "@finapp/result": "workspace:*",
     "@finapp/schema": "workspace:*",
     "@hono/zod-validator": "^0.9.1",

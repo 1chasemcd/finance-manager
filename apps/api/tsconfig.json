@@ -2,23 +2,21 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "resolveJsonModule": true,
-    "composite": true,
-    "declaration": true,
-    "declarationMap": true,
-    "emitDeclarationOnly": true,
     "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": false,
     "outDir": "./dist",
+    "rootDir": ".",
     "target": "esnext",
     "module": "esnext",
     "types": ["node"],
     "moduleResolution": "bundler",
     "verbatimModuleSyntax": true,
     "lib": ["ESNext"],
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx",
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "src/dev-users.json", "./*.ts", "tests"]
+  "include": ["src", "src/dev-users.json", "worker-configuration.d.ts", "env.d.ts", "./*.ts"]
 }

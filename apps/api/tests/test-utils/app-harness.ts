@@ -1,10 +1,8 @@
 import { afterEach, beforeEach } from "vitest";
 import { createTestDatabase, type TestDatabase } from "./fake-d1";
 import { createCloudflareAccessMock, createTestJwtIssuer } from "./jwt";
-import type { CloudflareEnv } from "@/types/cloudflare-env";
 import { createFetchMock, type FetchMock } from "./fetch-mock";
-import { createApp } from "@/app";
-import { createContainer, type Container } from "@/container";
+import { getApp } from "@/app";
 
 export const TEAM_DOMAIN = "https://team.example.test";
 export const POLICY_AUD = "policy-aud-123";
@@ -31,12 +29,12 @@ export interface AppHarness {
   fetchMock: FetchMock;
 }
 
-function createEnv(database: TestDatabase): CloudflareEnv {
+function createEnv(database: TestDatabase): Cloudflare.Env {
   return {
     DB: database.d1,
     POLICY_AUD,
     TEAM_DOMAIN,
-  } as unknown as CloudflareEnv;
+  } as unknown as Cloudflare.Env;
 }
 
 export async function createAppHarness(): Promise<AppHarness> {
@@ -45,8 +43,7 @@ export async function createAppHarness(): Promise<AppHarness> {
   const fetchMock = createFetchMock();
 
   let testDatabase: TestDatabase;
-  let env: CloudflareEnv;
-  let container: Container;
+  let env: Cloudflare.Env;
 
   beforeEach(() => {
     access.reset();
@@ -54,7 +51,6 @@ export async function createAppHarness(): Promise<AppHarness> {
 
     testDatabase = createTestDatabase();
     env = createEnv(testDatabase);
-    container = createContainer({ ...env, handleFetch: fetchMock.handleFetch });
     fetchMock.register(`${TEAM_DOMAIN}/cdn-cgi/access/certs`, access.certs);
     fetchMock.register(`${TEAM_DOMAIN}/cdn-cgi/access/get-identity`, access.getIdentity);
   });
@@ -68,7 +64,7 @@ export async function createAppHarness(): Promise<AppHarness> {
     if (options.token !== undefined) headers.set("Cf-Access-Jwt-Assertion", options.token);
     if (options.json !== undefined) headers.set("Content-Type", "application/json");
 
-    return createApp(container).fetch(
+    return getApp(env).fetch(
       new Request(`http://test.local${path}`, {
         method: options.method ?? "GET",
         headers,

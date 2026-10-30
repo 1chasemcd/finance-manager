@@ -4,13 +4,12 @@ import { describe, expect, it, vi } from "vitest";
 import { createAuthMiddleware } from "@/middleware/auth";
 import { UserService } from "@/users/user.service";
 import { InMemoryGroupRepository, InMemoryUserRepository } from "../test-utils/fake-repositories";
-import type { CloudflareEnv } from "@/types/cloudflare-env";
 import { createRequestContextMiddleware, requestContext } from "@/middleware/request-context";
 
 const env = {
   POLICY_AUD: "policy-aud",
   TEAM_DOMAIN: "https://team.example.test",
-} as unknown as CloudflareEnv;
+} as unknown as Cloudflare.Env;
 
 function setup() {
   const users = new InMemoryUserRepository();
@@ -20,7 +19,7 @@ function setup() {
   const getIdentityFn = vi.fn();
   const state = { handled: false };
 
-  const app = new Hono<{ Bindings: CloudflareEnv }>()
+  const app = new Hono<{ Bindings: Cloudflare.Env }>()
     .use("*", createRequestContextMiddleware())
     .use(
       "*",

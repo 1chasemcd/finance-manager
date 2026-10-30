@@ -2,11 +2,9 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "finapp",
   "main": "src/index.ts",
+  "compatibility_flags": ["nodejs_compat"],
   "compatibility_date": "2026-09-25",
   "preview_urls": false,
-  "define": {
-    "__ENVIRONMENT__": "\"dev\"",
-  },
   "assets": {
     "directory": "../web/dist",
     "binding": "ASSETS",
@@ -25,11 +23,9 @@
   },
   "env": {
     "dev": {
-      "vars": {
-        "DEV_USER": "",
-      },
-      "define": {
-        "__ENVIRONMENT__": "\"dev\"",
+      "main": "src/index.dev.ts",
+      "secrets": {
+        "required": ["DEV_USER"],
       },
       "d1_databases": [
         {
@@ -40,14 +36,11 @@
       ],
     },
     "prod": {
-      "name": "finapp",
+      "main": "src/index.ts",
       "vars": {
         "POLICY_AUD": "daa9462a331f6fef1eebb5e8842dc10e745eec06d0d8fe0775f001433867b741",
         "TEAM_DOMAIN": "https://mcdnld.cloudflareaccess.com",
         "LOG_LEVEL": "info",
-      },
-      "define": {
-        "__ENVIRONMENT__": "\"prod\"",
       },
       "minify": true,
       "d1_databases": [

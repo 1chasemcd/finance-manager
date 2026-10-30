@@ -1,13 +1,12 @@
 import { Hono } from "hono";
 import { describe, expect, it } from "vitest";
 import { createErrorHandler } from "@/middleware/error-handler";
-import type { CloudflareEnv } from "@/types/cloudflare-env";
 import { createFakeLogger } from "../test-utils/fake-logger";
 
 describe("createErrorHandler", () => {
   it("logs the unhandled exception and responds with a 500", async () => {
     const logger = createFakeLogger();
-    const app = new Hono<{ Bindings: CloudflareEnv }>()
+    const app = new Hono<{ Bindings: Cloudflare.Env }>()
       .onError(createErrorHandler({ logger }))
       .get("/boom", () => {
         throw new Error("kaboom");
@@ -28,7 +27,7 @@ describe("createErrorHandler", () => {
 
   it("logs errors thrown from middleware", async () => {
     const logger = createFakeLogger();
-    const app = new Hono<{ Bindings: CloudflareEnv }>()
+    const app = new Hono<{ Bindings: Cloudflare.Env }>()
       .onError(createErrorHandler({ logger }))
       .use("*", () => {
         throw new Error("middleware exploded");

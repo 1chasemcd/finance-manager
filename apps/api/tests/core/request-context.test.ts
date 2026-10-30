@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { requestContext, createRequestContextMiddleware } from "@/middleware/request-context";
 import type { User } from "@/users/user.types";
 import type { Context } from "hono";
-import type { CloudflareEnv } from "@/types/cloudflare-env";
 
 const user: User = {
   id: 1,
@@ -16,7 +15,7 @@ const user: User = {
 async function runWithRequestContext(callback: () => Promise<void>) {
   const c = { req: { method: "get", path: "/api/health" } } as unknown as Context<
     {
-      Bindings: CloudflareEnv;
+      Bindings: Cloudflare.Env;
     },
     string
   >;

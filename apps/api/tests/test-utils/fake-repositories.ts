@@ -1,7 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { err, ok, type Result } from "@finapp/result";
 import { type CreateError, type DeleteError, type UpdateError } from "@/core/errors";
-import type { CurrentTime } from "@/types/current-time";
 import type { GroupInviteRepository } from "@/group-invites/group-invite.repository";
 import type { GroupInvite } from "@/group-invites/group-invites.types";
 import type { GroupRepository } from "@/groups/group.repository";
@@ -73,9 +72,9 @@ export class InMemoryGroupRepository implements GroupRepository {
 export class InMemoryGroupInviteRepository implements GroupInviteRepository {
   readonly invites: GroupInvite[] = [];
   private nextId = 1;
-  private readonly currentTime: CurrentTime;
+  private readonly currentTime: () => Date;
 
-  constructor(currentTime: CurrentTime = () => new Date()) {
+  constructor(currentTime = () => new Date()) {
     this.currentTime = currentTime;
   }
 

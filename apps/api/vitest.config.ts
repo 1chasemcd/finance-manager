@@ -1,17 +1,20 @@
+import { cloudflareTest } from "@cloudflare/vitest-plugin";
 import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
+  plugins: [
+    cloudflareTest({
+      wrangler: { configPath: "./wrangler.jsonc" },
+    }),
+  ],
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
-  define: {
-    __ENVIRONMENT__: "globalThis.__ENVIRONMENT__",
-  },
   test: {
     include: ["tests/**/*.test.ts"],
-    globals: true,
+    testTimeout: 10_000,
   },
 });

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm -r --parallel dev",
-    "typecheck": "tsc -b apps/* packages/*",
+    "typecheck": "tsc -b apps/* apps/api/tests packages/*",
     "test": "pnpm -r run test",
     "lint": "eslint .",
     "format": "prettier --write .",

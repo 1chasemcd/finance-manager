@@ -1,12 +1,11 @@
 import type { ErrorHandler } from "hono";
 import type { Logger } from "@/core/logger";
-import type { CloudflareEnv } from "@/types/cloudflare-env";
 
 export function createErrorHandler({
   logger,
 }: {
   logger: Logger;
-}): ErrorHandler<{ Bindings: CloudflareEnv }> {
+}): ErrorHandler<{ Bindings: Cloudflare.Env }> {
   return (err, c) => {
     logger.error("Unhandled API exception", {
       error: err.message,

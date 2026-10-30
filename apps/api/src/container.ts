@@ -1,4 +1,3 @@
-import { createDb } from "@/db/client";
 import { UserDrizzleRepository } from "@/users/user.drizzle-repository";
 import { UserService } from "@/users/user.service";
 import { requestContext } from "@/middleware/request-context";
@@ -7,28 +6,20 @@ import { CurrentUser } from "@/identity/current-user";
 import { GroupDrizzleRepository } from "@/groups/group.drizzle-repository";
 import { GroupInviteService } from "@/group-invites/group-invite.service";
 import { GroupInviteDrizzleRepository } from "@/group-invites/group-invite.drizzle-repository";
-import type { CurrentTime } from "./types/current-time";
 import {
   CloudflareIdentityService,
   type IdentityService,
 } from "./identity/cloudflare-identity.service";
-import type { CloudflareEnv } from "./types/cloudflare-env";
 import { createLogger } from "./core/logger";
+import { createDb } from "./db/client";
 
-type ContainerDeps = CloudflareEnv & {
-  handleFetch?: typeof fetch;
-  currentTime?: CurrentTime;
-};
-
-export function createContainer({
-  handleFetch = fetch.bind(globalThis),
-  currentTime = () => new Date(),
-  ...env
-}: ContainerDeps) {
+export function createContainer(env: Cloudflare.Env) {
   const db = createDb(env.DB);
+  const currentTime = env.INJECTIONS?.currentTime ?? (() => new Date());
+  const fetchHandler = env.INJECTIONS?.fetchHandler ?? fetch;
 
   const currentUser = new CurrentUser(requestContext);
-  const logger = createLogger("LOG_LEVEL" in env ? env.LOG_LEVEL : "info");
+  const logger = createLogger(env.LOG_LEVEL ?? "info");
 
   const userRepository = new UserDrizzleRepository(db);
   const groupRepository = new GroupDrizzleRepository(db);
@@ -44,7 +35,7 @@ export function createContainer({
   const accountService = new AccountService(userRepository, groupInviteService, currentUser);
   const userService = new UserService(userRepository, groupRepository);
 
-  const identityService: IdentityService = new CloudflareIdentityService(handleFetch, logger);
+  const identityService: IdentityService = new CloudflareIdentityService(fetchHandler, logger);
 
   return {
     requestContext,

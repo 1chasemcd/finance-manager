@@ -3,7 +3,6 @@ import type { CurrentUser } from "@/identity/current-user";
 import type { UserRepository } from "@/users/user.repository";
 import type { GroupInviteRepository } from "./group-invite.repository";
 import { notFound, type NotFound } from "@/core/errors";
-import type { CurrentTime } from "@/types/current-time";
 import type { GroupInvite } from "./group-invites.types";
 
 export const GROUP_INVITE_VALID_DURATION_MS = 24 * 60 * 60 * 1000;
@@ -13,7 +12,7 @@ export class GroupInviteService {
     private readonly users: UserRepository,
     private readonly groupInvites: GroupInviteRepository,
     private readonly currentUser: CurrentUser,
-    private readonly currentTime: CurrentTime,
+    private readonly currentTime: () => Date,
   ) {}
 
   async getPendingInvites(): Promise<GroupInvite[]> {

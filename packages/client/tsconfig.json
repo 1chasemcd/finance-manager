@@ -6,6 +6,5 @@
     "moduleResolution": "bundler",
     "lib": ["ESNext"]
   },
-  "include": ["src"],
-  "references": [{ "path": "../../apps/api" }]
+  "include": ["src"]
 }

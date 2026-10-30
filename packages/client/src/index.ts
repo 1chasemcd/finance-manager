@@ -1,5 +1,5 @@
 import { hc } from "hono/client";
-import type { AppType } from "@finapp/api";
+import type { AppType } from "@finapp/api/client";
 
 export function createApiClient(
   baseUrl: string,
