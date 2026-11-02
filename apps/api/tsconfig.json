@@ -18,5 +18,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "src/dev-users.json", "worker-configuration.d.ts", "env.d.ts", "./*.ts"]
+  "include": ["src", "src/dev-users.json", "worker-configuration.d.ts", "./*.ts"]
 }

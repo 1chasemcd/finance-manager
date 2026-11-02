@@ -3,10 +3,7 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./client": {
-      "types": "./dist/src/app-type.d.ts"
-    }
+    ".": "./dist/src/index.d.ts"
   },
   "scripts": {
     "dev": "mkdir -p ../web/dist && wrangler dev --env dev",
@@ -19,7 +16,6 @@
     "deploy": "wrangler deploy --env prod"
   },
   "dependencies": {
-    "@cloudflare/vitest-plugin": "^1.4.9",
     "@finapp/result": "workspace:*",
     "@finapp/schema": "workspace:*",
     "@hono/zod-validator": "^0.9.1",
@@ -28,8 +24,10 @@
     "jose": "^6.2.12"
   },
   "devDependencies": {
+    "@cloudflare/vitest-plugin": "^1.4.11",
     "@types/node": "^26.6.2",
     "drizzle-kit": "1.0.0-rc.4",
+    "miniflare": "^4.20260730.0",
     "tsx": "^4.23.15",
     "vitest": "^5.0.3",
     "wrangler": "^4.152.0"

@@ -1,13 +1,10 @@
-import { cloudflareTest } from "@cloudflare/vitest-plugin";
 import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
-  plugins: [
-    cloudflareTest({
-      wrangler: { configPath: "./wrangler.jsonc" },
-    }),
-  ],
+  define: {
+    __PACKAGE_ROOT__: JSON.stringify(import.meta.dirname),
+  },
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),

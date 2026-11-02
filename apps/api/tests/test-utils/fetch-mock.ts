@@ -1,7 +1,6 @@
 type MockCallback = (request: Request) => Response | Promise<Response>;
 
 export interface FetchMock {
-  readonly reset: () => void;
   readonly register: (url: string, callback: MockCallback) => void;
   readonly handleFetch: typeof fetch;
   get requests(): Request[];
@@ -12,10 +11,6 @@ export function createFetchMock(): FetchMock {
   const requests: Request[] = [];
 
   return {
-    reset() {
-      requests.length = 0;
-      mocks.clear();
-    },
     register(url: string, callback: MockCallback) {
       mocks.set(url, callback);
     },

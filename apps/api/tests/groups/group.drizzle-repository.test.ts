@@ -1,28 +1,16 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { createDb, type Db } from "@/db/client";
-import { GroupDrizzleRepository } from "@/groups/group.drizzle-repository";
-import { createTestDatabase, type TestDatabase } from "../test-utils/fake-d1";
+import { describe, expect, it } from "vitest";
+import { createRepositoryContainer } from "../test-utils/repository-container";
+import { createTestD1 } from "../test-utils/d1";
 
-let database: TestDatabase;
-let db: Db;
-let groups: GroupDrizzleRepository;
-
-beforeEach(() => {
-  database = createTestDatabase();
-  db = createDb(database.d1);
-  groups = new GroupDrizzleRepository(db);
-});
-
-afterEach(() => {
-  database.close();
-});
+const d1 = await createTestD1();
+const { groups } = await createRepositoryContainer(d1);
 
 describe("GroupDrizzleRepository.create", () => {
   it("inserts a group and returns it", async () => {
     const group = await groups.create();
 
     expect(group.id).toBeGreaterThan(0);
-    expect(database.all("SELECT id FROM groups")).toEqual([{ id: group.id }]);
+    expect((await d1.prepare("SELECT id FROM groups").all()).results).toEqual([{ id: group.id }]);
   });
 
   it("assigns a new id to every group", async () => {
@@ -30,7 +18,7 @@ describe("GroupDrizzleRepository.create", () => {
     const second = await groups.create();
 
     expect(second.id).not.toBe(first.id);
-    expect(database.all("SELECT id FROM groups ORDER BY id")).toEqual([
+    expect((await d1.prepare("SELECT id FROM groups ORDER BY id").all()).results).toEqual([
       { id: first.id },
       { id: second.id },
     ]);

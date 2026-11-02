@@ -2,8 +2,8 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "moduleResolution": "bundler",
-    "types": ["node", "@cloudflare/vitest-plugin/types"],
+    "types": ["node"],
     "rootDir": ".."
   },
-  "include": ["./**/*.ts", "../worker-configuration.d.ts", "../env.d.ts"]
+  "include": ["./**/*.ts", "../worker-configuration.d.ts", "../src/env.d.ts"]
 }

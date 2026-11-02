@@ -1,58 +1,25 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { createDb, type Db } from "@/db/client";
-import { GroupDrizzleRepository } from "@/groups/group.drizzle-repository";
-import { GroupInviteDrizzleRepository } from "@/group-invites/group-invite.drizzle-repository";
-import { UserDrizzleRepository } from "@/users/user.drizzle-repository";
-import { createTestDatabase, type TestDatabase } from "../test-utils/fake-d1";
+import { describe, expect, it } from "vitest";
 import { unwrap, unwrapError } from "../test-utils/unwrap";
-import type { User } from "@/users/user.types";
+import { createRepositoryContainer } from "../test-utils/repository-container";
+import { createDataSeeds } from "../test-utils/seeds";
+import { createTestD1 } from "../test-utils/d1";
 
 const HOUR_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * HOUR_MS;
 
-let database: TestDatabase;
-let db: Db;
-let invites: GroupInviteDrizzleRepository;
-let users: UserDrizzleRepository;
-let groups: GroupDrizzleRepository;
-let nextUser = 1;
-
-beforeEach(() => {
-  database = createTestDatabase();
-  db = createDb(database.d1);
-  invites = new GroupInviteDrizzleRepository(db);
-  users = new UserDrizzleRepository(db);
-  groups = new GroupDrizzleRepository(db);
-  nextUser = 1;
-});
-
-afterEach(() => {
-  database.close();
-});
-
-async function seedUser(): Promise<User> {
-  const group = await groups.create();
-  const index = nextUser;
-  nextUser += 1;
-  return unwrap(
-    await users.create({
-      email: `user-${String(index)}@example.com`,
-      firstName: "First",
-      lastName: "Last",
-      subject: `subject-${String(index)}`,
-      groupId: group.id,
-    }),
-  );
-}
+const d1 = await createTestD1();
+const repos = await createRepositoryContainer(d1);
+const { seedUser } = createDataSeeds(repos);
+const { groupInvites } = repos;
 
 describe("GroupInviteDrizzleRepository.create", () => {
   it("inserts an invite with a public id and a creation timestamp", async () => {
     const user = await seedUser();
     const other = await seedUser();
 
-    unwrap(await invites.create(user.groupId, other.id));
+    unwrap(await groupInvites.create(user.groupId, other.id));
 
-    const rows = await invites.byUser(other.id);
+    const rows = await groupInvites.byUser(other.id);
     expect(rows).toHaveLength(1);
     const invite = rows[0];
     if (invite === undefined) throw new Error("expected an invite");
@@ -71,10 +38,10 @@ describe("GroupInviteDrizzleRepository.create", () => {
     const second = await seedUser();
     const invitee = await seedUser();
 
-    unwrap(await invites.create(first.groupId, invitee.id));
-    unwrap(await invites.create(second.groupId, invitee.id));
+    unwrap(await groupInvites.create(first.groupId, invitee.id));
+    unwrap(await groupInvites.create(second.groupId, invitee.id));
 
-    expect(await invites.byUser(invitee.id)).toHaveLength(2);
+    expect(await groupInvites.byUser(invitee.id)).toHaveLength(2);
   });
 
   it("gives every invite a distinct public id", async () => {
@@ -82,10 +49,10 @@ describe("GroupInviteDrizzleRepository.create", () => {
     const second = await seedUser();
     const invitee = await seedUser();
 
-    unwrap(await invites.create(first.groupId, invitee.id));
-    unwrap(await invites.create(second.groupId, invitee.id));
+    unwrap(await groupInvites.create(first.groupId, invitee.id));
+    unwrap(await groupInvites.create(second.groupId, invitee.id));
 
-    const rows = await invites.byUser(invitee.id);
+    const rows = await groupInvites.byUser(invitee.id);
     expect(rows).toHaveLength(2);
     expect(rows[0]?.publicId).not.toBe(rows[1]?.publicId);
   });
@@ -97,11 +64,11 @@ describe("GroupInviteDrizzleRepository.byUser", () => {
     const invitee = await seedUser();
     const otherInvitee = await seedUser();
 
-    unwrap(await invites.create(user.groupId, invitee.id));
-    unwrap(await invites.create(user.groupId, otherInvitee.id));
+    unwrap(await groupInvites.create(user.groupId, invitee.id));
+    unwrap(await groupInvites.create(user.groupId, otherInvitee.id));
 
-    expect(await invites.byUser(invitee.id)).toHaveLength(1);
-    expect(await invites.byUser(9999)).toEqual([]);
+    expect(await groupInvites.byUser(invitee.id)).toHaveLength(1);
+    expect(await groupInvites.byUser(9999)).toEqual([]);
   });
 });
 
@@ -109,27 +76,27 @@ describe("GroupInviteDrizzleRepository.delete", () => {
   it("deletes an existing invite", async () => {
     const user = await seedUser();
     const invitee = await seedUser();
-    unwrap(await invites.create(user.groupId, invitee.id));
-    const [invite] = await invites.byUser(invitee.id);
+    unwrap(await groupInvites.create(user.groupId, invitee.id));
+    const [invite] = await groupInvites.byUser(invitee.id);
     if (invite === undefined) throw new Error("expected an invite");
 
-    unwrap(await invites.delete(invite.id));
-    expect(await invites.byUser(invitee.id)).toEqual([]);
+    unwrap(await groupInvites.delete(invite.id));
+    expect(await groupInvites.byUser(invitee.id)).toEqual([]);
   });
 
   it("returns DeleteError when there is nothing to delete", async () => {
-    expect(unwrapError(await invites.delete(4242))._tag).toBe("DeleteError");
+    expect(unwrapError(await groupInvites.delete(4242))._tag).toBe("DeleteError");
   });
 
   it("returns DeleteError when the invite was already deleted", async () => {
     const user = await seedUser();
     const invitee = await seedUser();
-    unwrap(await invites.create(user.groupId, invitee.id));
-    const [invite] = await invites.byUser(invitee.id);
+    unwrap(await groupInvites.create(user.groupId, invitee.id));
+    const [invite] = await groupInvites.byUser(invitee.id);
     if (invite === undefined) throw new Error("expected an invite");
 
-    unwrap(await invites.delete(invite.id));
-    expect(unwrapError(await invites.delete(invite.id))._tag).toBe("DeleteError");
+    unwrap(await groupInvites.delete(invite.id));
+    expect(unwrapError(await groupInvites.delete(invite.id))._tag).toBe("DeleteError");
   });
 });
 
@@ -138,46 +105,46 @@ describe("GroupInviteDrizzleRepository.deleteExpired", () => {
     const user = await seedUser();
     const staleInvitee = await seedUser();
     const freshInvitee = await seedUser();
-    unwrap(await invites.create(user.groupId, staleInvitee.id));
-    unwrap(await invites.create(user.groupId, freshInvitee.id));
-    const [stale] = await invites.byUser(staleInvitee.id);
+    unwrap(await groupInvites.create(user.groupId, staleInvitee.id));
+    unwrap(await groupInvites.create(user.groupId, freshInvitee.id));
+    const [stale] = await groupInvites.byUser(staleInvitee.id);
     if (stale === undefined) throw new Error("expected an invite");
 
     const staleCreatedAt = Math.floor((Date.now() - 2 * DAY_MS) / 1000);
-    database.run("UPDATE group_invites SET created_at = ? WHERE id = ?", [
-      staleCreatedAt,
-      stale.id,
-    ]);
+    await d1
+      .prepare("UPDATE group_invites SET created_at = ? WHERE id = ?")
+      .bind(staleCreatedAt, stale.id)
+      .run();
 
-    await invites.deleteExpired(new Date(Date.now() - DAY_MS));
+    await groupInvites.deleteExpired(new Date(Date.now() - DAY_MS));
 
-    expect(await invites.byUser(staleInvitee.id)).toEqual([]);
-    expect(await invites.byUser(freshInvitee.id)).toHaveLength(1);
+    expect(await groupInvites.byUser(staleInvitee.id)).toEqual([]);
+    expect(await groupInvites.byUser(freshInvitee.id)).toHaveLength(1);
   });
 
   it("keeps invites created exactly at the cutoff", async () => {
     const user = await seedUser();
     const invitee = await seedUser();
-    unwrap(await invites.create(user.groupId, invitee.id));
-    const [invite] = await invites.byUser(invitee.id);
+    unwrap(await groupInvites.create(user.groupId, invitee.id));
+    const [invite] = await groupInvites.byUser(invitee.id);
     if (invite === undefined) throw new Error("expected an invite");
 
     const cutoffSeconds = Math.floor(Date.now() / 1000) - Math.floor(DAY_MS / 1000);
-    database.run("UPDATE group_invites SET created_at = ? WHERE id = ?", [
-      cutoffSeconds,
-      invite.id,
-    ]);
+    await d1
+      .prepare("UPDATE group_invites SET created_at = ? WHERE id = ?")
+      .bind(cutoffSeconds, invite.id)
+      .run();
 
-    await invites.deleteExpired(new Date(cutoffSeconds * 1000));
+    await groupInvites.deleteExpired(new Date(cutoffSeconds * 1000));
 
-    expect(await invites.byUser(invitee.id)).toHaveLength(1);
+    expect(await groupInvites.byUser(invitee.id)).toHaveLength(1);
 
-    database.run("UPDATE group_invites SET created_at = ? WHERE id = ?", [
-      cutoffSeconds - 1,
-      invite.id,
-    ]);
-    await invites.deleteExpired(new Date(cutoffSeconds * 1000));
+    await d1
+      .prepare("UPDATE group_invites SET created_at = ? WHERE id = ?")
+      .bind(cutoffSeconds - 1, invite.id)
+      .run();
+    await groupInvites.deleteExpired(new Date(cutoffSeconds * 1000));
 
-    expect(await invites.byUser(invitee.id)).toEqual([]);
+    expect(await groupInvites.byUser(invitee.id)).toEqual([]);
   });
 });

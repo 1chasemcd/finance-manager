@@ -1,43 +1,11 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { createDb, type Db } from "@/db/client";
-import { GroupDrizzleRepository } from "@/groups/group.drizzle-repository";
-import { UserDrizzleRepository } from "@/users/user.drizzle-repository";
-import { createTestDatabase, type TestDatabase } from "../test-utils/fake-d1";
+import { describe, expect, it } from "vitest";
 import { unwrap, unwrapError } from "../test-utils/unwrap";
-import type { User } from "@/users/user.types";
+import { createRepositoryContainer } from "../test-utils/repository-container";
+import { createDataSeeds } from "../test-utils/seeds";
 
-let database: TestDatabase;
-let db: Db;
-let users: UserDrizzleRepository;
-let groups: GroupDrizzleRepository;
-let nextUser = 1;
-
-beforeEach(() => {
-  database = createTestDatabase();
-  db = createDb(database.d1);
-  users = new UserDrizzleRepository(db);
-  groups = new GroupDrizzleRepository(db);
-  nextUser = 1;
-});
-
-afterEach(() => {
-  database.close();
-});
-
-async function seedUser(): Promise<User> {
-  const group = await groups.create();
-  const index = nextUser;
-  nextUser += 1;
-  return unwrap(
-    await users.create({
-      email: `user-${String(index)}@example.com`,
-      firstName: "First",
-      lastName: "Last",
-      subject: `subject-${String(index)}`,
-      groupId: group.id,
-    }),
-  );
-}
+const repos = await createRepositoryContainer();
+const { users, groups } = repos;
+const { seedUser } = createDataSeeds(repos);
 
 describe("UserDrizzleRepository.bySubject", () => {
   it("returns the user with that subject", async () => {

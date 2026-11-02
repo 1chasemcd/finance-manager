@@ -1,5 +1,13 @@
-import { getApp } from "@/app";
+import { createAppBase, createAppRoutes, cacheApp } from "./app";
 import { createDevMiddleware } from "./middleware/dev";
+
+function getApp(env: Cloudflare.Env) {
+  return cacheApp(env, (container) =>
+    createAppBase(container)
+      .use(createDevMiddleware(container))
+      .route("/", createAppRoutes(container)),
+  );
+}
 
 export default {
   fetch(
@@ -7,7 +15,6 @@ export default {
     env: Cloudflare.Env,
     executionCtx: ExecutionContext,
   ): Response | Promise<Response> {
-    env.INJECTIONS = { authMiddlewareFactory: createDevMiddleware };
     return getApp(env).fetch(request, env, executionCtx);
   },
 };

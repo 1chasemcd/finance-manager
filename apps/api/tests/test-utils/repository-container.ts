@@ -1,10 +1,9 @@
-import { createDb, type Db } from "@/db/client";
-import { createTestDatabase, type TestDatabase } from "./fake-d1";
+import { createDb } from "@/db/client";
 import { SourceDrizzleRepository } from "@/sources/source.drizzle-repository";
 import { FileFormatDrizzleRepository } from "@/file-formats/file-format.drizzle-repository";
 import { UserDrizzleRepository } from "@/users/user.drizzle-repository";
 import { GroupDrizzleRepository } from "@/groups/group.drizzle-repository";
-import { afterEach, beforeEach } from "vitest";
+import { beforeEach } from "vitest";
 import type { SourceRepository } from "@/sources/source.repository";
 import type { FileFormatRepository } from "@/file-formats/file-format.repository";
 import type { UserRepository } from "@/users/user.repository";
@@ -16,6 +15,7 @@ import {
   InMemoryGroupRepository,
   InMemoryUserRepository,
 } from "./fake-repositories";
+import { createTestD1 } from "./d1";
 
 export interface RepositoryContainer {
   groups: GroupRepository;
@@ -25,48 +25,29 @@ export interface RepositoryContainer {
   sources: SourceRepository;
 }
 
-export function createRepositoryContainer(): RepositoryContainer {
-  let database: TestDatabase;
-  let db: Db;
-  const repos = {} as RepositoryContainer;
+export async function createRepositoryContainer(d1?: D1Database): Promise<RepositoryContainer> {
+  d1 ??= await createTestD1();
+  const db = createDb(d1);
 
-  beforeEach(() => {
-    database = createTestDatabase();
-    db = createDb(database.d1);
-    repos.groups = new GroupDrizzleRepository(db);
-    repos.groupInvites = new GroupInviteDrizzleRepository(db);
-    repos.users = new UserDrizzleRepository(db);
-    repos.fileFormats = new FileFormatDrizzleRepository(db);
-    repos.sources = new SourceDrizzleRepository(db);
-  });
-
-  afterEach(() => {
-    database.close();
-  });
-
-  return repos;
+  return {
+    groups: new GroupDrizzleRepository(db),
+    groupInvites: new GroupInviteDrizzleRepository(db),
+    users: new UserDrizzleRepository(db),
+    fileFormats: new FileFormatDrizzleRepository(db),
+    sources: new SourceDrizzleRepository(db),
+  };
 }
 
 export function createFakeRepositoryContainer(): RepositoryContainer {
-  let groups = {} as GroupRepository;
-  let users = {} as UserRepository;
-  let groupInvites = {} as GroupInviteRepository;
-  const fileFormats = {} as FileFormatRepository;
-  const sources = {} as SourceRepository;
+  const repos = {} as RepositoryContainer;
 
   beforeEach(() => {
-    groups = new InMemoryGroupRepository();
-    groupInvites = new InMemoryGroupInviteRepository();
-    users = new InMemoryUserRepository();
+    repos.groups = new InMemoryGroupRepository();
+    repos.groupInvites = new InMemoryGroupInviteRepository();
+    repos.users = new InMemoryUserRepository();
     // fileFormats = new InMemoryFileFormatRepository();
     // sources = new InMemorySourceRepository();
   });
 
-  return {
-    groups,
-    users,
-    groupInvites,
-    fileFormats,
-    sources,
-  };
+  return repos;
 }

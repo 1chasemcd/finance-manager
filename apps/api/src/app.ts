@@ -1,32 +1,33 @@
 import router from "@/core/router";
 import { createRequestContextMiddleware } from "@/middleware/request-context";
 import { createAccountRoutes } from "@/accounts/account.routes";
-import { createContainer } from "./container";
+import { createContainer, type Container } from "./container";
 import { createErrorHandler } from "./middleware/error-handler";
-import { createAuthMiddleware } from "./middleware/auth";
 
-type AppType = ReturnType<typeof createApp>;
-const cache = new WeakMap<Cloudflare.Env, AppType>();
+const cache = new WeakMap<Cloudflare.Env, unknown>();
 
-export function getApp(env: Cloudflare.Env) {
+export function cacheApp<AppType>(
+  env: Cloudflare.Env,
+  appFactory: (container: Container) => AppType,
+): AppType {
   const cached = cache.get(env);
-  if (cached) return cached;
+  if (cached) return cached as AppType;
 
-  const app = createApp(env);
+  const container = createContainer(env);
+  const app = appFactory(container);
 
   cache.set(env, app);
   return app;
 }
 
-function createApp(env: Cloudflare.Env) {
-  const container = createContainer(env);
-  const createAppAuth = env.INJECTIONS?.authMiddlewareFactory ?? createAuthMiddleware;
-
+export function createAppBase(container: Container) {
   return router()
     .onError(createErrorHandler(container))
     .basePath("/api")
     .use(createRequestContextMiddleware())
-    .get("/health", (c) => c.json({ status: "ok" }))
-    .use(createAppAuth(container))
-    .route("/account", createAccountRoutes(container));
+    .get("/health", (c) => c.json({ status: "ok" }));
+}
+
+export function createAppRoutes(container: Container) {
+  return router().route("/account", createAccountRoutes(container));
 }

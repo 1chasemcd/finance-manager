@@ -15,8 +15,8 @@ import { createDb } from "./db/client";
 
 export function createContainer(env: Cloudflare.Env) {
   const db = createDb(env.DB);
-  const currentTime = env.INJECTIONS?.currentTime ?? (() => new Date());
-  const fetchHandler = env.INJECTIONS?.fetchHandler ?? fetch;
+  const currentTime = () => new Date();
+  const fetchHandler = fetch.bind(globalThis);
 
   const currentUser = new CurrentUser(requestContext);
   const logger = createLogger(env.LOG_LEVEL ?? "info");

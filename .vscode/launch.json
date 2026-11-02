@@ -1,7 +1,7 @@
 {
   "configurations": [
     {
-      "name": "Listen API",
+      "name": "Attach to Workers Runtime",
       "type": "node",
       "request": "attach",
       "port": 9229,
@@ -10,6 +10,14 @@
       "attachExistingChildren": false,
       "autoAttachChildProcesses": false,
       "sourceMaps": true
+    },
+    {
+      "name": "Open Inspector with Vitest",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/apps/api/node_modules/vitest/vitest.mjs",
+      "console": "integratedTerminal",
+      "args": ["--inspect", "--no-file-parallelism"]
     }
   ]
 }
