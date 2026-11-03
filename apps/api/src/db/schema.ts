@@ -70,7 +70,7 @@ export const sources = table(
     name: text().notNull(),
     description: text(),
     archived: integer({ mode: "boolean" }).notNull().default(false),
-    ownerId: integer(),
+    ownerId: integer().notNull(),
     fileFormatId: integer(),
   },
   (table) => [

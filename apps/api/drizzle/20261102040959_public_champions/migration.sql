@@ -45,7 +45,7 @@ CREATE TABLE `sources` (
 	`name` text NOT NULL,
 	`description` text,
 	`archived` integer DEFAULT false NOT NULL,
-	`owner_id` integer,
+	`owner_id` integer NOT NULL,
 	`file_format_id` integer,
 	CONSTRAINT `fk_sources_group_id_groups_id_fk` FOREIGN KEY (`group_id`) REFERENCES `groups`(`id`),
 	CONSTRAINT `sources_group_owner_fk` FOREIGN KEY (`group_id`,`owner_id`) REFERENCES `users`(`group_id`,`id`),
