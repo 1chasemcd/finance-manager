@@ -2,7 +2,7 @@ import router from "@/core/router";
 import type { AccountService } from "./account.service";
 import { zValidator } from "@hono/zod-validator";
 import type { GroupInviteService } from "@/group-invites/group-invite.service";
-import { inviteUserSchema } from "@finapp/schema";
+import { idSchema, inviteUserSchema } from "@finapp/schema";
 
 interface AccountRouteDeps {
   accountService: AccountService;
@@ -20,15 +20,15 @@ export function createAccountRoutes({ accountService, groupInviteService }: Acco
       await groupInviteService.inviteUserToGroup(email);
       return c.body(null, 204);
     })
-    .post("/invite/:inviteId/accept", async (c) => {
-      const inviteId = c.req.param("inviteId");
-      const res = await groupInviteService.acceptInviteToGroup(inviteId);
+    .post("/invite/:id/accept", zValidator("param", idSchema), async (c) => {
+      const id = c.req.param("id");
+      const res = await groupInviteService.acceptInviteToGroup(id);
       if (res.isOk) return c.body(null, 204);
       else return c.body(null, 404);
     })
-    .post("/invite/:inviteId/decline", async (c) => {
-      const inviteId = c.req.param("inviteId");
-      const res = await groupInviteService.declineInviteToGroup(inviteId);
+    .post("/invite/:id/decline", zValidator("param", idSchema), async (c) => {
+      const id = c.req.param("id");
+      const res = await groupInviteService.declineInviteToGroup(id);
       if (res.isOk) return c.body(null, 204);
       else return c.body(null, 404);
     });

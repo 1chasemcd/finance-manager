@@ -1,10 +1,11 @@
 import { err, ok, type Result } from "@finapp/result";
 import type { SourceRepository } from "./source.repository";
-import type { CreateSourceInput, Source, UpdateSourceInput } from "./source.types";
+import type { Source } from "./source.types";
 import type { Db } from "@/db/client";
 import { fileFormats, sources, users } from "@/db/schema";
 import { and, eq, exists, SQL, sql } from "drizzle-orm";
 import { handleSqliteConstraintError } from "@/db/errors";
+import type { CreateSourceInput, UpdateSourceInput } from "@finapp/schema";
 
 export class SourceDrizzleRepository implements SourceRepository {
   constructor(private readonly db: Db) {}

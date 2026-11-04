@@ -1,5 +1,6 @@
+import type { CreateSourceInput, UpdateSourceInput } from "@finapp/schema";
 import type { SourceRepository } from "./source.repository";
-import type { CreateSourceInput, Source, SourceDetail, UpdateSourceInput } from "./source.types";
+import type { Source, SourceDetail } from "./source.types";
 import type { CurrentUser } from "@/identity/current-user";
 import { err, type Result } from "@finapp/result";
 

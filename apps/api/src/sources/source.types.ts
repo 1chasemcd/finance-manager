@@ -10,12 +10,3 @@ export interface Source {
 export interface SourceDetail extends Source {
   canDelete: boolean;
 }
-
-export interface CreateSourceInput {
-  name: string;
-  description?: string | null;
-  ownerEmail: string;
-  fileFormatPublicId?: string | null;
-}
-
-export type UpdateSourceInput = Partial<CreateSourceInput & { archived: boolean }>;

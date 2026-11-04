@@ -1,5 +1,6 @@
 import type { Result } from "@finapp/result";
-import type { CreateSourceInput, Source, UpdateSourceInput } from "./source.types";
+import type { Source } from "./source.types";
+import type { CreateSourceInput, UpdateSourceInput } from "@finapp/schema";
 
 export interface SourceRepository {
   byPublicId(groupId: number, publicId: string): Promise<Source | null>;

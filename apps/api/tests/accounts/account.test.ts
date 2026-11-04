@@ -184,12 +184,12 @@ describe("/api/account/invite", () => {
 
   it("responds 404 for unknown invite ids", async () => {
     const token = await login(alice);
-
+    const fakeId = crypto.randomUUID();
     expect(
-      (await api(`/api/account/invite/not-a-real-id/accept`, { method: "POST", token })).status,
+      (await api(`/api/account/invite/${fakeId}/accept`, { method: "POST", token })).status,
     ).toBe(404);
     expect(
-      (await api(`/api/account/invite/not-a-real-id/decline`, { method: "POST", token })).status,
+      (await api(`/api/account/invite/${fakeId}/decline`, { method: "POST", token })).status,
     ).toBe(404);
   });
 });
