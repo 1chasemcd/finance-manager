@@ -3,8 +3,7 @@ import { users } from "@/db/schema";
 import type { Db } from "@/db/client";
 import type { UserRepository } from "./user.repository";
 import type { CreateUserInput, UpdateUserInput, User } from "./user.types";
-import type { CreateError, UpdateError } from "@/core/errors";
-import { err, invariant, ok, type Result } from "@finapp/result";
+import { err, ok, type Result } from "@finapp/result";
 
 export class UserDrizzleRepository implements UserRepository {
   constructor(private readonly db: Db) {}
@@ -31,15 +30,15 @@ export class UserDrizzleRepository implements UserRepository {
     return row ?? null;
   }
 
-  async create(input: CreateUserInput): Promise<Result<User, CreateError>> {
+  async create(input: CreateUserInput): Promise<Result<User>> {
     const [newRow] = await this.db.insert(users).values(input).returning();
-    invariant(newRow, "Expected new user to be created.");
+    if (!newRow) return err();
     return ok(newRow);
   }
 
-  async update(id: number, input: UpdateUserInput): Promise<Result<void, UpdateError>> {
+  async update(id: number, input: UpdateUserInput): Promise<Result> {
     const result = await this.db.update(users).set(input).where(eq(users.id, id));
-    if (result.meta.changes != 1) return err("UpdateError");
+    if (result.meta.changes != 1) return err();
     return ok();
   }
 }

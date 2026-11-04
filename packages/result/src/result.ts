@@ -54,4 +54,4 @@ export class Err<E> extends _Result<never, E> {
   }
 }
 
-export type Result<T, E> = Ok<T> | Err<E>;
+export type Result<T = void, E = void> = Ok<T> | Err<E>;

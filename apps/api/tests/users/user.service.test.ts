@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { UserService } from "@/users/user.service";
 import { InMemoryGroupRepository, InMemoryUserRepository } from "../test-utils/fake-repositories";
-import { unwrap, unwrapError } from "../test-utils/unwrap";
+import { unwrap } from "../test-utils/unwrap";
 
 function setup() {
   const users = new InMemoryUserRepository();
@@ -23,14 +23,10 @@ describe("UserService.getUser", () => {
     expect(unwrap(await service.getUser("subject-1"))).toEqual(user);
   });
 
-  it("returns NotFound for an unknown subject", async () => {
+  it("returns err for an unknown subject", async () => {
     const { service } = setup();
 
-    expect(unwrapError(await service.getUser("missing"))).toEqual({
-      _tag: "NotFound",
-      resource: "user",
-      id: "missing",
-    });
+    expect((await service.getUser("missing")).isErr).toBe(true);
   });
 });
 
@@ -119,7 +115,7 @@ describe("UserService.onboardUser", () => {
     expect(user.subject).toBe("subject-1");
   });
 
-  it("returns Conflict when the email already belongs to another user", async () => {
+  it("returns err when the email already belongs to another user", async () => {
     const { service, users } = setup();
     users.add({
       email: "jane@example.com",
@@ -135,13 +131,10 @@ describe("UserService.onboardUser", () => {
       subject: "subject-1",
     });
 
-    expect(unwrapError(result)).toEqual({
-      _tag: "Conflict",
-      message: "The operation conflicts with the current state of the resource.",
-    });
+    expect(result.isErr).toBe(true);
   });
 
-  it("returns Conflict when the subject already belongs to another user", async () => {
+  it("returns err when the subject already belongs to another user", async () => {
     const { service, users } = setup();
     users.add({
       email: "other@example.com",
@@ -157,7 +150,7 @@ describe("UserService.onboardUser", () => {
       subject: "subject-1",
     });
 
-    expect(unwrapError(result)._tag).toBe("Conflict");
+    expect(result.isErr).toBe(true);
     expect(users.users).toHaveLength(1);
   });
 });

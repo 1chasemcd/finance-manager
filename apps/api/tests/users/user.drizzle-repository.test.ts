@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { unwrap, unwrapError } from "../test-utils/unwrap";
+import { unwrap } from "../test-utils/unwrap";
 import { createRepositoryContainer } from "../test-utils/repository-container";
 import { createDataSeeds } from "../test-utils/seeds";
 
@@ -14,7 +14,7 @@ describe("UserDrizzleRepository.bySubject", () => {
     expect(await users.bySubject(created.subject)).toEqual(created);
   });
 
-  it("returns NotFound for an unknown subject", async () => {
+  it("returns null for an unknown subject", async () => {
     expect(await users.bySubject("missing")).toBeNull();
   });
 });
@@ -26,7 +26,7 @@ describe("UserDrizzleRepository.byEmail", () => {
     expect(await users.byEmail(created.email)).toEqual(created);
   });
 
-  it("returns NotFound for an unknown email", async () => {
+  it("returns null for an unknown email", async () => {
     expect(await users.byEmail("missing@example.com")).toBeNull();
   });
 });
@@ -135,7 +135,7 @@ describe("UserDrizzleRepository.update", () => {
     expect((await users.bySubject(created.subject))?.groupId).toBe(target.id);
   });
 
-  it("returns UpdateError for an unknown id", async () => {
-    expect(unwrapError(await users.update(4242, { groupId: 1 }))._tag).toBe("UpdateError");
+  it("returns err for an unknown id", async () => {
+    expect((await users.update(4242, { groupId: 1 })).isErr).toBe(true);
   });
 });

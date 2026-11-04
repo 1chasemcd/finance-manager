@@ -54,21 +54,19 @@ describe("CloudflareIdentityService.getIdentity", () => {
     expect(result).toEqual({});
   });
 
-  it("returns Err when the identity endpoint cannot find the specified token", async () => {
+  it("returns err when the identity endpoint cannot find the specified token", async () => {
     const { identity } = await setup();
 
-    const result = unwrapError(await identity.getIdentity("unknown-token", env));
-    expect(result).toEqual({
-      _tag: "BadGateway",
-    });
+    const result = await identity.getIdentity("unknown-token", env);
+    expect(result.isErr).toBe(true);
   });
 
   it("logs an error when the identity endpoint returns invalid JSON", async () => {
     const { identity, fetchMock, logger } = await setup();
     fetchMock.register(`${TEAM_DOMAIN}/cdn-cgi/access/get-identity`, () => new Response("nope"));
 
-    const result = unwrapError(await identity.getIdentity("some-token", env));
-    expect(result).toEqual({ _tag: "BadGateway" });
+    const result = await identity.getIdentity("some-token", env);
+    expect(result.isErr).toBe(true);
     expect(logger.calls).toEqual([
       expect.objectContaining({
         level: "error",
@@ -83,8 +81,8 @@ describe("CloudflareIdentityService.getIdentity", () => {
       throw new TypeError("fetch failed");
     });
 
-    const result = unwrapError(await identity.getIdentity("some-token", env));
-    expect(result).toEqual({ _tag: "BadGateway" });
+    const result = await identity.getIdentity("some-token", env);
+    expect(result.isErr).toBe(true);
     expect(logger.calls).toEqual([
       expect.objectContaining({
         level: "error",
@@ -101,8 +99,8 @@ describe("CloudflareIdentityService.getIdentity", () => {
       () => new Response("not found", { status: 404 }),
     );
 
-    const result = unwrapError(await identity.getIdentity("some-token", env));
-    expect(result).toEqual({ _tag: "BadGateway" });
+    const result = await identity.getIdentity("some-token", env);
+    expect(result.isErr).toBe(true);
     expect(logger.calls).toEqual([
       expect.objectContaining({
         level: "error",
@@ -140,7 +138,7 @@ describe("CloudflareIdentityService.jwtVerify", () => {
 
     const token = await issuer.signToken({ sub: "test", aud: "other-aud" });
 
-    expect(unwrapError(await identity.jwtVerify(token, env))).toEqual({ _tag: "Unauthorized" });
+    expect((await identity.jwtVerify(token, env)).isErr).toBe(true);
   });
 
   it("rejects a token with the wrong issuer", async () => {
@@ -148,7 +146,7 @@ describe("CloudflareIdentityService.jwtVerify", () => {
 
     const token = await issuer.signToken({ sub: "test", iss: "http://malicious-issuer.com" });
 
-    expect(unwrapError(await identity.jwtVerify(token, env))).toEqual({ _tag: "Unauthorized" });
+    expect((await identity.jwtVerify(token, env)).isErr).toBe(true);
   });
 
   it("rejects an expired token", async () => {
@@ -159,15 +157,13 @@ describe("CloudflareIdentityService.jwtVerify", () => {
       exp: Math.floor(Date.now() / 1000) - 60,
     });
 
-    expect(unwrapError(await identity.jwtVerify(token, env))).toEqual({ _tag: "Unauthorized" });
+    expect((await identity.jwtVerify(token, env)).isErr).toBe(true);
   });
 
   it("rejects a malformed token", async () => {
     const { identity } = await setup();
 
-    expect(unwrapError(await identity.jwtVerify("not-a-jwt", env))).toEqual({
-      _tag: "Unauthorized",
-    });
+    expect((await identity.jwtVerify("not-a-jwt", env)).isErr).toBe(true);
   });
 
   it("rejects a token signed with a key that is not in the JWKS", async () => {
@@ -176,7 +172,7 @@ describe("CloudflareIdentityService.jwtVerify", () => {
     const rogueIssuer = await createTestJwtIssuer(TEAM_DOMAIN, POLICY_AUD);
     const token = await rogueIssuer.signToken({ sub: "user-1" });
 
-    expect(unwrapError(await identity.jwtVerify(token, env))).toEqual({ _tag: "Unauthorized" });
+    expect((await identity.jwtVerify(token, env)).isErr).toBe(true);
   });
 
   it("logs a warning when verification fails", async () => {

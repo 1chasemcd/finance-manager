@@ -7,6 +7,10 @@ export interface Source {
   fileFormatPublicId: string | null;
 }
 
+export interface SourceDetail extends Source {
+  canDelete: boolean;
+}
+
 export interface CreateSourceInput {
   name: string;
   description?: string | null;

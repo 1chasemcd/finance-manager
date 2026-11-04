@@ -3,6 +3,7 @@ import { createRequestContextMiddleware } from "@/middleware/request-context";
 import { createAccountRoutes } from "@/accounts/account.routes";
 import { createContainer, type Container } from "./container";
 import { createErrorHandler } from "./middleware/error-handler";
+import { createSourceRoutes } from "./sources/source.routes";
 
 const cache = new WeakMap<Cloudflare.Env, unknown>();
 
@@ -29,5 +30,7 @@ export function createAppBase(container: Container) {
 }
 
 export function createAppRoutes(container: Container) {
-  return router().route("/account", createAccountRoutes(container));
+  return router()
+    .route("/account", createAccountRoutes(container))
+    .route("/source", createSourceRoutes(container));
 }

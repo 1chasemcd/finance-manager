@@ -31,22 +31,31 @@ describe("ok", () => {
 });
 
 describe("err", () => {
-  it("wraps the tag in an Err", () => {
-    const result = err();
+  it("wraps the value in an Err", () => {
+    const result = err(42);
 
-    expect(result.isErr).toBe(true);
     expect(result.isOk).toBe(false);
-    expect(result.error).toEqual({ _tag: "Err" });
+    expect(result.isErr).toBe(true);
+    expect(result.error).toBe(42);
     expect(result).toBeInstanceOf(Err);
   });
 
-  it("uses the provided tag", () => {
-    expect(err("Unauthorized").error).toEqual({ _tag: "Unauthorized" });
+  it("creates an Err<void> when called without a value", () => {
+    const result = err();
+
+    expect(result.isOk).toBe(false);
+    expect(result.error).toBeUndefined();
+    expectTypeOf(result).toEqualTypeOf<Err<void>>();
   });
 
-  it("keeps the tag type", () => {
-    expectTypeOf(err()).toEqualTypeOf<Err<{ _tag: "Err" }>>();
-    expectTypeOf(err("Unauthorized")).toEqualTypeOf<Err<{ _tag: "Unauthorized" }>>();
+  it("treats an explicit undefined like an empty call", () => {
+    expect(err(undefined).error).toBeUndefined();
+    expectTypeOf(err(undefined)).toEqualTypeOf<Err<undefined>>();
+  });
+
+  it("keeps the type of the wrapped value", () => {
+    expectTypeOf(err(1)).toEqualTypeOf<Err<number>>();
+    expectTypeOf(err("x")).toEqualTypeOf<Err<string>>();
   });
 });
 
@@ -98,7 +107,7 @@ describe("invariant", () => {
   it("falls back to the stringified error when no message is given", () => {
     expect(() => {
       invariant(err("Boom"));
-    }).toThrow('{"_ok":false,"error":{"_tag":"Boom"}}');
+    }).toThrow('{"_ok":false,"error":"Boom"}');
     expect(() => {
       invariant(new Err("boom"));
     }).toThrow('{"_ok":false,"error":"boom"}');

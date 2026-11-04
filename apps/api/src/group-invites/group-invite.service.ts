@@ -1,8 +1,7 @@
-import { ok, type Result } from "@finapp/result";
+import { err, ok, type Result } from "@finapp/result";
 import type { CurrentUser } from "@/identity/current-user";
 import type { UserRepository } from "@/users/user.repository";
 import type { GroupInviteRepository } from "./group-invite.repository";
-import { notFound, type NotFound } from "@/core/errors";
 import type { GroupInvite } from "./group-invites.types";
 
 export const GROUP_INVITE_VALID_DURATION_MS = 24 * 60 * 60 * 1000;
@@ -35,7 +34,7 @@ export class GroupInviteService {
     await this.groupInvites.create(groupId, user.id);
   }
 
-  async acceptInviteToGroup(invitePublicId: string): Promise<Result<void, NotFound>> {
+  async acceptInviteToGroup(invitePublicId: string): Promise<Result> {
     const invite = await this.getInviteByPublicId(invitePublicId);
     if (invite.isErr) return invite;
 
@@ -45,7 +44,7 @@ export class GroupInviteService {
     return ok();
   }
 
-  async declineInviteToGroup(invitePublicId: string): Promise<Result<void, NotFound>> {
+  async declineInviteToGroup(invitePublicId: string): Promise<Result> {
     const invite = await this.getInviteByPublicId(invitePublicId);
     if (invite.isErr) return invite;
 
@@ -61,11 +60,9 @@ export class GroupInviteService {
     return new Date(this.currentTime().getTime() - GROUP_INVITE_VALID_DURATION_MS);
   }
 
-  private async getInviteByPublicId(
-    invitePublicId: string,
-  ): Promise<Result<GroupInvite, NotFound>> {
+  private async getInviteByPublicId(invitePublicId: string): Promise<Result<GroupInvite>> {
     const invite = (await this.getPendingInvites()).find((i) => i.publicId == invitePublicId);
-    if (!invite) return notFound("groupInvite", invitePublicId);
+    if (!invite) return err();
     return ok(invite);
   }
 }

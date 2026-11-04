@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createRepositoryContainer } from "../test-utils/repository-container";
 import { createDataSeeds } from "../test-utils/seeds";
-import { unwrap, unwrapError } from "../test-utils/unwrap";
+import { unwrap } from "../test-utils/unwrap";
 
 const repos = await createRepositoryContainer();
 const { sources } = repos;
@@ -80,46 +80,40 @@ describe("SourceDrizzleRepository.create", () => {
     expect(created).toEqual(returned);
   });
 
-  it("returns error when group and owner group do not match", async () => {
+  it("returns err when group and owner group do not match", async () => {
     const group = await seedGroup();
     const otherGroup = await seedGroup();
     const owner = await seedUser({ group });
-    const result = await unwrapError(
-      sources.create(otherGroup.id, { name: "Test", ownerEmail: owner.email }),
-    );
+    const result = await sources.create(otherGroup.id, { name: "Test", ownerEmail: owner.email });
 
-    expect(result._tag).toBe("CreateError");
+    expect(result.isErr).toBe(true);
   });
 
-  it("returns error when group and file format group do not match", async () => {
+  it("returns err when group and file format group do not match", async () => {
     const group = await seedGroup();
     const owner = await seedUser({ group });
 
     const otherGroup = await seedGroup();
     const fileFormat = await seedFileFormat({ group: otherGroup });
-    const result = await unwrapError(
-      sources.create(group.id, {
-        name: "Test",
-        ownerEmail: owner.email,
-        fileFormatPublicId: fileFormat.publicId,
-      }),
-    );
+    const result = await sources.create(group.id, {
+      name: "Test",
+      ownerEmail: owner.email,
+      fileFormatPublicId: fileFormat.publicId,
+    });
 
-    expect(result._tag).toBe("CreateError");
+    expect(result.isErr).toBe(true);
   });
 
-  it("returns error when name is duplicate", async () => {
+  it("returns err when name is duplicate", async () => {
     const group = await seedGroup();
     const existing = await seedSource({ group });
 
-    const result = await unwrapError(
-      sources.create(group.id, {
-        name: existing.name,
-        ownerEmail: existing.ownerEmail,
-      }),
-    );
+    const result = await sources.create(group.id, {
+      name: existing.name,
+      ownerEmail: existing.ownerEmail,
+    });
 
-    expect(result._tag).toBe("CreateError");
+    expect(result.isErr).toBe(true);
   });
 });
 
@@ -151,18 +145,16 @@ describe("SourceDrizzleRepository.update", () => {
     });
   });
 
-  it("returns error when name is duplicate", async () => {
+  it("returns err when name is duplicate", async () => {
     const group = await seedGroup();
     const existing = await seedSource({ group });
     const toUpdate = await seedSource({ group });
 
-    const result = await unwrapError(
-      sources.update(group.id, toUpdate.publicId, {
-        name: existing.name,
-      }),
-    );
+    const result = await sources.update(group.id, toUpdate.publicId, {
+      name: existing.name,
+    });
 
-    expect(result._tag).toBe("UpdateError");
+    expect(result.isErr).toBe(true);
   });
 });
 

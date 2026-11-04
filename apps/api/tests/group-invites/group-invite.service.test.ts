@@ -8,7 +8,7 @@ import {
   InMemoryGroupInviteRepository,
   InMemoryUserRepository,
 } from "../test-utils/fake-repositories";
-import { unwrap, unwrapError } from "../test-utils/unwrap";
+import { unwrap } from "../test-utils/unwrap";
 import type { RequestContextData } from "@/middleware/request-context";
 import { createFakeClock } from "../test-utils/fake-clock";
 
@@ -155,25 +155,21 @@ describe("GroupInviteService.acceptInviteToGroup", () => {
     expect(invites.invites).toHaveLength(0);
   });
 
-  it("returns NotFound for an unknown public id", async () => {
+  it("returns err for an unknown public id", async () => {
     const { service } = setup();
 
-    expect(unwrapError(await service.acceptInviteToGroup("unknown-id"))).toEqual({
-      _tag: "NotFound",
-      resource: "groupInvite",
-      id: "unknown-id",
-    });
+    expect((await service.acceptInviteToGroup("unknown-id")).isErr).toBe(true);
   });
 
-  it("returns NotFound for an invite addressed to somebody else", async () => {
+  it("returns err for an invite addressed to somebody else", async () => {
     const { service, invites, requestContext, me } = setup();
     const invite = invites.add({ groupId: 2, userId: me.id + 100 });
 
-    expect(unwrapError(await service.acceptInviteToGroup(invite.publicId))._tag).toBe("NotFound");
+    expect((await service.acceptInviteToGroup(invite.publicId)).isErr).toBe(true);
     expect(requestContext.user?.groupId).toBe(me.groupId);
   });
 
-  it("returns NotFound once the invite has expired", async () => {
+  it("returns err once the invite has expired", async () => {
     const { service, invites, clock, requestContext, other } = setup();
     await service.inviteUserToGroup(other.email);
     const invite = invites.invites[0];
@@ -181,7 +177,7 @@ describe("GroupInviteService.acceptInviteToGroup", () => {
     clock.advance(GROUP_INVITE_VALID_DURATION_MS + HOUR_MS);
 
     requestContext.user = other;
-    expect(unwrapError(await service.acceptInviteToGroup(invite.publicId))._tag).toBe("NotFound");
+    expect((await service.acceptInviteToGroup(invite.publicId)).isErr).toBe(true);
     expect(other.groupId).toBe(2);
   });
 
@@ -193,7 +189,7 @@ describe("GroupInviteService.acceptInviteToGroup", () => {
 
     requestContext.user = other;
     unwrap(await service.acceptInviteToGroup(invite.publicId));
-    expect(unwrapError(await service.acceptInviteToGroup(invite.publicId))._tag).toBe("NotFound");
+    expect((await service.acceptInviteToGroup(invite.publicId)).isErr).toBe(true);
   });
 });
 
@@ -211,14 +207,10 @@ describe("GroupInviteService.declineInviteToGroup", () => {
     expect(other.groupId).toBe(2);
   });
 
-  it("returns NotFound for an unknown public id", async () => {
+  it("returns err for an unknown public id", async () => {
     const { service } = setup();
 
-    expect(unwrapError(await service.declineInviteToGroup("unknown-id"))).toEqual({
-      _tag: "NotFound",
-      resource: "groupInvite",
-      id: "unknown-id",
-    });
+    expect((await service.declineInviteToGroup("unknown-id")).isErr).toBe(true);
   });
 });
 

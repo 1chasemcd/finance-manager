@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { unwrap, unwrapError } from "../test-utils/unwrap";
+import { unwrap } from "../test-utils/unwrap";
 import { createRepositoryContainer } from "../test-utils/repository-container";
 import { createDataSeeds } from "../test-utils/seeds";
 import { createTestD1 } from "../test-utils/d1";
@@ -85,7 +85,7 @@ describe("GroupInviteDrizzleRepository.delete", () => {
   });
 
   it("returns DeleteError when there is nothing to delete", async () => {
-    expect(unwrapError(await groupInvites.delete(4242))._tag).toBe("DeleteError");
+    expect((await groupInvites.delete(4242)).isErr).toBe(true);
   });
 
   it("returns DeleteError when the invite was already deleted", async () => {
@@ -96,7 +96,7 @@ describe("GroupInviteDrizzleRepository.delete", () => {
     if (invite === undefined) throw new Error("expected an invite");
 
     unwrap(await groupInvites.delete(invite.id));
-    expect(unwrapError(await groupInvites.delete(invite.id))._tag).toBe("DeleteError");
+    expect((await groupInvites.delete(invite.id)).isErr).toBe(true);
   });
 });
 

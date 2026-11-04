@@ -1,7 +1,6 @@
-import { ok, type Result } from "@finapp/result";
+import { err, ok, type Result } from "@finapp/result";
 import type { UserRepository } from "./user.repository";
 import type { User } from "./user.types";
-import { type NotFound, type Conflict, notFound, conflict } from "@/core/errors";
 import type { GroupRepository } from "@/groups/group.repository";
 
 interface OnboardUserInput {
@@ -16,12 +15,12 @@ export class UserService {
     private readonly groups: GroupRepository,
   ) {}
 
-  async getUser(subject: string): Promise<Result<User, NotFound>> {
+  async getUser(subject: string): Promise<Result<User>> {
     const result = await this.users.bySubject(subject);
-    return result ? ok(result) : notFound("user", subject);
+    return result ? ok(result) : err();
   }
 
-  async onboardUser(input: OnboardUserInput): Promise<Result<User, Conflict>> {
+  async onboardUser(input: OnboardUserInput): Promise<Result<User>> {
     const group = await this.groups.create();
     const { firstName, lastName } = splitName(input.name);
 
@@ -33,7 +32,7 @@ export class UserService {
       groupId: group.id,
     });
     if (result.isOk) return result;
-    return conflict();
+    return err();
   }
 }
 

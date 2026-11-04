@@ -13,19 +13,11 @@ interface Env {
   TEAM_DOMAIN: string;
 }
 
-interface Unauthorized {
-  _tag: "Unauthorized";
-}
-
-interface BadGateway {
-  _tag: "BadGateway";
-}
-
 type AppJWTPayload = JWTPayload & { sub: string };
 
 export interface IdentityService {
-  jwtVerify(token: string, env: Env): Promise<Result<AppJWTPayload, Unauthorized>>;
-  getIdentity(token: string, env: Env): Promise<Result<CloudflareAccessIdentity, BadGateway>>;
+  jwtVerify(token: string, env: Env): Promise<Result<AppJWTPayload>>;
+  getIdentity(token: string, env: Env): Promise<Result<CloudflareAccessIdentity>>;
 }
 
 export class CloudflareIdentityService implements IdentityService {
@@ -35,7 +27,7 @@ export class CloudflareIdentityService implements IdentityService {
     private readonly logger: Logger,
   ) {}
 
-  async jwtVerify(token: string, env: Env): Promise<Result<AppJWTPayload, Unauthorized>> {
+  async jwtVerify(token: string, env: Env): Promise<Result<AppJWTPayload>> {
     try {
       const url = new URL(`${env.TEAM_DOMAIN}/cdn-cgi/access/certs`);
       this.jwks ??= createRemoteJWKSet(url, { [customFetch]: this.handleFetch });
@@ -50,14 +42,11 @@ export class CloudflareIdentityService implements IdentityService {
       this.logger.warn("JWT verification failure", {
         error: e instanceof Error ? e.message : String(e),
       });
-      return err("Unauthorized");
+      return err();
     }
   }
 
-  async getIdentity(
-    token: string,
-    env: Env,
-  ): Promise<Result<CloudflareAccessIdentity, BadGateway>> {
+  async getIdentity(token: string, env: Env): Promise<Result<CloudflareAccessIdentity>> {
     const url = `${env.TEAM_DOMAIN}/cdn-cgi/access/get-identity`;
 
     try {
@@ -74,7 +63,7 @@ export class CloudflareIdentityService implements IdentityService {
           status: response.status,
           response: await response.text(),
         });
-        return err("BadGateway");
+        return err();
       }
 
       const data = await response.json();
@@ -83,7 +72,7 @@ export class CloudflareIdentityService implements IdentityService {
       this.logger.error("Cloudflare identity endpoint failure", {
         error: e instanceof Error ? e.message : String(e),
       });
-      return err("BadGateway");
+      return err();
     }
   }
 }

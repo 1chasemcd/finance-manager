@@ -1,15 +1,7 @@
-import {
-  conflict,
-  notFound,
-  type Conflict,
-  type CreateError,
-  type NotFound,
-  type UpdateError,
-} from "@/core/errors";
 import type { SourceRepository } from "./source.repository";
-import type { CreateSourceInput, Source, UpdateSourceInput } from "./source.types";
+import type { CreateSourceInput, Source, SourceDetail, UpdateSourceInput } from "./source.types";
 import type { CurrentUser } from "@/identity/current-user";
-import { ok, type Result } from "@finapp/result";
+import { err, type Result } from "@finapp/result";
 
 export class SourceService {
   constructor(
@@ -17,38 +9,35 @@ export class SourceService {
     private readonly currentUser: CurrentUser,
   ) {}
 
-  async getall(): Promise<Source[]> {
+  async all(): Promise<Source[]> {
     const currentUser = this.currentUser.require();
     return this.sources.all(currentUser.groupId);
   }
 
-  async get(publicId: string): Promise<Result<Source, NotFound>> {
+  async get(publicId: string): Promise<SourceDetail | null> {
     const currentUser = this.currentUser.require();
     const result = await this.sources.byPublicId(currentUser.groupId, publicId);
-    if (result) return ok(result);
-    return notFound("source", publicId);
+    return result && { ...result, canDelete: this.canDelete(publicId) };
   }
 
-  create(input: CreateSourceInput): Promise<Result<Source, CreateError>> {
+  create(input: CreateSourceInput): Promise<Result<Source>> {
     const currentUser = this.currentUser.require();
     return this.sources.create(currentUser.groupId, input);
   }
 
-  update(publicId: string, input: UpdateSourceInput): Promise<Result<void, UpdateError>> {
+  update(publicId: string, input: UpdateSourceInput): Promise<Result> {
     const currentUser = this.currentUser.require();
     return this.sources.update(currentUser.groupId, publicId, input);
   }
 
-  async delete(publicId: string): Promise<Result<void, NotFound | Conflict>> {
-    // if (!this.canDelete(publicId))
-    //   return conflict("Cannot delete source when dependent transactions exist.");
+  delete(publicId: string): Promise<Result> {
+    if (!this.canDelete(publicId)) return Promise.resolve(err());
 
     const currentUser = this.currentUser.require();
-    const result = await this.sources.delete(currentUser.groupId, publicId);
-    if (result.isOk) return ok();
+    return this.sources.delete(currentUser.groupId, publicId);
+  }
 
-    const existing = await this.sources.byPublicId(currentUser.groupId, publicId);
-    if (!existing) return notFound("source", publicId);
-    return conflict();
+  private canDelete(publicId: string) {
+    return !!publicId;
   }
 }

@@ -4,7 +4,6 @@ import type { CreateSourceInput, Source, UpdateSourceInput } from "./source.type
 import type { Db } from "@/db/client";
 import { fileFormats, sources, users } from "@/db/schema";
 import { and, eq, exists, SQL, sql } from "drizzle-orm";
-import type { CreateError, DeleteError, UpdateError } from "@/core/errors";
 import { handleSqliteConstraintError } from "@/db/errors";
 
 export class SourceDrizzleRepository implements SourceRepository {
@@ -20,7 +19,7 @@ export class SourceDrizzleRepository implements SourceRepository {
   all(groupId: number): Promise<Source[]> {
     return this.selectSources().where(eq(sources.groupId, groupId));
   }
-  async create(groupId: number, input: CreateSourceInput): Promise<Result<Source, CreateError>> {
+  async create(groupId: number, input: CreateSourceInput): Promise<Result<Source>> {
     const { name, description = null, fileFormatPublicId = null, ownerEmail } = input;
 
     const ownerId = sql<number>`(select ${users.id} from ${users}
@@ -42,7 +41,7 @@ export class SourceDrizzleRepository implements SourceRepository {
         .returning({ publicId: sources.publicId }),
     );
 
-    if (result.isErr || !result.data[0]) return err("CreateError");
+    if (result.isErr || !result.data[0]) return err();
     return ok({
       publicId: result.data[0].publicId,
       name,
@@ -56,7 +55,7 @@ export class SourceDrizzleRepository implements SourceRepository {
     groupId: number,
     publicId: string,
     { ownerEmail, fileFormatPublicId, ...input }: UpdateSourceInput,
-  ): Promise<Result<void, UpdateError>> {
+  ): Promise<Result> {
     let ownerId: SQL<number> | undefined;
     let fileFormatId: SQL<number> | undefined;
 
@@ -87,16 +86,16 @@ export class SourceDrizzleRepository implements SourceRepository {
         ),
     );
 
-    if (result.isErr || result.data.meta.changes != 1) return err("UpdateError");
+    if (result.isErr || result.data.meta.changes != 1) return err();
     return ok();
   }
-  async delete(groupId: number, publicId: string): Promise<Result<void, DeleteError>> {
+  async delete(groupId: number, publicId: string): Promise<Result> {
     const result = await handleSqliteConstraintError(() =>
       this.db
         .delete(sources)
         .where(and(eq(sources.groupId, groupId), eq(sources.publicId, publicId))),
     );
-    if (result.isErr || result.data.meta.changes != 1) return err("DeleteError");
+    if (result.isErr || result.data.meta.changes != 1) return err();
     return ok();
   }
 

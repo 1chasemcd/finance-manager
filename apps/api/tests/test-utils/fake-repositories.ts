@@ -1,6 +1,5 @@
 import { randomUUID } from "node:crypto";
 import { err, ok, type Result } from "@finapp/result";
-import { type CreateError, type DeleteError, type UpdateError } from "@/core/errors";
 import type { GroupInviteRepository } from "@/group-invites/group-invite.repository";
 import type { GroupInvite } from "@/group-invites/group-invites.types";
 import type { GroupRepository } from "@/groups/group.repository";
@@ -28,18 +27,18 @@ export class InMemoryUserRepository implements UserRepository {
     return Promise.resolve(this.find((user) => user.groupId === groupId && user.email === email));
   }
 
-  create(input: CreateUserInput): Promise<Result<User, CreateError>> {
+  create(input: CreateUserInput): Promise<Result<User>> {
     const existing = this.users.find(
       (user) => user.email === input.email || user.subject === input.subject,
     );
-    if (existing !== undefined) return Promise.resolve(err("CreateError"));
+    if (existing !== undefined) return Promise.resolve(err());
 
     return Promise.resolve(ok(this.add(input)));
   }
 
-  update(id: number, input: UpdateUserInput): Promise<Result<void, UpdateError>> {
+  update(id: number, input: UpdateUserInput): Promise<Result> {
     const user = this.users.find((candidate) => candidate.id === id);
-    if (user === undefined) return Promise.resolve(err("UpdateError"));
+    if (user === undefined) return Promise.resolve(err());
 
     if (input.groupId !== undefined) user.groupId = input.groupId;
     return Promise.resolve(ok());
@@ -78,11 +77,11 @@ export class InMemoryGroupInviteRepository implements GroupInviteRepository {
     this.currentTime = currentTime;
   }
 
-  create(groupId: number, userId: number): Promise<Result<GroupInvite, CreateError>> {
+  create(groupId: number, userId: number): Promise<Result<GroupInvite>> {
     const existing = this.invites.find(
       (invite) => invite.groupId === groupId && invite.userId === userId,
     );
-    if (existing !== undefined) return Promise.resolve(err("CreateError"));
+    if (existing !== undefined) return Promise.resolve(err());
 
     const newRow = {
       id: this.nextId,
@@ -100,9 +99,9 @@ export class InMemoryGroupInviteRepository implements GroupInviteRepository {
     return Promise.resolve(this.invites.filter((invite) => invite.userId === userId));
   }
 
-  delete(id: number): Promise<Result<void, DeleteError>> {
+  delete(id: number): Promise<Result> {
     const index = this.invites.findIndex((invite) => invite.id === id);
-    if (index === -1) return Promise.resolve(err("DeleteError"));
+    if (index === -1) return Promise.resolve(err());
     this.invites.splice(index, 1);
     return Promise.resolve(ok());
   }
