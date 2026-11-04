@@ -1,14 +1,15 @@
 import { err, ok, type Result } from "@finapp/result";
-import type { FileFormatRepository } from "./file-format.repository";
-import type { CreateFileFormatInput, FileFormat, UpdateFileFormatInput } from "./file-format.types";
+import type { FileFormat } from "./file-format.types";
 import type { Db } from "@/db/client";
 import { fileFormats } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
+import type { CreateFileFormatInput, UpdateFileFormatInput } from "@finapp/schema";
+import type { FileFormatRepository } from "./file-format.repository";
 
 export class FileFormatDrizzleRepository implements FileFormatRepository {
   constructor(private readonly db: Db) {}
 
-  async byPublicId(groupId: number, publicId: string): Promise<FileFormat | null> {
+  async get(groupId: number, publicId: string): Promise<FileFormat | null> {
     const [result] = await this.db
       .select(this.columns())
       .from(fileFormats)

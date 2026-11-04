@@ -7,12 +7,12 @@ const repos = await createRepositoryContainer();
 const { sources } = repos;
 const { seedGroup, seedUser, seedSource, seedFileFormat } = createDataSeeds(repos);
 
-describe("SourceDrizzleRepository.byPublicId", () => {
+describe("SourceDrizzleRepository.get", () => {
   it("returns source with specified publicId", async () => {
     const group = await seedGroup();
     const created = await seedSource({ group });
 
-    expect(await sources.byPublicId(group.id, created.publicId)).toEqual(created);
+    expect(await sources.get(group.id, created.publicId)).toEqual(created);
   });
 
   it("returns null when source is not within request group", async () => {
@@ -20,11 +20,11 @@ describe("SourceDrizzleRepository.byPublicId", () => {
     const created = await seedSource({ group });
     const otherGroup = await seedGroup();
 
-    expect(await sources.byPublicId(otherGroup.id, created.publicId)).toBeNull();
+    expect(await sources.get(otherGroup.id, created.publicId)).toBeNull();
   });
 
   it("returns null for an unknown groupId and publicId", async () => {
-    expect(await sources.byPublicId(0, "missing")).toBeNull();
+    expect(await sources.get(0, "missing")).toBeNull();
   });
 });
 
@@ -67,7 +67,7 @@ describe("SourceDrizzleRepository.create", () => {
       }),
     );
 
-    const created = await sources.byPublicId(group.id, returned.publicId);
+    const created = await sources.get(group.id, returned.publicId);
 
     expect(created).toMatchObject({
       name: "Bob WF Checking",
@@ -134,7 +134,7 @@ describe("SourceDrizzleRepository.update", () => {
 
     expect(result.isOk).toBe(true);
 
-    const updated = await sources.byPublicId(group.id, source.publicId);
+    const updated = await sources.get(group.id, source.publicId);
 
     expect(updated).toMatchObject({
       name: "Alice WF Checking",

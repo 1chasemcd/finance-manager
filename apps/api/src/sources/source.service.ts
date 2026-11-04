@@ -1,8 +1,8 @@
 import type { CreateSourceInput, UpdateSourceInput } from "@finapp/schema";
-import type { SourceRepository } from "./source.repository";
 import type { Source, SourceDetail } from "./source.types";
 import type { CurrentUser } from "@/identity/current-user";
 import { err, type Result } from "@finapp/result";
+import type { SourceRepository } from "./source.repository";
 
 export class SourceService {
   constructor(
@@ -17,7 +17,7 @@ export class SourceService {
 
   async get(publicId: string): Promise<SourceDetail | null> {
     const currentUser = this.currentUser.require();
-    const result = await this.sources.byPublicId(currentUser.groupId, publicId);
+    const result = await this.sources.get(currentUser.groupId, publicId);
     return result && { ...result, canDelete: this.canDelete(publicId) };
   }
 

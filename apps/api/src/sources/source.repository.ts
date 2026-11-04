@@ -1,11 +1,11 @@
-import type { Result } from "@finapp/result";
-import type { Source } from "./source.types";
+import type { DefaultRepository } from "@/core/types";
 import type { CreateSourceInput, UpdateSourceInput } from "@finapp/schema";
+import type { Source } from "./source.types";
 
-export interface SourceRepository {
-  byPublicId(groupId: number, publicId: string): Promise<Source | null>;
-  all(groupId: number): Promise<Source[]>;
-  create(groupId: number, input: CreateSourceInput): Promise<Result<Source>>;
-  update(groupId: number, publicId: string, input: UpdateSourceInput): Promise<Result>;
-  delete(groupId: number, publicId: string): Promise<Result>;
+export interface SourceRepository extends DefaultRepository<
+  Source,
+  CreateSourceInput,
+  UpdateSourceInput
+> {
+  getByFileFormat(groupId: number, fileFormatPublicId: string): Promise<Source[]>;
 }

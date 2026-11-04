@@ -1,10 +1,9 @@
-import type { Result } from "@finapp/result";
-import type { CreateFileFormatInput, FileFormat, UpdateFileFormatInput } from "./file-format.types";
+import type { DefaultRepository } from "@/core/types";
+import type { FileFormat } from "./file-format.types";
+import type { CreateFileFormatInput, UpdateFileFormatInput } from "@finapp/schema";
 
-export interface FileFormatRepository {
-  byPublicId(groupId: number, publicId: string): Promise<FileFormat | null>;
-  all(groupId: number): Promise<FileFormat[]>;
-  create(groupId: number, input: CreateFileFormatInput): Promise<Result<FileFormat>>;
-  update(groupId: number, publicId: string, input: UpdateFileFormatInput): Promise<Result>;
-  delete(groupId: number, publicId: string): Promise<Result>;
-}
+export type FileFormatRepository = DefaultRepository<
+  FileFormat,
+  CreateFileFormatInput,
+  UpdateFileFormatInput
+>;

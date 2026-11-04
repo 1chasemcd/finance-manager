@@ -1,20 +1,34 @@
 import { err, ok, type Result } from "@finapp/result";
-import type { SourceRepository } from "./source.repository";
 import type { Source } from "./source.types";
 import type { Db } from "@/db/client";
 import { fileFormats, sources, users } from "@/db/schema";
-import { and, eq, exists, SQL, sql } from "drizzle-orm";
+import { and, eq, exists, SQL, sql, isNotNull } from "drizzle-orm";
 import { handleSqliteConstraintError } from "@/db/errors";
 import type { CreateSourceInput, UpdateSourceInput } from "@finapp/schema";
+import type { SourceRepository } from "./source.repository";
 
 export class SourceDrizzleRepository implements SourceRepository {
   constructor(private readonly db: Db) {}
 
-  async byPublicId(groupId: number, publicId: string): Promise<Source | null> {
+  async get(groupId: number, publicId: string): Promise<Source | null> {
     const [result] = await this.selectSources()
       .where(and(eq(sources.groupId, groupId), eq(sources.publicId, publicId)))
       .limit(1);
     return result ?? null;
+  }
+
+  getByFileFormat(groupId: number, fileFormatPublicId: string): Promise<Source[]> {
+    const fileFormatId = sql<number>`(select ${fileFormats.id} from ${fileFormats} 
+          where ${fileFormats.groupId} = ${groupId} 
+          and ${fileFormats.publicId} = ${fileFormatPublicId})`;
+
+    return this.selectSources().where(
+      and(
+        eq(sources.groupId, groupId),
+        isNotNull(sources.fileFormatId),
+        eq(sources.fileFormatId, fileFormatId),
+      ),
+    );
   }
 
   all(groupId: number): Promise<Source[]> {

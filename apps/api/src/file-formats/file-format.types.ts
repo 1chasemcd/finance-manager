@@ -1,5 +1,3 @@
-import type { Optional } from "@/core/types";
-
 export interface FileFormat {
   publicId: string;
   name: string;
@@ -12,15 +10,6 @@ export interface FileFormat {
   positiveIsSpending: boolean;
 }
 
-export interface CreateFileFormatInput {
-  name: string;
-  skipRows: number;
-  rowPattern?: string | null | undefined;
-  dateIndex: number;
-  summaryIndex: number;
-  amountIndex: number;
-  dateFormat?: string | null | undefined;
-  positiveIsSpending: boolean;
+export interface FileFormatDetail extends FileFormat {
+  canDelete: boolean;
 }
-
-export type UpdateFileFormatInput = Optional<CreateFileFormatInput>;

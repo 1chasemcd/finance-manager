@@ -47,8 +47,8 @@ export function useSendInvite() {
 export function useAcceptInvite() {
   const invalidateAccountInfo = useInvalidateAccountInfo();
   return useMutation({
-    mutationFn: async (inviteId: string) => {
-      const res = await api.account.invite[":inviteId"].accept.$post({ param: { inviteId } });
+    mutationFn: async (id: string) => {
+      const res = await api.account.invite[":id"].accept.$post({ param: { id } });
       ensureOk(res);
     },
     onSuccess: invalidateAccountInfo,
@@ -58,8 +58,8 @@ export function useAcceptInvite() {
 export function useDeclineInvite() {
   const invalidateAccountInfo = useInvalidateAccountInfo();
   return useMutation({
-    mutationFn: async (inviteId: string) => {
-      const res = await api.account.invite[":inviteId"].decline.$post({ param: { inviteId } });
+    mutationFn: async (id: string) => {
+      const res = await api.account.invite[":id"].decline.$post({ param: { id } });
       ensureOk(res);
     },
     onSuccess: invalidateAccountInfo,

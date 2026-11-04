@@ -4,8 +4,6 @@ import { FileFormatDrizzleRepository } from "@/file-formats/file-format.drizzle-
 import { UserDrizzleRepository } from "@/users/user.drizzle-repository";
 import { GroupDrizzleRepository } from "@/groups/group.drizzle-repository";
 import { beforeEach } from "vitest";
-import type { SourceRepository } from "@/sources/source.repository";
-import type { FileFormatRepository } from "@/file-formats/file-format.repository";
 import type { UserRepository } from "@/users/user.repository";
 import type { GroupRepository } from "@/groups/group.repository";
 import type { GroupInviteRepository } from "@/group-invites/group-invite.repository";
@@ -16,6 +14,8 @@ import {
   InMemoryUserRepository,
 } from "./fake-repositories";
 import { createTestD1 } from "./d1";
+import type { FileFormatRepository } from "@/file-formats/file-format.repository";
+import type { SourceRepository } from "@/sources/source.repository";
 
 export interface RepositoryContainer {
   groups: GroupRepository;
