@@ -6,6 +6,10 @@ import type { GroupRepository } from "@/groups/group.repository";
 import type { Group } from "@/groups/group.types";
 import type { CreateUserInput, UpdateUserInput, User } from "@/users/user.types";
 import type { UserRepository } from "@/users/user.repository";
+import type { Optional } from "@/core/types";
+import type { Source } from "@/sources/source.types";
+import type { CreateSourceInput, UpdateSourceInput } from "@finapp/schema";
+import type { SourceRepository } from "@/sources/source.repository";
 
 export class InMemoryUserRepository implements UserRepository {
   readonly users: User[] = [];
@@ -126,4 +130,96 @@ export class InMemoryGroupInviteRepository implements GroupInviteRepository {
     this.invites.push(invite);
     return invite;
   }
+}
+
+type NullsOptional<T> = {
+  [K in keyof T as null extends T[K] ? K : never]?: T[K] | undefined;
+} & {
+  [K in keyof T as null extends T[K] ? never : K]: T[K];
+};
+
+function undefinedToNull<T extends object>(obj: NullsOptional<T>): T {
+  return Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => [key, value === undefined ? null : value]),
+  ) as T;
+}
+
+interface Entity {
+  publicId: string;
+}
+
+type WithGroup<T> = T & { groupId: number };
+
+function withoutGroupId<T>(entity: WithGroup<T>): T {
+  const { groupId: _, ...rest } = entity;
+  return rest as T;
+}
+
+function getCapability<T extends Entity>(records: WithGroup<T>[]) {
+  return (groupId: number, publicId: string): Promise<T | null> => {
+    const found = records.find((x) => x.groupId === groupId && x.publicId === publicId);
+    return Promise.resolve(found ? withoutGroupId(found) : null);
+  };
+}
+
+function allCapability<T extends Entity>(records: WithGroup<T>[]) {
+  return (groupId: number): Promise<T[]> => {
+    return Promise.resolve(records.filter((x) => x.groupId === groupId).map(withoutGroupId));
+  };
+}
+
+function createCapability<T extends Entity, CreateType>(
+  records: WithGroup<T>[],
+  mapper: (input: CreateType) => NullsOptional<Omit<T, "publicId">>,
+) {
+  return (groupId: number, input: CreateType): Promise<Result<T>> => {
+    const toInsert = {
+      publicId: crypto.randomUUID(),
+      groupId,
+      ...undefinedToNull(mapper(input)),
+    } as WithGroup<T>;
+    records.push(toInsert);
+    return Promise.resolve(ok(toInsert));
+  };
+}
+
+function updateCapability<T extends Entity, UpdateType>(
+  records: WithGroup<T>[],
+  mapper: (input: UpdateType) => Optional<Omit<T, "publicId">>,
+) {
+  return (groupId: number, publicId: string, input: UpdateType): Promise<Result> => {
+    const toUpdate = records.find((x) => x.groupId === groupId && x.publicId === publicId);
+    if (!toUpdate) return Promise.resolve(err());
+    Object.assign(toUpdate, mapper(input));
+    return Promise.resolve(ok());
+  };
+}
+
+function deleteCapability<T extends Entity>(records: WithGroup<T>[]) {
+  return (groupId: number, publicId: string): Promise<Result> => {
+    const toDelete = records.findIndex((x) => x.groupId === groupId && x.publicId === publicId);
+    if (toDelete === -1) return Promise.resolve(err());
+    records.splice(toDelete, 1);
+    return Promise.resolve(ok());
+  };
+}
+
+export function createInMemorySourceRepository(): SourceRepository {
+  const records: WithGroup<Source>[] = [];
+  return {
+    getByFileFormat: (groupId, fileFormatPublicId) =>
+      Promise.resolve(
+        records
+          .filter((x) => x.groupId === groupId && x.fileFormatPublicId === fileFormatPublicId)
+          .map(withoutGroupId),
+      ),
+    get: getCapability(records),
+    all: allCapability(records),
+    create: createCapability(records, (input: CreateSourceInput) => ({
+      ...input,
+      archived: false,
+    })),
+    update: updateCapability(records, (source: UpdateSourceInput) => source),
+    delete: deleteCapability(records),
+  };
 }
