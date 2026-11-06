@@ -9,6 +9,8 @@ import type { GroupRepository } from "@/groups/group.repository";
 import type { GroupInviteRepository } from "@/group-invites/group-invite.repository";
 import { GroupInviteDrizzleRepository } from "@/group-invites/group-invite.drizzle-repository";
 import {
+  createInMemoryFileFormatRepository,
+  createInMemorySourceRepository,
   InMemoryGroupInviteRepository,
   InMemoryGroupRepository,
   InMemoryUserRepository,
@@ -39,15 +41,25 @@ export async function createRepositoryContainer(d1?: D1Database): Promise<Reposi
 }
 
 export function createFakeRepositoryContainer(): RepositoryContainer {
-  const repos = {} as RepositoryContainer;
+  const groups = new InMemoryGroupRepository();
+  const groupInvites = new InMemoryGroupInviteRepository();
+  const users = new InMemoryUserRepository();
+  const fileFormats = createInMemoryFileFormatRepository();
+  const sources = createInMemorySourceRepository(users, fileFormats);
 
   beforeEach(() => {
-    repos.groups = new InMemoryGroupRepository();
-    repos.groupInvites = new InMemoryGroupInviteRepository();
-    repos.users = new InMemoryUserRepository();
-    // fileFormats = new InMemoryFileFormatRepository();
-    // sources = new InMemorySourceRepository();
+    groups.groups.length = 0;
+    groupInvites.invites.length = 0;
+    users.users.length = 0;
+    fileFormats.records.length = 0;
+    sources.records.length = 0;
   });
 
-  return repos;
+  return {
+    groups,
+    groupInvites,
+    users,
+    fileFormats,
+    sources,
+  };
 }

@@ -44,17 +44,16 @@ export function createDataSeeds(repos: RepositoryContainer) {
         }),
       );
     },
-    seedSource: async (data: { group?: Group; user?: User; fileFormat?: FileFormat } = {}) => {
-      data.group ??= await seeds.seedGroup();
-      data.user ??= await seeds.seedUser(data);
-      data.fileFormat ??= await seeds.seedFileFormat(data);
+    seedSource: async (data: { group?: Group } | { user?: User; fileFormat?: FileFormat } = {}) => {
+      const user = "user" in data ? data.user : await seeds.seedUser("group" in data ? data : {});
+      const fileFormat = "fileFormat" in data ? data.fileFormat : undefined;
 
       const index = String(counter++);
       return unwrap(
-        await repos.sources.create(data.group.id, {
+        await repos.sources.create(user.groupId, {
           name: `formatter-${index}`,
-          ownerEmail: data.user.email,
-          fileFormatPublicId: data.fileFormat.publicId,
+          ownerId: user.id,
+          fileFormatId: fileFormat?.id,
         }),
       );
     },

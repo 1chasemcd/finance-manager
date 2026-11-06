@@ -1,135 +1,63 @@
 import { err, ok, type Result } from "@finapp/result";
-import type { Source } from "./source.types";
+import type { CreateSourceInput, Source, SourceDetail, UpdateSourceInput } from "./source.types";
 import type { Db } from "@/db/client";
-import { fileFormats, sources, users } from "@/db/schema";
-import { and, eq, exists, SQL, sql, isNotNull } from "drizzle-orm";
+import { sources } from "@/db/schema";
+import { and, eq } from "drizzle-orm";
 import { handleSqliteConstraintError } from "@/db/errors";
-import type { CreateSourceInput, UpdateSourceInput } from "@finapp/schema";
 import type { SourceRepository } from "./source.repository";
 
 export class SourceDrizzleRepository implements SourceRepository {
   constructor(private readonly db: Db) {}
 
-  async get(groupId: number, publicId: string): Promise<Source | null> {
-    const [result] = await this.selectSources()
-      .where(and(eq(sources.groupId, groupId), eq(sources.publicId, publicId)))
-      .limit(1);
-    return result ?? null;
+  byPublicId(groupId: number, publicId: string): Promise<SourceDetail | undefined> {
+    return this.db.query.sources.findFirst({
+      columns: {
+        ownerId: false,
+        fileFormatId: false,
+      },
+      where: { groupId, publicId },
+      with: { owner: true, fileFormat: true },
+    });
   }
 
-  getByFileFormat(groupId: number, fileFormatPublicId: string): Promise<Source[]> {
-    const fileFormatId = sql<number>`(select ${fileFormats.id} from ${fileFormats} 
-          where ${fileFormats.groupId} = ${groupId} 
-          and ${fileFormats.publicId} = ${fileFormatPublicId})`;
-
-    return this.selectSources().where(
-      and(
-        eq(sources.groupId, groupId),
-        isNotNull(sources.fileFormatId),
-        eq(sources.fileFormatId, fileFormatId),
-      ),
-    );
+  byFileFormat(groupId: number, fileFormatId: number): Promise<Source[]> {
+    return this.db.query.sources.findMany({
+      where: { groupId, fileFormatId },
+    });
   }
 
   all(groupId: number): Promise<Source[]> {
-    return this.selectSources().where(eq(sources.groupId, groupId));
+    return this.db.query.sources.findMany({ where: { groupId } });
   }
+
   async create(groupId: number, input: CreateSourceInput): Promise<Result<Source>> {
-    const { name, description = null, fileFormatPublicId = null, ownerEmail } = input;
-
-    const ownerId = sql<number>`(select ${users.id} from ${users}
-      where ${users.groupId} = ${groupId} 
-      and ${users.email} = ${ownerEmail})`;
-    const fileFormatId = fileFormatPublicId
-      ? sql<number>`COALESCE(
-        (select ${fileFormats.id} from ${fileFormats} 
-          where ${fileFormats.groupId} = ${groupId} 
-          and ${fileFormats.publicId} = ${fileFormatPublicId}), 
-        0
-      )`
-      : undefined;
-
     const result = await handleSqliteConstraintError(() =>
       this.db
         .insert(sources)
-        .values({ groupId, name, description, ownerId, fileFormatId })
-        .returning({ publicId: sources.publicId }),
+        .values({ groupId, ...input })
+        .returning(),
     );
 
     if (result.isErr || !result.data[0]) return err();
-    return ok({
-      publicId: result.data[0].publicId,
-      name,
-      description,
-      ownerEmail,
-      fileFormatPublicId,
-      archived: false,
-    });
+    return ok(result.data[0]);
   }
-  async update(
-    groupId: number,
-    publicId: string,
-    { ownerEmail, fileFormatPublicId, ...input }: UpdateSourceInput,
-  ): Promise<Result> {
-    let ownerId: SQL<number> | undefined;
-    let fileFormatId: SQL<number> | undefined;
 
-    if (ownerEmail)
-      ownerId = sql`(select ${users.id} from ${users} 
-        where ${users.groupId} = ${groupId} 
-        and ${users.email} = ${ownerEmail})`;
-    if (fileFormatPublicId)
-      fileFormatId = sql`(select ${fileFormats.id} from ${fileFormats} 
-          where ${fileFormats.groupId} = ${groupId} 
-          and ${fileFormats.publicId} = ${fileFormatPublicId})`;
-
+  async update(groupId: number, id: number, input: UpdateSourceInput): Promise<Result> {
     const result = await handleSqliteConstraintError(() =>
       this.db
         .update(sources)
-        .set({
-          ...input,
-          ownerId,
-          fileFormatId,
-        })
-        .where(
-          and(
-            eq(sources.groupId, groupId),
-            eq(sources.publicId, publicId),
-            ownerId ? exists(ownerId) : undefined,
-            fileFormatId ? exists(fileFormatId) : undefined,
-          ),
-        ),
+        .set(input)
+        .where(and(eq(sources.groupId, groupId), eq(sources.id, id))),
     );
 
     if (result.isErr || result.data.meta.changes != 1) return err();
     return ok();
   }
-  async delete(groupId: number, publicId: string): Promise<Result> {
+  async delete(groupId: number, id: number): Promise<Result> {
     const result = await handleSqliteConstraintError(() =>
-      this.db
-        .delete(sources)
-        .where(and(eq(sources.groupId, groupId), eq(sources.publicId, publicId))),
+      this.db.delete(sources).where(and(eq(sources.groupId, groupId), eq(sources.id, id))),
     );
     if (result.isErr || result.data.meta.changes != 1) return err();
     return ok();
-  }
-
-  private columns() {
-    return {
-      publicId: sources.publicId,
-      name: sources.name,
-      description: sources.description,
-      archived: sources.archived,
-      ownerEmail: users.email,
-      fileFormatPublicId: fileFormats.publicId.as("fileFormatPublicId"),
-    };
-  }
-
-  private selectSources() {
-    return this.db
-      .select(this.columns())
-      .from(sources)
-      .innerJoin(users, eq(sources.ownerId, users.id))
-      .innerJoin(fileFormats, eq(sources.fileFormatId, fileFormats.id));
   }
 }

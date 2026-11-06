@@ -14,8 +14,8 @@ describe("UserDrizzleRepository.bySubject", () => {
     expect(await users.bySubject(created.subject)).toEqual(created);
   });
 
-  it("returns null for an unknown subject", async () => {
-    expect(await users.bySubject("missing")).toBeNull();
+  it("returns undefined for an unknown subject", async () => {
+    expect(await users.bySubject("missing")).toBeUndefined();
   });
 });
 
@@ -26,8 +26,8 @@ describe("UserDrizzleRepository.byEmail", () => {
     expect(await users.byEmail(created.email)).toEqual(created);
   });
 
-  it("returns null for an unknown email", async () => {
-    expect(await users.byEmail("missing@example.com")).toBeNull();
+  it("returns undefined for an unknown email", async () => {
+    expect(await users.byEmail("missing@example.com")).toBeUndefined();
   });
 });
 
@@ -66,53 +66,55 @@ describe("UserDrizzleRepository.create", () => {
     expect(await users.byEmail("jane@example.com")).toEqual(created);
   });
 
-  // it("returns CreateError when the email is already taken", async () => {
-  //   const group = await groups.create();
-  //   unwrap(
-  //     await users.create({
-  //       email: "jane@example.com",
-  //       firstName: "Jane",
-  //       lastName: "Doe",
-  //       subject: "subject-1",
-  //       groupId: group.id,
-  //     }),
-  //   );
+  it("returns err when the email is already taken", async () => {
+    const group = await groups.create();
+    unwrap(
+      await users.create({
+        email: "jane@example.com",
+        firstName: "Jane",
+        lastName: "Doe",
+        subject: "subject-1",
+        groupId: group.id,
+      }),
+    );
 
-  //   expect(
-  //     async () =>
-  //       await users.create({
-  //         email: "jane@example.com",
-  //         firstName: "Other",
-  //         lastName: "Person",
-  //         subject: "subject-2",
-  //         groupId: group.id,
-  //       }),
-  //   ).toThrow();
-  // });
+    expect(
+      (
+        await users.create({
+          email: "jane@example.com",
+          firstName: "Other",
+          lastName: "Person",
+          subject: "subject-2",
+          groupId: group.id,
+        })
+      ).isErr,
+    ).toBe(true);
+  });
 
-  // it("returns CreateError when the subject is already taken", async () => {
-  //   const group = await groups.create();
-  //   unwrap(
-  //     await users.create({
-  //       email: "jane@example.com",
-  //       firstName: "Jane",
-  //       lastName: "Doe",
-  //       subject: "subject-1",
-  //       groupId: group.id,
-  //     }),
-  //   );
+  it("returns err when the subject is already taken", async () => {
+    const group = await groups.create();
+    unwrap(
+      await users.create({
+        email: "jane@example.com",
+        firstName: "Jane",
+        lastName: "Doe",
+        subject: "subject-1",
+        groupId: group.id,
+      }),
+    );
 
-  //   expect(
-  //     async () =>
-  //       await users.create({
-  //         email: "other@example.com",
-  //         firstName: "Other",
-  //         lastName: "Person",
-  //         subject: "subject-1",
-  //         groupId: group.id,
-  //       }),
-  //   ).toThrow();
-  // });
+    expect(
+      (
+        await users.create({
+          email: "other@example.com",
+          firstName: "Other",
+          lastName: "Person",
+          subject: "subject-1",
+          groupId: group.id,
+        })
+      ).isErr,
+    ).toBe(true);
+  });
 });
 
 describe("UserDrizzleRepository.update", () => {

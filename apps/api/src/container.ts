@@ -14,6 +14,7 @@ import { createLogger } from "./core/logger";
 import { createDb } from "./db/client";
 import { SourceDrizzleRepository } from "./sources/source.drizzle-repository";
 import { SourceService } from "./sources/source.service";
+import { FileFormatDrizzleRepository } from "./file-formats/file-format.drizzle-repository";
 
 export function createContainer(env: Cloudflare.Env) {
   const db = createDb(env.DB);
@@ -26,6 +27,7 @@ export function createContainer(env: Cloudflare.Env) {
   const userRepository = new UserDrizzleRepository(db);
   const groupRepository = new GroupDrizzleRepository(db);
   const groupInviteRepository = new GroupInviteDrizzleRepository(db);
+  const fileFormatRepository = new FileFormatDrizzleRepository(db);
   const sourceRepository = new SourceDrizzleRepository(db);
 
   const groupInviteService = new GroupInviteService(
@@ -37,7 +39,12 @@ export function createContainer(env: Cloudflare.Env) {
 
   const accountService = new AccountService(userRepository, groupInviteService, currentUser);
   const userService = new UserService(userRepository, groupRepository);
-  const sourceService = new SourceService(sourceRepository, currentUser);
+  const sourceService = new SourceService(
+    sourceRepository,
+    userRepository,
+    fileFormatRepository,
+    currentUser,
+  );
 
   const identityService: IdentityService = new CloudflareIdentityService(fetchHandler, logger);
 
