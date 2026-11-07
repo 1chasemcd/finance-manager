@@ -33,7 +33,7 @@ export class SourceService {
         description: result.description,
         archived: result.archived,
         ownerEmail: result.owner.email,
-        fileFormatPublicId: result.fileFormat?.publicId ?? null,
+        fileFormatId: result.fileFormat?.publicId ?? null,
         canDelete: this.canDelete(result.id),
       }
     );
@@ -108,9 +108,10 @@ export class SourceService {
 }
 
 function toResponse(source: Source): SourceResponse {
-  const { id: _x, publicId, ...values } = source;
   return {
-    ...values,
-    id: publicId,
+    id: source.publicId,
+    name: source.name,
+    description: source.description,
+    archived: source.archived,
   };
 }

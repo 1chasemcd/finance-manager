@@ -46,5 +46,5 @@ export interface SourceDetailResponse {
   archived: boolean;
   canDelete: boolean;
   ownerEmail: string;
-  fileFormatPublicId: string | null;
+  fileFormatId: string | null;
 }

@@ -7,10 +7,10 @@ import type { GroupRepository } from "@/groups/group.repository";
 import type { Group } from "@/groups/group.types";
 import type { CreateUserInput, UpdateUserInput, User } from "@/users/user.types";
 import type { UserRepository } from "@/users/user.repository";
-import type { Source } from "@/sources/source.types";
+import type { CreateSourceInput, Source, UpdateSourceInput } from "@/sources/source.types";
 import type { SourceRepository } from "@/sources/source.repository";
 import type { FileFormatRepository } from "@/file-formats/file-format.repository";
-import type { FileFormat } from "@/file-formats/file-format.types";
+import type { FileFormat, WriteFileFormatInput } from "@/file-formats/file-format.types";
 
 export class InMemoryUserRepository implements UserRepository {
   readonly users: User[] = [];
@@ -131,18 +131,6 @@ export class InMemoryGroupInviteRepository implements GroupInviteRepository {
   }
 }
 
-type NullsOptional<T> = {
-  [K in keyof T as null extends T[K] ? K : never]?: T[K] | undefined;
-} & {
-  [K in keyof T as null extends T[K] ? never : K]: T[K];
-};
-
-function undefinedToNull<T extends object>(obj: NullsOptional<T>): T {
-  return Object.fromEntries(
-    Object.entries(obj).map(([key, value]) => [key, value === undefined ? null : value]),
-  ) as T;
-}
-
 interface Entity {
   id: number;
   publicId: string;
@@ -183,12 +171,12 @@ function allCapability<T extends Entity>(records: WithGroup<T>[]) {
 
 function createCapability<T extends Entity, CreateType>(
   records: WithGroup<T>[],
-  mapper: (input: CreateType) => NullsOptional<OmitEntity<T>>,
+  mapper: (input: CreateType) => OmitEntity<T>,
 ) {
   let nextId = 1;
   return (groupId: number, input: CreateType): Promise<Result<T>> => {
     const toInsert = {
-      ...undefinedToNull(mapper(input)),
+      ...mapper(input),
       id: nextId++,
       groupId,
       publicId: crypto.randomUUID(),
@@ -200,13 +188,13 @@ function createCapability<T extends Entity, CreateType>(
 
 function updateCapability<T extends Entity, UpdateType>(
   records: WithGroup<T>[],
-  mapper: (input: UpdateType) => NullsOptional<OmitEntity<T>>,
+  mapper: (input: UpdateType) => OmitEntity<T>,
 ) {
   return (groupId: number, id: number, input: UpdateType): Promise<Result> => {
     const toUpdate = records.find((x) => x.groupId === groupId && x.id === id);
     if (!toUpdate) return Promise.resolve(err());
 
-    Object.assign(toUpdate, undefinedToNull(mapper(input)));
+    Object.assign(toUpdate, mapper(input));
     return Promise.resolve(ok());
   };
 }
@@ -227,12 +215,18 @@ interface InMemoryFileFormatRepository extends FileFormatRepository {
 export function createInMemoryFileFormatRepository(): InMemoryFileFormatRepository {
   const records: WithGroup<FileFormat>[] = [];
 
+  const mapper = (input: WriteFileFormatInput) => ({
+    ...input,
+    rowPattern: input.rowPattern ?? null,
+    dateFormat: input.dateFormat ?? null,
+  });
+
   return {
     records,
     byPublicId: byPublicIdCapability(records),
     all: allCapability(records),
-    create: createCapability(records, (input) => input),
-    update: updateCapability(records, (input) => input),
+    create: createCapability(records, mapper),
+    update: updateCapability(records, mapper),
     delete: deleteCapability(records),
   };
 }
@@ -256,6 +250,13 @@ export function createInMemorySourceRepository(
     return { owner, fileFormat, ...rest };
   };
 
+  const writeMapper = (input: CreateSourceInput | UpdateSourceInput) => ({
+    ...input,
+    description: input.description ?? null,
+    fileFormatId: input.fileFormatId ?? null,
+    archived: "archived" in input ? input.archived : false,
+  });
+
   return {
     records,
     byFileFormat: (groupId, fileFormatId) =>
@@ -266,8 +267,8 @@ export function createInMemorySourceRepository(
       ),
     byPublicId: byPublicIdCapability(records, mapper),
     all: allCapability(records),
-    create: createCapability(records, (input) => ({ ...input, archived: false })),
-    update: updateCapability(records, (input) => input),
+    create: createCapability(records, writeMapper),
+    update: updateCapability(records, writeMapper),
     delete: deleteCapability(records),
   };
 }
