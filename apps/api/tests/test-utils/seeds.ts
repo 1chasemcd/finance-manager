@@ -35,7 +35,7 @@ export function createDataSeeds(repos: RepositoryContainer) {
       const index = String(counter++);
       return unwrap(
         await repos.fileFormats.create(data.group.id, {
-          name: `formatter-${index}`,
+          name: `format-${index}`,
           skipRows: 0,
           dateIndex: 0,
           summaryIndex: 0,
@@ -51,7 +51,7 @@ export function createDataSeeds(repos: RepositoryContainer) {
       const index = String(counter++);
       return unwrap(
         await repos.sources.create(user.groupId, {
-          name: `formatter-${index}`,
+          name: `source-${index}`,
           ownerId: user.id,
           fileFormatId: fileFormat?.id,
         }),

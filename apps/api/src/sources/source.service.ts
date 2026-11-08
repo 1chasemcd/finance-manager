@@ -40,12 +40,13 @@ export class SourceService {
   }
 
   async create(request: CreateSourceRequest): Promise<Result<SourceResponse, NotFound | Conflict>> {
+    const { ownerEmail, fileFormatId, ...fields } = request;
     const groupId = this.currentUser.require().groupId;
 
-    const relations = await this.loadRelations(request);
+    const relations = await this.loadRelations({ ownerEmail, fileFormatId });
     if (relations.isErr) return relations;
 
-    const result = await this.sources.create(groupId, { ...request, ...relations.data });
+    const result = await this.sources.create(groupId, { ...fields, ...relations.data });
     if (result.isErr) return err("Conflict");
 
     return result.map(toResponse);
@@ -55,16 +56,18 @@ export class SourceService {
     publicId: string,
     request: UpdateSourceRequest,
   ): Promise<Result<void, NotFound | Conflict>> {
+    const { ownerEmail, fileFormatId, ...fields } = request;
+
     const groupId = this.currentUser.require().groupId;
 
     const toUpdate = await this.sources.byPublicId(groupId, publicId);
     if (!toUpdate) return err("NotFound");
 
-    const relations = await this.loadRelations(request);
+    const relations = await this.loadRelations({ ownerEmail, fileFormatId });
     if (relations.isErr) return relations;
 
     const result = await this.sources.update(groupId, toUpdate.id, {
-      ...request,
+      ...fields,
       ...relations.data,
     });
 

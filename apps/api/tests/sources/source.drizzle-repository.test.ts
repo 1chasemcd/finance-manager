@@ -11,15 +11,18 @@ describe("SourceDrizzleRepository.byPublicId", () => {
   it("returns source with specified publicId", async () => {
     const group = await seedGroup();
     const fileFormat = await seedFileFormat({ group });
-    const owner = await seedUser({ group });
-    const { ownerId, fileFormatId, ...source } = await seedSource({ user: owner, fileFormat });
-    const expected = {
-      ...source,
-      owner,
-      fileFormat,
-    };
+    const user = await seedUser({ group });
+    const source = await seedSource({ user, fileFormat });
 
-    expect(await sources.byPublicId(group.id, source.publicId)).toEqual(expected);
+    expect(await sources.byPublicId(group.id, source.publicId)).toEqual({
+      id: source.id,
+      publicId: source.publicId,
+      name: source.name,
+      description: null,
+      archived: false,
+      owner: user,
+      fileFormat,
+    });
   });
 
   it("returns undefined when source is not within request group", async () => {
@@ -61,30 +64,46 @@ describe("SourceDrizzleRepository.all", () => {
 
 describe("SourceDrizzleRepository.create", () => {
   it("adds source to db and returns same source", async () => {
+    const name = "Bob WF Checking";
+    const description = "Bob's Wells Fargo Checking Account";
+
     const group = await seedGroup();
     const owner = await seedUser({ group });
     const fileFormat = await seedFileFormat({ group });
 
     const returned = await unwrap(
       sources.create(group.id, {
-        name: "Bob WF Checking",
-        description: "Bob's Wells Fargo Checking Account",
+        name,
+        description,
         ownerId: owner.id,
         fileFormatId: fileFormat.id,
       }),
     );
 
-    const created = (await sources.all(group.id)).find((x) => x.id === returned.id);
+    const created = await sources.byPublicId(group.id, returned.publicId);
 
-    expect(created).toMatchObject({
-      name: "Bob WF Checking",
-      description: "Bob's Wells Fargo Checking Account",
+    expect(returned.publicId.length).greaterThan(0);
+    expect(returned.id).greaterThan(0);
+
+    expect(returned).toEqual({
+      id: returned.id,
+      publicId: returned.publicId,
+      name,
+      description,
       ownerId: owner.id,
       fileFormatId: fileFormat.id,
       archived: false,
     });
-    expect(created?.publicId.length).greaterThan(0);
-    expect(created).toEqual(returned);
+
+    expect(created).toEqual({
+      id: returned.id,
+      publicId: returned.publicId,
+      name,
+      description,
+      owner,
+      fileFormat,
+      archived: false,
+    });
   });
 
   it("returns err when group and owner group do not match", async () => {
@@ -126,14 +145,17 @@ describe("SourceDrizzleRepository.create", () => {
 
 describe("SourceDrizzleRepository.update", () => {
   it("updates source", async () => {
+    const name = "Alice WF Checking";
+    const description = "Alice's Wells Fargo Checking Account";
+
     const group = await seedGroup();
     const owner = await seedUser({ group });
     const fileFormat = await seedFileFormat({ group });
     const source = await seedSource({ group });
 
     const result = await sources.update(group.id, source.id, {
-      name: "Alice WF Checking",
-      description: "Alice's Wells Fargo Checking Account",
+      name,
+      description,
       ownerId: owner.id,
       fileFormatId: fileFormat.id,
       archived: true,
@@ -141,13 +163,15 @@ describe("SourceDrizzleRepository.update", () => {
 
     expect(result.isOk).toBe(true);
 
-    const updated = (await sources.all(group.id)).find((x) => x.id === source.id);
+    const updated = await sources.byPublicId(group.id, source.publicId);
 
     expect(updated).toMatchObject({
-      name: "Alice WF Checking",
-      description: "Alice's Wells Fargo Checking Account",
-      ownerId: owner.id,
-      fileFormatId: fileFormat.id,
+      id: source.id,
+      publicId: source.publicId,
+      name,
+      description,
+      owner,
+      fileFormat,
       archived: true,
     });
   });

@@ -2,7 +2,7 @@ import { err, ok, type Result } from "@finapp/result";
 import type { CreateSourceInput, Source, SourceDetail, UpdateSourceInput } from "./source.types";
 import type { Db } from "@/db/client";
 import { sources } from "@/db/schema";
-import { and, eq } from "drizzle-orm";
+import { and, eq, getColumns } from "drizzle-orm";
 import { handleSqliteConstraintError } from "@/db/errors";
 import type { SourceRepository } from "./source.repository";
 
@@ -12,6 +12,7 @@ export class SourceDrizzleRepository implements SourceRepository {
   byPublicId(groupId: number, publicId: string): Promise<SourceDetail | undefined> {
     return this.db.query.sources.findFirst({
       columns: {
+        groupId: false,
         ownerId: false,
         fileFormatId: false,
       },
@@ -22,20 +23,26 @@ export class SourceDrizzleRepository implements SourceRepository {
 
   byFileFormat(groupId: number, fileFormatId: number): Promise<Source[]> {
     return this.db.query.sources.findMany({
+      columns: { groupId: false },
       where: { groupId, fileFormatId },
     });
   }
 
   all(groupId: number): Promise<Source[]> {
-    return this.db.query.sources.findMany({ where: { groupId } });
+    return this.db.query.sources.findMany({
+      columns: { groupId: false },
+      where: { groupId },
+    });
   }
 
   async create(groupId: number, input: CreateSourceInput): Promise<Result<Source>> {
+    const { groupId: _, ...returningColumns } = getColumns(sources);
+
     const result = await handleSqliteConstraintError(() =>
       this.db
         .insert(sources)
         .values({ groupId, ...input })
-        .returning(),
+        .returning(returningColumns),
     );
 
     if (result.isErr || !result.data[0]) return err();

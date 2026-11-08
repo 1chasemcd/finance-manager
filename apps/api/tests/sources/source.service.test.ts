@@ -103,22 +103,24 @@ describe("SourceService.create", () => {
       }),
     );
 
-    expect(returned).toMatchObject({
+    expect(returned.id.length).greaterThan(0);
+    expect(returned).toEqual({
+      id: returned.id,
       name: "Bob WF Checking",
       description: "Bob's Wells Fargo Checking Account",
       archived: false,
     });
 
-    const created = (await repos.sources.all(group.id)).find((x) => x.publicId === returned.id);
-
-    expect(created).toMatchObject({
+    const created = await repos.sources.byPublicId(group.id, returned.id);
+    expect(created).toEqual({
+      id: created?.id,
+      publicId: created?.publicId,
       name: "Bob WF Checking",
       description: "Bob's Wells Fargo Checking Account",
-      ownerId: owner.id,
-      fileFormatId: fileFormat.id,
+      owner,
+      fileFormat,
       archived: false,
     });
-    expect(created?.publicId.length).greaterThan(0);
   });
 
   it("returns NotFound when owner not found", async () => {
@@ -165,13 +167,15 @@ describe("SourceService.update", () => {
 
     expect(result.isOk).toBe(true);
 
-    const updated = (await repos.sources.all(group.id)).find((x) => x.id === source.id);
+    const updated = await repos.sources.byPublicId(group.id, source.publicId);
 
-    expect(updated).toMatchObject({
+    expect(updated).toEqual({
+      id: source.id,
+      publicId: source.publicId,
       name: "Alice WF Checking",
       description: "Alice's Wells Fargo Checking Account",
-      ownerId: otherUser.id,
-      fileFormatId: fileFormat.id,
+      owner: otherUser,
+      fileFormat: fileFormat,
       archived: true,
     });
   });

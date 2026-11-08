@@ -182,7 +182,7 @@ function createCapability<T extends Entity, CreateType>(
       publicId: crypto.randomUUID(),
     } as WithGroup<T>;
     records.push(toInsert);
-    return Promise.resolve(ok(toInsert));
+    return Promise.resolve(ok(omitGroup(toInsert)));
   };
 }
 

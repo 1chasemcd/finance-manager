@@ -69,7 +69,7 @@ export class FileFormatService {
 }
 
 function toResponse(fileFormat: FileFormat): FileFormatResponse {
-  const { id: _x, publicId, ...values } = fileFormat;
+  const { publicId, ...values } = fileFormat;
   return {
     ...values,
     id: publicId,
