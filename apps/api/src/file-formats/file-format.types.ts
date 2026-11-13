@@ -1,6 +1,5 @@
 export interface FileFormat {
   id: number;
-  publicId: string;
   name: string;
   skipRows: number;
   rowPattern: string | null;
@@ -23,7 +22,7 @@ export interface WriteFileFormatInput {
 }
 
 export interface FileFormatResponse {
-  id: string;
+  id: number;
   name: string;
   skipRows: number;
   rowPattern: string | null;

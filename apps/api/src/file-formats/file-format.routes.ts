@@ -14,7 +14,7 @@ export function createFileFormatRoutes({ fileFormatService }: FileFormatRouteDep
       return c.json(all, 200);
     })
     .get("/:id", zValidator("param", idSchema), async (c) => {
-      const id = c.req.param("id");
+      const { id } = c.req.valid("param");
       const fileFormat = await fileFormatService.get(id);
       if (!fileFormat) return c.body(null, 404);
       return c.json(fileFormat, 200);
@@ -30,7 +30,7 @@ export function createFileFormatRoutes({ fileFormatService }: FileFormatRouteDep
       zValidator("param", idSchema),
       zValidator("json", writeFileFormatSchema),
       async (c) => {
-        const id = c.req.param("id");
+        const { id } = c.req.valid("param");
         const writeFileFormatRequest = c.req.valid("json");
         const result = await fileFormatService.update(id, writeFileFormatRequest);
         if (result.isErr) {
@@ -41,7 +41,7 @@ export function createFileFormatRoutes({ fileFormatService }: FileFormatRouteDep
       },
     )
     .delete("/:id", zValidator("param", idSchema), async (c) => {
-      const id = c.req.param("id");
+      const { id } = c.req.valid("param");
       const result = await fileFormatService.delete(id);
       if (result.isErr) {
         if (result.error === "NotFound") return c.body(null, 404);

@@ -14,7 +14,7 @@ export function createSourceRoutes({ sourceService }: SourceRouteDeps) {
       return c.json(all, 200);
     })
     .get("/:id", zValidator("param", idSchema), async (c) => {
-      const id = c.req.param("id");
+      const { id } = c.req.valid("param");
       const source = await sourceService.get(id);
       if (!source) return c.body(null, 404);
       return c.json(source, 200);
@@ -30,7 +30,7 @@ export function createSourceRoutes({ sourceService }: SourceRouteDeps) {
       zValidator("param", idSchema),
       zValidator("json", updateSourceSchema),
       async (c) => {
-        const id = c.req.param("id");
+        const { id } = c.req.valid("param");
         const updateSourceInput = c.req.valid("json");
         const result = await sourceService.update(id, updateSourceInput);
         if (result.isErr) return c.body(null, 409);
@@ -38,7 +38,7 @@ export function createSourceRoutes({ sourceService }: SourceRouteDeps) {
       },
     )
     .delete("/:id", zValidator("param", idSchema), async (c) => {
-      const id = c.req.param("id");
+      const { id } = c.req.valid("param");
       const result = await sourceService.delete(id);
       if (result.isErr) return c.body(null, 409);
       return c.body(null, 204);

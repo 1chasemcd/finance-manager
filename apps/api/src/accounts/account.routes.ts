@@ -21,13 +21,13 @@ export function createAccountRoutes({ accountService, groupInviteService }: Acco
       return c.body(null, 204);
     })
     .post("/invite/:id/accept", zValidator("param", idSchema), async (c) => {
-      const id = c.req.param("id");
+      const { id } = c.req.valid("param");
       const res = await groupInviteService.acceptInviteToGroup(id);
       if (res.isOk) return c.body(null, 204);
       else return c.body(null, 404);
     })
     .post("/invite/:id/decline", zValidator("param", idSchema), async (c) => {
-      const id = c.req.param("id");
+      const { id } = c.req.valid("param");
       const res = await groupInviteService.declineInviteToGroup(id);
       if (res.isOk) return c.body(null, 204);
       else return c.body(null, 404);

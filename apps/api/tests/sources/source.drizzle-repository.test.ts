@@ -7,21 +7,20 @@ const repos = await createRepositoryContainer();
 const { sources } = repos;
 const { seedGroup, seedUser, seedSource, seedFileFormat } = createDataSeeds(repos);
 
-describe("SourceDrizzleRepository.byPublicId", () => {
-  it("returns source with specified publicId", async () => {
+describe("SourceDrizzleRepository.byId", () => {
+  it("returns source with specified id", async () => {
     const group = await seedGroup();
     const fileFormat = await seedFileFormat({ group });
     const user = await seedUser({ group });
     const source = await seedSource({ user, fileFormat });
 
-    expect(await sources.byPublicId(group.id, source.publicId)).toEqual({
+    expect(await sources.byId(group.id, source.id)).toEqual({
       id: source.id,
-      publicId: source.publicId,
       name: source.name,
       description: null,
       archived: false,
-      owner: user,
-      fileFormat,
+      ownerId: user.id,
+      fileFormatId: fileFormat.id,
     });
   });
 
@@ -30,11 +29,11 @@ describe("SourceDrizzleRepository.byPublicId", () => {
     const created = await seedSource({ group });
     const otherGroup = await seedGroup();
 
-    expect(await sources.byPublicId(otherGroup.id, created.publicId)).toBeUndefined();
+    expect(await sources.byId(otherGroup.id, created.id)).toBeUndefined();
   });
 
-  it("returns undefined for an unknown groupId and publicId", async () => {
-    expect(await sources.byPublicId(0, "missing")).toBeUndefined();
+  it("returns undefined for an unknown groupId and id", async () => {
+    expect(await sources.byId(0, -1)).toBeUndefined();
   });
 });
 
@@ -80,14 +79,12 @@ describe("SourceDrizzleRepository.create", () => {
       }),
     );
 
-    const created = await sources.byPublicId(group.id, returned.publicId);
+    const created = await sources.byId(group.id, returned.id);
 
-    expect(returned.publicId.length).greaterThan(0);
     expect(returned.id).greaterThan(0);
 
     expect(returned).toEqual({
       id: returned.id,
-      publicId: returned.publicId,
       name,
       description,
       ownerId: owner.id,
@@ -95,15 +92,7 @@ describe("SourceDrizzleRepository.create", () => {
       archived: false,
     });
 
-    expect(created).toEqual({
-      id: returned.id,
-      publicId: returned.publicId,
-      name,
-      description,
-      owner,
-      fileFormat,
-      archived: false,
-    });
+    expect(created).toEqual(returned);
   });
 
   it("returns err when group and owner group do not match", async () => {
@@ -163,15 +152,14 @@ describe("SourceDrizzleRepository.update", () => {
 
     expect(result.isOk).toBe(true);
 
-    const updated = await sources.byPublicId(group.id, source.publicId);
+    const updated = await sources.byId(group.id, source.id);
 
-    expect(updated).toMatchObject({
+    expect(updated).toEqual({
       id: source.id,
-      publicId: source.publicId,
       name,
       description,
-      owner,
-      fileFormat,
+      ownerId: owner.id,
+      fileFormatId: fileFormat.id,
       archived: true,
     });
   });

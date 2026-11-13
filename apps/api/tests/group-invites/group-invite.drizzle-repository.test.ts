@@ -13,7 +13,7 @@ const { seedUser } = createDataSeeds(repos);
 const { groupInvites } = repos;
 
 describe("GroupInviteDrizzleRepository.create", () => {
-  it("inserts an invite with a public id and a creation timestamp", async () => {
+  it("inserts an invite with a id and a creation timestamp", async () => {
     const user = await seedUser();
     const other = await seedUser();
 
@@ -26,9 +26,6 @@ describe("GroupInviteDrizzleRepository.create", () => {
 
     expect(invite.groupId).toBe(user.groupId);
     expect(invite.userId).toBe(other.id);
-    expect(invite.publicId).toMatch(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
-    );
     expect(invite.createdAt).toBeInstanceOf(Date);
     expect(Math.abs(invite.createdAt.getTime() - Date.now())).toBeLessThan(HOUR_MS);
   });
@@ -42,19 +39,6 @@ describe("GroupInviteDrizzleRepository.create", () => {
     unwrap(await groupInvites.create(second.groupId, invitee.id));
 
     expect(await groupInvites.byUser(invitee.id)).toHaveLength(2);
-  });
-
-  it("gives every invite a distinct public id", async () => {
-    const first = await seedUser();
-    const second = await seedUser();
-    const invitee = await seedUser();
-
-    unwrap(await groupInvites.create(first.groupId, invitee.id));
-    unwrap(await groupInvites.create(second.groupId, invitee.id));
-
-    const rows = await groupInvites.byUser(invitee.id);
-    expect(rows).toHaveLength(2);
-    expect(rows[0]?.publicId).not.toBe(rows[1]?.publicId);
   });
 });
 

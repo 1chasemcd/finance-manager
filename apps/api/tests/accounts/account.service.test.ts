@@ -97,7 +97,7 @@ describe("AccountService.getAccountInfo", () => {
     const info = await service.getAccountInfo();
 
     expect(info.pendingInvite).toEqual({
-      inviteId: invite.publicId,
+      inviteId: invite.id,
       groupMembers: [{ firstName: "Stran", lastName: "Ger", email: "stranger@example.com" }],
       createdAt: invite.createdAt,
     });
@@ -111,7 +111,7 @@ describe("AccountService.getAccountInfo", () => {
 
     const info = await service.getAccountInfo();
 
-    expect(info.pendingInvite?.inviteId).toBe(oldest.publicId);
+    expect(info.pendingInvite?.inviteId).toBe(oldest.id);
     expect(info.pendingInvite?.groupMembers).toEqual([
       { firstName: "Stran", lastName: "Ger", email: "stranger@example.com" },
     ]);

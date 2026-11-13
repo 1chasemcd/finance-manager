@@ -130,13 +130,13 @@ describe("GroupInviteService.inviteUserToGroup", () => {
   it("issues a fresh invite after the previous one expired", async () => {
     const { service, invites, clock, other } = setup();
     await service.inviteUserToGroup(other.email);
-    const expiredId = invites.invites[0]?.publicId;
+    const expiredId = invites.invites[0]?.id;
 
     clock.advance(GROUP_INVITE_VALID_DURATION_MS + HOUR_MS);
     await service.inviteUserToGroup(other.email);
 
     expect(invites.invites).toHaveLength(1);
-    expect(invites.invites[0]?.publicId).not.toBe(expiredId);
+    expect(invites.invites[0]?.id).not.toBe(expiredId);
     expect(invites.invites[0]?.createdAt).toEqual(new Date(NOW.getTime() + 25 * HOUR_MS));
   });
 });
@@ -149,23 +149,23 @@ describe("GroupInviteService.acceptInviteToGroup", () => {
     if (invite === undefined) throw new Error("expected an invite");
 
     requestContext.user = other;
-    unwrap(await service.acceptInviteToGroup(invite.publicId));
+    unwrap(await service.acceptInviteToGroup(invite.id));
 
     expect(other.groupId).toBe(me.groupId);
     expect(invites.invites).toHaveLength(0);
   });
 
-  it("returns err for an unknown public id", async () => {
+  it("returns err for an unknown id", async () => {
     const { service } = setup();
 
-    expect((await service.acceptInviteToGroup("unknown-id")).isErr).toBe(true);
+    expect((await service.acceptInviteToGroup(-1)).isErr).toBe(true);
   });
 
   it("returns err for an invite addressed to somebody else", async () => {
     const { service, invites, requestContext, me } = setup();
     const invite = invites.add({ groupId: 2, userId: me.id + 100 });
 
-    expect((await service.acceptInviteToGroup(invite.publicId)).isErr).toBe(true);
+    expect((await service.acceptInviteToGroup(invite.id)).isErr).toBe(true);
     expect(requestContext.user?.groupId).toBe(me.groupId);
   });
 
@@ -177,7 +177,7 @@ describe("GroupInviteService.acceptInviteToGroup", () => {
     clock.advance(GROUP_INVITE_VALID_DURATION_MS + HOUR_MS);
 
     requestContext.user = other;
-    expect((await service.acceptInviteToGroup(invite.publicId)).isErr).toBe(true);
+    expect((await service.acceptInviteToGroup(invite.id)).isErr).toBe(true);
     expect(other.groupId).toBe(2);
   });
 
@@ -188,8 +188,8 @@ describe("GroupInviteService.acceptInviteToGroup", () => {
     if (invite === undefined) throw new Error("expected an invite");
 
     requestContext.user = other;
-    unwrap(await service.acceptInviteToGroup(invite.publicId));
-    expect((await service.acceptInviteToGroup(invite.publicId)).isErr).toBe(true);
+    unwrap(await service.acceptInviteToGroup(invite.id));
+    expect((await service.acceptInviteToGroup(invite.id)).isErr).toBe(true);
   });
 });
 
@@ -201,16 +201,16 @@ describe("GroupInviteService.declineInviteToGroup", () => {
     if (invite === undefined) throw new Error("expected an invite");
 
     requestContext.user = other;
-    unwrap(await service.declineInviteToGroup(invite.publicId));
+    unwrap(await service.declineInviteToGroup(invite.id));
 
     expect(invites.invites).toHaveLength(0);
     expect(other.groupId).toBe(2);
   });
 
-  it("returns err for an unknown public id", async () => {
+  it("returns err for an unknown id", async () => {
     const { service } = setup();
 
-    expect((await service.declineInviteToGroup("unknown-id")).isErr).toBe(true);
+    expect((await service.declineInviteToGroup(-1)).isErr).toBe(true);
   });
 });
 
@@ -224,7 +224,7 @@ describe("GroupInviteService.cleanupExpiredInvites", () => {
 
     await service.cleanupExpiredInvites();
 
-    expect(invites.invites.map((invite) => invite.publicId)).toEqual([fresh.publicId]);
+    expect(invites.invites.map((invite) => invite.id)).toEqual([fresh.id]);
     expect(invites.invites.map((invite) => invite.id)).not.toContain(stale.id);
   });
 });

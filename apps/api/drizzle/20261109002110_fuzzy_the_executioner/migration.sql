@@ -1,7 +1,6 @@
 CREATE TABLE `categories` (
 	`id` integer PRIMARY KEY AUTOINCREMENT,
 	`group_id` integer NOT NULL,
-	`public_id` text NOT NULL UNIQUE,
 	`name` text NOT NULL,
 	`description` text,
 	`archived` integer DEFAULT false NOT NULL,
@@ -13,7 +12,6 @@ CREATE TABLE `categories` (
 CREATE TABLE `category_rules` (
 	`id` integer PRIMARY KEY AUTOINCREMENT,
 	`group_id` integer NOT NULL,
-	`public_id` text NOT NULL UNIQUE,
 	`pattern` text NOT NULL,
 	`category_id` integer,
 	CONSTRAINT `fk_category_rules_group_id_groups_id_fk` FOREIGN KEY (`group_id`) REFERENCES `groups`(`id`),
@@ -24,7 +22,6 @@ CREATE TABLE `category_rules` (
 CREATE TABLE `file_formats` (
 	`id` integer PRIMARY KEY AUTOINCREMENT,
 	`group_id` integer NOT NULL,
-	`public_id` text NOT NULL UNIQUE,
 	`name` text NOT NULL,
 	`skip_rows` integer NOT NULL,
 	`row_pattern` text,
@@ -41,7 +38,6 @@ CREATE TABLE `file_formats` (
 CREATE TABLE `sources` (
 	`id` integer PRIMARY KEY AUTOINCREMENT,
 	`group_id` integer NOT NULL,
-	`public_id` text NOT NULL UNIQUE,
 	`name` text NOT NULL,
 	`description` text,
 	`archived` integer DEFAULT false NOT NULL,
@@ -57,7 +53,6 @@ CREATE TABLE `sources` (
 CREATE TABLE `transactions` (
 	`id` integer PRIMARY KEY AUTOINCREMENT,
 	`group_id` integer NOT NULL,
-	`public_id` text NOT NULL UNIQUE,
 	`date` integer NOT NULL,
 	`amount` integer NOT NULL,
 	`summary` text,
@@ -72,7 +67,6 @@ PRAGMA foreign_keys=OFF;--> statement-breakpoint
 CREATE TABLE `__new_group_invites` (
 	`id` integer PRIMARY KEY AUTOINCREMENT,
 	`group_id` integer NOT NULL,
-	`public_id` text NOT NULL UNIQUE,
 	`user_id` integer NOT NULL,
 	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
 	CONSTRAINT `fk_group_invites_group_id_groups_id_fk` FOREIGN KEY (`group_id`) REFERENCES `groups`(`id`),
@@ -80,7 +74,7 @@ CREATE TABLE `__new_group_invites` (
 	CONSTRAINT `group_invites_group_user_uq` UNIQUE(`group_id`,`user_id`)
 );
 --> statement-breakpoint
-INSERT INTO `__new_group_invites`(`id`, `public_id`, `group_id`, `user_id`, `created_at`) SELECT `id`, `public_id`, `group_id`, `user_id`, `created_at` FROM `group_invites`;--> statement-breakpoint
+INSERT INTO `__new_group_invites`(`id`, `group_id`, `user_id`, `created_at`) SELECT `id`, `group_id`, `user_id`, `created_at` FROM `group_invites`;--> statement-breakpoint
 DROP TABLE `group_invites`;--> statement-breakpoint
 ALTER TABLE `__new_group_invites` RENAME TO `group_invites`;--> statement-breakpoint
 PRAGMA foreign_keys=ON;--> statement-breakpoint

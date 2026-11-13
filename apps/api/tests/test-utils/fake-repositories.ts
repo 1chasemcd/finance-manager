@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { randomUUID } from "node:crypto";
 import { err, ok, type Result } from "@finapp/result";
 import type { GroupInviteRepository } from "@/group-invites/group-invite.repository";
 import type { GroupInvite } from "@/group-invites/group-invites.types";
@@ -7,10 +5,11 @@ import type { GroupRepository } from "@/groups/group.repository";
 import type { Group } from "@/groups/group.types";
 import type { CreateUserInput, UpdateUserInput, User } from "@/users/user.types";
 import type { UserRepository } from "@/users/user.repository";
-import type { CreateSourceInput, Source, UpdateSourceInput } from "@/sources/source.types";
+import type { Source } from "@/sources/source.types";
 import type { SourceRepository } from "@/sources/source.repository";
 import type { FileFormatRepository } from "@/file-formats/file-format.repository";
 import type { FileFormat, WriteFileFormatInput } from "@/file-formats/file-format.types";
+import type { CreateSourceRequest, UpdateSourceRequest } from "@finapp/schema";
 
 export class InMemoryUserRepository implements UserRepository {
   readonly users: User[] = [];
@@ -88,7 +87,6 @@ export class InMemoryGroupInviteRepository implements GroupInviteRepository {
 
     const newRow = {
       id: this.nextId,
-      publicId: randomUUID(),
       groupId,
       userId,
       createdAt: this.currentTime(),
@@ -115,12 +113,9 @@ export class InMemoryGroupInviteRepository implements GroupInviteRepository {
     return Promise.resolve();
   }
 
-  add(
-    input: Omit<GroupInvite, "id" | "publicId" | "createdAt"> & { createdAt?: Date },
-  ): GroupInvite {
+  add(input: Omit<GroupInvite, "id" | "createdAt"> & { createdAt?: Date }): GroupInvite {
     const invite: GroupInvite = {
       id: this.nextId,
-      publicId: randomUUID(),
       createdAt: input.createdAt ?? this.currentTime(),
       groupId: input.groupId,
       userId: input.userId,
@@ -133,30 +128,26 @@ export class InMemoryGroupInviteRepository implements GroupInviteRepository {
 
 interface Entity {
   id: number;
-  publicId: string;
 }
 
 type WithGroup<T> = T & { groupId: number };
-type OmitEntity<T> = Omit<T, "id" | "groupId" | "publicId">;
+type OmitEntity<T> = Omit<T, "id" | "groupId">;
 
 function omitGroup<T>(data: WithGroup<T>): T {
   const { groupId: _, ...rest } = data;
   return rest as T;
 }
 
-function byPublicIdCapability<T extends Entity>(
+function byIdCapability<T extends Entity>(
   records: WithGroup<T>[],
-): (groupId: number, publicId: string) => Promise<T | undefined>;
-function byPublicIdCapability<T extends Entity, U>(
-  records: WithGroup<T>[],
-  mapper?: (record: T) => U,
-): (groupId: number, publicId: string) => Promise<U | undefined>;
-function byPublicIdCapability<T extends Entity, U>(
+): (groupId: number, id: number) => Promise<T | undefined>;
+function byIdCapability<T extends Entity, U>(
   records: WithGroup<T>[],
   mapper?: (record: T) => U,
-) {
-  return (groupId: number, publicId: string) => {
-    const found = records.find((x) => x.groupId === groupId && x.publicId === publicId);
+): (groupId: number, id: number) => Promise<U | undefined>;
+function byIdCapability<T extends Entity, U>(records: WithGroup<T>[], mapper?: (record: T) => U) {
+  return (groupId: number, id: number) => {
+    const found = records.find((x) => x.groupId === groupId && x.id === id);
     return mapper
       ? Promise.resolve(found && mapper(omitGroup(found)))
       : Promise.resolve(found && omitGroup(found));
@@ -179,7 +170,6 @@ function createCapability<T extends Entity, CreateType>(
       ...mapper(input),
       id: nextId++,
       groupId,
-      publicId: crypto.randomUUID(),
     } as WithGroup<T>;
     records.push(toInsert);
     return Promise.resolve(ok(omitGroup(toInsert)));
@@ -223,7 +213,7 @@ export function createInMemoryFileFormatRepository(): InMemoryFileFormatReposito
 
   return {
     records,
-    byPublicId: byPublicIdCapability(records),
+    byId: byIdCapability(records),
     all: allCapability(records),
     create: createCapability(records, mapper),
     update: updateCapability(records, mapper),
@@ -235,22 +225,10 @@ interface InMemorySourceRepository extends SourceRepository {
   records: WithGroup<Source>[];
 }
 
-export function createInMemorySourceRepository(
-  users: InMemoryUserRepository,
-  fileFormats: InMemoryFileFormatRepository,
-): InMemorySourceRepository {
+export function createInMemorySourceRepository(): InMemorySourceRepository {
   const records: WithGroup<Source>[] = [];
 
-  const mapper = (rec: Source) => {
-    const { ownerId, fileFormatId, ...rest } = rec;
-    const owner = users.users.find((x) => x.id === ownerId)!;
-    const fileFormat =
-      fileFormats.records.map(omitGroup).find((x) => x.id === fileFormatId) ?? null;
-
-    return { owner, fileFormat, ...rest };
-  };
-
-  const writeMapper = (input: CreateSourceInput | UpdateSourceInput) => ({
+  const mapper = (input: CreateSourceRequest | UpdateSourceRequest) => ({
     ...input,
     description: input.description ?? null,
     fileFormatId: input.fileFormatId ?? null,
@@ -265,10 +243,10 @@ export function createInMemorySourceRepository(
           .filter((x) => x.groupId === groupId && x.fileFormatId === fileFormatId)
           .map(omitGroup),
       ),
-    byPublicId: byPublicIdCapability(records, mapper),
+    byId: byIdCapability(records),
     all: allCapability(records),
-    create: createCapability(records, writeMapper),
-    update: updateCapability(records, writeMapper),
+    create: createCapability(records, mapper),
+    update: updateCapability(records, mapper),
     delete: deleteCapability(records),
   };
 }

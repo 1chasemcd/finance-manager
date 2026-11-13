@@ -1,5 +1,5 @@
 import { foreignKey, integer, snakeCase, text, unique } from "drizzle-orm/sqlite-core";
-import { id, groupId, publicId } from "./utils";
+import { id, groupId } from "./utils";
 import { sql } from "drizzle-orm";
 
 const table = snakeCase.table;
@@ -26,7 +26,6 @@ export const groupInvites = table(
   {
     ...id(),
     ...groupId(),
-    ...publicId(),
     userId: integer()
       .notNull()
       .references(() => users.id),
@@ -42,7 +41,6 @@ export const fileFormats = table(
   {
     ...id(),
     ...groupId(),
-    ...publicId(),
     name: text().notNull(),
 
     skipRows: integer().notNull(),
@@ -66,7 +64,6 @@ export const sources = table(
   {
     ...id(),
     ...groupId(),
-    ...publicId(),
     name: text().notNull(),
     description: text(),
     archived: integer({ mode: "boolean" }).notNull().default(false),
@@ -94,7 +91,6 @@ export const categories = table(
   {
     ...id(),
     ...groupId(),
-    ...publicId(),
     name: text().notNull(),
     description: text(),
     archived: integer({ mode: "boolean" }).notNull().default(false),
@@ -111,7 +107,6 @@ export const transactions = table(
   {
     ...id(),
     ...groupId(),
-    ...publicId(),
     date: integer({ mode: "timestamp" }).notNull(),
     amount: integer().notNull(),
     summary: text(),
@@ -138,7 +133,6 @@ export const categoryRules = table(
   {
     ...id(),
     ...groupId(),
-    ...publicId(),
     pattern: text().notNull(),
     categoryId: integer(),
   },

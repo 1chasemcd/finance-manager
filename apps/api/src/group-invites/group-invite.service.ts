@@ -34,8 +34,8 @@ export class GroupInviteService {
     await this.groupInvites.create(groupId, user.id);
   }
 
-  async acceptInviteToGroup(invitePublicId: string): Promise<Result> {
-    const invite = await this.getInviteByPublicId(invitePublicId);
+  async acceptInviteToGroup(inviteId: number): Promise<Result> {
+    const invite = await this.getInviteById(inviteId);
     if (invite.isErr) return invite;
 
     const userId = this.currentUser.require().id;
@@ -44,8 +44,8 @@ export class GroupInviteService {
     return ok();
   }
 
-  async declineInviteToGroup(invitePublicId: string): Promise<Result> {
-    const invite = await this.getInviteByPublicId(invitePublicId);
+  async declineInviteToGroup(inviteId: number): Promise<Result> {
+    const invite = await this.getInviteById(inviteId);
     if (invite.isErr) return invite;
 
     await this.groupInvites.delete(invite.data.id);
@@ -60,8 +60,8 @@ export class GroupInviteService {
     return new Date(this.currentTime().getTime() - GROUP_INVITE_VALID_DURATION_MS);
   }
 
-  private async getInviteByPublicId(invitePublicId: string): Promise<Result<GroupInvite>> {
-    const invite = (await this.getPendingInvites()).find((i) => i.publicId == invitePublicId);
+  private async getInviteById(inviteId: number): Promise<Result<GroupInvite>> {
+    const invite = (await this.getPendingInvites()).find((i) => i.id == inviteId);
     if (!invite) return err();
     return ok(invite);
   }

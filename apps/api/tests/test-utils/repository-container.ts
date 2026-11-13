@@ -45,7 +45,7 @@ export function createFakeRepositoryContainer(): RepositoryContainer {
   const groupInvites = new InMemoryGroupInviteRepository();
   const users = new InMemoryUserRepository();
   const fileFormats = createInMemoryFileFormatRepository();
-  const sources = createInMemorySourceRepository(users, fileFormats);
+  const sources = createInMemorySourceRepository();
 
   beforeEach(() => {
     groups.groups.length = 0;

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createFakeRepositoryContainer } from "../test-utils/repository-container";
 import { createDataSeeds } from "../test-utils/seeds";
-import { unwrap, unwrapError } from "../test-utils/unwrap";
+import { unwrap } from "../test-utils/unwrap";
 import { SourceService } from "@/sources/source.service";
 import { CurrentUser } from "@/identity/current-user";
 
@@ -15,23 +15,23 @@ async function setup() {
   return {
     group,
     user,
-    service: new SourceService(repos.sources, repos.users, repos.fileFormats, currentUser),
+    service: new SourceService(repos.sources, currentUser),
   };
 }
 
 describe("SourceService.get", () => {
-  it("returns source with specified publicId", async () => {
+  it("returns source with specified id", async () => {
     const { group, user, service } = await setup();
     const fileFormat = await seedFileFormat({ group });
     const source = await seedSource({ user, fileFormat });
 
-    expect(await service.get(source.publicId)).toEqual({
+    expect(await service.get(source.id)).toEqual({
       canDelete: true,
-      fileFormatId: fileFormat.publicId,
+      fileFormatId: fileFormat.id,
       description: null,
-      id: source.publicId,
+      id: source.id,
       name: source.name,
-      ownerEmail: user.email,
+      ownerId: user.id,
       archived: false,
     });
   });
@@ -41,12 +41,12 @@ describe("SourceService.get", () => {
     const foreignGroup = await seedGroup();
     const created = await seedSource({ group: foreignGroup });
 
-    expect(await service.get(created.publicId)).toBeUndefined();
+    expect(await service.get(created.id)).toBeUndefined();
   });
 
-  it("returns undefined for an unknown groupId and publicId", async () => {
+  it("returns undefined for an unknown groupId and id", async () => {
     const { service } = await setup();
-    expect(await service.get("missing")).toBeUndefined();
+    expect(await service.get(-1)).toBeUndefined();
   });
 });
 
@@ -59,18 +59,8 @@ describe("SourceService.all", () => {
     const result = await service.all();
 
     expect(result).toHaveLength(2);
-    expect(result).toContainEqual({
-      archived: false,
-      description: null,
-      id: s1.publicId,
-      name: s1.name,
-    });
-    expect(result).toContainEqual({
-      archived: false,
-      description: null,
-      id: s2.publicId,
-      name: s2.name,
-    });
+    expect(result).toContainEqual(s1);
+    expect(result).toContainEqual(s2);
   });
 
   it("returns empty array when there are no sources", async () => {
@@ -90,62 +80,34 @@ describe("SourceService.all", () => {
 
 describe("SourceService.create", () => {
   it("adds source to db and returns same source", async () => {
+    const name = "Bob WF Checking";
+    const description = "Bob's Wells Fargo Checking Account";
+
     const { group, service } = await setup();
     const owner = await seedUser({ group });
     const fileFormat = await seedFileFormat({ group });
 
     const returned = await unwrap(
       service.create({
-        name: "Bob WF Checking",
-        description: "Bob's Wells Fargo Checking Account",
-        ownerEmail: owner.email,
-        fileFormatId: fileFormat.publicId,
+        name,
+        description,
+        ownerId: owner.id,
+        fileFormatId: fileFormat.id,
       }),
     );
 
-    expect(returned.id.length).greaterThan(0);
+    expect(returned.id).greaterThan(0);
     expect(returned).toEqual({
       id: returned.id,
-      name: "Bob WF Checking",
-      description: "Bob's Wells Fargo Checking Account",
+      name,
+      description,
       archived: false,
+      fileFormatId: fileFormat.id,
+      ownerId: owner.id,
     });
 
-    const created = await repos.sources.byPublicId(group.id, returned.id);
-    expect(created).toEqual({
-      id: created?.id,
-      publicId: created?.publicId,
-      name: "Bob WF Checking",
-      description: "Bob's Wells Fargo Checking Account",
-      owner,
-      fileFormat,
-      archived: false,
-    });
-  });
-
-  it("returns NotFound when owner not found", async () => {
-    const { service } = await setup();
-
-    const result = await unwrapError(
-      service.create({
-        name: "Test",
-        ownerEmail: "fake@gmail.com",
-      }),
-    );
-    expect(result).toBe("NotFound");
-  });
-
-  it("returns NotFound when file Format not found", async () => {
-    const { user, service } = await setup();
-
-    const result = await unwrapError(
-      service.create({
-        name: "Test",
-        ownerEmail: user.email,
-        fileFormatId: "fake",
-      }),
-    );
-    expect(result).toBe("NotFound");
+    const created = await repos.sources.byId(group.id, returned.id);
+    expect(created).toEqual(returned);
   });
 });
 
@@ -157,25 +119,24 @@ describe("SourceService.update", () => {
     const fileFormat = await seedFileFormat({ group });
     const source = await seedSource({ user });
 
-    const result = await service.update(source.publicId, {
+    const result = await service.update(source.id, {
       name: "Alice WF Checking",
       description: "Alice's Wells Fargo Checking Account",
-      ownerEmail: otherUser.email,
-      fileFormatId: fileFormat.publicId,
+      ownerId: otherUser.id,
+      fileFormatId: fileFormat.id,
       archived: true,
     });
 
     expect(result.isOk).toBe(true);
 
-    const updated = await repos.sources.byPublicId(group.id, source.publicId);
+    const updated = await repos.sources.byId(group.id, source.id);
 
     expect(updated).toEqual({
       id: source.id,
-      publicId: source.publicId,
       name: "Alice WF Checking",
       description: "Alice's Wells Fargo Checking Account",
-      owner: otherUser,
-      fileFormat: fileFormat,
+      ownerId: otherUser.id,
+      fileFormatId: fileFormat.id,
       archived: true,
     });
   });
@@ -183,9 +144,9 @@ describe("SourceService.update", () => {
   it("returns NotFound when source does not exist", async () => {
     const { user, service } = await setup();
 
-    const result = await service.update("fake", {
+    const result = await service.update(-1, {
       name: "Test",
-      ownerEmail: user.email,
+      ownerId: user.id,
       archived: false,
     });
 
@@ -198,7 +159,7 @@ describe("SourceService.delete", () => {
     const { group, service } = await setup();
     const source = await seedSource({ group });
 
-    const result = await service.delete(source.publicId);
+    const result = await service.delete(source.id);
     expect(result.isOk).toBe(true);
 
     const list = await repos.sources.all(group.id);
@@ -208,7 +169,7 @@ describe("SourceService.delete", () => {
   it("returns NotFound when source does not exist", async () => {
     const { service } = await setup();
 
-    const result = await service.delete("fake");
+    const result = await service.delete(-1);
     expect(result.isErr && result.error).toBe("NotFound");
   });
 });

@@ -57,9 +57,6 @@ describe("/api/account/invite", () => {
     const aliceToken = await login(alice);
     const bobToken = await login(bob);
 
-    // log bob in first so account exists
-    await api("/api/account", { token: bobToken });
-
     const inviteResponse = await api("/api/account/invite", {
       method: "POST",
       token: aliceToken,
@@ -81,7 +78,7 @@ describe("/api/account/invite", () => {
     const inviteId = pending.pendingInvite?.inviteId;
     expect(inviteId).toBeDefined();
 
-    const acceptResponse = await api(`/api/account/invite/${inviteId ?? ""}/accept`, {
+    const acceptResponse = await api(`/api/account/invite/${inviteId?.toString() ?? ""}/accept`, {
       method: "POST",
       token: bobToken,
     });
@@ -125,7 +122,7 @@ describe("/api/account/invite", () => {
     const inviteId = pending.pendingInvite?.inviteId;
     expect(inviteId).toBeDefined();
 
-    const declineResponse = await api(`/api/account/invite/${inviteId ?? ""}/decline`, {
+    const declineResponse = await api(`/api/account/invite/${inviteId?.toString() ?? ""}/decline`, {
       method: "POST",
       token: bobToken,
     });
@@ -139,7 +136,7 @@ describe("/api/account/invite", () => {
       { firstName: "Bob", lastName: "Jones", email: "bob@example.com" },
     ]);
 
-    const repeatDecline = await api(`/api/account/invite/${inviteId ?? ""}/decline`, {
+    const repeatDecline = await api(`/api/account/invite/${inviteId?.toString() ?? ""}/decline`, {
       method: "POST",
       token: bobToken,
     });
@@ -167,7 +164,7 @@ describe("/api/account/invite", () => {
     const inviteId = pending.pendingInvite?.inviteId;
     expect(inviteId).toBeDefined();
 
-    const hijack = await api(`/api/account/invite/${inviteId ?? ""}/accept`, {
+    const hijack = await api(`/api/account/invite/${inviteId?.toString() ?? ""}/accept`, {
       method: "POST",
       token: bobToken,
     });
@@ -184,7 +181,7 @@ describe("/api/account/invite", () => {
 
   it("responds 404 for unknown invite ids", async () => {
     const token = await login(alice);
-    const fakeId = crypto.randomUUID();
+    const fakeId = "999";
     expect(
       (await api(`/api/account/invite/${fakeId}/accept`, { method: "POST", token })).status,
     ).toBe(404);

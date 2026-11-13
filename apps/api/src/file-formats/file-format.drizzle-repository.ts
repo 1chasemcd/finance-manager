@@ -9,8 +9,8 @@ import { handleSqliteConstraintError } from "@/db/errors";
 export class FileFormatDrizzleRepository implements FileFormatRepository {
   constructor(private readonly db: Db) {}
 
-  byPublicId(groupId: number, publicId: string): Promise<FileFormat | undefined> {
-    return this.db.query.fileFormats.findFirst({ where: { groupId, publicId } });
+  byId(groupId: number, id: number): Promise<FileFormat | undefined> {
+    return this.db.query.fileFormats.findFirst({ where: { groupId, id } });
   }
 
   all(groupId: number): Promise<FileFormat[]> {

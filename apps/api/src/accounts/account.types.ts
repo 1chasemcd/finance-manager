@@ -5,7 +5,7 @@ interface AccountInfoUser {
 }
 
 interface PendingInvite {
-  inviteId: string;
+  inviteId: number;
   groupMembers: AccountInfoUser[];
   createdAt: Date;
 }

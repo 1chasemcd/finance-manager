@@ -1,4 +1,4 @@
-import type { FileFormat, FileFormatDetailResponse, FileFormatResponse } from "./file-format.types";
+import type { FileFormatDetailResponse, FileFormatResponse } from "./file-format.types";
 import type { CurrentUser } from "@/identity/current-user";
 import { err, type Result } from "@finapp/result";
 import type { SourceRepository } from "@/sources/source.repository";
@@ -15,48 +15,47 @@ export class FileFormatService {
     private readonly currentUser: CurrentUser,
   ) {}
 
-  async all(): Promise<FileFormatResponse[]> {
-    const currentUser = this.currentUser.require();
-    const x = await this.fileFormats.all(currentUser.groupId);
-    return x.map(toResponse);
+  all(): Promise<FileFormatResponse[]> {
+    const { groupId } = this.currentUser.require();
+    return this.fileFormats.all(groupId);
   }
 
-  async get(publicId: string): Promise<FileFormatDetailResponse | undefined> {
-    const currentUser = this.currentUser.require();
-    const result = await this.fileFormats.byPublicId(currentUser.groupId, publicId);
-    return result && { ...toResponse(result), canDelete: await this.canDelete(result.id) };
+  async get(id: number): Promise<FileFormatDetailResponse | undefined> {
+    const { groupId } = this.currentUser.require();
+    const result = await this.fileFormats.byId(groupId, id);
+    return result && { ...result, canDelete: await this.canDelete(result.id) };
   }
 
-  async create(request: WriteFileFormatRequest): Promise<Result<FileFormatResponse>> {
-    const currentUser = this.currentUser.require();
-    const x = await this.fileFormats.create(currentUser.groupId, request);
-    return x.map(toResponse);
+  create(request: WriteFileFormatRequest): Promise<Result<FileFormatResponse>> {
+    const { groupId } = this.currentUser.require();
+    return this.fileFormats.create(groupId, request);
   }
 
   async update(
-    publicId: string,
+    id: number,
     request: WriteFileFormatRequest,
   ): Promise<Result<void, NotFound | Conflict>> {
-    const currentUser = this.currentUser.require();
-    const toUpdate = await this.fileFormats.byPublicId(currentUser.groupId, publicId);
+    const { groupId } = this.currentUser.require();
+
+    const toUpdate = await this.fileFormats.byId(groupId, id);
     if (!toUpdate) return err("NotFound");
 
-    const result = await this.fileFormats.update(currentUser.groupId, toUpdate.id, request);
+    const result = await this.fileFormats.update(groupId, id, request);
     if (result.isErr) return err("Conflict");
 
     return result;
   }
 
-  async delete(publicId: string): Promise<Result<void, NotFound | Conflict>> {
-    const currentUser = this.currentUser.require();
+  async delete(id: number): Promise<Result<void, NotFound | Conflict>> {
+    const { groupId } = this.currentUser.require();
 
-    const toDelete = await this.fileFormats.byPublicId(currentUser.groupId, publicId);
+    const toDelete = await this.fileFormats.byId(groupId, id);
     if (!toDelete) return err("NotFound");
 
-    const canDelete = await this.canDelete(toDelete.id);
+    const canDelete = await this.canDelete(id);
     if (!canDelete) return err("Conflict");
 
-    const result = await this.fileFormats.delete(currentUser.groupId, toDelete.id);
+    const result = await this.fileFormats.delete(groupId, id);
     if (result.isErr) return err("Conflict");
     return result;
   }
@@ -66,12 +65,4 @@ export class FileFormatService {
     const assigned = await this.sources.byFileFormat(currentUser.groupId, id);
     return assigned.filter((x) => !x.archived).length === 0;
   }
-}
-
-function toResponse(fileFormat: FileFormat): FileFormatResponse {
-  const { publicId, ...values } = fileFormat;
-  return {
-    ...values,
-    id: publicId,
-  };
 }

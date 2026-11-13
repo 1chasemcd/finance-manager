@@ -3,8 +3,8 @@ import z from "zod";
 export const createSourceSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().max(500).nullish(),
-  ownerEmail: z.email(),
-  fileFormatId: z.uuid().nullish(),
+  ownerId: z.number(),
+  fileFormatId: z.number().nullish(),
 });
 
 export const updateSourceSchema = createSourceSchema.extend({

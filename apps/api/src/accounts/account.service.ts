@@ -31,7 +31,7 @@ export class AccountService {
     const inviteMembers = (await this.users.byGroup(oldest.groupId)).map((m) => this.mapUser(m));
 
     res.pendingInvite = {
-      inviteId: oldest.publicId,
+      inviteId: oldest.id,
       groupMembers: inviteMembers,
       createdAt: oldest.createdAt,
     };

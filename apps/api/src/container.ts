@@ -15,6 +15,7 @@ import { createDb } from "./db/client";
 import { SourceDrizzleRepository } from "./sources/source.drizzle-repository";
 import { SourceService } from "./sources/source.service";
 import { FileFormatDrizzleRepository } from "./file-formats/file-format.drizzle-repository";
+import { FileFormatService } from "./file-formats/file-format.service";
 
 export function createContainer(env: Cloudflare.Env) {
   const db = createDb(env.DB);
@@ -39,12 +40,13 @@ export function createContainer(env: Cloudflare.Env) {
 
   const accountService = new AccountService(userRepository, groupInviteService, currentUser);
   const userService = new UserService(userRepository, groupRepository);
-  const sourceService = new SourceService(
-    sourceRepository,
-    userRepository,
+  const fileFormatService = new FileFormatService(
     fileFormatRepository,
+    sourceRepository,
     currentUser,
   );
+
+  const sourceService = new SourceService(sourceRepository, currentUser);
 
   const identityService: IdentityService = new CloudflareIdentityService(fetchHandler, logger);
 
@@ -56,6 +58,7 @@ export function createContainer(env: Cloudflare.Env) {
     userService,
     identityService,
     sourceService,
+    fileFormatService,
   };
 }
 
