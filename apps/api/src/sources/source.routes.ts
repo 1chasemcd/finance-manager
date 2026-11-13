@@ -2,6 +2,7 @@ import router from "@/core/router";
 import type { SourceService } from "./source.service";
 import { zValidator } from "@hono/zod-validator";
 import { createSourceSchema, idSchema, updateSourceSchema } from "@finapp/schema";
+import { match } from "@finapp/result";
 
 interface SourceRouteDeps {
   sourceService: SourceService;
@@ -21,9 +22,11 @@ export function createSourceRoutes({ sourceService }: SourceRouteDeps) {
     })
     .post("/", zValidator("json", createSourceSchema), async (c) => {
       const createSourceInput = c.req.valid("json");
-      const source = await sourceService.create(createSourceInput);
-      if (source.isErr) return c.body(null, 409);
-      return c.json(source.data, 201);
+      const result = await sourceService.create(createSourceInput);
+      return match(result, {
+        Ok: (x) => c.json(x, 201),
+        Err: c.body(null, 409),
+      });
     })
     .patch(
       "/:id",
@@ -33,14 +36,20 @@ export function createSourceRoutes({ sourceService }: SourceRouteDeps) {
         const { id } = c.req.valid("param");
         const updateSourceInput = c.req.valid("json");
         const result = await sourceService.update(id, updateSourceInput);
-        if (result.isErr) return c.body(null, 409);
-        return c.body(null, 204);
+        return match(result, {
+          Ok: c.body(null, 204),
+          NotFound: c.body(null, 404),
+          Conflict: c.body(null, 409),
+        });
       },
     )
     .delete("/:id", zValidator("param", idSchema), async (c) => {
       const { id } = c.req.valid("param");
       const result = await sourceService.delete(id);
-      if (result.isErr) return c.body(null, 409);
-      return c.body(null, 204);
+      return match(result, {
+        Ok: c.body(null, 204),
+        NotFound: c.body(null, 404),
+        Conflict: c.body(null, 409),
+      });
     });
 }

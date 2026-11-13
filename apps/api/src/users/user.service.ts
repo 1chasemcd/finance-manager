@@ -24,15 +24,13 @@ export class UserService {
     const group = await this.groups.create();
     const { firstName, lastName } = splitName(input.name);
 
-    const result = await this.users.create({
+    return this.users.create({
       email: input.email,
       firstName,
       lastName,
       subject: input.subject,
       groupId: group.id,
     });
-    if (result.isOk) return result;
-    return err();
   }
 }
 

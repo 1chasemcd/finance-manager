@@ -1,5 +1,5 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
-import { Err, Ok, err, invariant, isResult, ok, type Result } from "../src/index";
+import { Err, Ok, err, invariant, isResult, match, ok, type Result } from "../src/index";
 
 describe("ok", () => {
   it("wraps the value in an Ok", () => {
@@ -143,5 +143,62 @@ describe("invariant", () => {
 
     expectTypeOf(value).toEqualTypeOf<string>();
     expect(value).toBe("present");
+  });
+});
+
+describe("match", () => {
+  it("matches Ok case when result is ok", () => {
+    const result: Result<string> = ok("success");
+    const output = match(result, {
+      Ok: "ok",
+      Err: 123,
+    });
+
+    expect(output).toBe("ok");
+  });
+
+  it("matches Err case when result is an Err", () => {
+    const result: Result<string> = err();
+    const output = match(result, {
+      Ok: 123,
+      Err: "err",
+    });
+
+    expect(output).toBe("err");
+  });
+
+  it("invokes callback Ok case when result is ok", () => {
+    interface MyData {
+      stuff: string;
+    }
+    const result: Result<MyData> = ok({ stuff: "ok" });
+    const output = match(result, {
+      Ok: (x) => x.stuff,
+      Err: 1,
+    });
+
+    expect(output).toBe("ok");
+  });
+
+  it("matches Error1 case when result is Error1", () => {
+    const result: Result<string, "Error1" | "Error2"> = err("Error1");
+    const output = match(result, {
+      Ok: "good",
+      Error1: 1,
+      Error2: 2,
+    });
+
+    expect(output).toBe(1);
+  });
+
+  it("matches Error2 case when result is Error2", () => {
+    const result: Result<string, "Error1" | "Error2"> = err("Error2");
+    const output = match(result, {
+      Ok: "good",
+      Error1: 1,
+      Error2: 2,
+    });
+
+    expect(output).toBe(2);
   });
 });

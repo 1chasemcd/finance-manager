@@ -23,3 +23,47 @@ export function invariant(value: unknown, message?: string) {
 export function isResult<T, E>(value: unknown): value is Result<T, E> {
   return value instanceof Ok || value instanceof Err;
 }
+
+function isFunction(f: unknown): f is (data: unknown) => unknown {
+  return typeof f === "function" && f.length === 1;
+}
+
+export function match<
+  DataType,
+  ErrorType extends string,
+  CaseType extends Record<ErrorType, unknown>,
+  OkReturnType,
+>(
+  result: Result<DataType, ErrorType>,
+  cases: CaseType & {
+    Ok:
+      ((data: DataType) => OkReturnType) | Exclude<OkReturnType, (data: DataType) => OkReturnType>;
+  } & Record<Exclude<keyof CaseType, "Ok" | ErrorType>, never>,
+): Exclude<CaseType[keyof CaseType] | OkReturnType, (data: DataType) => OkReturnType>;
+export function match<DataType, OkReturnType, ErrorReturnType>(
+  result: Result<DataType>,
+  cases: {
+    Ok:
+      ((data: DataType) => OkReturnType) | Exclude<OkReturnType, (data: DataType) => OkReturnType>;
+    Err: ErrorReturnType;
+  },
+): Exclude<OkReturnType, (data: DataType) => OkReturnType> | ErrorReturnType;
+export function match<DataType, ErrorType extends string | void>(
+  result: Result<DataType, ErrorType>,
+  cases: Record<string, unknown>,
+) {
+  if (result.isOk) {
+    invariant("Ok" in cases, `case 'Ok' not handled in ${JSON.stringify(cases)}`);
+    if (isFunction(cases["Ok"])) return cases["Ok"](result.data);
+    return cases["Ok"];
+  }
+
+  const err = result.error;
+  if (typeof err === "string") {
+    invariant(err in cases, `case '${err}' not handled in ${JSON.stringify(cases)}`);
+    return cases[err];
+  }
+
+  invariant("Err" in cases, `case 'Err' not handled in ${JSON.stringify(cases)}`);
+  return cases["Err"];
+}
