@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { createRepositoryContainer } from "../test-utils/repository-container";
-import { createTestD1 } from "../test-utils/d1";
+import { createFakeD1 } from "../test-utils/d1";
 
-const d1 = await createTestD1();
+const d1 = await createFakeD1();
 const { groups } = await createRepositoryContainer(d1);
 
 describe("GroupDrizzleRepository.create", () => {

@@ -15,7 +15,7 @@ import {
   createFakeGroupRepository,
   createFakeUserRepository,
 } from "./fake-repositories";
-import { createTestD1 } from "./d1";
+import { createFakeD1 } from "./d1";
 import type { FileFormatRepository } from "@/file-formats/file-format.repository";
 import type { SourceRepository } from "@/sources/source.repository";
 
@@ -28,7 +28,7 @@ export interface RepositoryContainer {
 }
 
 export async function createRepositoryContainer(d1?: D1Database): Promise<RepositoryContainer> {
-  d1 ??= await createTestD1();
+  d1 ??= await createFakeD1();
   const db = createDb(d1);
 
   return {

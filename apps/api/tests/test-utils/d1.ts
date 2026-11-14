@@ -6,7 +6,7 @@ import { Miniflare } from "miniflare";
 let migrations: D1Migration[] | undefined;
 let tables: string[] | undefined;
 
-export async function createTestD1(): Promise<D1Database> {
+export async function createFakeD1(): Promise<D1Database> {
   const miniflare = new Miniflare({
     modules: true,
     script: "",

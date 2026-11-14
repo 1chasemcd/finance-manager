@@ -2,12 +2,12 @@ import { describe, expect, it } from "vitest";
 import { unwrap } from "../test-utils/unwrap";
 import { createRepositoryContainer } from "../test-utils/repository-container";
 import { createDataSeeds } from "../test-utils/seeds";
-import { createTestD1 } from "../test-utils/d1";
+import { createFakeD1 } from "../test-utils/d1";
 
 const HOUR_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * HOUR_MS;
 
-const d1 = await createTestD1();
+const d1 = await createFakeD1();
 const repos = await createRepositoryContainer(d1);
 const { seedUser } = createDataSeeds(repos);
 const { groupInvites } = repos;
