@@ -9,11 +9,11 @@ import type { GroupRepository } from "@/groups/group.repository";
 import type { GroupInviteRepository } from "@/group-invites/group-invite.repository";
 import { GroupInviteDrizzleRepository } from "@/group-invites/group-invite.drizzle-repository";
 import {
-  createInMemoryFileFormatRepository,
-  createInMemorySourceRepository,
-  InMemoryGroupInviteRepository,
-  InMemoryGroupRepository,
-  InMemoryUserRepository,
+  createFakeFileFormatRepository,
+  createFakeSourceRepository,
+  createFakeGroupInviteRepository,
+  createFakeGroupRepository,
+  createFakeUserRepository,
 } from "./fake-repositories";
 import { createTestD1 } from "./d1";
 import type { FileFormatRepository } from "@/file-formats/file-format.repository";
@@ -41,25 +41,17 @@ export async function createRepositoryContainer(d1?: D1Database): Promise<Reposi
 }
 
 export function createFakeRepositoryContainer(): RepositoryContainer {
-  const groups = new InMemoryGroupRepository();
-  const groupInvites = new InMemoryGroupInviteRepository();
-  const users = new InMemoryUserRepository();
-  const fileFormats = createInMemoryFileFormatRepository();
-  const sources = createInMemorySourceRepository();
+  const repositories: RepositoryContainer & Record<string, { records: unknown[] }> = {
+    groups: createFakeGroupRepository(),
+    groupInvites: createFakeGroupInviteRepository(),
+    users: createFakeUserRepository(),
+    fileFormats: createFakeFileFormatRepository(),
+    sources: createFakeSourceRepository(),
+  };
 
   beforeEach(() => {
-    groups.groups.length = 0;
-    groupInvites.invites.length = 0;
-    users.users.length = 0;
-    fileFormats.records.length = 0;
-    sources.records.length = 0;
+    Object.values(repositories).forEach((x) => (x.records.length = 0));
   });
 
-  return {
-    groups,
-    groupInvites,
-    users,
-    fileFormats,
-    sources,
-  };
+  return repositories;
 }

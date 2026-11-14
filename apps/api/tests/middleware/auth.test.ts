@@ -3,8 +3,12 @@ import { Hono } from "hono";
 import { describe, expect, it, vi } from "vitest";
 import { createAuthMiddleware } from "@/middleware/auth";
 import { UserService } from "@/users/user.service";
-import { InMemoryGroupRepository, InMemoryUserRepository } from "../test-utils/fake-repositories";
 import { createRequestContextMiddleware, requestContext } from "@/middleware/request-context";
+import {
+  createFakeGroupRepository,
+  createFakeUserRepository,
+} from "../test-utils/fake-repositories";
+import { unwrap } from "../test-utils/unwrap";
 
 const env = {
   POLICY_AUD: "policy-aud",
@@ -12,8 +16,8 @@ const env = {
 } as unknown as Cloudflare.Env;
 
 function setup() {
-  const users = new InMemoryUserRepository();
-  const groups = new InMemoryGroupRepository();
+  const users = createFakeUserRepository();
+  const groups = createFakeGroupRepository();
   const userService = new UserService(users, groups);
   const jwtVerifyFn = vi.fn();
   const getIdentityFn = vi.fn();
@@ -73,13 +77,15 @@ describe("authMiddleware", () => {
 
   it("loads an existing user without calling the identity endpoint", async () => {
     const { request, users, groups, state, jwtVerifyFn, getIdentityFn } = setup();
-    const seeded = users.add({
-      email: "jane@example.com",
-      firstName: "Jane",
-      lastName: "Doe",
-      subject: "subject-1",
-      groupId: 4,
-    });
+    const seeded = await unwrap(
+      users.create({
+        email: "jane@example.com",
+        firstName: "Jane",
+        lastName: "Doe",
+        subject: "subject-1",
+        groupId: 4,
+      }),
+    );
     jwtVerifyFn.mockResolvedValue(ok({ sub: "subject-1" }));
 
     const response = await request("good-token");
@@ -87,8 +93,8 @@ describe("authMiddleware", () => {
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ user: seeded });
     expect(getIdentityFn).not.toHaveBeenCalled();
-    expect(users.users).toHaveLength(1);
-    expect(groups.groups).toHaveLength(0);
+    expect(users.records).toHaveLength(1);
+    expect(groups.records).toHaveLength(0);
     expect(state.handled).toBe(true);
   });
 
@@ -101,18 +107,18 @@ describe("authMiddleware", () => {
 
     expect(response.status).toBe(200);
     expect(getIdentityFn).toHaveBeenCalledWith("good-token", env);
-    expect(users.users).toHaveLength(1);
-    expect(users.users[0]).toMatchObject({
+    expect(users.records).toHaveLength(1);
+    expect(users.records[0]).toMatchObject({
       subject: "subject-new",
       email: "jane@example.com",
       firstName: "Jane",
       lastName: "Marie Doe",
     });
-    expect(groups.groups).toHaveLength(1);
-    expect(users.users[0]?.groupId).toBe(groups.groups[0]?.id);
+    expect(groups.records).toHaveLength(1);
+    expect(users.records[0]?.groupId).toBe(groups.records[0]?.id);
 
     const body = await response.json<{ user: { id: number } | null }>();
-    expect(body.user?.id).toBe(users.users[0]?.id);
+    expect(body.user?.id).toBe(users.records[0]?.id);
   });
 
   it("responds 502 when the identity endpoint fails", async () => {
@@ -124,25 +130,27 @@ describe("authMiddleware", () => {
     const response = await request("good-token");
 
     expect(response.status).toBe(502);
-    expect(users.users).toHaveLength(0);
+    expect(users.records).toHaveLength(0);
     expect(state.handled).toBe(false);
   });
 
   it("responds 409 instead of failing when onboarding hits a conflict", async () => {
     const { request, users, jwtVerifyFn, getIdentityFn } = setup();
-    users.add({
-      email: "taken@example.com",
-      firstName: "Already",
-      lastName: "There",
-      subject: "other-subject",
-      groupId: 1,
-    });
+    await unwrap(
+      users.create({
+        email: "taken@example.com",
+        firstName: "Already",
+        lastName: "There",
+        subject: "other-subject",
+        groupId: 1,
+      }),
+    );
     jwtVerifyFn.mockResolvedValue(ok({ sub: "subject-new" }));
     getIdentityFn.mockResolvedValue(ok({ email: "taken@example.com", name: "New Person" }));
 
     const response = await request("good-token");
 
     expect(response.status).toBe(409);
-    expect(users.users).toHaveLength(1);
+    expect(users.records).toHaveLength(1);
   });
 });

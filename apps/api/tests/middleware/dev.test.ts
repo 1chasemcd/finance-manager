@@ -4,16 +4,19 @@ import { createDevMiddleware } from "@/middleware/dev";
 import { createRequestContextMiddleware, requestContext } from "@/middleware/request-context";
 import { UserService } from "@/users/user.service";
 import type { User } from "@/users/user.types";
-import { InMemoryGroupRepository, InMemoryUserRepository } from "../test-utils/fake-repositories";
 import { createFakeLogger } from "../test-utils/fake-logger";
+import {
+  createFakeGroupRepository,
+  createFakeUserRepository,
+} from "../test-utils/fake-repositories";
 
 function devEnv(devUser: string): Cloudflare.DevEnv {
   return { DEV_USER: devUser } as unknown as Cloudflare.DevEnv;
 }
 
 function setup() {
-  const users = new InMemoryUserRepository();
-  const groups = new InMemoryGroupRepository();
+  const users = createFakeUserRepository();
+  const groups = createFakeGroupRepository();
   const userService = new UserService(users, groups);
   const logger = createFakeLogger();
 
@@ -53,7 +56,7 @@ describe("devMiddleware", () => {
       firstName: "Alice",
       lastName: "Example",
     });
-    expect(users.users.map((user) => user.subject).sort()).toEqual(["alice", "bob"]);
+    expect(users.records.map((user) => user.subject).sort()).toEqual(["alice", "bob"]);
     expect(logger.calls).toHaveLength(0);
   });
 

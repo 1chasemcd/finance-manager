@@ -1,24 +1,29 @@
 import { describe, expect, it } from "vitest";
 import { UserService } from "@/users/user.service";
-import { InMemoryGroupRepository, InMemoryUserRepository } from "../test-utils/fake-repositories";
+import {
+  createFakeGroupRepository,
+  createFakeUserRepository,
+} from "../test-utils/fake-repositories";
 import { unwrap } from "../test-utils/unwrap";
 
 function setup() {
-  const users = new InMemoryUserRepository();
-  const groups = new InMemoryGroupRepository();
+  const users = createFakeUserRepository();
+  const groups = createFakeGroupRepository();
   return { service: new UserService(users, groups), users, groups };
 }
 
 describe("UserService.getUser", () => {
   it("returns the user with the matching subject", async () => {
     const { service, users } = setup();
-    const user = users.add({
-      email: "jane@example.com",
-      firstName: "Jane",
-      lastName: "Doe",
-      subject: "subject-1",
-      groupId: 1,
-    });
+    const user = await unwrap(
+      users.create({
+        email: "jane@example.com",
+        firstName: "Jane",
+        lastName: "Doe",
+        subject: "subject-1",
+        groupId: 1,
+      }),
+    );
 
     expect(unwrap(await service.getUser("subject-1"))).toEqual(user);
   });
@@ -34,17 +39,17 @@ describe("UserService.onboardUser", () => {
   it("creates a group and assigns the user to it", async () => {
     const { service, users, groups } = setup();
 
-    const user = unwrap(
-      await service.onboardUser({
+    const user = await unwrap(
+      service.onboardUser({
         email: "jane@example.com",
         name: "Jane Doe",
         subject: "subject-1",
       }),
     );
 
-    expect(groups.groups).toHaveLength(1);
-    expect(user.groupId).toBe(groups.groups[0]?.id);
-    expect(users.users).toEqual([user]);
+    expect(groups.records).toHaveLength(1);
+    expect(user.groupId).toBe(groups.records[0]?.id);
+    expect(users.records).toEqual([user]);
   });
 
   it("splits a full name into first and last name", async () => {
@@ -117,13 +122,15 @@ describe("UserService.onboardUser", () => {
 
   it("returns err when the email already belongs to another user", async () => {
     const { service, users } = setup();
-    users.add({
-      email: "jane@example.com",
-      firstName: "Jane",
-      lastName: "Doe",
-      subject: "other-subject",
-      groupId: 1,
-    });
+    await unwrap(
+      users.create({
+        email: "jane@example.com",
+        firstName: "Jane",
+        lastName: "Doe",
+        subject: "other-subject",
+        groupId: 1,
+      }),
+    );
 
     const result = await service.onboardUser({
       email: "jane@example.com",
@@ -136,13 +143,15 @@ describe("UserService.onboardUser", () => {
 
   it("returns err when the subject already belongs to another user", async () => {
     const { service, users } = setup();
-    users.add({
-      email: "other@example.com",
-      firstName: "Jane",
-      lastName: "Doe",
-      subject: "subject-1",
-      groupId: 1,
-    });
+    await unwrap(
+      users.create({
+        email: "other@example.com",
+        firstName: "Jane",
+        lastName: "Doe",
+        subject: "subject-1",
+        groupId: 1,
+      }),
+    );
 
     const result = await service.onboardUser({
       email: "jane@example.com",
@@ -151,6 +160,6 @@ describe("UserService.onboardUser", () => {
     });
 
     expect(result.isErr).toBe(true);
-    expect(users.users).toHaveLength(1);
+    expect(users.records).toHaveLength(1);
   });
 });

@@ -10,5 +10,5 @@ export interface User {
 export type CreateUserInput = Omit<User, "id">;
 
 export interface UpdateUserInput {
-  groupId?: number;
+  groupId: number;
 }

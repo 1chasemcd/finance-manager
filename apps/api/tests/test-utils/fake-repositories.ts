@@ -1,9 +1,9 @@
-import { err, ok, type Result } from "@finapp/result";
+import { Err, err, Ok, ok, type Result } from "@finapp/result";
 import type { GroupInviteRepository } from "@/group-invites/group-invite.repository";
 import type { GroupInvite } from "@/group-invites/group-invites.types";
 import type { GroupRepository } from "@/groups/group.repository";
 import type { Group } from "@/groups/group.types";
-import type { CreateUserInput, UpdateUserInput, User } from "@/users/user.types";
+import type { User } from "@/users/user.types";
 import type { UserRepository } from "@/users/user.repository";
 import type { Source } from "@/sources/source.types";
 import type { SourceRepository } from "@/sources/source.repository";
@@ -11,119 +11,12 @@ import type { FileFormatRepository } from "@/file-formats/file-format.repository
 import type { FileFormat, WriteFileFormatInput } from "@/file-formats/file-format.types";
 import type { CreateSourceRequest, UpdateSourceRequest } from "@finapp/schema";
 
-export class InMemoryUserRepository implements UserRepository {
-  readonly users: User[] = [];
-  private nextId = 1;
+// ----------------------------------------------------------------------------
+// Types
+// ----------------------------------------------------------------------------
 
-  bySubject(subject: string): Promise<User | undefined> {
-    return Promise.resolve(this.users.find((user) => user.subject === subject));
-  }
-
-  byEmail(email: string): Promise<User | undefined> {
-    return Promise.resolve(this.users.find((user) => user.email === email));
-  }
-
-  byGroup(groupId: number): Promise<User[]> {
-    return Promise.resolve(this.users.filter((user) => user.groupId === groupId));
-  }
-
-  byGroupAndEmail(groupId: number, email: string): Promise<User | undefined> {
-    return Promise.resolve(
-      this.users.find((user) => user.groupId === groupId && user.email === email),
-    );
-  }
-
-  create(input: CreateUserInput): Promise<Result<User>> {
-    const existing = this.users.find(
-      (user) => user.email === input.email || user.subject === input.subject,
-    );
-    if (existing !== undefined) return Promise.resolve(err());
-
-    return Promise.resolve(ok(this.add(input)));
-  }
-
-  update(id: number, input: UpdateUserInput): Promise<Result> {
-    const user = this.users.find((candidate) => candidate.id === id);
-    if (user === undefined) return Promise.resolve(err());
-
-    if (input.groupId !== undefined) user.groupId = input.groupId;
-    return Promise.resolve(ok());
-  }
-
-  add(input: Omit<User, "id">): User {
-    const user: User = { id: this.nextId, ...input };
-    this.nextId += 1;
-    this.users.push(user);
-    return user;
-  }
-}
-
-export class InMemoryGroupRepository implements GroupRepository {
-  readonly groups: Group[] = [];
-  private nextId = 1;
-
-  create(): Promise<Group> {
-    const group: Group = { id: this.nextId };
-    this.nextId += 1;
-    this.groups.push(group);
-    return Promise.resolve(group);
-  }
-}
-
-export class InMemoryGroupInviteRepository implements GroupInviteRepository {
-  readonly invites: GroupInvite[] = [];
-  private nextId = 1;
-  private readonly currentTime: () => Date;
-
-  constructor(currentTime = () => new Date()) {
-    this.currentTime = currentTime;
-  }
-
-  create(groupId: number, userId: number): Promise<Result<GroupInvite>> {
-    const existing = this.invites.find(
-      (invite) => invite.groupId === groupId && invite.userId === userId,
-    );
-    if (existing !== undefined) return Promise.resolve(err());
-
-    const newRow = {
-      id: this.nextId,
-      groupId,
-      userId,
-      createdAt: this.currentTime(),
-    };
-    this.invites.push(newRow);
-    this.nextId += 1;
-    return Promise.resolve(ok(newRow));
-  }
-
-  byUser(userId: number): Promise<GroupInvite[]> {
-    return Promise.resolve(this.invites.filter((invite) => invite.userId === userId));
-  }
-
-  delete(id: number): Promise<Result> {
-    const index = this.invites.findIndex((invite) => invite.id === id);
-    if (index === -1) return Promise.resolve(err());
-    this.invites.splice(index, 1);
-    return Promise.resolve(ok());
-  }
-
-  deleteExpired(oldestDate: Date): Promise<void> {
-    const remaining = this.invites.filter((invite) => invite.createdAt >= oldestDate);
-    this.invites.splice(0, this.invites.length, ...remaining);
-    return Promise.resolve();
-  }
-
-  add(input: Omit<GroupInvite, "id" | "createdAt"> & { createdAt?: Date }): GroupInvite {
-    const invite: GroupInvite = {
-      id: this.nextId,
-      createdAt: input.createdAt ?? this.currentTime(),
-      groupId: input.groupId,
-      userId: input.userId,
-    };
-    this.nextId += 1;
-    this.invites.push(invite);
-    return invite;
-  }
+export interface FakeRepository<T> {
+  records: T[];
 }
 
 interface Entity {
@@ -133,10 +26,27 @@ interface Entity {
 type WithGroup<T> = T & { groupId: number };
 type OmitEntity<T> = Omit<T, "id" | "groupId">;
 
+// ----------------------------------------------------------------------------
+// Utils
+// ----------------------------------------------------------------------------
+
 function omitGroup<T>(data: WithGroup<T>): T {
   const { groupId: _, ...rest } = data;
   return rest as T;
 }
+
+function errorOn<T>(records: T[], predicate: (x: T) => boolean): Promise<Err<void>> | false {
+  return records.find(predicate) === undefined ? false : Promise.resolve(err());
+}
+
+function push<T>(records: T[], value: T): Promise<Ok<T>> {
+  records.push(value);
+  return Promise.resolve(ok(value));
+}
+
+// ----------------------------------------------------------------------------
+// Repository Capabilities
+// ----------------------------------------------------------------------------
 
 function byIdCapability<T extends Entity>(
   records: WithGroup<T>[],
@@ -198,11 +108,78 @@ function deleteCapability<T extends Entity>(records: WithGroup<T>[]) {
   };
 }
 
-interface InMemoryFileFormatRepository extends FileFormatRepository {
-  records: WithGroup<FileFormat>[];
+// ----------------------------------------------------------------------------
+// Repositories
+// ----------------------------------------------------------------------------
+
+type FakeUserRepository = UserRepository & FakeRepository<User>;
+
+export function createFakeUserRepository(): FakeUserRepository {
+  const records: User[] = [];
+  let nextId = 1;
+
+  return {
+    records,
+    bySubject: (subject) => Promise.resolve(records.find((x) => x.subject === subject)),
+    byEmail: (email) => Promise.resolve(records.find((x) => x.email === email)),
+    byGroup: (groupId) => Promise.resolve(records.filter((x) => x.groupId === groupId)),
+    byGroupAndEmail: (groupId, email) =>
+      Promise.resolve(records.find((x) => x.groupId === groupId && x.email === email)),
+    create: (input) =>
+      errorOn(records, (x) => x.email === input.email || x.subject === input.subject) ||
+      push(records, { id: nextId++, ...input }),
+    update: (id, input) => {
+      const user = records.find((user) => user.id === id);
+      if (!user) return Promise.resolve(err());
+      user.groupId = input.groupId;
+      return Promise.resolve(ok());
+    },
+  };
 }
 
-export function createInMemoryFileFormatRepository(): InMemoryFileFormatRepository {
+type FakeGroupRepository = GroupRepository & FakeRepository<Group>;
+
+export function createFakeGroupRepository(): FakeGroupRepository {
+  const records: Group[] = [];
+  let id = 0;
+
+  return {
+    records,
+    create: () => Promise.resolve((id++, records.push({ id }), { id })),
+  };
+}
+
+type FakeGroupInviteRepository = GroupInviteRepository & FakeRepository<GroupInvite>;
+
+export function createFakeGroupInviteRepository(
+  currentTime: () => Date = () => new Date(),
+): FakeGroupInviteRepository {
+  const records: GroupInvite[] = [];
+  let nextId = 1;
+
+  return {
+    records,
+    create: (groupId, userId) =>
+      errorOn(records, (x) => x.groupId === groupId && x.userId === userId) ||
+      push(records, { id: nextId++, groupId, userId, createdAt: currentTime() }),
+    byUser: (userId) => Promise.resolve(records.filter((x) => x.userId === userId)),
+    delete: (id) => {
+      const index = records.findIndex((invite) => invite.id === id);
+      if (index === -1) return Promise.resolve(err());
+      records.splice(index, 1);
+      return Promise.resolve(ok());
+    },
+    deleteExpired(oldestDate: Date): Promise<void> {
+      const remaining = records.filter((x) => x.createdAt >= oldestDate);
+      records.splice(0, records.length, ...remaining);
+      return Promise.resolve();
+    },
+  };
+}
+
+type FakeFileFormatRepository = FileFormatRepository & FakeRepository<WithGroup<FileFormat>>;
+
+export function createFakeFileFormatRepository(): FakeFileFormatRepository {
   const records: WithGroup<FileFormat>[] = [];
 
   const mapper = (input: WriteFileFormatInput) => ({
@@ -221,11 +198,9 @@ export function createInMemoryFileFormatRepository(): InMemoryFileFormatReposito
   };
 }
 
-interface InMemorySourceRepository extends SourceRepository {
-  records: WithGroup<Source>[];
-}
+type FakeSourceRepository = SourceRepository & FakeRepository<WithGroup<Source>>;
 
-export function createInMemorySourceRepository(): InMemorySourceRepository {
+export function createFakeSourceRepository(): FakeSourceRepository {
   const records: WithGroup<Source>[] = [];
 
   const mapper = (input: CreateSourceRequest | UpdateSourceRequest) => ({

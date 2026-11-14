@@ -5,8 +5,8 @@ import {
 } from "@/group-invites/group-invite.service";
 import { CurrentUser } from "@/identity/current-user";
 import {
-  InMemoryGroupInviteRepository,
-  InMemoryUserRepository,
+  createFakeGroupInviteRepository,
+  createFakeUserRepository,
 } from "../test-utils/fake-repositories";
 import { unwrap } from "../test-utils/unwrap";
 import type { RequestContextData } from "@/middleware/request-context";
@@ -17,26 +17,29 @@ const HOUR_MS = 60 * 60 * 1000;
 
 function setup() {
   const clock = createFakeClock(NOW);
-  const users = new InMemoryUserRepository();
-  const invites = new InMemoryGroupInviteRepository(clock.currentTime);
+  const users = createFakeUserRepository();
+  const invites = createFakeGroupInviteRepository(clock.currentTime);
   const requestContext: RequestContextData = {};
   const currentUser = new CurrentUser(() => requestContext);
   const service = new GroupInviteService(users, invites, currentUser, clock.currentTime);
 
-  const me = users.add({
+  const me = {
+    id: 1,
     email: "me@example.com",
     firstName: "Me",
     lastName: "Myself",
     subject: "subject-me",
     groupId: 1,
-  });
-  const other = users.add({
+  };
+  const other = {
+    id: 2,
     email: "other@example.com",
     firstName: "Other",
     lastName: "Person",
     subject: "subject-other",
     groupId: 2,
-  });
+  };
+  users.records.push(me, other);
   requestContext.user = me;
 
   return { clock, users, invites, requestContext, service, me, other };
@@ -54,8 +57,8 @@ describe("GroupInviteService.getPendingInvites", () => {
 
   it("returns only the current user's invites", async () => {
     const { service, invites, me, other } = setup();
-    invites.add({ groupId: 2, userId: me.id });
-    invites.add({ groupId: 1, userId: other.id });
+    await unwrap(invites.create(2, me.id));
+    await unwrap(invites.create(1, other.id));
 
     const pending = await service.getPendingInvites();
 
@@ -65,7 +68,7 @@ describe("GroupInviteService.getPendingInvites", () => {
 
   it("keeps invites issued within the validity window", async () => {
     const { service, invites, clock, me } = setup();
-    invites.add({ groupId: 2, userId: me.id });
+    await unwrap(invites.create(2, me.id));
     clock.advance(GROUP_INVITE_VALID_DURATION_MS - HOUR_MS);
 
     expect(await service.getPendingInvites()).toHaveLength(1);
@@ -73,7 +76,7 @@ describe("GroupInviteService.getPendingInvites", () => {
 
   it("keeps an invite issued exactly at the window boundary", async () => {
     const { service, invites, clock, me } = setup();
-    invites.add({ groupId: 2, userId: me.id });
+    await unwrap(invites.create(2, me.id));
     clock.advance(GROUP_INVITE_VALID_DURATION_MS);
 
     expect(await service.getPendingInvites()).toHaveLength(1);
@@ -81,7 +84,7 @@ describe("GroupInviteService.getPendingInvites", () => {
 
   it("drops invites older than the validity window", async () => {
     const { service, invites, clock, me } = setup();
-    invites.add({ groupId: 2, userId: me.id });
+    await unwrap(invites.create(2, me.id));
     clock.advance(GROUP_INVITE_VALID_DURATION_MS + 1);
 
     expect(await service.getPendingInvites()).toHaveLength(0);
@@ -103,8 +106,8 @@ describe("GroupInviteService.inviteUserToGroup", () => {
 
     await service.inviteUserToGroup(other.email);
 
-    expect(invites.invites).toHaveLength(1);
-    expect(invites.invites[0]).toMatchObject({
+    expect(invites.records).toHaveLength(1);
+    expect(invites.records[0]).toMatchObject({
       groupId: me.groupId,
       userId: other.id,
       createdAt: NOW,
@@ -115,7 +118,7 @@ describe("GroupInviteService.inviteUserToGroup", () => {
     const { service, invites } = setup();
 
     await expect(service.inviteUserToGroup("nobody@example.com")).resolves.toBeUndefined();
-    expect(invites.invites).toHaveLength(0);
+    expect(invites.records).toHaveLength(0);
   });
 
   it("does not create a second invite while one is still pending", async () => {
@@ -124,20 +127,20 @@ describe("GroupInviteService.inviteUserToGroup", () => {
     await service.inviteUserToGroup(other.email);
     await service.inviteUserToGroup(other.email);
 
-    expect(invites.invites).toHaveLength(1);
+    expect(invites.records).toHaveLength(1);
   });
 
   it("issues a fresh invite after the previous one expired", async () => {
     const { service, invites, clock, other } = setup();
     await service.inviteUserToGroup(other.email);
-    const expiredId = invites.invites[0]?.id;
+    const expiredId = invites.records[0]?.id;
 
     clock.advance(GROUP_INVITE_VALID_DURATION_MS + HOUR_MS);
     await service.inviteUserToGroup(other.email);
 
-    expect(invites.invites).toHaveLength(1);
-    expect(invites.invites[0]?.id).not.toBe(expiredId);
-    expect(invites.invites[0]?.createdAt).toEqual(new Date(NOW.getTime() + 25 * HOUR_MS));
+    expect(invites.records).toHaveLength(1);
+    expect(invites.records[0]?.id).not.toBe(expiredId);
+    expect(invites.records[0]?.createdAt).toEqual(new Date(NOW.getTime() + 25 * HOUR_MS));
   });
 });
 
@@ -145,14 +148,14 @@ describe("GroupInviteService.acceptInviteToGroup", () => {
   it("moves the current user into the inviting group and deletes the invite", async () => {
     const { service, invites, requestContext, me, other } = setup();
     await service.inviteUserToGroup(other.email);
-    const invite = invites.invites[0];
+    const invite = invites.records[0];
     if (invite === undefined) throw new Error("expected an invite");
 
     requestContext.user = other;
     unwrap(await service.acceptInviteToGroup(invite.id));
 
     expect(other.groupId).toBe(me.groupId);
-    expect(invites.invites).toHaveLength(0);
+    expect(invites.records).toHaveLength(0);
   });
 
   it("returns err for an unknown id", async () => {
@@ -163,7 +166,7 @@ describe("GroupInviteService.acceptInviteToGroup", () => {
 
   it("returns err for an invite addressed to somebody else", async () => {
     const { service, invites, requestContext, me } = setup();
-    const invite = invites.add({ groupId: 2, userId: me.id + 100 });
+    const invite = await unwrap(invites.create(2, me.id + 100));
 
     expect((await service.acceptInviteToGroup(invite.id)).isErr).toBe(true);
     expect(requestContext.user?.groupId).toBe(me.groupId);
@@ -172,7 +175,7 @@ describe("GroupInviteService.acceptInviteToGroup", () => {
   it("returns err once the invite has expired", async () => {
     const { service, invites, clock, requestContext, other } = setup();
     await service.inviteUserToGroup(other.email);
-    const invite = invites.invites[0];
+    const invite = invites.records[0];
     if (invite === undefined) throw new Error("expected an invite");
     clock.advance(GROUP_INVITE_VALID_DURATION_MS + HOUR_MS);
 
@@ -184,7 +187,7 @@ describe("GroupInviteService.acceptInviteToGroup", () => {
   it("cannot accept the same invite twice", async () => {
     const { service, invites, requestContext, other } = setup();
     await service.inviteUserToGroup(other.email);
-    const invite = invites.invites[0];
+    const invite = invites.records[0];
     if (invite === undefined) throw new Error("expected an invite");
 
     requestContext.user = other;
@@ -197,13 +200,13 @@ describe("GroupInviteService.declineInviteToGroup", () => {
   it("deletes the invite without changing groups", async () => {
     const { service, invites, requestContext, other } = setup();
     await service.inviteUserToGroup(other.email);
-    const invite = invites.invites[0];
+    const invite = invites.records[0];
     if (invite === undefined) throw new Error("expected an invite");
 
     requestContext.user = other;
     unwrap(await service.declineInviteToGroup(invite.id));
 
-    expect(invites.invites).toHaveLength(0);
+    expect(invites.records).toHaveLength(0);
     expect(other.groupId).toBe(2);
   });
 
@@ -217,14 +220,14 @@ describe("GroupInviteService.declineInviteToGroup", () => {
 describe("GroupInviteService.cleanupExpiredInvites", () => {
   it("removes only the invites outside the validity window", async () => {
     const { service, invites, clock, me } = setup();
-    const stale = invites.add({ groupId: 2, userId: me.id });
+    const stale = await unwrap(invites.create(2, me.id));
 
     clock.advance(GROUP_INVITE_VALID_DURATION_MS + HOUR_MS);
-    const fresh = invites.add({ groupId: 2, userId: me.id });
+    const fresh = await unwrap(invites.create(1, me.id));
 
     await service.cleanupExpiredInvites();
 
-    expect(invites.invites.map((invite) => invite.id)).toEqual([fresh.id]);
-    expect(invites.invites.map((invite) => invite.id)).not.toContain(stale.id);
+    expect(invites.records.map((invite) => invite.id)).toEqual([fresh.id]);
+    expect(invites.records.map((invite) => invite.id)).not.toContain(stale.id);
   });
 });

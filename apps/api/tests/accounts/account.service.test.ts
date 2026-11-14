@@ -2,46 +2,51 @@ import { describe, expect, it } from "vitest";
 import { AccountService } from "@/accounts/account.service";
 import { GroupInviteService } from "@/group-invites/group-invite.service";
 import { CurrentUser } from "@/identity/current-user";
-import {
-  InMemoryGroupInviteRepository,
-  InMemoryUserRepository,
-} from "../test-utils/fake-repositories";
 import type { RequestContextData } from "@/middleware/request-context";
 import { createFakeClock } from "../test-utils/fake-clock";
+import {
+  createFakeGroupInviteRepository,
+  createFakeUserRepository,
+} from "../test-utils/fake-repositories";
+import { unwrap } from "../test-utils/unwrap";
 
 const NOW = new Date("2026-06-15T12:00:00.000Z");
 const HOUR_MS = 60 * 60 * 1000;
 
 function setup() {
   const clock = createFakeClock(NOW);
-  const users = new InMemoryUserRepository();
-  const invites = new InMemoryGroupInviteRepository(clock.currentTime);
+  const users = createFakeUserRepository();
+  const invites = createFakeGroupInviteRepository(clock.currentTime);
   const requestContext: RequestContextData = {};
   const currentUser = new CurrentUser(() => requestContext);
   const inviteService = new GroupInviteService(users, invites, currentUser, clock.currentTime);
   const service = new AccountService(users, inviteService, currentUser);
 
-  const me = users.add({
+  const me = {
+    id: 1,
     email: "me@example.com",
     firstName: "Me",
     lastName: "Myself",
     subject: "subject-me",
     groupId: 1,
-  });
-  const teammate = users.add({
+  };
+  const teammate = {
+    id: 2,
     email: "teammate@example.com",
     firstName: "Team",
     lastName: "Mate",
     subject: "subject-teammate",
     groupId: 1,
-  });
-  const stranger = users.add({
+  };
+  const stranger = {
+    id: 3,
     email: "stranger@example.com",
     firstName: "Stran",
     lastName: "Ger",
     subject: "subject-stranger",
     groupId: 2,
-  });
+  };
+  users.records.push(me, teammate, stranger);
   requestContext.user = me;
 
   return { clock, users, invites, requestContext, service, me, teammate, stranger };
@@ -82,8 +87,9 @@ describe("AccountService.getAccountInfo", () => {
   });
 
   it("omits pendingInvite when the only invite has expired", async () => {
-    const { service, invites, me } = setup();
-    invites.add({ groupId: 2, userId: me.id, createdAt: new Date(NOW.getTime() - 25 * HOUR_MS) });
+    const { clock, service, invites, me } = setup();
+    await unwrap(invites.create(2, me.id));
+    clock.advance(1000 * 60 * 60 * 25);
 
     const info = await service.getAccountInfo();
 
@@ -92,7 +98,7 @@ describe("AccountService.getAccountInfo", () => {
 
   it("describes a pending invite with the inviting group's members", async () => {
     const { service, invites, me } = setup();
-    const invite = invites.add({ groupId: 2, userId: me.id });
+    const invite = await unwrap(invites.create(2, me.id));
 
     const info = await service.getAccountInfo();
 
@@ -105,9 +111,9 @@ describe("AccountService.getAccountInfo", () => {
 
   it("reports the oldest pending invite when several exist", async () => {
     const { service, invites, me, clock } = setup();
-    const oldest = invites.add({ groupId: 2, userId: me.id });
+    const oldest = await unwrap(invites.create(2, me.id));
     clock.advance(HOUR_MS);
-    invites.add({ groupId: 1, userId: me.id });
+    await unwrap(invites.create(1, me.id));
 
     const info = await service.getAccountInfo();
 
@@ -119,7 +125,7 @@ describe("AccountService.getAccountInfo", () => {
 
   it("ignores invites addressed to other users", async () => {
     const { service, invites, stranger } = setup();
-    invites.add({ groupId: 2, userId: stranger.id });
+    await unwrap(invites.create(2, stranger.id));
 
     const info = await service.getAccountInfo();
 
