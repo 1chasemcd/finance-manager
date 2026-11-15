@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createWorker } from "../test-utils/app-harness";
 import type { AccountInfoResponse } from "@/accounts/account.types";
 
-const { api, login } = await createWorker();
+const { app, login } = await createWorker();
 
 const alice = { email: "alice@example.com", name: "Alice Smith" };
 const bob = { email: "bob@example.com", name: "Bob Jones" };
@@ -12,7 +12,7 @@ describe("/api/account", () => {
   it("onboards a first-time visitor from the identity profile", async () => {
     const token = await login(alice);
 
-    const response = await api("/api/account", { token });
+    const response = await app.auth(token).get("/api/account");
 
     expect(response.status).toBe(200);
     const body = await response.json<AccountInfoResponse>();
@@ -32,11 +32,7 @@ describe("/api/account/invite", () => {
   it("rejects an invite payload that is not a valid email", async () => {
     const token = await login(alice);
 
-    const response = await api("/api/account/invite", {
-      method: "POST",
-      token,
-      json: { email: "not-an-email" },
-    });
+    const response = await app.auth(token).post("/api/account/invite", { email: "not-an-email" });
 
     expect(response.status).toBe(400);
   });
@@ -44,11 +40,9 @@ describe("/api/account/invite", () => {
   it("responds 204 when creating an invite for an unknown email", async () => {
     const token = await login(alice);
 
-    const response = await api("/api/account/invite", {
-      method: "POST",
-      token,
-      json: { email: "ghost@example.com" },
-    });
+    const response = await app
+      .auth(token)
+      .post("/api/account/invite", { email: "ghost@example.com" });
 
     expect(response.status).toBe(204);
   });
@@ -57,14 +51,12 @@ describe("/api/account/invite", () => {
     const aliceToken = await login(alice);
     const bobToken = await login(bob);
 
-    const inviteResponse = await api("/api/account/invite", {
-      method: "POST",
-      token: aliceToken,
-      json: { email: "bob@example.com" },
-    });
+    const inviteResponse = await app
+      .auth(aliceToken)
+      .post("/api/account/invite", { email: "bob@example.com" });
     expect(inviteResponse.status).toBe(204);
 
-    const pendingResponse = await api("/api/account", { token: bobToken });
+    const pendingResponse = await app.auth(bobToken).get("/api/account");
     expect(pendingResponse.status).toBe(200);
     const pending = await pendingResponse.json<AccountInfoResponse>();
     expect(pending.pendingInvite).toBeDefined();
@@ -75,16 +67,15 @@ describe("/api/account/invite", () => {
     expect(Number.isNaN(Date.parse(pending.pendingInvite?.createdAt as unknown as string))).toBe(
       false,
     );
-    const inviteId = pending.pendingInvite?.inviteId;
-    expect(inviteId).toBeDefined();
+    const inviteId = pending.pendingInvite?.inviteId ?? 0;
+    expect(inviteId).toBeGreaterThan(0);
 
-    const acceptResponse = await api(`/api/account/invite/${inviteId?.toString() ?? ""}/accept`, {
-      method: "POST",
-      token: bobToken,
-    });
+    const acceptResponse = await app
+      .auth(bobToken)
+      .post(`/api/account/invite/${inviteId.toString()}/accept`);
     expect(acceptResponse.status).toBe(204);
 
-    const bobAccountResponse = await api("/api/account", { token: bobToken });
+    const bobAccountResponse = await app.auth(bobToken).get("/api/account");
     const bobAccount = await bobAccountResponse.json<AccountInfoResponse>();
     expect(bobAccount).not.toHaveProperty("pendingInvite");
     expect(bobAccount.groupMembers).toHaveLength(2);
@@ -95,7 +86,7 @@ describe("/api/account/invite", () => {
       ]),
     );
 
-    const aliceAccountResponse = await api("/api/account", { token: aliceToken });
+    const aliceAccountResponse = await app.auth(aliceToken).get("/api/account");
     const aliceAccount = await aliceAccountResponse.json<AccountInfoResponse>();
 
     expect(aliceAccount.groupMembers).toHaveLength(2);
@@ -107,39 +98,31 @@ describe("/api/account/invite", () => {
     const bobToken = await login(bob);
 
     expect(
-      (
-        await api("/api/account/invite", {
-          method: "POST",
-          token: aliceToken,
-          json: { email: "bob@example.com" },
-        })
-      ).status,
+      (await app.auth(aliceToken).post("/api/account/invite", { email: "bob@example.com" })).status,
     ).toBe(204);
 
     const pending = await (
-      await api("/api/account", { token: bobToken })
+      await app.auth(bobToken).get("/api/account")
     ).json<AccountInfoResponse>();
-    const inviteId = pending.pendingInvite?.inviteId;
-    expect(inviteId).toBeDefined();
+    const inviteId = pending.pendingInvite?.inviteId ?? 0;
+    expect(inviteId).toBeGreaterThan(0);
 
-    const declineResponse = await api(`/api/account/invite/${inviteId?.toString() ?? ""}/decline`, {
-      method: "POST",
-      token: bobToken,
-    });
+    const declineResponse = await app
+      .auth(bobToken)
+      .post(`/api/account/invite/${inviteId.toString()}/decline`);
     expect(declineResponse.status).toBe(204);
 
     const afterDecline = await (
-      await api("/api/account", { token: bobToken })
+      await app.auth(bobToken).get("/api/account")
     ).json<AccountInfoResponse>();
     expect(afterDecline).not.toHaveProperty("pendingInvite");
     expect(afterDecline.groupMembers).toEqual([
       { firstName: "Bob", lastName: "Jones", email: "bob@example.com" },
     ]);
 
-    const repeatDecline = await api(`/api/account/invite/${inviteId?.toString() ?? ""}/decline`, {
-      method: "POST",
-      token: bobToken,
-    });
+    const repeatDecline = await app
+      .auth(bobToken)
+      .post(`/api/account/invite/${inviteId.toString()}/decline`);
     expect(repeatDecline.status).toBe(404);
   });
 
@@ -149,29 +132,23 @@ describe("/api/account/invite", () => {
     const carolToken = await login(carol);
 
     expect(
-      (
-        await api("/api/account/invite", {
-          method: "POST",
-          token: carolToken,
-          json: { email: "alice@example.com" },
-        })
-      ).status,
+      (await app.auth(carolToken).post("/api/account/invite", { email: "alice@example.com" }))
+        .status,
     ).toBe(204);
 
     const pending = await (
-      await api("/api/account", { token: aliceToken })
+      await app.auth(aliceToken).get("/api/account")
     ).json<AccountInfoResponse>();
-    const inviteId = pending.pendingInvite?.inviteId;
-    expect(inviteId).toBeDefined();
+    const inviteId = pending.pendingInvite?.inviteId ?? 0;
+    expect(inviteId).toBeGreaterThan(0);
 
-    const hijack = await api(`/api/account/invite/${inviteId?.toString() ?? ""}/accept`, {
-      method: "POST",
-      token: bobToken,
-    });
+    const hijack = await app
+      .auth(bobToken)
+      .post(`/api/account/invite/${inviteId.toString()}/accept`);
     expect(hijack.status).toBe(404);
 
     const aliceAfter = await (
-      await api("/api/account", { token: aliceToken })
+      await app.auth(aliceToken).get("/api/account")
     ).json<AccountInfoResponse>();
     expect(aliceAfter.pendingInvite?.inviteId).toBe(inviteId);
     expect(aliceAfter.groupMembers).toEqual([
@@ -182,11 +159,7 @@ describe("/api/account/invite", () => {
   it("responds 404 for unknown invite ids", async () => {
     const token = await login(alice);
     const fakeId = "999";
-    expect(
-      (await api(`/api/account/invite/${fakeId}/accept`, { method: "POST", token })).status,
-    ).toBe(404);
-    expect(
-      (await api(`/api/account/invite/${fakeId}/decline`, { method: "POST", token })).status,
-    ).toBe(404);
+    expect((await app.auth(token).post(`/api/account/invite/${fakeId}/accept`)).status).toBe(404);
+    expect((await app.auth(token).post(`/api/account/invite/${fakeId}/decline`)).status).toBe(404);
   });
 });

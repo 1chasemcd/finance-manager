@@ -1,4 +1,5 @@
-import type { Result } from "@finapp/result";
+import { type Result } from "@finapp/result";
+import { expect } from "vitest";
 
 export function unwrap<T, E>(result: Result<T, E>): T;
 export function unwrap<T, E>(result: Promise<Result<T, E>>): Promise<T>;
@@ -20,4 +21,10 @@ export function unwrapError<T, E>(result: Result<T, E> | Promise<Result<T, E>>):
     throw new Error(`Expected Err result, received value: ${JSON.stringify(result.data)}`);
 
   return result.error;
+}
+
+export async function unwrapResponse<T>(response: Promise<Response>): Promise<T> {
+  const awaited = await response;
+  expect(awaited.ok, `Expected ok response but got ${awaited.status.toString()}`).toBe(true);
+  return awaited.json<T>();
 }

@@ -5,6 +5,8 @@ import { unwrap } from "./unwrap";
 import type { User } from "@/users/user.types";
 import type { FileFormat } from "@/file-formats/file-format.types";
 
+export type Seeds = ReturnType<typeof createDataSeeds>;
+
 export function createDataSeeds(repos: RepositoryContainer) {
   let counter = 0;
   beforeEach(() => {

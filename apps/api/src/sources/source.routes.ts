@@ -28,7 +28,7 @@ export function createSourceRoutes({ sourceService }: SourceRouteDeps) {
         Err: c.body(null, 409),
       });
     })
-    .patch(
+    .put(
       "/:id",
       zValidator("param", idSchema),
       zValidator("json", updateSourceSchema),
