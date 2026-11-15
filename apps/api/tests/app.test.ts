@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createWorker } from "./test-utils/app-harness";
 
-const { app, login } = await createWorker();
+const { app, login } = createWorker();
 const testUser = { email: "test@example.com", name: "Test User" };
 
 describe("/api/health", () => {

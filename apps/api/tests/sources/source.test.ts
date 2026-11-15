@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createWorker } from "../test-utils/app-harness";
 import { unwrapResponse } from "../test-utils/unwrap";
 import type { Source } from "@/sources/source.types";
+import type { User } from "@/users/user.types";
 
 const { app, login } = createWorker();
 
@@ -12,13 +13,15 @@ describe("/api/source", () => {
     const aliceToken = await login(alice);
     const aliceApp = app.auth(aliceToken);
 
+    const ownerId = (await unwrapResponse<User[]>(aliceApp.get("/api/user")))[0]?.id;
+
     expect(await unwrapResponse<Source[]>(aliceApp.get("/api/source"))).toEqual([]);
 
     const added = await unwrapResponse<Source>(
       aliceApp.post("/api/source", {
         name: "Test",
         description: "Test Description",
-        ownerId: 1,
+        ownerId,
       }),
     );
 
@@ -27,7 +30,7 @@ describe("/api/source", () => {
       name: "Test",
       description: "Test Description",
       archived: false,
-      ownerId: 1,
+      ownerId,
       fileFormatId: null,
     });
 
@@ -39,7 +42,7 @@ describe("/api/source", () => {
           name: "Name Updated",
           description: "Description Updated",
           archived: true,
-          ownerId: 1,
+          ownerId,
           fileFormatId: null,
         })
       ).status,
@@ -52,7 +55,7 @@ describe("/api/source", () => {
       description: "Description Updated",
       archived: true,
       canDelete: true,
-      ownerId: 1,
+      ownerId,
       fileFormatId: null,
     });
 

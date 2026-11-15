@@ -9,6 +9,7 @@ import {
   createFakeUserRepository,
 } from "../test-utils/fake-repositories";
 import { unwrap } from "../test-utils/unwrap";
+import { CurrentUser } from "@/identity/current-user";
 
 const env = {
   POLICY_AUD: "policy-aud",
@@ -18,7 +19,8 @@ const env = {
 function setup() {
   const users = createFakeUserRepository();
   const groups = createFakeGroupRepository();
-  const userService = new UserService(users, groups);
+  const currentUser = new CurrentUser(requestContext);
+  const userService = new UserService(users, groups, currentUser);
   const jwtVerifyFn = vi.fn();
   const getIdentityFn = vi.fn();
   const state = { handled: false };

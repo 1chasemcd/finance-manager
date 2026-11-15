@@ -39,7 +39,7 @@ export function createContainer(env: Cloudflare.Env) {
   );
 
   const accountService = new AccountService(userRepository, groupInviteService, currentUser);
-  const userService = new UserService(userRepository, groupRepository);
+  const userService = new UserService(userRepository, groupRepository, currentUser);
   const fileFormatService = new FileFormatService(
     fileFormatRepository,
     sourceRepository,

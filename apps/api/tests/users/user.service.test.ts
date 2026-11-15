@@ -1,15 +1,26 @@
 import { describe, expect, it } from "vitest";
 import { UserService } from "@/users/user.service";
+import { CurrentUser } from "@/identity/current-user";
+import { unwrap } from "../test-utils/unwrap";
+import type { User } from "@/users/user.types";
 import {
   createFakeGroupRepository,
   createFakeUserRepository,
 } from "../test-utils/fake-repositories";
-import { unwrap } from "../test-utils/unwrap";
 
 function setup() {
-  const users = createFakeUserRepository();
+  let user: User;
   const groups = createFakeGroupRepository();
-  return { service: new UserService(users, groups), users, groups };
+  const users = createFakeUserRepository();
+  const currentUser = new CurrentUser(() => ({ user }));
+  return {
+    service: new UserService(users, groups, currentUser),
+    users,
+    groups,
+    setCurrentUser: (newUser: User) => {
+      user = newUser;
+    },
+  };
 }
 
 describe("UserService.getUser", () => {
@@ -32,6 +43,24 @@ describe("UserService.getUser", () => {
     const { service } = setup();
 
     expect((await service.getUser("missing")).isErr).toBe(true);
+  });
+});
+
+describe("UserService.all", () => {
+  it("returns the user with the matching subject", async () => {
+    const { service, users, setCurrentUser } = setup();
+    const user = await unwrap(
+      users.create({
+        email: "jane@example.com",
+        firstName: "Jane",
+        lastName: "Doe",
+        subject: "subject-1",
+        groupId: 1,
+      }),
+    );
+    setCurrentUser(user);
+
+    expect(await service.all()).toEqual([user]);
   });
 });
 

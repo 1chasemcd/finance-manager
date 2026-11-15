@@ -9,6 +9,7 @@ import {
   createFakeGroupRepository,
   createFakeUserRepository,
 } from "../test-utils/fake-repositories";
+import { CurrentUser } from "@/identity/current-user";
 
 function devEnv(devUser: string): Cloudflare.DevEnv {
   return { DEV_USER: devUser } as unknown as Cloudflare.DevEnv;
@@ -17,7 +18,8 @@ function devEnv(devUser: string): Cloudflare.DevEnv {
 function setup() {
   const users = createFakeUserRepository();
   const groups = createFakeGroupRepository();
-  const userService = new UserService(users, groups);
+  const currentUser = new CurrentUser(requestContext);
+  const userService = new UserService(users, groups, currentUser);
   const logger = createFakeLogger();
 
   const app = new Hono<{ Bindings: Cloudflare.DevEnv }>()
