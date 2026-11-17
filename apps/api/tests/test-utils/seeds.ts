@@ -2,8 +2,9 @@ import type { Group } from "@/groups/group.types";
 import type { RepositoryContainer } from "./repository-container";
 import { beforeEach } from "vitest";
 import { unwrap } from "./unwrap";
-import type { User } from "@/users/user.types";
-import type { FileFormat } from "@/file-formats/file-format.types";
+import type { CreateUserInput, User } from "@/users/user.types";
+import type { FileFormat, WriteFileFormatInput } from "@/file-formats/file-format.types";
+import type { CreateSourceRequest } from "@finapp/schema";
 
 export type Seeds = ReturnType<typeof createDataSeeds>;
 
@@ -14,15 +15,15 @@ export function createDataSeeds(repos: RepositoryContainer) {
   });
   const seeds = {
     seedGroup: () => repos.groups.create(),
-    seedUser: async (data: { group?: Group } = {}) => {
+    seedUser: async (data: { group?: Group } & Partial<Omit<CreateUserInput, "groupId">> = {}) => {
       data.group ??= await seeds.seedGroup();
       const index = String(counter++);
       return unwrap(
         await repos.users.create({
-          email: `user-${index}@example.com`,
-          firstName: "First",
-          lastName: "Last",
-          subject: `subject-${index}`,
+          email: data.email ?? `user-${index}@example.com`,
+          firstName: data.firstName ?? "First",
+          lastName: data.lastName ?? "Last",
+          subject: data.subject ?? `subject-${index}`,
           groupId: data.group.id,
         }),
       );
@@ -32,32 +33,45 @@ export function createDataSeeds(repos: RepositoryContainer) {
       data.user ??= await seeds.seedUser();
       unwrap(await repos.groupInvites.create(data.group.id, data.user.id));
     },
-    seedFileFormat: async (data: { group?: Group } = {}) => {
+    seedFileFormat: async (data: { group?: Group } & Partial<WriteFileFormatInput> = {}) => {
       data.group ??= await seeds.seedGroup();
       const index = String(counter++);
       return unwrap(
         await repos.fileFormats.create(data.group.id, {
-          name: `format-${index}`,
-          skipRows: 0,
-          dateIndex: 0,
-          summaryIndex: 0,
-          amountIndex: 0,
-          positiveIsSpending: false,
+          name: data.name ?? `format-${index}`,
+          skipRows: data.skipRows ?? 0,
+          dateIndex: data.dateIndex ?? 0,
+          summaryIndex: data.summaryIndex ?? 0,
+          amountIndex: data.amountIndex ?? 0,
+          positiveIsSpending: data.positiveIsSpending ?? false,
+          dateFormat: data.dateFormat,
+          rowPattern: data.rowPattern,
         }),
       );
     },
-    seedSource: async (data: { group?: Group } | { user?: User; fileFormat?: FileFormat } = {}) => {
+    seedSource: async (
+      data: ({ group?: Group } | { user?: User; fileFormat?: FileFormat }) &
+        Partial<Omit<CreateSourceRequest, "ownerId" | "fileFormatId">> & {
+          archived?: boolean;
+        } = {},
+    ) => {
       const user = "user" in data ? data.user : await seeds.seedUser("group" in data ? data : {});
       const fileFormat = "fileFormat" in data ? data.fileFormat : undefined;
 
       const index = String(counter++);
-      return unwrap(
+      const result = unwrap(
         await repos.sources.create(user.groupId, {
-          name: `source-${index}`,
+          name: data.name ?? `source-${index}`,
+          description: data.description,
           ownerId: user.id,
           fileFormatId: fileFormat?.id,
         }),
       );
+
+      if (data.archived === true)
+        await repos.sources.update(user.groupId, result.id, { ...result, archived: true });
+
+      return result;
     },
   };
 
