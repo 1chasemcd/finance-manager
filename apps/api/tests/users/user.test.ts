@@ -7,8 +7,8 @@ const { app, login } = createWorker();
 
 const alice = { email: "alice@example.com", name: "Alice Smith" };
 
-describe("/api/source", () => {
-  it("enables crud operations on source", async () => {
+describe("/api/user", () => {
+  it("allows retrieval of all users in group", async () => {
     const token = await login(alice);
     const response = await unwrapResponse<User[]>(app.auth(token).get("/api/user"));
 
