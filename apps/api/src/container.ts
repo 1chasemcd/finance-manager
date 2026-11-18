@@ -20,6 +20,8 @@ import { CategoryService } from "./categories/category.service";
 import { CategoryDrizzleRepository } from "./categories/category.drizzle-repository";
 import { CategoryRuleDrizzleRepository } from "./category-rules/category-rule.drizzle-repository";
 import { CategoryRuleService } from "./category-rules/category-rule.service";
+import { TransactionDrizzleRepository } from "./transactions/transaction.drizzle-repository";
+import { TransactionService } from "./transactions/transaction.service";
 
 export function createContainer(env: Cloudflare.Env) {
   const db = createDb(env.DB);
@@ -35,6 +37,7 @@ export function createContainer(env: Cloudflare.Env) {
   const groupRepository = new GroupDrizzleRepository(db);
   const groupInviteRepository = new GroupInviteDrizzleRepository(db);
   const sourceRepository = new SourceDrizzleRepository(db);
+  const transactionRepository = new TransactionDrizzleRepository(db);
   const userRepository = new UserDrizzleRepository(db);
 
   const groupInviteService = new GroupInviteService(
@@ -52,6 +55,7 @@ export function createContainer(env: Cloudflare.Env) {
     sourceRepository,
     currentUser,
   );
+  const transactionService = new TransactionService(transactionRepository, currentUser);
   const sourceService = new SourceService(sourceRepository, currentUser);
   const userService = new UserService(userRepository, groupRepository, currentUser);
 
@@ -66,6 +70,7 @@ export function createContainer(env: Cloudflare.Env) {
     fileFormatService,
     groupInviteService,
     sourceService,
+    transactionService,
     userService,
     identityService,
   };

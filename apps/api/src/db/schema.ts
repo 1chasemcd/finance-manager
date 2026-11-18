@@ -107,7 +107,7 @@ export const transactions = table(
   {
     ...id(),
     ...groupId(),
-    date: integer({ mode: "timestamp" }).notNull(),
+    date: text().notNull(),
     amount: integer().notNull(),
     summary: text(),
     categoryId: integer().notNull(),

@@ -8,6 +8,7 @@ import { createUserRoutes } from "./users/user.routes";
 import { createFileFormatRoutes } from "./file-formats/file-format.routes";
 import { createCategoryRoutes } from "./categories/category.routes";
 import { createCategoryRuleRoutes } from "./category-rules/category-rule.routes";
+import { createTransactionRoutes } from "./transactions/transaction.routes";
 
 const cache = new WeakMap<Cloudflare.Env, unknown>();
 
@@ -40,5 +41,6 @@ export function createAppRoutes(container: Container) {
     .route("/categoryrule", createCategoryRuleRoutes(container))
     .route("/fileformat", createFileFormatRoutes(container))
     .route("/source", createSourceRoutes(container))
+    .route("/transaction", createTransactionRoutes(container))
     .route("/user", createUserRoutes(container));
 }
