@@ -1,7 +1,7 @@
 {
   "version": "7",
   "dialect": "sqlite",
-  "id": "5ff49995-5494-448b-843f-5401335cfb20",
+  "id": "12ba29d1-153c-4451-b221-28e0d16a331e",
   "prevIds": [
     "2aced1f7-8a2b-45d9-a24d-3ffffe25df8b"
   ],
@@ -369,7 +369,7 @@
       "table": "transactions"
     },
     {
-      "type": "integer",
+      "type": "text",
       "notNull": true,
       "autoincrement": false,
       "default": null,
@@ -519,7 +519,7 @@
         "id"
       ],
       "onUpdate": "NO ACTION",
-      "onDelete": "NO ACTION",
+      "onDelete": "CASCADE",
       "nameExplicit": true,
       "name": "category_rules_group_category_fk",
       "entityType": "fks",
@@ -564,7 +564,7 @@
         "id"
       ],
       "onUpdate": "NO ACTION",
-      "onDelete": "NO ACTION",
+      "onDelete": "CASCADE",
       "nameExplicit": false,
       "name": "fk_group_invites_user_id_users_id_fk",
       "entityType": "fks",

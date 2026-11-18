@@ -15,7 +15,7 @@ CREATE TABLE `category_rules` (
 	`pattern` text NOT NULL,
 	`category_id` integer,
 	CONSTRAINT `fk_category_rules_group_id_groups_id_fk` FOREIGN KEY (`group_id`) REFERENCES `groups`(`id`),
-	CONSTRAINT `category_rules_group_category_fk` FOREIGN KEY (`group_id`,`category_id`) REFERENCES `categories`(`group_id`,`id`),
+	CONSTRAINT `category_rules_group_category_fk` FOREIGN KEY (`group_id`,`category_id`) REFERENCES `categories`(`group_id`,`id`) ON DELETE CASCADE,
 	CONSTRAINT `category_rules_group_pattern_uq` UNIQUE(`group_id`,`pattern`)
 );
 --> statement-breakpoint
@@ -53,7 +53,7 @@ CREATE TABLE `sources` (
 CREATE TABLE `transactions` (
 	`id` integer PRIMARY KEY AUTOINCREMENT,
 	`group_id` integer NOT NULL,
-	`date` integer NOT NULL,
+	`date` text NOT NULL,
 	`amount` integer NOT NULL,
 	`summary` text,
 	`category_id` integer NOT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE `__new_group_invites` (
 	`user_id` integer NOT NULL,
 	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
 	CONSTRAINT `fk_group_invites_group_id_groups_id_fk` FOREIGN KEY (`group_id`) REFERENCES `groups`(`id`),
-	CONSTRAINT `fk_group_invites_user_id_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
+	CONSTRAINT `fk_group_invites_user_id_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
 	CONSTRAINT `group_invites_group_user_uq` UNIQUE(`group_id`,`user_id`)
 );
 --> statement-breakpoint

@@ -28,7 +28,7 @@ export const groupInvites = table(
     ...groupId(),
     userId: integer()
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, { onDelete: "cascade" }),
     createdAt: integer({ mode: "timestamp" })
       .notNull()
       .default(sql`(unixepoch())`),
@@ -142,6 +142,6 @@ export const categoryRules = table(
       name: "category_rules_group_category_fk",
       columns: [table.groupId, table.categoryId],
       foreignColumns: [categories.groupId, categories.id],
-    }),
+    }).onDelete("cascade"),
   ],
 );
