@@ -4,7 +4,13 @@ import { beforeEach } from "vitest";
 import { unwrap } from "./unwrap";
 import type { CreateUserInput, User } from "@/users/user.types";
 import type { FileFormat } from "@/file-formats/file-format.types";
-import type { CreateSourceRequest, WriteFileFormatRequest } from "@finapp/schema";
+import type { Category } from "@/categories/category.types";
+import type {
+  CreateCategoryRequest,
+  CreateSourceRequest,
+  WriteCategoryRuleRequest,
+  WriteFileFormatRequest,
+} from "@finapp/schema";
 
 export type Seeds = ReturnType<typeof createDataSeeds>;
 
@@ -72,6 +78,45 @@ export function createDataSeeds(repos: RepositoryContainer) {
         await repos.sources.update(user.groupId, result.id, { ...result, archived: true });
 
       return result;
+    },
+    seedCategory: async (
+      data: { group?: Group } & Partial<CreateCategoryRequest> & {
+          archived?: boolean;
+        } = {},
+    ) => {
+      data.group ??= await seeds.seedGroup();
+      const index = String(counter++);
+      const result = unwrap(
+        await repos.categories.create(data.group.id, {
+          name: data.name ?? `category-${index}`,
+          description: data.description,
+        }),
+      );
+
+      if (data.archived === true) {
+        unwrap(
+          await repos.categories.update(data.group.id, result.id, {
+            name: result.name,
+            description: result.description,
+            archived: true,
+          }),
+        );
+        return { ...result, archived: true };
+      }
+
+      return result;
+    },
+    seedCategoryRule: async (
+      data: { group?: Group; category?: Category } & Partial<WriteCategoryRuleRequest> = {},
+    ) => {
+      data.group ??= await seeds.seedGroup();
+      const index = String(counter++);
+      return unwrap(
+        await repos.categoryRules.create(data.group.id, {
+          pattern: data.pattern ?? `pattern-${index}`,
+          categoryId: "categoryId" in data ? data.categoryId : data.category?.id,
+        }),
+      );
     },
   };
 

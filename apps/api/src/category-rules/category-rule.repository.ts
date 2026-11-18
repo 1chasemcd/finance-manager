@@ -1,11 +1,11 @@
 import type { Result } from "@finapp/result";
-import type { FileFormat } from "./category-rule.types";
-import type { WriteFileFormatRequest } from "@finapp/schema";
+import type { CategoryRule } from "./category-rule.types";
+import type { WriteCategoryRuleRequest } from "@finapp/schema";
 
-export interface FileFormatRepository {
-  all(groupId: number): Promise<FileFormat[]>;
-  byId(groupId: number, id: number): Promise<FileFormat | undefined>;
-  create(groupId: number, input: WriteFileFormatRequest): Promise<Result<FileFormat>>;
-  update(groupId: number, id: number, input: WriteFileFormatRequest): Promise<Result>;
+export interface CategoryRuleRepository {
+  all(groupId: number): Promise<CategoryRule[]>;
+  byId(groupId: number, id: number): Promise<CategoryRule | undefined>;
+  create(groupId: number, input: WriteCategoryRuleRequest): Promise<Result<CategoryRule>>;
+  update(groupId: number, id: number, input: WriteCategoryRuleRequest): Promise<Result>;
   delete(groupId: number, id: number): Promise<Result>;
 }

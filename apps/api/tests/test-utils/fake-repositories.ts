@@ -9,9 +9,16 @@ import type { Source } from "@/sources/source.types";
 import type { SourceRepository } from "@/sources/source.repository";
 import type { FileFormatRepository } from "@/file-formats/file-format.repository";
 import type { FileFormat } from "@/file-formats/file-format.types";
+import type { CategoryRepository } from "@/categories/category.repository";
+import type { Category } from "@/categories/category.types";
+import type { CategoryRuleRepository } from "@/category-rules/category-rule.repository";
+import type { CategoryRule } from "@/category-rules/category-rule.types";
 import type {
+  CreateCategoryRequest,
   CreateSourceRequest,
+  UpdateCategoryRequest,
   UpdateSourceRequest,
+  WriteCategoryRuleRequest,
   WriteFileFormatRequest,
 } from "@finapp/schema";
 
@@ -190,6 +197,53 @@ export function createFakeFileFormatRepository(): FakeFileFormatRepository {
     ...input,
     rowPattern: input.rowPattern ?? null,
     dateFormat: input.dateFormat ?? null,
+  });
+
+  return {
+    records,
+    byId: byIdCapability(records),
+    all: allCapability(records),
+    create: createCapability(records, mapper),
+    update: updateCapability(records, mapper),
+    delete: deleteCapability(records),
+  };
+}
+
+type FakeCategoryRepository = CategoryRepository & FakeRepository<WithGroup<Category>>;
+
+export function createFakeCategoryRepository(): FakeCategoryRepository {
+  const records: WithGroup<Category>[] = [];
+
+  const createMapper = (input: CreateCategoryRequest) => ({
+    ...input,
+    description: input.description ?? null,
+    archived: false,
+  });
+
+  const updateMapper = (input: UpdateCategoryRequest) => ({
+    ...input,
+    description: input.description ?? null,
+    archived: input.archived,
+  });
+
+  return {
+    records,
+    byId: byIdCapability(records),
+    all: allCapability(records),
+    create: createCapability(records, createMapper),
+    update: updateCapability(records, updateMapper),
+    delete: deleteCapability(records),
+  };
+}
+
+type FakeCategoryRuleRepository = CategoryRuleRepository & FakeRepository<WithGroup<CategoryRule>>;
+
+export function createFakeCategoryRuleRepository(): FakeCategoryRuleRepository {
+  const records: WithGroup<CategoryRule>[] = [];
+
+  const mapper = (input: WriteCategoryRuleRequest) => ({
+    ...input,
+    categoryId: input.categoryId ?? null,
   });
 
   return {

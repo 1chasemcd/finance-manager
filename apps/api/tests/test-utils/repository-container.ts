@@ -1,5 +1,7 @@
 import { createDb } from "@/db/client";
 import { SourceDrizzleRepository } from "@/sources/source.drizzle-repository";
+import { CategoryDrizzleRepository } from "@/categories/category.drizzle-repository";
+import { CategoryRuleDrizzleRepository } from "@/category-rules/category-rule.drizzle-repository";
 import { FileFormatDrizzleRepository } from "@/file-formats/file-format.drizzle-repository";
 import { UserDrizzleRepository } from "@/users/user.drizzle-repository";
 import { GroupDrizzleRepository } from "@/groups/group.drizzle-repository";
@@ -9,6 +11,8 @@ import type { GroupRepository } from "@/groups/group.repository";
 import type { GroupInviteRepository } from "@/group-invites/group-invite.repository";
 import { GroupInviteDrizzleRepository } from "@/group-invites/group-invite.drizzle-repository";
 import {
+  createFakeCategoryRepository,
+  createFakeCategoryRuleRepository,
   createFakeFileFormatRepository,
   createFakeSourceRepository,
   createFakeGroupInviteRepository,
@@ -18,6 +22,8 @@ import {
 import { createFakeD1 } from "./d1";
 import type { FileFormatRepository } from "@/file-formats/file-format.repository";
 import type { SourceRepository } from "@/sources/source.repository";
+import type { CategoryRepository } from "@/categories/category.repository";
+import type { CategoryRuleRepository } from "@/category-rules/category-rule.repository";
 
 export interface RepositoryContainer {
   groups: GroupRepository;
@@ -25,6 +31,8 @@ export interface RepositoryContainer {
   groupInvites: GroupInviteRepository;
   fileFormats: FileFormatRepository;
   sources: SourceRepository;
+  categories: CategoryRepository;
+  categoryRules: CategoryRuleRepository;
 }
 
 export async function createRepositoryContainer(d1?: D1Database): Promise<RepositoryContainer> {
@@ -37,6 +45,8 @@ export async function createRepositoryContainer(d1?: D1Database): Promise<Reposi
     users: new UserDrizzleRepository(db),
     fileFormats: new FileFormatDrizzleRepository(db),
     sources: new SourceDrizzleRepository(db),
+    categories: new CategoryDrizzleRepository(db),
+    categoryRules: new CategoryRuleDrizzleRepository(db),
   };
 }
 
@@ -47,6 +57,8 @@ export function createFakeRepositoryContainer(): RepositoryContainer {
     users: createFakeUserRepository(),
     fileFormats: createFakeFileFormatRepository(),
     sources: createFakeSourceRepository(),
+    categories: createFakeCategoryRepository(),
+    categoryRules: createFakeCategoryRuleRepository(),
   };
 
   beforeEach(() => {
