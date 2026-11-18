@@ -58,6 +58,7 @@ class AppFetcher implements Fetcher {
 
 export interface AppHarness {
   app: Fetcher & { auth: (token: string) => Fetcher };
+  getEnv: () => Cloudflare.Env;
   login: (identity: CloudflareAccessIdentity) => Promise<string>;
 }
 
@@ -109,6 +110,7 @@ export function createWorker() {
 
   return {
     app,
+    getEnv: () => env,
     login: async (identity: CloudflareAccessIdentity): Promise<string> => {
       const sub = crypto.randomUUID();
       const token = await issuer.signToken({ sub });

@@ -3,6 +3,7 @@ import { SourceDrizzleRepository } from "@/sources/source.drizzle-repository";
 import { CategoryDrizzleRepository } from "@/categories/category.drizzle-repository";
 import { CategoryRuleDrizzleRepository } from "@/category-rules/category-rule.drizzle-repository";
 import { FileFormatDrizzleRepository } from "@/file-formats/file-format.drizzle-repository";
+import { TransactionDrizzleRepository } from "@/transactions/transaction.drizzle-repository";
 import { UserDrizzleRepository } from "@/users/user.drizzle-repository";
 import { GroupDrizzleRepository } from "@/groups/group.drizzle-repository";
 import { beforeEach } from "vitest";
@@ -17,6 +18,7 @@ import {
   createFakeSourceRepository,
   createFakeGroupInviteRepository,
   createFakeGroupRepository,
+  createFakeTransactionRepository,
   createFakeUserRepository,
 } from "./fake-repositories";
 import { createFakeD1 } from "./d1";
@@ -24,6 +26,7 @@ import type { FileFormatRepository } from "@/file-formats/file-format.repository
 import type { SourceRepository } from "@/sources/source.repository";
 import type { CategoryRepository } from "@/categories/category.repository";
 import type { CategoryRuleRepository } from "@/category-rules/category-rule.repository";
+import type { TransactionRepository } from "@/transactions/transaction.repository";
 
 export interface RepositoryContainer {
   groups: GroupRepository;
@@ -33,6 +36,7 @@ export interface RepositoryContainer {
   sources: SourceRepository;
   categories: CategoryRepository;
   categoryRules: CategoryRuleRepository;
+  transactions: TransactionRepository;
 }
 
 export async function createRepositoryContainer(d1?: D1Database): Promise<RepositoryContainer> {
@@ -47,6 +51,7 @@ export async function createRepositoryContainer(d1?: D1Database): Promise<Reposi
     sources: new SourceDrizzleRepository(db),
     categories: new CategoryDrizzleRepository(db),
     categoryRules: new CategoryRuleDrizzleRepository(db),
+    transactions: new TransactionDrizzleRepository(db),
   };
 }
 
@@ -59,6 +64,7 @@ export function createFakeRepositoryContainer(): RepositoryContainer {
     sources: createFakeSourceRepository(),
     categories: createFakeCategoryRepository(),
     categoryRules: createFakeCategoryRuleRepository(),
+    transactions: createFakeTransactionRepository(),
   };
 
   beforeEach(() => {

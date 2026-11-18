@@ -13,9 +13,12 @@ import type { CategoryRepository } from "@/categories/category.repository";
 import type { Category } from "@/categories/category.types";
 import type { CategoryRuleRepository } from "@/category-rules/category-rule.repository";
 import type { CategoryRule } from "@/category-rules/category-rule.types";
+import type { TransactionRepository } from "@/transactions/transaction.repository";
+import type { CreateTransactionInput, Transaction } from "@/transactions/transaction.types";
 import type {
   CreateCategoryRequest,
   CreateSourceRequest,
+  SearchTransactionsRequest,
   UpdateCategoryRequest,
   UpdateSourceRequest,
   WriteCategoryRuleRequest,
@@ -253,6 +256,42 @@ export function createFakeCategoryRuleRepository(): FakeCategoryRuleRepository {
     create: createCapability(records, mapper),
     update: updateCapability(records, mapper),
     delete: deleteCapability(records),
+  };
+}
+
+type FakeTransactionRepository = TransactionRepository & FakeRepository<WithGroup<Transaction>>;
+
+export function createFakeTransactionRepository(): FakeTransactionRepository {
+  const records: WithGroup<Transaction>[] = [];
+
+  const mapper = (input: CreateTransactionInput) => ({
+    ...input,
+    summary: input.summary ?? null,
+  });
+
+  return {
+    records,
+    byId: byIdCapability(records),
+    count: (groupId) =>
+      Promise.resolve(records.filter((transaction) => transaction.groupId === groupId).length),
+    search: (groupId, input: SearchTransactionsRequest) => {
+      const { page, limit, minDate, maxDate, minAmount, maxAmount, categoryId, sourceId } = input;
+
+      const results = records
+        .filter((transaction) => transaction.groupId === groupId)
+        .filter((transaction) => minDate === undefined || transaction.date >= minDate)
+        .filter((transaction) => maxDate === undefined || transaction.date <= maxDate)
+        .filter((transaction) => minAmount === undefined || transaction.amount >= minAmount)
+        .filter((transaction) => maxAmount === undefined || transaction.amount <= maxAmount)
+        .filter((transaction) => categoryId === undefined || transaction.categoryId === categoryId)
+        .filter((transaction) => sourceId === undefined || transaction.sourceId === sourceId)
+        .sort((a, b) => b.date.localeCompare(a.date))
+        .slice(page * limit, page * limit + limit)
+        .map(omitGroup);
+
+      return Promise.resolve(results);
+    },
+    create: createCapability(records, mapper),
   };
 }
 

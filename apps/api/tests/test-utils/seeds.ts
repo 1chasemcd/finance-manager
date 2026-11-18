@@ -5,6 +5,8 @@ import { unwrap } from "./unwrap";
 import type { CreateUserInput, User } from "@/users/user.types";
 import type { FileFormat } from "@/file-formats/file-format.types";
 import type { Category } from "@/categories/category.types";
+import type { Source } from "@/sources/source.types";
+import type { CreateTransactionInput } from "@/transactions/transaction.types";
 import type {
   CreateCategoryRequest,
   CreateSourceRequest,
@@ -115,6 +117,27 @@ export function createDataSeeds(repos: RepositoryContainer) {
         await repos.categoryRules.create(data.group.id, {
           pattern: data.pattern ?? `pattern-${index}`,
           categoryId: "categoryId" in data ? data.categoryId : data.category?.id,
+        }),
+      );
+    },
+    seedTransaction: async (
+      data: {
+        group?: Group;
+        source?: Source;
+        category?: Category;
+      } & Partial<Omit<CreateTransactionInput, "sourceId" | "categoryId">> = {},
+    ) => {
+      data.group ??= await seeds.seedGroup();
+      const source = data.source ?? (await seeds.seedSource({ group: data.group }));
+      const category = data.category ?? (await seeds.seedCategory({ group: data.group }));
+
+      return unwrap(
+        await repos.transactions.create(data.group.id, {
+          date: data.date ?? "2026-01-01",
+          amount: data.amount ?? 0,
+          summary: data.summary,
+          categoryId: category.id,
+          sourceId: source.id,
         }),
       );
     },
