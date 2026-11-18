@@ -7,7 +7,7 @@ import type { CreateCategoryRequest, UpdateCategoryRequest } from "@finapp/schem
 type NotFound = "NotFound";
 type Conflict = "Conflict";
 
-export class Categorieservice {
+export class CategoryService {
   constructor(
     private readonly categories: CategoryRepository,
     private readonly currentUser: CurrentUser,
