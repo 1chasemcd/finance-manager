@@ -3,8 +3,8 @@ import type { RepositoryContainer } from "./repository-container";
 import { beforeEach } from "vitest";
 import { unwrap } from "./unwrap";
 import type { CreateUserInput, User } from "@/users/user.types";
-import type { FileFormat, WriteFileFormatInput } from "@/file-formats/file-format.types";
-import type { CreateSourceRequest } from "@finapp/schema";
+import type { FileFormat } from "@/file-formats/file-format.types";
+import type { CreateSourceRequest, WriteFileFormatRequest } from "@finapp/schema";
 
 export type Seeds = ReturnType<typeof createDataSeeds>;
 
@@ -33,7 +33,7 @@ export function createDataSeeds(repos: RepositoryContainer) {
       data.user ??= await seeds.seedUser();
       unwrap(await repos.groupInvites.create(data.group.id, data.user.id));
     },
-    seedFileFormat: async (data: { group?: Group } & Partial<WriteFileFormatInput> = {}) => {
+    seedFileFormat: async (data: { group?: Group } & Partial<WriteFileFormatRequest> = {}) => {
       data.group ??= await seeds.seedGroup();
       const index = String(counter++);
       return unwrap(

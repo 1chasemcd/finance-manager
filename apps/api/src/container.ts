@@ -16,6 +16,8 @@ import { SourceDrizzleRepository } from "./sources/source.drizzle-repository";
 import { SourceService } from "./sources/source.service";
 import { FileFormatDrizzleRepository } from "./file-formats/file-format.drizzle-repository";
 import { FileFormatService } from "./file-formats/file-format.service";
+import { CategoryService } from "./categories/category.service";
+import { CategoryDrizzleRepository } from "./categories/category.drizzle-repository";
 
 export function createContainer(env: Cloudflare.Env) {
   const db = createDb(env.DB);
@@ -25,11 +27,12 @@ export function createContainer(env: Cloudflare.Env) {
   const currentUser = new CurrentUser(requestContext);
   const logger = createLogger(env.LOG_LEVEL ?? "info");
 
-  const userRepository = new UserDrizzleRepository(db);
+  const categoryRepository = new CategoryDrizzleRepository(db);
+  const fileFormatRepository = new FileFormatDrizzleRepository(db);
   const groupRepository = new GroupDrizzleRepository(db);
   const groupInviteRepository = new GroupInviteDrizzleRepository(db);
-  const fileFormatRepository = new FileFormatDrizzleRepository(db);
   const sourceRepository = new SourceDrizzleRepository(db);
+  const userRepository = new UserDrizzleRepository(db);
 
   const groupInviteService = new GroupInviteService(
     userRepository,
@@ -39,26 +42,27 @@ export function createContainer(env: Cloudflare.Env) {
   );
 
   const accountService = new AccountService(userRepository, groupInviteService, currentUser);
-  const userService = new UserService(userRepository, groupRepository, currentUser);
+  const categoryService = new CategoryService(categoryRepository, currentUser);
   const fileFormatService = new FileFormatService(
     fileFormatRepository,
     sourceRepository,
     currentUser,
   );
-
   const sourceService = new SourceService(sourceRepository, currentUser);
+  const userService = new UserService(userRepository, groupRepository, currentUser);
 
   const identityService: IdentityService = new CloudflareIdentityService(fetchHandler, logger);
 
   return {
     requestContext,
     logger,
-    groupInviteService,
     accountService,
+    categoryService,
+    fileFormatService,
+    groupInviteService,
+    sourceService,
     userService,
     identityService,
-    sourceService,
-    fileFormatService,
   };
 }
 

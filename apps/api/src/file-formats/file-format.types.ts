@@ -13,14 +13,3 @@ export interface FileFormat {
 export interface FileFormatDetail extends FileFormat {
   canDelete: boolean;
 }
-
-export interface WriteFileFormatInput {
-  name: string;
-  skipRows: number;
-  rowPattern?: string | null | undefined;
-  dateIndex: number;
-  summaryIndex: number;
-  amountIndex: number;
-  dateFormat?: string | null | undefined;
-  positiveIsSpending: boolean;
-}

@@ -1,10 +1,11 @@
 import type { Result } from "@finapp/result";
-import type { WriteFileFormatInput, FileFormat } from "./file-format.types";
+import type { FileFormat } from "./file-format.types";
+import type { WriteFileFormatRequest } from "@finapp/schema";
 
 export interface FileFormatRepository {
   all(groupId: number): Promise<FileFormat[]>;
   byId(groupId: number, id: number): Promise<FileFormat | undefined>;
-  create(groupId: number, input: WriteFileFormatInput): Promise<Result<FileFormat>>;
-  update(groupId: number, id: number, input: WriteFileFormatInput): Promise<Result>;
+  create(groupId: number, input: WriteFileFormatRequest): Promise<Result<FileFormat>>;
+  update(groupId: number, id: number, input: WriteFileFormatRequest): Promise<Result>;
   delete(groupId: number, id: number): Promise<Result>;
 }

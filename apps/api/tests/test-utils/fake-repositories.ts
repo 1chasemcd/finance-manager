@@ -8,8 +8,12 @@ import type { UserRepository } from "@/users/user.repository";
 import type { Source } from "@/sources/source.types";
 import type { SourceRepository } from "@/sources/source.repository";
 import type { FileFormatRepository } from "@/file-formats/file-format.repository";
-import type { FileFormat, WriteFileFormatInput } from "@/file-formats/file-format.types";
-import type { CreateSourceRequest, UpdateSourceRequest } from "@finapp/schema";
+import type { FileFormat } from "@/file-formats/file-format.types";
+import type {
+  CreateSourceRequest,
+  UpdateSourceRequest,
+  WriteFileFormatRequest,
+} from "@finapp/schema";
 
 // ----------------------------------------------------------------------------
 // Types
@@ -182,7 +186,7 @@ type FakeFileFormatRepository = FileFormatRepository & FakeRepository<WithGroup<
 export function createFakeFileFormatRepository(): FakeFileFormatRepository {
   const records: WithGroup<FileFormat>[] = [];
 
-  const mapper = (input: WriteFileFormatInput) => ({
+  const mapper = (input: WriteFileFormatRequest) => ({
     ...input,
     rowPattern: input.rowPattern ?? null,
     dateFormat: input.dateFormat ?? null,

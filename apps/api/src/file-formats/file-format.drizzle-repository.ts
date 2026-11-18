@@ -1,10 +1,11 @@
 import { err, ok, type Result } from "@finapp/result";
-import type { WriteFileFormatInput, FileFormat } from "./file-format.types";
+import type { FileFormat } from "./file-format.types";
 import type { Db } from "@/db/client";
 import { fileFormats } from "@/db/schema";
 import { and, eq, getColumns } from "drizzle-orm";
 import type { FileFormatRepository } from "./file-format.repository";
 import { handleSqliteConstraintError } from "@/db/errors";
+import type { WriteFileFormatRequest } from "@finapp/schema";
 
 export class FileFormatDrizzleRepository implements FileFormatRepository {
   constructor(private readonly db: Db) {}
@@ -20,7 +21,7 @@ export class FileFormatDrizzleRepository implements FileFormatRepository {
     return this.db.query.fileFormats.findMany({ columns: { groupId: false }, where: { groupId } });
   }
 
-  async create(groupId: number, input: WriteFileFormatInput): Promise<Result<FileFormat>> {
+  async create(groupId: number, input: WriteFileFormatRequest): Promise<Result<FileFormat>> {
     const { groupId: _, ...returningColumns } = getColumns(fileFormats);
 
     const result = await handleSqliteConstraintError(() =>
@@ -34,7 +35,7 @@ export class FileFormatDrizzleRepository implements FileFormatRepository {
     return ok(result.data[0]);
   }
 
-  async update(groupId: number, id: number, input: WriteFileFormatInput): Promise<Result> {
+  async update(groupId: number, id: number, input: WriteFileFormatRequest): Promise<Result> {
     const result = await handleSqliteConstraintError(() =>
       this.db
         .update(fileFormats)
