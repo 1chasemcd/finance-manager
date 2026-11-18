@@ -12,7 +12,14 @@ export default function PageHeader({ openDrawerCallback }: PageHeaderProps) {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", position: "fixed", width: "100%" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        flexShrink: 0,
+        width: "100%",
+      }}
+    >
       <Box
         sx={{
           display: "flex",

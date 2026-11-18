@@ -1,3 +1,5 @@
+import "./zod-config";
+
 export * from "./account.schema";
 export * from "./category.schema";
 export * from "./category-rule.schema";

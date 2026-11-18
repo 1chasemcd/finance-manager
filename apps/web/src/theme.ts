@@ -24,5 +24,10 @@ export const theme = createTheme({
         anchorOrigin: { horizontal: "center", vertical: "bottom" },
       },
     },
+    MuiPaper: {
+      defaultProps: {
+        variant: "outlined",
+      },
+    },
   },
 });

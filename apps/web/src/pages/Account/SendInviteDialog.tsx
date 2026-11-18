@@ -27,7 +27,7 @@ export function useSendInviteDialog(): [() => void, React.JSX.Element] {
   }>({ open: false, message: "", severity: "success" });
   const sendInvite = useSendInvite();
 
-  const { register, handleSubmit, ...form } = useAppForm<InviteUserRequestData>({
+  const { register, handleSubmit, ...form } = useAppForm({
     schema: inviteUserSchema,
   });
 

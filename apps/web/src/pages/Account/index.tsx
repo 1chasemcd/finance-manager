@@ -43,7 +43,7 @@ function AccountField({ label, value }: { label: string; value: string }) {
 
 function GroupTable({ members, meEmail }: { members: AccountUser[]; meEmail: string }) {
   return (
-    <TableContainer component={Paper} variant="outlined" sx={{ overflowX: "auto", width: "100%" }}>
+    <TableContainer component={Paper} sx={{ overflowX: "auto", width: "100%" }}>
       <Table aria-label="group members table" sx={{ whiteSpace: "nowrap" }}>
         <TableHead>
           <TableRow>

@@ -9,7 +9,7 @@ interface PageSectionProps {
 
 export default function PageSection({ title, children, noMargin }: PageSectionProps) {
   return (
-    <Paper variant="outlined">
+    <Paper>
       <Box>
         <Typography variant="h6" sx={{ px: 2, py: 1 }}>
           {title}

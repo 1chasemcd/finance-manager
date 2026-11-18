@@ -28,12 +28,20 @@ export default function AppLayout() {
             sx={{
               flex: 1,
               display: "flex",
+              flexDirection: "column",
               minWidth: 0,
+              minHeight: 0,
             }}
           >
             <PageHeader openDrawerCallback={() => drawerRef.current?.setCollapsed(true)} />
             <Box
-              sx={{ p: 2, flex: 1, marginTop: "57px", position: "relative", overflowY: "scroll" }}
+              sx={{
+                p: 2,
+                flex: 1,
+                minHeight: 0,
+                position: "relative",
+                overflowY: "auto",
+              }}
             >
               <Outlet />
               <PageStatusOverlay />

@@ -1,7 +1,7 @@
 import z from "zod";
 
 export const writeFileFormatSchema = z.object({
-  name: z.string().min(1).max(100),
+  name: z.string().nonempty().max(100),
   skipRows: z.int().min(0).default(0),
   rowPattern: z.string().max(500).nullish(),
   dateIndex: z.int().min(0),

@@ -42,6 +42,7 @@ export default function AppDrawer({ ref }: AppDrawerProps) {
       variant={isMobile ? "temporary" : "permanent"}
       open={isMobile ? collapsed : true}
       onClose={closeMobileNav}
+      slotProps={{ paper: { variant: "elevation" } }}
       sx={[
         { whiteSpace: "nowrap" },
         !isMobile && { "& .MuiDrawer-paper": { position: "relative" } },

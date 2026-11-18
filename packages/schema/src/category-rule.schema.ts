@@ -1,7 +1,7 @@
 import z from "zod";
 
 export const writeCategoryRuleSchema = z.object({
-  pattern: z.string().min(1).max(100),
+  pattern: z.string().nonempty().max(100),
   categoryId: z.int().nullish(),
 });
 

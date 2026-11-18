@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { api } from ".";
+import { api, ensureOk } from ".";
 import type z from "zod";
 import type { inviteUserSchema } from "@finapp/schema";
 
@@ -12,10 +12,6 @@ export type AccountUser = AccountInfo["me"];
 export type PendingInvite = NonNullable<AccountInfo["pendingInvite"]>;
 
 export const accountQueryKey = ["account"] as const;
-
-function ensureOk(res: { ok: boolean; status: number }): void {
-  if (!res.ok) throw new Error(`Request failed with status ${res.status.toString()}`);
-}
 
 export function useAccountInfo() {
   return useQuery({
@@ -47,8 +43,8 @@ export function useSendInvite() {
 export function useAcceptInvite() {
   const invalidateAccountInfo = useInvalidateAccountInfo();
   return useMutation({
-    mutationFn: async (id: string) => {
-      const res = await api.account.invite[":id"].accept.$post({ param: { id } });
+    mutationFn: async (id: number) => {
+      const res = await api.account.invite[":id"].accept.$post({ param: { id: id.toString() } });
       ensureOk(res);
     },
     onSuccess: invalidateAccountInfo,
@@ -58,8 +54,8 @@ export function useAcceptInvite() {
 export function useDeclineInvite() {
   const invalidateAccountInfo = useInvalidateAccountInfo();
   return useMutation({
-    mutationFn: async (id: string) => {
-      const res = await api.account.invite[":id"].decline.$post({ param: { id } });
+    mutationFn: async (id: number) => {
+      const res = await api.account.invite[":id"].decline.$post({ param: { id: id.toString() } });
       ensureOk(res);
     },
     onSuccess: invalidateAccountInfo,
