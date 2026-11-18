@@ -18,6 +18,8 @@ import { FileFormatDrizzleRepository } from "./file-formats/file-format.drizzle-
 import { FileFormatService } from "./file-formats/file-format.service";
 import { CategoryService } from "./categories/category.service";
 import { CategoryDrizzleRepository } from "./categories/category.drizzle-repository";
+import { CategoryRuleDrizzleRepository } from "./category-rules/category-rule.drizzle-repository";
+import { CategoryRuleService } from "./category-rules/category-rule.service";
 
 export function createContainer(env: Cloudflare.Env) {
   const db = createDb(env.DB);
@@ -28,6 +30,7 @@ export function createContainer(env: Cloudflare.Env) {
   const logger = createLogger(env.LOG_LEVEL ?? "info");
 
   const categoryRepository = new CategoryDrizzleRepository(db);
+  const categoryRuleRepository = new CategoryRuleDrizzleRepository(db);
   const fileFormatRepository = new FileFormatDrizzleRepository(db);
   const groupRepository = new GroupDrizzleRepository(db);
   const groupInviteRepository = new GroupInviteDrizzleRepository(db);
@@ -43,6 +46,7 @@ export function createContainer(env: Cloudflare.Env) {
 
   const accountService = new AccountService(userRepository, groupInviteService, currentUser);
   const categoryService = new CategoryService(categoryRepository, currentUser);
+  const categoryRuleService = new CategoryRuleService(categoryRuleRepository, currentUser);
   const fileFormatService = new FileFormatService(
     fileFormatRepository,
     sourceRepository,
@@ -58,6 +62,7 @@ export function createContainer(env: Cloudflare.Env) {
     logger,
     accountService,
     categoryService,
+    categoryRuleService,
     fileFormatService,
     groupInviteService,
     sourceService,
