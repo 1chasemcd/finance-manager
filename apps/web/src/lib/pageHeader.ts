@@ -9,7 +9,7 @@ import {
 
 export interface PageHeaderConfig {
   title: string;
-  actions?: ReactNode;
+  actions?: ReactNode | ReactNode[];
 }
 
 interface PageHeaderStore {

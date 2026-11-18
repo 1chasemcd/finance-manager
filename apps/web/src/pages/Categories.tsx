@@ -6,6 +6,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   IconButton,
   Paper,
   Table,
@@ -17,7 +18,7 @@ import {
   TextField,
 } from "@mui/material";
 
-import { Edit } from "@mui/icons-material";
+import { Add, Edit, FilterAlt } from "@mui/icons-material";
 import { useState } from "react";
 import { updateCategorySchema, type UpdateCategoryRequest } from "@finapp/schema";
 import { useAppForm } from "@/lib/appForm";
@@ -25,6 +26,7 @@ import React from "react";
 
 function useCategoryDialog(): [(id: number) => void, React.JSX.Element] {
   const [open, setOpen] = useState(false);
+
   const [categoryId, setCategoryId] = useState<number | undefined>();
 
   const { register, handleSubmit, ...form } = useAppForm({
@@ -61,21 +63,25 @@ function useCategoryDialog(): [(id: number) => void, React.JSX.Element] {
     handleOpen,
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
       <DialogTitle>{categoryId ? "Edit Category" : "Add Category"}</DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ pb: 0 }}>
         <Box
           component="form"
           onSubmit={(event) => void handleSubmit(onSubmit)(event)}
           id="category-form"
           noValidate
-          sx={{ mt: 1 }}
         >
           <TextField {...register("name")} fullWidth />
           <TextField {...register("description")} fullWidth multiline rows={3} />
         </Box>
       </DialogContent>
+      <Divider />
       <DialogActions>
+        <Button color="error">Delete</Button>
+        <Button>Archive</Button>
+        <Box sx={{ flexGrow: 1 }} />
+
         <Button onClick={handleClose}>Cancel</Button>
-        <Button type="submit" form="category-form">
+        <Button variant="contained" type="submit" form="category-form">
           Save
         </Button>
       </DialogActions>
@@ -86,7 +92,14 @@ function useCategoryDialog(): [(id: number) => void, React.JSX.Element] {
 function Categories() {
   usePageHeader({
     title: "Categories",
-    actions: <Button>Add Category</Button>,
+    actions: [
+      <Button size="small" startIcon={<FilterAlt />}>
+        Filter
+      </Button>,
+      <Button variant="contained" size="small" startIcon={<Add />}>
+        Add
+      </Button>,
+    ],
   });
   const [handleOpen, CategoryDialog] = useCategoryDialog();
   const { data } = {
@@ -99,7 +112,7 @@ function Categories() {
   return (
     <React.Fragment>
       <TableContainer component={Paper}>
-        <Table aria-label="simple table">
+        <Table aria-label="category table">
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>

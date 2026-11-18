@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Divider,
 } from "@mui/material";
 import { useState } from "react";
 
@@ -70,6 +71,7 @@ export function useAcceptInviteDialog(
           </Alert>
         )}
       </DialogContent>
+      <Divider />
       <DialogActions>
         <Button onClick={handleDecline} disabled={pending}>
           Decline

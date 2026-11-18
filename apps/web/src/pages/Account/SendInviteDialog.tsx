@@ -11,6 +11,7 @@ import {
   Button,
   Snackbar,
   Alert,
+  Divider,
 } from "@mui/material";
 import { useState } from "react";
 import z from "zod";
@@ -62,24 +63,29 @@ export function useSendInviteDialog(): [() => void, React.JSX.Element] {
     <>
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
         <DialogTitle>Send Invitation</DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ pb: 0 }}>
           <DialogContentText>
             Provide the email address of the user you would like to invite to your group.
           </DialogContentText>
-        </DialogContent>
-        <Box sx={{ mx: 3 }}>
-          <form
+          <Box
+            component="form"
             onSubmit={(event) => void handleSubmit(onSubmit)(event)}
             id="send-invite-form"
             noValidate
+            sx={{ mt: 2 }}
           >
             <TextField {...register("email")} autoFocus type="email" fullWidth />
-          </form>
-        </Box>
-
+          </Box>
+        </DialogContent>
+        <Divider />
         <DialogActions>
           <Button onClick={handleDialogClose}>Cancel</Button>
-          <Button type="submit" form="send-invite-form" disabled={sendInvite.isPending}>
+          <Button
+            variant="contained"
+            type="submit"
+            form="send-invite-form"
+            disabled={sendInvite.isPending}
+          >
             Send Invite
           </Button>
         </DialogActions>
