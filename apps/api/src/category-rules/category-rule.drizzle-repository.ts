@@ -46,7 +46,7 @@ export class CategoryRuleDrizzleRepository implements CategoryRuleRepository {
         .where(and(eq(categoryRules.groupId, groupId), eq(categoryRules.id, id))),
     );
 
-    if (result.isErr || result.data.meta.changes != 1) return err();
+    if (result.isErr || result.data.meta.changes === 0) return err();
     return ok();
   }
   async delete(groupId: number, id: number): Promise<Result> {
@@ -55,7 +55,7 @@ export class CategoryRuleDrizzleRepository implements CategoryRuleRepository {
         .delete(categoryRules)
         .where(and(eq(categoryRules.groupId, groupId), eq(categoryRules.id, id))),
     );
-    if (result.isErr || result.data.meta.changes != 1) return err();
+    if (result.isErr || result.data.meta.changes === 0) return err();
     return ok();
   }
 }

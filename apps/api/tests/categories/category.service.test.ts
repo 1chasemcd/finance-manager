@@ -6,7 +6,7 @@ import { CategoryService } from "@/categories/category.service";
 import { CurrentUser } from "@/identity/current-user";
 
 const repos = createFakeRepositoryContainer();
-const { seedGroup, seedUser, seedCategory } = createDataSeeds(repos);
+const { seedGroup, seedUser, seedCategory, seedTransaction } = createDataSeeds(repos);
 
 async function setup() {
   const group = await seedGroup();
@@ -15,7 +15,7 @@ async function setup() {
   return {
     group,
     user,
-    service: new CategoryService(repos.categories, currentUser),
+    service: new CategoryService(repos.categories, repos.transactions, currentUser),
   };
 }
 
@@ -45,6 +45,14 @@ describe("CategoryService.get", () => {
     const { service } = await setup();
 
     expect(await service.get(-1)).toBeUndefined();
+  });
+
+  it("returns canDelete false when there are transactions with a category", async () => {
+    const { group, service } = await setup();
+    const category = await seedCategory({ group });
+    await seedTransaction({ group, category });
+
+    expect((await service.get(category.id))?.canDelete).toBe(false);
   });
 });
 

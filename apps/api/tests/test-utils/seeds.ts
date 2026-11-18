@@ -109,14 +109,16 @@ export function createDataSeeds(repos: RepositoryContainer) {
       return result;
     },
     seedCategoryRule: async (
-      data: { group?: Group; category?: Category } & Partial<WriteCategoryRuleRequest> = {},
+      data: { group?: Group; category?: Category } & Partial<
+        Omit<WriteCategoryRuleRequest, "categoryId">
+      > = {},
     ) => {
       data.group ??= await seeds.seedGroup();
       const index = String(counter++);
       return unwrap(
         await repos.categoryRules.create(data.group.id, {
           pattern: data.pattern ?? `pattern-${index}`,
-          categoryId: "categoryId" in data ? data.categoryId : data.category?.id,
+          categoryId: "category" in data ? data.category.id : null,
         }),
       );
     },

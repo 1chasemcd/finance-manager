@@ -43,14 +43,14 @@ export class CategoryDrizzleRepository implements CategoryRepository {
         .where(and(eq(categories.groupId, groupId), eq(categories.id, id))),
     );
 
-    if (result.isErr || result.data.meta.changes != 1) return err();
+    if (result.isErr || result.data.meta.changes === 0) return err();
     return ok();
   }
   async delete(groupId: number, id: number): Promise<Result> {
     const result = await handleSqliteConstraintError(() =>
       this.db.delete(categories).where(and(eq(categories.groupId, groupId), eq(categories.id, id))),
     );
-    if (result.isErr || result.data.meta.changes != 1) return err();
+    if (result.isErr || result.data.meta.changes === 0) return err();
     return ok();
   }
 }

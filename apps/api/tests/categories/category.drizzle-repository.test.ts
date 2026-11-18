@@ -4,8 +4,8 @@ import { createDataSeeds } from "../test-utils/seeds";
 import { unwrap } from "../test-utils/unwrap";
 
 const repos = await createRepositoryContainer();
-const { categories } = repos;
-const { seedGroup, seedCategory } = createDataSeeds(repos);
+const { categories, categoryRules } = repos;
+const { seedGroup, seedCategory, seedCategoryRule } = createDataSeeds(repos);
 
 describe("CategoryDrizzleRepository.byId", () => {
   it("returns category with specified id", async () => {
@@ -175,5 +175,18 @@ describe("CategoryDrizzleRepository.delete", () => {
     const result = await categories.delete(group.id, -1);
 
     expect(result.isErr).toBe(true);
+  });
+
+  it("removes assigned category rules", async () => {
+    const group = await seedGroup();
+    const category = await seedCategory({ group });
+    await seedCategoryRule({ group, category });
+    await seedCategoryRule({ group, category });
+
+    expect((await categoryRules.all(group.id)).length).toBe(2);
+    const result = await categories.delete(group.id, category.id);
+
+    expect(result.isOk).toBe(true);
+    expect((await categoryRules.all(group.id)).length).toBe(0);
   });
 });

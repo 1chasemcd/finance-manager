@@ -6,7 +6,7 @@ import { SourceService } from "@/sources/source.service";
 import { CurrentUser } from "@/identity/current-user";
 
 const repos = createFakeRepositoryContainer();
-const { seedGroup, seedUser, seedSource, seedFileFormat } = createDataSeeds(repos);
+const { seedGroup, seedUser, seedSource, seedFileFormat, seedTransaction } = createDataSeeds(repos);
 
 async function setup() {
   const group = await seedGroup();
@@ -15,7 +15,7 @@ async function setup() {
   return {
     group,
     user,
-    service: new SourceService(repos.sources, currentUser),
+    service: new SourceService(repos.sources, repos.transactions, currentUser),
   };
 }
 
@@ -47,6 +47,14 @@ describe("SourceService.get", () => {
   it("returns undefined for an unknown groupId and id", async () => {
     const { service } = await setup();
     expect(await service.get(-1)).toBeUndefined();
+  });
+
+  it("returns canDelete false when there are transactions with a source", async () => {
+    const { group, user, service } = await setup();
+    const source = await seedSource({ user });
+    await seedTransaction({ group, source });
+
+    expect((await service.get(source.id))?.canDelete).toBe(false);
   });
 });
 

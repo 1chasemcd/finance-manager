@@ -3,6 +3,7 @@ import type { CurrentUser } from "@/identity/current-user";
 import { err, type Result } from "@finapp/result";
 import type { CategoryRepository } from "./category.repository";
 import type { CreateCategoryRequest, UpdateCategoryRequest } from "@finapp/schema";
+import type { TransactionRepository } from "@/transactions/transaction.repository";
 
 type NotFound = "NotFound";
 type Conflict = "Conflict";
@@ -10,6 +11,7 @@ type Conflict = "Conflict";
 export class CategoryService {
   constructor(
     private readonly categories: CategoryRepository,
+    private readonly transactions: TransactionRepository,
     private readonly currentUser: CurrentUser,
   ) {}
 
@@ -58,7 +60,9 @@ export class CategoryService {
     return result;
   }
 
-  private async canDelete(_: number): Promise<boolean> {
-    return Promise.resolve(true);
+  private async canDelete(id: number): Promise<boolean> {
+    const { groupId } = this.currentUser.require();
+    const transactions = await this.transactions.search(groupId, { categoryId: id });
+    return transactions.length === 0;
   }
 }

@@ -43,7 +43,7 @@ export class FileFormatDrizzleRepository implements FileFormatRepository {
         .where(and(eq(fileFormats.groupId, groupId), eq(fileFormats.id, id))),
     );
 
-    if (result.isErr || result.data.meta.changes != 1) return err();
+    if (result.isErr || result.data.meta.changes === 0) return err();
     return ok();
   }
   async delete(groupId: number, id: number): Promise<Result> {
@@ -52,7 +52,7 @@ export class FileFormatDrizzleRepository implements FileFormatRepository {
         .delete(fileFormats)
         .where(and(eq(fileFormats.groupId, groupId), eq(fileFormats.id, id))),
     );
-    if (result.isErr || result.data.meta.changes != 1) return err();
+    if (result.isErr || result.data.meta.changes === 0) return err();
     return ok();
   }
 }

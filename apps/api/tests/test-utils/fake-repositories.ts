@@ -14,11 +14,14 @@ import type { Category } from "@/categories/category.types";
 import type { CategoryRuleRepository } from "@/category-rules/category-rule.repository";
 import type { CategoryRule } from "@/category-rules/category-rule.types";
 import type { TransactionRepository } from "@/transactions/transaction.repository";
-import type { CreateTransactionInput, Transaction } from "@/transactions/transaction.types";
+import type {
+  CreateTransactionInput,
+  SearchTransactionsInput,
+  Transaction,
+} from "@/transactions/transaction.types";
 import type {
   CreateCategoryRequest,
   CreateSourceRequest,
-  SearchTransactionsRequest,
   UpdateCategoryRequest,
   UpdateSourceRequest,
   WriteCategoryRuleRequest,
@@ -274,8 +277,17 @@ export function createFakeTransactionRepository(): FakeTransactionRepository {
     byId: byIdCapability(records),
     count: (groupId) =>
       Promise.resolve(records.filter((transaction) => transaction.groupId === groupId).length),
-    search: (groupId, input: SearchTransactionsRequest) => {
-      const { page, limit, minDate, maxDate, minAmount, maxAmount, categoryId, sourceId } = input;
+    search: (groupId, input: SearchTransactionsInput) => {
+      const {
+        page = 0,
+        limit = 50,
+        minDate,
+        maxDate,
+        minAmount,
+        maxAmount,
+        categoryId,
+        sourceId,
+      } = input;
 
       const results = records
         .filter((transaction) => transaction.groupId === groupId)

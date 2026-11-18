@@ -15,6 +15,17 @@ export interface CreateTransactionInput {
   sourceId: number;
 }
 
+export interface SearchTransactionsInput {
+  page?: number | undefined;
+  limit?: number | undefined;
+  minDate?: string | undefined;
+  maxDate?: string | undefined;
+  minAmount?: number | undefined;
+  maxAmount?: number | undefined;
+  categoryId?: number | undefined;
+  sourceId?: number | undefined;
+}
+
 export interface TransactionList {
   transactions: Transaction[];
   count: number;

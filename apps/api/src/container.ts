@@ -48,7 +48,11 @@ export function createContainer(env: Cloudflare.Env) {
   );
 
   const accountService = new AccountService(userRepository, groupInviteService, currentUser);
-  const categoryService = new CategoryService(categoryRepository, currentUser);
+  const categoryService = new CategoryService(
+    categoryRepository,
+    transactionRepository,
+    currentUser,
+  );
   const categoryRuleService = new CategoryRuleService(categoryRuleRepository, currentUser);
   const fileFormatService = new FileFormatService(
     fileFormatRepository,
@@ -56,7 +60,7 @@ export function createContainer(env: Cloudflare.Env) {
     currentUser,
   );
   const transactionService = new TransactionService(transactionRepository, currentUser);
-  const sourceService = new SourceService(sourceRepository, currentUser);
+  const sourceService = new SourceService(sourceRepository, transactionRepository, currentUser);
   const userService = new UserService(userRepository, groupRepository, currentUser);
 
   const identityService: IdentityService = new CloudflareIdentityService(fetchHandler, logger);

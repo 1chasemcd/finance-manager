@@ -18,7 +18,7 @@ export class GroupInviteDrizzleRepository implements GroupInviteRepository {
   }
   async delete(id: number): Promise<Result> {
     const res = await this.db.delete(groupInvites).where(eq(groupInvites.id, id));
-    if (res.meta.changes !== 1) return err();
+    if (res.meta.changes === 0) return err();
     return ok();
   }
   async deleteExpired(expirationDate: Date): Promise<void> {

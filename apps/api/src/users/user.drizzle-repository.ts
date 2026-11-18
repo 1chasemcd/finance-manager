@@ -42,7 +42,7 @@ export class UserDrizzleRepository implements UserRepository {
     const result = await handleSqliteConstraintError(() =>
       this.db.update(users).set(input).where(eq(users.id, id)),
     );
-    if (result.isErr || result.data.meta.changes != 1) return err();
+    if (result.isErr || result.data.meta.changes === 0) return err();
     return ok();
   }
 }

@@ -2,15 +2,10 @@ import { describe, expect, it } from "vitest";
 import { createRepositoryContainer } from "../test-utils/repository-container";
 import { createDataSeeds } from "../test-utils/seeds";
 import { unwrap } from "../test-utils/unwrap";
-import type { SearchTransactionsRequest } from "@finapp/schema";
 
 const repos = await createRepositoryContainer();
 const { transactions } = repos;
 const { seedGroup, seedCategory, seedSource, seedTransaction } = createDataSeeds(repos);
-
-function search(overrides: Partial<SearchTransactionsRequest> = {}): SearchTransactionsRequest {
-  return { page: 0, limit: 50, ...overrides };
-}
 
 describe("TransactionDrizzleRepository.byId", () => {
   it("returns transaction with specified id", async () => {
@@ -67,7 +62,7 @@ describe("TransactionDrizzleRepository.search", () => {
   it("returns empty array when there are no transactions", async () => {
     const group = await seedGroup();
 
-    expect(await transactions.search(group.id, search())).toEqual([]);
+    expect(await transactions.search(group.id, {})).toEqual([]);
   });
 
   it("does not include transactions from other group", async () => {
@@ -76,7 +71,7 @@ describe("TransactionDrizzleRepository.search", () => {
     const otherGroup = await seedGroup();
     await seedTransaction({ group: otherGroup });
 
-    expect(await transactions.search(otherGroup.id, search())).toHaveLength(1);
+    expect(await transactions.search(otherGroup.id, {})).toHaveLength(1);
   });
 
   it("orders transactions by date descending", async () => {
@@ -85,7 +80,7 @@ describe("TransactionDrizzleRepository.search", () => {
     const latest = await seedTransaction({ group, date: "2026-03-01" });
     const middle = await seedTransaction({ group, date: "2026-02-01" });
 
-    expect(await transactions.search(group.id, search())).toEqual([latest, middle, earliest]);
+    expect(await transactions.search(group.id, {})).toEqual([latest, middle, earliest]);
   });
 
   it("filters by date range", async () => {
@@ -94,10 +89,10 @@ describe("TransactionDrizzleRepository.search", () => {
     const middle = await seedTransaction({ group, date: "2026-02-01" });
     await seedTransaction({ group, date: "2026-03-01" });
 
-    const result = await transactions.search(
-      group.id,
-      search({ minDate: "2026-01-15", maxDate: "2026-02-15" }),
-    );
+    const result = await transactions.search(group.id, {
+      minDate: "2026-01-15",
+      maxDate: "2026-02-15",
+    });
 
     expect(result).toEqual([middle]);
   });
@@ -108,7 +103,7 @@ describe("TransactionDrizzleRepository.search", () => {
     const middle = await seedTransaction({ group, date: "2026-01-02", amount: 500 });
     await seedTransaction({ group, date: "2026-01-03", amount: 900 });
 
-    const result = await transactions.search(group.id, search({ minAmount: 200, maxAmount: 800 }));
+    const result = await transactions.search(group.id, { minAmount: 200, maxAmount: 800 });
 
     expect(result).toEqual([middle]);
   });
@@ -119,9 +114,7 @@ describe("TransactionDrizzleRepository.search", () => {
     const matching = await seedTransaction({ group, category });
     await seedTransaction({ group });
 
-    expect(await transactions.search(group.id, search({ categoryId: category.id }))).toEqual([
-      matching,
-    ]);
+    expect(await transactions.search(group.id, { categoryId: category.id })).toEqual([matching]);
   });
 
   it("filters by source", async () => {
@@ -130,9 +123,7 @@ describe("TransactionDrizzleRepository.search", () => {
     const matching = await seedTransaction({ group, source });
     await seedTransaction({ group });
 
-    expect(await transactions.search(group.id, search({ sourceId: source.id }))).toEqual([
-      matching,
-    ]);
+    expect(await transactions.search(group.id, { sourceId: source.id })).toEqual([matching]);
   });
 
   it("paginates results", async () => {
@@ -141,11 +132,8 @@ describe("TransactionDrizzleRepository.search", () => {
     const middle = await seedTransaction({ group, date: "2026-02-01" });
     const latest = await seedTransaction({ group, date: "2026-03-01" });
 
-    expect(await transactions.search(group.id, search({ page: 0, limit: 2 }))).toEqual([
-      latest,
-      middle,
-    ]);
-    expect(await transactions.search(group.id, search({ page: 1, limit: 2 }))).toEqual([earliest]);
+    expect(await transactions.search(group.id, { page: 0, limit: 2 })).toEqual([latest, middle]);
+    expect(await transactions.search(group.id, { page: 1, limit: 2 })).toEqual([earliest]);
   });
 });
 

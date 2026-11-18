@@ -53,14 +53,14 @@ export class SourceDrizzleRepository implements SourceRepository {
         .where(and(eq(sources.groupId, groupId), eq(sources.id, id))),
     );
 
-    if (result.isErr || result.data.meta.changes != 1) return err();
+    if (result.isErr || result.data.meta.changes === 0) return err();
     return ok();
   }
   async delete(groupId: number, id: number): Promise<Result> {
     const result = await handleSqliteConstraintError(() =>
       this.db.delete(sources).where(and(eq(sources.groupId, groupId), eq(sources.id, id))),
     );
-    if (result.isErr || result.data.meta.changes != 1) return err();
+    if (result.isErr || result.data.meta.changes === 0) return err();
     return ok();
   }
 }

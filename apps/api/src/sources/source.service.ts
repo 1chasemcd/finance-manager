@@ -3,6 +3,7 @@ import type { CurrentUser } from "@/identity/current-user";
 import { err, ok, type Result } from "@finapp/result";
 import type { SourceRepository } from "./source.repository";
 import type { CreateSourceRequest, UpdateSourceRequest } from "@finapp/schema";
+import type { TransactionRepository } from "@/transactions/transaction.repository";
 
 type NotFound = "NotFound";
 type Conflict = "Conflict";
@@ -10,6 +11,7 @@ type Conflict = "Conflict";
 export class SourceService {
   constructor(
     private readonly sources: SourceRepository,
+    private readonly transactions: TransactionRepository,
     private readonly currentUser: CurrentUser,
   ) {}
 
@@ -23,7 +25,7 @@ export class SourceService {
     await this.sources.byId(groupId, id);
 
     const result = await this.sources.byId(groupId, id);
-    return result && { ...result, canDelete: this.canDelete(result.id) };
+    return result && { ...result, canDelete: await this.canDelete(result.id) };
   }
 
   create(request: CreateSourceRequest): Promise<Result<Source>> {
@@ -52,7 +54,7 @@ export class SourceService {
     const existing = await this.sources.byId(groupId, id);
     if (!existing) return err("NotFound");
 
-    if (!this.canDelete(id)) return err("Conflict");
+    if (!(await this.canDelete(id))) return err("Conflict");
 
     const result = await this.sources.delete(groupId, id);
     if (result.isErr) return err("Conflict");
@@ -60,7 +62,9 @@ export class SourceService {
     return ok();
   }
 
-  private canDelete(id: number) {
-    return !!id;
+  private async canDelete(id: number): Promise<boolean> {
+    const { groupId } = this.currentUser.require();
+    const transactions = await this.transactions.search(groupId, { sourceId: id });
+    return transactions.length === 0;
   }
 }

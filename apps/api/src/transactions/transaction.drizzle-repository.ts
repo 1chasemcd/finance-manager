@@ -1,11 +1,14 @@
 import { err, ok, type Result } from "@finapp/result";
-import type { CreateTransactionInput, Transaction } from "./transaction.types";
+import type {
+  CreateTransactionInput,
+  SearchTransactionsInput,
+  Transaction,
+} from "./transaction.types";
 import type { Db } from "@/db/client";
 import { transactions } from "@/db/schema";
 import { eq, getColumns } from "drizzle-orm";
 import type { TransactionRepository } from "./transaction.repository";
 import { handleSqliteConstraintError } from "@/db/errors";
-import type { SearchTransactionsRequest } from "@finapp/schema";
 
 export class TransactionDrizzleRepository implements TransactionRepository {
   constructor(private readonly db: Db) {}
@@ -21,8 +24,17 @@ export class TransactionDrizzleRepository implements TransactionRepository {
     return this.db.$count(transactions, eq(transactions.groupId, groupId));
   }
 
-  search(groupId: number, input: SearchTransactionsRequest): Promise<Transaction[]> {
-    const { page, limit, minDate, maxDate, minAmount, maxAmount, categoryId, sourceId } = input;
+  search(groupId: number, input: SearchTransactionsInput): Promise<Transaction[]> {
+    const {
+      page = 0,
+      limit = 50,
+      minDate,
+      maxDate,
+      minAmount,
+      maxAmount,
+      categoryId,
+      sourceId,
+    } = input;
 
     return this.db.query.transactions.findMany({
       columns: {
