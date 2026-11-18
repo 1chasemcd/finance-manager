@@ -2,10 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createWorker } from "../test-utils/app-harness";
 import { unwrapResponse } from "../test-utils/unwrap";
 import type { Source } from "@/sources/source.types";
-import type {
-  FileFormatDetailResponse,
-  FileFormatResponse,
-} from "@/file-formats/file-format.types";
+import type { FileFormatDetail, FileFormat } from "@/file-formats/file-format.types";
 
 const { app, login } = createWorker();
 
@@ -16,11 +13,9 @@ describe("/api/fileformat", () => {
     const token = await login(user);
     const authedApp = app.auth(token);
 
-    expect(await unwrapResponse<FileFormatResponse[]>(authedApp.get("/api/fileformat"))).toEqual(
-      [],
-    );
+    expect(await unwrapResponse<FileFormat[]>(authedApp.get("/api/fileformat"))).toEqual([]);
 
-    const added = await unwrapResponse<FileFormatResponse>(
+    const added = await unwrapResponse<FileFormat>(
       authedApp.post("/api/fileformat", {
         name: "Test File Format",
         positiveIsSpending: true,
@@ -45,9 +40,7 @@ describe("/api/fileformat", () => {
       dateFormat: "yyyymmdd",
     });
 
-    expect(await unwrapResponse<FileFormatResponse[]>(authedApp.get("/api/fileformat"))).toEqual([
-      added,
-    ]);
+    expect(await unwrapResponse<FileFormat[]>(authedApp.get("/api/fileformat"))).toEqual([added]);
 
     expect(
       (
@@ -64,7 +57,7 @@ describe("/api/fileformat", () => {
       ).status,
     ).toBe(204);
 
-    const updated = await unwrapResponse<FileFormatDetailResponse>(
+    const updated = await unwrapResponse<FileFormatDetail>(
       authedApp.get(`/api/fileformat/${added.id.toString()}`),
     );
     expect(updated).toEqual({

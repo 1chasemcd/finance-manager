@@ -1,4 +1,4 @@
-import type { FileFormatDetailResponse, FileFormatResponse } from "./file-format.types";
+import type { FileFormatDetail, FileFormat } from "./file-format.types";
 import type { CurrentUser } from "@/identity/current-user";
 import { err, type Result } from "@finapp/result";
 import type { SourceRepository } from "@/sources/source.repository";
@@ -15,18 +15,18 @@ export class FileFormatService {
     private readonly currentUser: CurrentUser,
   ) {}
 
-  all(): Promise<FileFormatResponse[]> {
+  all(): Promise<FileFormat[]> {
     const { groupId } = this.currentUser.require();
     return this.fileFormats.all(groupId);
   }
 
-  async get(id: number): Promise<FileFormatDetailResponse | undefined> {
+  async get(id: number): Promise<FileFormatDetail | undefined> {
     const { groupId } = this.currentUser.require();
     const result = await this.fileFormats.byId(groupId, id);
     return result && { ...result, canDelete: await this.canDelete(result.id) };
   }
 
-  create(request: WriteFileFormatRequest): Promise<Result<FileFormatResponse>> {
+  create(request: WriteFileFormatRequest): Promise<Result<FileFormat>> {
     const { groupId } = this.currentUser.require();
     return this.fileFormats.create(groupId, request);
   }
