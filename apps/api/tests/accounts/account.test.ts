@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createWorker } from "../test-utils/app-harness";
-import type { AccountInfoResponse } from "@/accounts/account.types";
+import type { AccountInfo } from "@/accounts/account.types";
 
 const { app, login } = createWorker();
 
@@ -15,7 +15,7 @@ describe("/api/account", () => {
     const response = await app.auth(token).get("/api/account");
 
     expect(response.status).toBe(200);
-    const body = await response.json<AccountInfoResponse>();
+    const body = await response.json<AccountInfo>();
     expect(body.me).toEqual({
       firstName: "Alice",
       lastName: "Smith",
@@ -58,7 +58,7 @@ describe("/api/account/invite", () => {
 
     const pendingResponse = await app.auth(bobToken).get("/api/account");
     expect(pendingResponse.status).toBe(200);
-    const pending = await pendingResponse.json<AccountInfoResponse>();
+    const pending = await pendingResponse.json<AccountInfo>();
     expect(pending.pendingInvite).toBeDefined();
     expect(pending.pendingInvite?.groupMembers).toEqual([
       { firstName: "Alice", lastName: "Smith", email: "alice@example.com" },
@@ -76,7 +76,7 @@ describe("/api/account/invite", () => {
     expect(acceptResponse.status).toBe(204);
 
     const bobAccountResponse = await app.auth(bobToken).get("/api/account");
-    const bobAccount = await bobAccountResponse.json<AccountInfoResponse>();
+    const bobAccount = await bobAccountResponse.json<AccountInfo>();
     expect(bobAccount).not.toHaveProperty("pendingInvite");
     expect(bobAccount.groupMembers).toHaveLength(2);
     expect(bobAccount.groupMembers).toEqual(
@@ -87,7 +87,7 @@ describe("/api/account/invite", () => {
     );
 
     const aliceAccountResponse = await app.auth(aliceToken).get("/api/account");
-    const aliceAccount = await aliceAccountResponse.json<AccountInfoResponse>();
+    const aliceAccount = await aliceAccountResponse.json<AccountInfo>();
 
     expect(aliceAccount.groupMembers).toHaveLength(2);
     expect(aliceAccount).not.toHaveProperty("pendingInvite");
@@ -101,9 +101,7 @@ describe("/api/account/invite", () => {
       (await app.auth(aliceToken).post("/api/account/invite", { email: "bob@example.com" })).status,
     ).toBe(204);
 
-    const pending = await (
-      await app.auth(bobToken).get("/api/account")
-    ).json<AccountInfoResponse>();
+    const pending = await (await app.auth(bobToken).get("/api/account")).json<AccountInfo>();
     const inviteId = pending.pendingInvite?.inviteId ?? 0;
     expect(inviteId).toBeGreaterThan(0);
 
@@ -112,9 +110,7 @@ describe("/api/account/invite", () => {
       .post(`/api/account/invite/${inviteId.toString()}/decline`);
     expect(declineResponse.status).toBe(204);
 
-    const afterDecline = await (
-      await app.auth(bobToken).get("/api/account")
-    ).json<AccountInfoResponse>();
+    const afterDecline = await (await app.auth(bobToken).get("/api/account")).json<AccountInfo>();
     expect(afterDecline).not.toHaveProperty("pendingInvite");
     expect(afterDecline.groupMembers).toEqual([
       { firstName: "Bob", lastName: "Jones", email: "bob@example.com" },
@@ -136,9 +132,7 @@ describe("/api/account/invite", () => {
         .status,
     ).toBe(204);
 
-    const pending = await (
-      await app.auth(aliceToken).get("/api/account")
-    ).json<AccountInfoResponse>();
+    const pending = await (await app.auth(aliceToken).get("/api/account")).json<AccountInfo>();
     const inviteId = pending.pendingInvite?.inviteId ?? 0;
     expect(inviteId).toBeGreaterThan(0);
 
@@ -147,9 +141,7 @@ describe("/api/account/invite", () => {
       .post(`/api/account/invite/${inviteId.toString()}/accept`);
     expect(hijack.status).toBe(404);
 
-    const aliceAfter = await (
-      await app.auth(aliceToken).get("/api/account")
-    ).json<AccountInfoResponse>();
+    const aliceAfter = await (await app.auth(aliceToken).get("/api/account")).json<AccountInfo>();
     expect(aliceAfter.pendingInvite?.inviteId).toBe(inviteId);
     expect(aliceAfter.groupMembers).toEqual([
       { firstName: "Alice", lastName: "Smith", email: "alice@example.com" },

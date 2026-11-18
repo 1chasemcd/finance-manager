@@ -10,7 +10,7 @@ interface PendingInvite {
   createdAt: Date;
 }
 
-export interface AccountInfoResponse {
+export interface AccountInfo {
   me: AccountInfoUser;
   groupMembers: AccountInfoUser[];
   pendingInvite?: PendingInvite;

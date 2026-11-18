@@ -1,6 +1,6 @@
 import type { UserRepository } from "@/users/user.repository";
 import type { CurrentUser } from "@/identity/current-user";
-import type { AccountInfoResponse } from "./account.types";
+import type { AccountInfo } from "./account.types";
 import type { User } from "@/users/user.types";
 import type { GroupInviteService } from "@/group-invites/group-invite.service";
 
@@ -11,11 +11,11 @@ export class AccountService {
     private readonly currentUser: CurrentUser,
   ) {}
 
-  async getAccountInfo(): Promise<AccountInfoResponse> {
+  async getAccountInfo(): Promise<AccountInfo> {
     const user = this.currentUser.require();
     const members = (await this.users.byGroup(user.groupId)).map((m) => mapUser(m));
 
-    const res: AccountInfoResponse = {
+    const res: AccountInfo = {
       me: mapUser(user),
       groupMembers: members,
     };
