@@ -1,10 +1,10 @@
 {
-  "alice": {
-    "email": "alice@example.com",
-    "name": "Alice Example"
+  "chase": {
+    "email": "chase.test@example.com",
+    "name": "Chase McDonald"
   },
-  "bob": {
-    "email": "bob@example.com",
-    "name": "Bob Example"
+  "hannah": {
+    "email": "hannah.test@example.com",
+    "name": "Hannah McDonald"
   }
 }
