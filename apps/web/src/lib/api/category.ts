@@ -9,7 +9,7 @@ function useInvalidateCategory() {
   return () => queryClient.invalidateQueries({ queryKey: categoryQueryKey });
 }
 
-export function useListCategories() {
+export function useQueryCategories() {
   return useQuery({
     queryKey: categoryQueryKey,
     queryFn: async () => {
@@ -17,6 +17,18 @@ export function useListCategories() {
       ensureOk(res);
       return await res.json();
     },
+  });
+}
+
+export function useQueryCategory(id: number | null | undefined) {
+  return useQuery({
+    queryKey: [...categoryQueryKey, id],
+    queryFn: async () => {
+      const res = await api.category[":id"].$get({ param: { id: (id ?? 0).toString() } });
+      ensureOk(res);
+      return await res.json();
+    },
+    enabled: id != null,
   });
 }
 

@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Grid,
-  Paper,
   Stack,
   Table,
   TableBody,
@@ -20,6 +19,7 @@ import { useAccountInfo, type AccountUser } from "@/lib/api/account";
 import { useAcceptInviteDialog } from "./AcceptInviteDialog";
 import { useSendInviteDialog } from "./SendInviteDialog";
 import { usePageStatus } from "@/lib/pageStatus";
+import AppPaper from "@/components/AppPaper";
 
 const emptyUser = { firstName: "", lastName: "", email: "" };
 
@@ -43,7 +43,7 @@ function AccountField({ label, value }: { label: string; value: string }) {
 
 function GroupTable({ members, meEmail }: { members: AccountUser[]; meEmail: string }) {
   return (
-    <TableContainer component={Paper} sx={{ overflowX: "auto", width: "100%" }}>
+    <TableContainer component={AppPaper} sx={{ overflowX: "auto", width: "100%" }}>
       <Table aria-label="group members table" sx={{ whiteSpace: "nowrap" }}>
         <TableHead>
           <TableRow>

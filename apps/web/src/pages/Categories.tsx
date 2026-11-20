@@ -1,14 +1,8 @@
 import { usePageHeader } from "@/lib/pageHeader";
 import {
-  Box,
+  Alert,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Divider,
   IconButton,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -19,74 +13,62 @@ import {
 } from "@mui/material";
 
 import { Add, Edit, FilterAlt } from "@mui/icons-material";
-import { useState } from "react";
-import { updateCategorySchema, type UpdateCategoryRequest } from "@finapp/schema";
+import { useEffect } from "react";
+import { updateCategorySchema } from "@finapp/schema";
 import { useAppForm } from "@/lib/appForm";
 import React from "react";
+import {
+  useDeleteCategory,
+  useQueryCategories,
+  useQueryCategory,
+  useUpdateCategory,
+} from "@/lib/api/category";
+import { usePageStatus } from "@/lib/pageStatus";
+import { useWatch } from "react-hook-form";
+import AppPaper from "@/components/AppPaper";
+import {
+  useEditFormDialogControls,
+  type EditFormDialogControls,
+} from "@/components/EditFormDialog/useEditFormDialogControls";
+import { EditFormDialog } from "@/components/EditFormDialog/EditFormDialog";
 
-function useCategoryDialog(): [(id: number) => void, React.JSX.Element] {
-  const [open, setOpen] = useState(false);
-
-  const [categoryId, setCategoryId] = useState<number | undefined>();
-
-  const { register, handleSubmit, ...form } = useAppForm({
+function CategoryEdit({ controls }: { controls: EditFormDialogControls }) {
+  const form = useAppForm({
     schema: updateCategorySchema,
   });
-
-  const onSubmit = (_data: UpdateCategoryRequest) => {
-    // .mutate(data, {
-    //   onSuccess: () => {
-    //     handleDialogClose();
-    //     setSnackbar({ open: true, message: "Invitation sent", severity: "success" });
-    //   },
-    //   onError: () => {
-    //     setSnackbar({
-    //       open: true,
-    //       message: "The invitation could not be sent",
-    //       severity: "error",
-    //     });
-    //   },
-    // });
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    form.reset();
-  };
-
-  const handleOpen = (id: number) => {
-    setCategoryId(id);
-    setOpen(true);
-  };
-
-  return [
-    handleOpen,
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-      <DialogTitle>{categoryId ? "Edit Category" : "Add Category"}</DialogTitle>
-      <DialogContent sx={{ pb: 0 }}>
-        <Box
-          component="form"
-          onSubmit={(event) => void handleSubmit(onSubmit)(event)}
-          id="category-form"
-          noValidate
-        >
-          <TextField {...register("name")} fullWidth />
-          <TextField {...register("description")} fullWidth multiline rows={3} />
-        </Box>
-      </DialogContent>
-      <Divider />
-      <DialogActions>
-        <Button color="error">Delete</Button>
-        <Button>Archive</Button>
-        <Box sx={{ flexGrow: 1 }} />
-
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button variant="contained" type="submit" form="category-form">
-          Save
-        </Button>
-      </DialogActions>
-    </Dialog>,
-  ];
+  const { register, setValue, control } = form;
+  const isArchived = useWatch({
+    control,
+    name: "archived",
+  });
+  return (
+    <EditFormDialog
+      form={form}
+      controls={controls}
+      useQueryEntity={useQueryCategory}
+      useUpdateEntity={useUpdateCategory}
+      useDeleteEntity={useDeleteCategory}
+    >
+      <TextField {...register("name")} fullWidth disabled={isArchived} />
+      <TextField {...register("description")} fullWidth disabled={isArchived} multiline rows={3} />
+      <Alert
+        severity="info"
+        action={
+          <Button
+            size="small"
+            color="inherit"
+            onClick={() => {
+              setValue("archived", !isArchived);
+            }}
+          >
+            {isArchived ? "Reopen" : "Archive"}
+          </Button>
+        }
+      >
+        Category is {isArchived ? "archived" : "active"}.
+      </Alert>
+    </EditFormDialog>
+  );
 }
 
 function Categories() {
@@ -101,18 +83,21 @@ function Categories() {
       </Button>,
     ],
   });
-  const [handleOpen, CategoryDialog] = useCategoryDialog();
-  const { data } = {
-    data: [
-      { id: 1, name: "Groceries", description: "Food and supplies" },
-      { id: 2, name: "Automotive", description: "Vehicle maintenance and insurance costs" },
-      { id: 3, name: "Rent" },
-    ],
-  };
+  const { startEdit, controls } = useEditFormDialogControls();
+  const { data, isPending, isError } = useQueryCategories();
+
+  const { resetStatus, setLoadingStatus, setErrorStatus } = usePageStatus();
+
+  useEffect(() => {
+    if (isPending) setLoadingStatus();
+    else if (isError) setErrorStatus();
+    else resetStatus();
+  }, [isPending, isError, resetStatus, setLoadingStatus, setErrorStatus]);
+
   return (
     <React.Fragment>
-      <TableContainer component={Paper}>
-        <Table aria-label="category table">
+      <TableContainer component={AppPaper} sx={{ maxHeight: "100%" }}>
+        <Table stickyHeader size="small" aria-label="category table">
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
@@ -121,7 +106,7 @@ function Categories() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row) => (
+            {data?.map((row) => (
               <TableRow key={row.name} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                 <TableCell component="th" scope="row">
                   {row.name}
@@ -132,7 +117,7 @@ function Categories() {
                     color="primary"
                     size="small"
                     onClick={() => {
-                      handleOpen(row.id);
+                      startEdit(row.id);
                     }}
                     aria-label={`Edit ${row.name}`}
                   >
@@ -144,7 +129,7 @@ function Categories() {
           </TableBody>
         </Table>
       </TableContainer>
-      {CategoryDialog}
+      <CategoryEdit controls={controls} />
     </React.Fragment>
   );
 }

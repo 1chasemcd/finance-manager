@@ -1,16 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  useForm,
-  type FieldValues,
-  type UseFormProps,
-  type UseFormReturn,
-} from "react-hook-form";
+import { useForm, type FieldValues, type UseFormProps, type UseFormReturn } from "react-hook-form";
 import type z from "zod";
 
-type UseAppFormProps<
-  TInput extends FieldValues,
-  TOutput extends FieldValues,
-> = Omit<UseFormProps<TInput, unknown, TOutput>, "resolver"> & {
+type UseAppFormProps<TInput extends FieldValues, TContext, TOutput extends FieldValues> = Omit<
+  UseFormProps<TInput, TContext, TOutput>,
+  "resolver"
+> & {
   schema: z.ZodType<TOutput, TInput>;
 };
 
@@ -22,12 +17,13 @@ function camelCaseToWords(str: string): string {
 }
 export function useAppForm<
   TInput extends FieldValues,
+  TContext,
   TOutput extends FieldValues = TInput,
 >({
   schema,
   ...props
-}: UseAppFormProps<TInput, TOutput>): UseFormReturn<TInput, unknown, TOutput> {
-  const { register, ...useFormResult } = useForm<TInput, unknown, TOutput>({
+}: UseAppFormProps<TInput, TContext, TOutput>): UseFormReturn<TInput, TContext, TOutput> {
+  const { register, ...useFormResult } = useForm<TInput, TContext, TOutput>({
     resolver: zodResolver(schema),
     ...props,
   });
