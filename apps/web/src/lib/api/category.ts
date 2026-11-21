@@ -4,10 +4,13 @@ import type { CreateCategoryRequest, UpdateCategoryRequest } from "@finapp/schem
 
 export const categoryQueryKey = ["category"] as const;
 
-function useInvalidateCategory() {
-  const queryClient = useQueryClient();
-  return () => queryClient.invalidateQueries({ queryKey: categoryQueryKey });
-}
+type QueryCategoriesResponse = Awaited<ReturnType<typeof api.category.$get>>;
+type Category = Awaited<
+  ReturnType<Extract<QueryCategoriesResponse, { status: 200 }>["json"]>
+>[number];
+
+type QueryCategoryResponse = Awaited<ReturnType<(typeof api.category)[":id"]["$get"]>>;
+type CategoryDetail = Awaited<ReturnType<Extract<QueryCategoryResponse, { status: 200 }>["json"]>>;
 
 export function useQueryCategories() {
   return useQuery({
@@ -33,34 +36,56 @@ export function useQueryCategory(id: number | null | undefined) {
 }
 
 export function useCreateCategory() {
-  const invalidateCategory = useInvalidateCategory();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (json: CreateCategoryRequest) => {
       const res = await api.category.$post({ json });
       ensureOk(res);
+      return res.json();
     },
-    onSuccess: invalidateCategory,
+    onSuccess: async (data) => {
+      await queryClient.cancelQueries({ queryKey: categoryQueryKey });
+      queryClient.setQueryData([...categoryQueryKey, data.id], { canDelete: true, ...data });
+      queryClient.setQueryData(categoryQueryKey, (old: Category[] | undefined) =>
+        old ? [...old, data] : old,
+      );
+    },
   });
 }
 
 export function useUpdateCategory() {
-  const invalidateCategory = useInvalidateCategory();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, json }: { id: number; json: UpdateCategoryRequest }) => {
       const res = await api.category[":id"].$put({ param: { id: id.toString() }, json });
       ensureOk(res);
     },
-    onSuccess: invalidateCategory,
+    onSuccess: async (_, { id, json }) => {
+      await queryClient.cancelQueries({ queryKey: categoryQueryKey });
+
+      queryClient.setQueryData([...categoryQueryKey, id], (old: CategoryDetail | undefined) =>
+        old ? { ...old, ...json } : old,
+      );
+      queryClient.setQueryData(categoryQueryKey, (old: Category[] | undefined) =>
+        old ? old.map((cat) => (cat.id === id ? { id, ...json } : cat)) : old,
+      );
+    },
   });
 }
 
 export function useDeleteCategory() {
-  const invalidateCategory = useInvalidateCategory();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: number) => {
       const res = await api.category[":id"].$delete({ param: { id: id.toString() } });
       ensureOk(res);
     },
-    onSuccess: invalidateCategory,
+    onSuccess: async (_, id) => {
+      await queryClient.cancelQueries({ queryKey: categoryQueryKey });
+      queryClient.removeQueries({ queryKey: [...categoryQueryKey, id] });
+      queryClient.setQueryData(categoryQueryKey, (old: Category[] | undefined) =>
+        old ? old.filter((cat) => cat.id !== id) : old,
+      );
+    },
   });
 }

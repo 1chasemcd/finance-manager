@@ -14,12 +14,11 @@ import {
 } from "@mui/material";
 import PageSection from "@/components/PageSection";
 import { usePageHeader } from "@/lib/pageHeader";
-import React, { useEffect } from "react";
 import { useAccountInfo, type AccountUser } from "@/lib/api/account";
 import { useAcceptInviteDialog } from "./AcceptInviteDialog";
 import { useSendInviteDialog } from "./SendInviteDialog";
-import { usePageStatus } from "@/lib/pageStatus";
 import AppPaper from "@/components/AppPaper";
+import PageSpinner from "@/components/PageSpinner";
 
 const emptyUser = { firstName: "", lastName: "", email: "" };
 
@@ -68,17 +67,11 @@ function GroupTable({ members, meEmail }: { members: AccountUser[]; meEmail: str
 }
 
 export default function Account() {
-  const { resetStatus, setLoadingStatus, setErrorStatus } = usePageStatus();
-  const { data, isPending, isError } = useAccountInfo();
+  const { data, isPending } = useAccountInfo();
   const [openAcceptInviteDialog, AcceptInviteDialog] = useAcceptInviteDialog(data?.pendingInvite);
   const [openSendInviteDialog, SendInviteDialog] = useSendInviteDialog();
 
   usePageHeader({ title: "Account" });
-  useEffect(() => {
-    if (isPending) setLoadingStatus();
-    else if (isError) setErrorStatus();
-    else resetStatus();
-  }, [isPending, isError, resetStatus, setLoadingStatus, setErrorStatus]);
 
   const { me, groupMembers, pendingInvite } = data ?? {
     me: emptyUser,
@@ -86,7 +79,7 @@ export default function Account() {
   };
 
   return (
-    <React.Fragment>
+    <>
       <Stack spacing={2} sx={{ width: "100%" }}>
         <PageSection title="Personal Info">
           <Grid container spacing={2}>
@@ -134,6 +127,7 @@ export default function Account() {
       </Stack>
       {AcceptInviteDialog}
       {SendInviteDialog}
-    </React.Fragment>
+      <PageSpinner visible={isPending} />
+    </>
   );
 }

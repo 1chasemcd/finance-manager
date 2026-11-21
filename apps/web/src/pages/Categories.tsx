@@ -11,19 +11,15 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
-
 import { Add, Edit, FilterAlt } from "@mui/icons-material";
-import { useEffect } from "react";
 import { updateCategorySchema } from "@finapp/schema";
 import { useAppForm } from "@/lib/appForm";
-import React from "react";
 import {
   useDeleteCategory,
   useQueryCategories,
   useQueryCategory,
   useUpdateCategory,
 } from "@/lib/api/category";
-import { usePageStatus } from "@/lib/pageStatus";
 import { useWatch } from "react-hook-form";
 import AppPaper from "@/components/AppPaper";
 import {
@@ -31,6 +27,7 @@ import {
   type EditFormDialogControls,
 } from "@/components/EditFormDialog/useEditFormDialogControls";
 import { EditFormDialog } from "@/components/EditFormDialog/EditFormDialog";
+import PageSpinner from "@/components/PageSpinner";
 
 function CategoryEdit({ controls }: { controls: EditFormDialogControls }) {
   const form = useAppForm({
@@ -84,18 +81,10 @@ function Categories() {
     ],
   });
   const { startEdit, controls } = useEditFormDialogControls();
-  const { data, isPending, isError } = useQueryCategories();
-
-  const { resetStatus, setLoadingStatus, setErrorStatus } = usePageStatus();
-
-  useEffect(() => {
-    if (isPending) setLoadingStatus();
-    else if (isError) setErrorStatus();
-    else resetStatus();
-  }, [isPending, isError, resetStatus, setLoadingStatus, setErrorStatus]);
+  const { data, isPending } = useQueryCategories();
 
   return (
-    <React.Fragment>
+    <>
       <TableContainer component={AppPaper} sx={{ maxHeight: "100%" }}>
         <Table stickyHeader size="small" aria-label="category table">
           <TableHead>
@@ -130,7 +119,8 @@ function Categories() {
         </Table>
       </TableContainer>
       <CategoryEdit controls={controls} />
-    </React.Fragment>
+      <PageSpinner visible={isPending} />
+    </>
   );
 }
 

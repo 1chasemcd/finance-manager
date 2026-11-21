@@ -4,51 +4,44 @@ import AppDrawer, { type AppDrawerHandle } from "@/components/AppDrawer/AppDrawe
 import PageHeader from "@/components/PageHeader/PageHeader";
 import PageHeaderProvider from "@/components/PageHeader/PageHeaderProvider";
 import { useRef } from "react";
-import { PageStatusProvider } from "@/components/PageStatus/PageStatusProvider";
-import PageStatusOverlay from "@/components/PageStatus/PageStatusOverlay";
-import RouteListener from "@/components/RouteListener";
 
 export default function AppLayout() {
   const drawerRef = useRef<AppDrawerHandle>(null);
 
   return (
-    <PageStatusProvider>
-      <PageHeaderProvider>
-        <RouteListener />
+    <PageHeaderProvider>
+      <Box
+        sx={{
+          display: "flex",
+          height: "100dvh",
+          overflow: "hidden",
+        }}
+      >
+        <AppDrawer ref={drawerRef} />
         <Box
+          component="main"
           sx={{
+            flex: 1,
             display: "flex",
-            height: "100dvh",
-            overflow: "hidden",
+            flexDirection: "column",
+            minWidth: 0,
+            minHeight: 0,
           }}
         >
-          <AppDrawer ref={drawerRef} />
+          <PageHeader openDrawerCallback={() => drawerRef.current?.setCollapsed(true)} />
           <Box
-            component="main"
             sx={{
+              p: 2,
               flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              minWidth: 0,
               minHeight: 0,
+              position: "relative",
+              overflowY: "auto",
             }}
           >
-            <PageHeader openDrawerCallback={() => drawerRef.current?.setCollapsed(true)} />
-            <Box
-              sx={{
-                p: 2,
-                flex: 1,
-                minHeight: 0,
-                position: "relative",
-                overflowY: "auto",
-              }}
-            >
-              <Outlet />
-              <PageStatusOverlay />
-            </Box>
+            <Outlet />
           </Box>
         </Box>
-      </PageHeaderProvider>
-    </PageStatusProvider>
+      </Box>
+    </PageHeaderProvider>
   );
 }

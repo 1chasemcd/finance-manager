@@ -12,7 +12,8 @@ import type { EditFormDialogControls } from "./useEditFormDialogControls";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 import type { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { usePageStatus } from "@/lib/pageStatus";
+import PageSpinner from "../PageSpinner";
+import Remount from "../Remount";
 
 interface EditFormDialogProps<TInput extends FieldValues, TContext, TOutput extends FieldValues> {
   children: React.ReactNode;
@@ -43,13 +44,6 @@ export function EditFormDialog<
   useDeleteEntity,
 }: EditFormDialogProps<TInput, TContext, TOutput>) {
   const { data, isSuccess, isFetching } = useQueryEntity(currentEditId);
-  const { setLoadingStatus, resetStatus } = usePageStatus();
-
-  useEffect(() => {
-    if (isFetching) setLoadingStatus();
-    else resetStatus();
-  }, [isFetching, setLoadingStatus, resetStatus]);
-
   const updateEntity = useUpdateEntity?.();
   const deleteEntity = useDeleteEntity?.();
 
@@ -57,26 +51,23 @@ export function EditFormDialog<
   const { reset, handleSubmit } = form;
 
   useEffect(() => {
-    if (isSuccess) reset(data);
-  }, [isSuccess, data, reset]);
-
-  const handleClose = () => {
-    closeEdit();
-    form.reset();
-  };
+    if (isSuccess) reset(data, { keepDefaultValues: true });
+    else if (open) reset();
+  }, [isSuccess, data, reset, open]);
 
   const onSubmit = (json: TOutput) => {
     if (!currentEditId || !updateEntity) return;
-    updateEntity.mutate({ id: currentEditId, json }, { onSuccess: handleClose });
+    updateEntity.mutate({ id: currentEditId, json }, { onSuccess: closeEdit });
   };
 
   const onDelete = () => {
     if (!currentEditId || !deleteEntity) return;
-    deleteEntity.mutate(currentEditId, { onSuccess: handleClose });
+    deleteEntity.mutate(currentEditId, { onSuccess: closeEdit });
   };
 
   return (
-    <Dialog open={open && isSuccess} onClose={handleClose} fullWidth maxWidth="sm">
+    <Dialog open={open} onClose={closeEdit} fullWidth maxWidth="sm">
+      <PageSpinner visible={open && isFetching} />
       <DialogTitle>Edit</DialogTitle>
       <DialogContent>
         <Box
@@ -88,14 +79,14 @@ export function EditFormDialog<
           sx={{ mt: 1 }}
           noValidate
         >
-          {children}
+          <Remount watch={isFetching}>{children}</Remount>
         </Box>
       </DialogContent>
       <Divider />
       <DialogActions>
         {deleteEntity && <ConfirmationButton onClick={onDelete}>Delete</ConfirmationButton>}
         <Box sx={{ flexGrow: 1 }} />
-        <Button onClick={handleClose}>{updateEntity ? "Cancel" : "Close"}</Button>
+        <Button onClick={closeEdit}>{updateEntity ? "Cancel" : "Close"}</Button>
         {updateEntity && (
           <Button variant="contained" type="submit" form="edit-form">
             Save

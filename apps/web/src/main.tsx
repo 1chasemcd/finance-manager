@@ -12,6 +12,7 @@ import { ThemeProvider } from "@mui/material";
 import { theme } from "@/theme.ts";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient.ts";
+import { ToastProvider } from "./lib/toast/ToastProvider";
 
 const rootElement = document.getElementById("root");
 
@@ -21,6 +22,7 @@ createRoot(rootElement).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline>
+        <ToastProvider />
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />
         </QueryClientProvider>
